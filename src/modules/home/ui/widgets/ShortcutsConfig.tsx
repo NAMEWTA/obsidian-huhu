@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { Textarea } from '../../../../ui/components/textarea';
@@ -97,7 +96,8 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 		[draft, setDraft] = useState<ShortcutButton[]>(() =>
 			structuredClone(store.state.getState().settings.shortcutButtons),
 		),
-		[busy, setBusy] = useState(false);
+		[busy, setBusy] = useState(false),
+		[failed, setFailed] = useState(false);
 	const update = (id: string, value: Partial<ShortcutButton>) =>
 		setDraft(draft.map((button) => (button.id === id ? { ...button, ...value } : button)));
 	return (
@@ -109,6 +109,7 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 			onSave={() => {
 				if (busy) return;
 				setBusy(true);
+				setFailed(false);
 				const kept = draft
 					.map((button) => ({ ...button, label: button.label.trim() }))
 					.filter((button) => button.label || button.target);
@@ -117,7 +118,7 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 						settings.shortcutButtons = kept;
 					})
 					.then(close)
-					.catch(() => toast(t('shortcuts.saveFailed')))
+					.catch(() => setFailed(true))
 					.finally(() => setBusy(false));
 			}}
 		>
@@ -220,6 +221,11 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 			>
 				{t('shortcuts.add')}
 			</Button>
+			{failed && (
+				<p role="alert" className="m-0 border-l-2 border-destructive pl-2 text-sm">
+					{t('shortcuts.saveFailed')}
+				</p>
+			)}
 		</DashboardDialog>
 	);
 }

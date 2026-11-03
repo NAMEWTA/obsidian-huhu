@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { ObsidianIcon } from '../../../../ui/components/huhu/ObsidianIcon';
 import { useT } from '../../../../ui/react/hooks';
 import type { HomeWidgetKind } from '../../api';
@@ -149,16 +150,20 @@ export function AddWidgetPanel({
 							>
 								{HOME_WIDGET_TIERS.filter((value) => supportedTiers(kind).includes(value)).map(
 									(value) => (
-										<Button
-											key={value}
-											size="xs"
-											variant={tier === value ? 'secondary' : 'outline'}
-											aria-pressed={tier === value}
-											title={t(`canvas.size.${value}`)}
-											onClick={() => setTiers({ ...tiers, [id]: value })}
-										>
-											{value}
-										</Button>
+										<Tooltip key={value}>
+											<TooltipTrigger asChild>
+												<Button
+													size="xs"
+													variant={tier === value ? 'secondary' : 'outline'}
+													aria-pressed={tier === value}
+													aria-label={t(`canvas.size.${value}`)}
+													onClick={() => setTiers({ ...tiers, [id]: value })}
+												>
+													{value}
+												</Button>
+											</TooltipTrigger>
+											<TooltipContent>{t(`canvas.size.${value}`)}</TooltipContent>
+										</Tooltip>
 									),
 								)}
 							</div>

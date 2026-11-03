@@ -5,7 +5,7 @@ import { observeBoardAction } from '../board/actions';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/skill-section.ts
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from 'zustand';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { ChevronDown, Layers, Columns3, RefreshCw, Settings, Sparkles } from 'lucide-react';
 import type { BoardStore } from '../../services/board-store';
 import type { DashboardColumn, SkillsSectionConfig } from '../../core/board/types';
@@ -42,6 +42,7 @@ export function SkillsSection({
 	}, [service, store, isVisible]);
 	const state = useStore(service.state),
 		t = useT(),
+		notice = useDesignNotice(),
 		config = column.skillsConfig ?? {},
 		[search, setSearch] = useState(''),
 		[collapsed, setCollapsed] = useState<string[]>([]),
@@ -97,7 +98,7 @@ export function SkillsSection({
 					}}
 					detail={() => setDetail(entry)}
 					reveal={() => {
-						void service.reveal(entry.sources[0]!).catch((e) => toast(String(e)));
+						void service.reveal(entry.sources[0]!).catch((e) => notice(String(e)));
 					}}
 					assign={(group) => {
 						void assign(entry.name, group);

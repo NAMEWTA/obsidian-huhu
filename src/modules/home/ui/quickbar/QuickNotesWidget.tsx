@@ -1,7 +1,7 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/quick-note-section.ts
 import { useState } from 'react';
 import { useStore } from 'zustand';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { FilePlus, NotebookPen, Plus, Settings } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
@@ -21,11 +21,18 @@ import { QuickNoteConfigDialog } from './QuickNoteConfigDialog';
 export function QuickNotesWidget({ store }: { store: BoardStore }) {
 	const presets = useStore(store.state, (state) => state.settings.quickNotePresets),
 		t = useT(),
-		[config, setConfig] = useState(false);
+		notice = useDesignNotice(),
+		[config, setConfig] = useState(false),
+		[failure, setFailure] = useState('');
 	const create = (preset: QuickNotePreset) => {
+		setFailure('');
 		void store
 			.newNote(preset.folder, presetNoteName(preset.filename), preset.templatePath)
-			.catch((error: unknown) => toast(error instanceof Error ? error.message : t('quickNote.createFailed')));
+			.catch((error: unknown) => {
+				const message = error instanceof Error && error.message ? error.message : t('quickNote.createFailed');
+				setFailure(message);
+				notice(message);
+			});
 	};
 	return (
 		<>
@@ -35,6 +42,14 @@ export function QuickNotesWidget({ store }: { store: BoardStore }) {
 				</IconButton>
 			</WidgetActions>
 			<div data-quick-notes className="dashboard-quicknote flex h-full min-h-0 min-w-0 flex-col gap-3">
+				{failure && (
+					<p role="alert" className="m-0 flex items-start gap-2 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]">
+						<span className="min-w-0 flex-1">{failure}</span>
+						<Button size="xs" variant="ghost" onClick={() => setFailure('')}>
+							{t('common.close')}
+						</Button>
+					</p>
+				)}
 				{presets.length ? (
 					<div
 						data-quick-buttons
@@ -45,12 +60,11 @@ export function QuickNotesWidget({ store }: { store: BoardStore }) {
 								key={preset.id}
 								size="sm"
 								variant="secondary"
-								className="max-w-full"
-								title={preset.folder}
+								className="h-auto min-h-8 max-w-full whitespace-normal py-1"
 								onClick={() => create(preset)}
 							>
 								{preset.icon && preset.icon !== 'file-text' ? <ObsidianIcon name={preset.icon} /> : <FilePlus />}
-								<span className="min-w-0 truncate">{preset.label || preset.folder}</span>
+								<span className="min-w-0 line-clamp-2 text-left [overflow-wrap:anywhere]">{preset.label || preset.folder}</span>
 							</Button>
 						))}
 					</div>

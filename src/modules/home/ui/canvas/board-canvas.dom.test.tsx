@@ -318,7 +318,7 @@ test('the add panel searches, previews a size and adds the widget in one write a
 	fireEvent.change(screen.getByLabelText(t('canvas.search')), { target: { value: 'probe' } });
 	const entry = document.querySelector<HTMLElement>('[data-widget-entry="probe"]')!;
 	expect(entry).not.toBeNull();
-	fireEvent.click(entry.querySelector<HTMLButtonElement>('button[title="' + t('canvas.size.XL') + '"]')!);
+	fireEvent.click(entry.querySelector<HTMLButtonElement>('button[aria-label="' + t('canvas.size.XL') + '"]')!);
 	expect(entry.querySelector<HTMLElement>('[data-testid="footprint"]')?.style.width).toBe('100%');
 	fireEvent.click(screen.getByRole('button', { name: t('home.widget.addNamed', { name: t('probe.title') }) }));
 	await waitFor(() => expect(sync.addToCanvas).toHaveBeenCalledTimes(1));

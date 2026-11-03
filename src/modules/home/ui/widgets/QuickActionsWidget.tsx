@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { ArrowDown, ArrowUp, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { Label } from '../../../../ui/components/label';
@@ -35,7 +35,8 @@ export function QuickActionsWidget({ store }: { store: BoardStore }) {
 		[active, setActive] = useState<ReadonlySet<string>>(new Set());
 	const grid = useRef<HTMLDivElement>(null);
 	const actions = buildOrderedActions(data!.quickActions, data!.quickActionOrder, data!.hiddenPresets);
-	const report = (cause: unknown) => toast.error(cause instanceof Error ? cause.message : String(cause));
+	const notice = useDesignNotice(),
+		report = (cause: unknown) => notice(cause instanceof Error ? cause.message : String(cause));
 	const edit = (item?: OrderedAction) => {
 		setIndex(
 			item && !item.isPreset

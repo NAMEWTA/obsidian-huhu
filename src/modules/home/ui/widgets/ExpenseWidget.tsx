@@ -1,5 +1,5 @@
 // Adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), src/expense-widget.ts; card layout after the shadcn/ui dashboard blocks (MIT).
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useId, useState } from 'react';
 import { useStore } from 'zustand';
 import { ArrowDownRight, ArrowUpRight, ChartColumn, CalendarPlus } from 'lucide-react';
 import { Input } from '../../../../ui/components/input';
@@ -32,6 +32,7 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 		[manage, setManage] = useState(false),
 		[backfill, setBackfill] = useState(false);
 	const t = useT(),
+		invalidId = useId(),
 		service = store.widgets.expense,
 		[type, setType] = useState<Kind>('expense'),
 		[amount, setAmount] = useState(''),
@@ -110,13 +111,12 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 				<span className="text-xs text-muted-foreground">{t('expense.monthSpent')}</span>
 				<span
 					data-testid="expense-month"
-					className="truncate text-3xl leading-9 font-semibold tabular-nums"
-					title={`${currency}${money(monthly.expense)}`}
+					className="text-3xl leading-9 font-semibold tabular-nums [overflow-wrap:anywhere]"
 				>
 					{currency}
 					{money(monthly.expense)}
 				</span>
-				<span className="truncate text-xs text-muted-foreground tabular-nums">
+				<span className="text-xs text-muted-foreground tabular-nums [overflow-wrap:anywhere]">
 					{t('home.dashboard.today')} {daily.expense || daily.income ? '' : '—'}
 					{daily.expense > 0 && `−${currency}${money(daily.expense)}`}
 					{daily.expense > 0 && daily.income > 0 && ' · '}
@@ -124,7 +124,7 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 				</span>
 			</div>
 			<div data-expense-form className="hidden min-w-0 flex-col justify-center gap-2 @xs:flex">
-				<div className="flex min-w-0 items-center gap-2">
+				<div className="flex min-w-0 flex-wrap items-center gap-2">
 					<ToggleGroup
 						type="single"
 						variant="outline"
@@ -134,20 +134,21 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 							if (value === 'expense' || value === 'income') setType(value);
 						}}
 					>
-						<ToggleGroupItem value="expense" aria-label={t('home.dashboard.expense')}>
+						<ToggleGroupItem value="expense" className="[@media(pointer:coarse)]:min-w-11" aria-label={t('home.dashboard.expense')}>
 							<ArrowDownRight className="text-destructive" />
 						</ToggleGroupItem>
-						<ToggleGroupItem value="income" aria-label={t('home.dashboard.income')}>
+						<ToggleGroupItem value="income" className="[@media(pointer:coarse)]:min-w-11" aria-label={t('home.dashboard.income')}>
 							<ArrowUpRight className="text-primary" />
 						</ToggleGroupItem>
 					</ToggleGroup>
-					<div className="relative min-w-0 flex-1">
+					<div className="relative min-w-28 flex-1">
 						<span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-muted-foreground">
 							{currency}
 						</span>
 						<Input
 							aria-label={t('expense.colAmount')}
 							aria-invalid={invalid}
+							aria-describedby={invalid ? invalidId : undefined}
 							inputMode="decimal"
 							placeholder="0.00"
 							className="pl-8 tabular-nums"
@@ -172,6 +173,11 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 						]}
 					/>
 				</div>
+				{invalid && (
+					<p id={invalidId} role="alert" className="m-0 border-l-2 border-destructive pl-2 text-xs">
+						{t('expense.invalidAmount')}
+					</p>
+				)}
 				<div className="flex min-w-0 items-center gap-2">
 					<Input
 						aria-label={t('expense.notePlaceholder')}
@@ -202,7 +208,7 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 								index >= 4 && 'hidden @3xl:grid',
 							)}
 						>
-							<span className="truncate text-sm">{label(key)}</span>
+							<span className="line-clamp-2 text-sm [overflow-wrap:anywhere]">{label(key)}</span>
 							<span className="text-sm tabular-nums">
 								{currency}
 								{money(value)}

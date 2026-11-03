@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { Pin, Star, Ellipsis, Sparkles, Copy, FolderOpen } from 'lucide-react';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { useOwnerDocument } from '../../../../ui/react/contexts';
 import { useT } from '../../../../ui/react/hooks';
 import { RecordButton } from '../dialogs/RecordButton';
@@ -51,14 +51,15 @@ export function SkillCard({
 	assign(this: void, group: string): void;
 }) {
 	const t = useT(),
+		notice = useDesignNotice(),
 		doc = useOwnerDocument(),
 		[launch, setLaunch] = useState<string | null>(null);
 	const agents = [...new Set(entry.sources.flatMap((source) => source.agents))];
 	const copy = () => {
 		void doc.defaultView?.navigator.clipboard
 			.writeText(entry.sources[0]!.path)
-			.then(() => toast(t('skills.copied')))
-			.catch(() => toast(t('skills.copyFailed')));
+			.then(() => notice(t('skills.copied')))
+			.catch(() => notice(t('skills.copyFailed')));
 	};
 	return (
 		<>
@@ -97,7 +98,6 @@ export function SkillCard({
 						{entry.sources.map((source) => (
 							<span
 								key={source.path}
-								title={source.path}
 								className={css(`dashboard-skillsec-badge is-${sourceClass(source)}`)}
 							>
 								{sourceBadge(source)}
@@ -200,6 +200,7 @@ function SkillLaunch({
 			),
 		),
 		[busy, setBusy] = useState(false),
+		notice = useDesignNotice(),
 		abort = useRef<AbortController | null>(null);
 	useEffect(() => () => abort.current?.abort(), []);
 	return (
@@ -231,7 +232,7 @@ function SkillLaunch({
 					{
 						dispatch: store.widgets.acquireDispatch ?? (async () => undefined),
 						preview: async (_skill, _context, draft) => ({ ...draft, finalPrompt: prompt }),
-						notify: (message) => toast(message),
+						notify: (message) => notice(message),
 						signal: controller.signal,
 					},
 				)
@@ -289,7 +290,6 @@ export function SkillDetail({
 							<span
 								key={source.path}
 								className={css(`dashboard-skillsec-badge is-${sourceClass(source)}`)}
-								title={source.path}
 							>
 								{sourceBadge(source)}
 							</span>

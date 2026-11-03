@@ -2,6 +2,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { createStore } from 'zustand/vanilla';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { setLanguage, t } from '../../../../shared/i18n';
 import { DEFAULT_DASHBOARD_SETTINGS } from '../../core/board/types/model';
 import type { BoardStore } from '../../services/board-store';
@@ -47,7 +48,7 @@ function fake(over: Record<string, unknown> = {}, settings: Record<string, unkno
 	} as unknown as BoardStore;
 	return { store, state };
 }
-const mount = (node: React.ReactNode) => render(<TestProviders>{node}</TestProviders>);
+const mount = (node: React.ReactNode) => render(<TestProviders><DesignScope>{node}</DesignScope></TestProviders>);
 
 test('the clock is the whole tile: time and date, no title of its own', () => {
 	mount(<ClockWidget store={fake().store} />);

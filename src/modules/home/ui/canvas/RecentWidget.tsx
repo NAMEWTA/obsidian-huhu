@@ -20,7 +20,7 @@ export function RecentWidget({ store }: { store: BoardStore }) {
 				<li key={file.path} className="min-w-0 shrink-0">
 					<RowButton
 						icon={<FileGlyph path={file.path} />}
-						title={file.path}
+						wrap
 						trailing={<RelativeTime value={file.stat.mtime} />}
 						onClick={() => {
 							void store.openFile(file.path);

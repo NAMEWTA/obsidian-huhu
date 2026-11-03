@@ -10,7 +10,7 @@ import {
 	Settings2,
 	Trash2,
 } from 'lucide-react';
-import { useCallback, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
+import { useCallback, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
 import { Button } from '../../../../ui/components/button';
 import { Card } from '../../../../ui/components/card';
 import {
@@ -233,6 +233,7 @@ function TitleField({
 	onDone(this: void): void;
 }) {
 	const t = useT(),
+		errorId = useId(),
 		[draft, setDraft] = useState(value),
 		[error, setError] = useState(''),
 		cancelled = useRef(false),
@@ -257,7 +258,7 @@ function TitleField({
 				autoFocus
 				aria-label={t('ui.rename')}
 				aria-invalid={!!error}
-				title={error || undefined}
+				aria-describedby={error ? errorId : undefined}
 				value={draft}
 				className="h-7 px-2 text-sm"
 				onChange={(event) => setDraft(event.target.value)}
@@ -274,6 +275,11 @@ function TitleField({
 					}
 				}}
 			/>
+			{error && (
+				<p id={errorId} role="alert" className="m-0 mt-1 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]">
+					{error}
+				</p>
+			)}
 		</div>
 	);
 }

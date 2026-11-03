@@ -1,6 +1,7 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { SkillCard } from './SkillCard';
 import type { BoardStore } from '../../services/board-store';
 import { t } from '../../../../shared/i18n';
@@ -13,7 +14,7 @@ test('populated skill cards expose descriptions, sources, keyboard detail and in
 		widgets: { skills: () => ({ targets: () => [{ id: 'codex', title: 'Codex' }] }) },
 	} as unknown as BoardStore;
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillCard
 				store={store}
 				entry={{
@@ -31,10 +32,10 @@ test('populated skill cards expose descriptions, sources, keyboard detail and in
 				reveal={() => {}}
 				assign={assign}
 			/>
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	expect(screen.getByText('Review a change')).toBeTruthy();
-	expect(screen.getByTitle('/vault/.codex/skills/review')).toBeTruthy();
+	expect(document.querySelector('[title]')).toBeNull();
 	expect(screen.getByText('F')).toBeTruthy();
 	const card = screen.getByRole('button', { name: /review X F/ });
 	fireEvent.keyDown(card, { key: 'Enter' });
@@ -55,7 +56,7 @@ test('skill invocation previews first and sends the edited prompt through the ag
 		state: { getState: () => ({ path: '.huhu/dashboards/dashboard' }) },
 	} as unknown as BoardStore;
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillCard
 				store={store}
 				entry={{
@@ -69,7 +70,7 @@ test('skill invocation previews first and sends the edited prompt through the ag
 				reveal={() => {}}
 				assign={() => {}}
 			/>
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByRole('button', { name: t('skills.launch', { agent: 'codex' }) }));
 	expect(dispatch).not.toHaveBeenCalled();

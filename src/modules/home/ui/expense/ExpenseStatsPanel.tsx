@@ -9,7 +9,8 @@ import {
 } from '../../../../ui/components/huhu/analytics/Analytics';
 import { analyticsDays, localDay } from '../../../../shared/analytics/range';
 import { Button } from '../../../../ui/components/button';
-import { t } from '../../../../shared/i18n';
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
+import { useT } from '../../../../ui/react/hooks';
 import type { ExpenseService } from '../../platform/expense/expense-service';
 import { formatExpenseAmount, type ExpenseRecord, type ExpenseType } from '../../core/expense/model';
 import { categoryLabel } from './expense-label';
@@ -19,6 +20,7 @@ import { RecordSaveStatus } from '../dialogs/RecordSaveStatus';
 import { RecordConfirm } from '../dialogs/RecordConfirm';
 
 export function ExpenseStatsPanel({ service, close }: { service: ExpenseService; close?: () => void }) {
+	const t = useT();
 	const [, refresh] = useState(0),
 		[type, setType] = useState<ExpenseType | ''>(''),
 		[category, setCategory] = useState(''),
@@ -47,6 +49,7 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 	const net = (rows: ExpenseRecord[]) =>
 		(Math.round(total(rows, 'income') * 100) - Math.round(total(rows, 'expense') * 100)) / 100;
 	const label = (key: string) => (level === 'primary' ? key : categoryLabel(key));
+	const rangeText = `${range.range.start} — ${range.range.end}`;
 	return (
 		<AnalyticsFrame
 			title={t('expense.statsTitle')}
@@ -125,6 +128,45 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 						</select>
 						<RecordSaveStatus source={service} />
 					</div>
+					<p
+						data-expense-summary
+						role="status"
+						className="m-0 text-xs text-muted-foreground [overflow-wrap:anywhere]"
+					>
+						{selected.length === 0
+							? rangeText
+							: t('expense.stats.summary', {
+									range: rangeText,
+									count: selected.length,
+									income: money(total(selected, 'income')),
+									expense: money(total(selected, 'expense')),
+									net: money(net(selected)),
+								})}{' '}
+						{t('expense.stats.unit', { currency: service.getCurrency() })}
+					</p>
+					{selected.length === 0 && (
+						<EmptyState
+							size="sm"
+							title={t(records.length === 0 ? 'expense.stats.empty' : 'expense.stats.noMatch', {
+								range: rangeText,
+							})}
+							action={
+								(type || category) && (
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => {
+											setType('');
+											setCategory('');
+											setDay('');
+										}}
+									>
+										{t('expense.stats.clearFilters')}
+									</Button>
+								)
+							}
+						/>
+					)}
 					<div className="grid grid-cols-2 gap-3 @min-[42rem]:grid-cols-4">
 						{(['income', 'expense'] as const).map((kind) => (
 							<AnalyticsMetric
@@ -146,105 +188,111 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 							previous={String(previous.length)}
 						/>
 					</div>
-					<div className="grid gap-4 @min-[42rem]:grid-cols-2">
-						<AnalyticsChart
-							title={t('analytics.trend')}
-							labels={days}
-							series={(['income', 'expense'] as const)
-								.filter((kind) => !type || type === kind)
-								.map((kind) => ({
-									name: t(`expense.${kind}Label`),
-									values: days.map((d) =>
-										total(
-											selected.filter((r) => r.date === d),
-											kind,
+					{selected.length > 0 && (
+						<div className="grid gap-4 @min-[42rem]:grid-cols-2">
+							<AnalyticsChart
+								title={t('analytics.trend')}
+								labels={days}
+								series={(['income', 'expense'] as const)
+									.filter((kind) => !type || type === kind)
+									.map((kind) => ({
+										name: t(`expense.${kind}Label`),
+										values: days.map((d) =>
+											total(
+												selected.filter((r) => r.date === d),
+												kind,
+											),
 										),
-									),
-								}))}
-							format={money}
-							onSelect={setDay}
-						/>
-						<AnalyticsChart
-							title={t('analytics.distribution')}
-							labels={cats.map(label)}
-							series={[
-								{
-									name: t('analytics.distribution'),
-									values: cats.map(
-										(c) =>
-											selected
-												.filter((r) => keyOf(r) === c)
-												.reduce((n, r) => n + Math.round(r.amount * 100), 0) / 100,
-									),
-								},
-							]}
-							kind="doughnut"
-							format={money}
-							onSelect={(value) => setCategory(cats.find((c) => label(c) === value) ?? '')}
-						/>
-					</div>
-					<section className="rounded-lg border border-border p-4">
-						<div className="mb-3 flex items-center justify-between">
-							<h3 className="m-0 text-sm font-semibold">
-								{t('analytics.details')}
-								{day && ` · ${day}`}
-							</h3>
-							{day && (
-								<Button variant="ghost" size="sm" onClick={() => setDay('')}>
-									{t('analytics.overview')}
-								</Button>
-							)}
+									}))}
+								format={money}
+								onSelect={setDay}
+							/>
+							<AnalyticsChart
+								title={t('analytics.distribution')}
+								labels={cats.map(label)}
+								series={[
+									{
+										name: t('analytics.distribution'),
+										values: cats.map(
+											(c) =>
+												selected
+													.filter((r) => keyOf(r) === c)
+													.reduce((n, r) => n + Math.round(r.amount * 100), 0) / 100,
+										),
+									},
+								]}
+								kind="doughnut"
+								format={money}
+								onSelect={(value) => setCategory(cats.find((c) => label(c) === value) ?? '')}
+							/>
 						</div>
-						{detail.length ? (
-							<div className="overflow-auto">
-								<table className="w-full text-left text-sm">
-									<thead>
-										<tr>
-											<th className="py-2">{t('expense.dateLabel')}</th>
-											<th>{t('analytics.allTypes')}</th>
-											<th>{t('analytics.distribution')}</th>
-											<th>{t('expense.colAmount')}</th>
-											<th>{t('expense.colNote')}</th>
-											<th className="sr-only">{t('analytics.edit')}</th>
-										</tr>
-									</thead>
-									<tbody>
-										{[...detail]
-											.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt)
-											.map((r) => (
-												<tr key={r.id} className="border-t border-border">
-													<td className="py-2 tabular-nums">{r.date}</td>
-													<td>{t(`expense.${r.type}Label`)}</td>
-													<td>{categoryLabel(r.category)}</td>
-													<td className="tabular-nums">{money(r.amount)}</td>
-													<td className="max-w-48 truncate">{r.note || '—'}</td>
-													<td>
-														<div className="flex gap-1">
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={() => setEditing(r)}
-															>
-																{t('analytics.edit')}
-															</Button>
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={() => setDeleting(r.id)}
-															>
-																{t('expense.deleteRecord')}
-															</Button>
-														</div>
-													</td>
-												</tr>
-											))}
-									</tbody>
-								</table>
+					)}
+					{selected.length > 0 && (
+						<section className="rounded-lg border border-border p-4">
+							<div className="mb-3 flex items-center justify-between">
+								<h3 className="m-0 text-sm font-semibold">
+									{t('analytics.details')}
+									{day && ` · ${day}`}
+								</h3>
+								{day && (
+									<Button variant="ghost" size="sm" onClick={() => setDay('')}>
+										{t('analytics.overview')}
+									</Button>
+								)}
 							</div>
-						) : (
-							<p className="text-sm text-muted-foreground">{t('analytics.empty')}</p>
-						)}
-					</section>
+							{detail.length ? (
+								<div className="overflow-auto">
+									<table className="w-full text-left text-sm">
+										<thead>
+											<tr>
+												<th className="py-2">{t('expense.dateLabel')}</th>
+												<th>{t('analytics.allTypes')}</th>
+												<th>{t('analytics.distribution')}</th>
+												<th>{t('expense.colAmount')}</th>
+												<th>{t('expense.colNote')}</th>
+												<th className="sr-only">{t('analytics.edit')}</th>
+											</tr>
+										</thead>
+										<tbody>
+											{[...detail]
+												.sort(
+													(a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt,
+												)
+												.map((r) => (
+													<tr key={r.id} className="border-t border-border">
+														<td className="py-2 tabular-nums">{r.date}</td>
+														<td>{t(`expense.${r.type}Label`)}</td>
+														<td>{categoryLabel(r.category)}</td>
+														<td className="tabular-nums">{money(r.amount)}</td>
+														<td className="max-w-48 truncate">{r.note || '—'}</td>
+														<td>
+															<div className="flex gap-1">
+																<Button
+																	variant="ghost"
+																	size="sm"
+																	onClick={() => setEditing(r)}
+																>
+																	{t('analytics.edit')}
+																</Button>
+																<Button
+																	variant="ghost"
+																	size="sm"
+																	onClick={() => setDeleting(r.id)}
+																>
+																	{t('expense.deleteRecord')}
+																</Button>
+															</div>
+														</td>
+													</tr>
+												))}
+										</tbody>
+									</table>
+								</div>
+							) : (
+								<p className="text-sm text-muted-foreground">{t('analytics.empty')}</p>
+							)}
+						</section>
+					)}
 				</>
 			)}
 			{deleting && (

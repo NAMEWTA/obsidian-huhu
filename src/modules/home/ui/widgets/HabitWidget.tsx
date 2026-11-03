@@ -78,13 +78,13 @@ export function HabitWidget({ store }: { store: BoardStore }) {
 						<ul className="m-0 flex min-h-0 flex-1 list-none flex-col gap-0.5 overflow-y-auto p-0">
 							{habits.map((habit) => (
 								<li key={habit.id} className="shrink-0">
-									<Label className="flex h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-sm font-normal hover:bg-accent/50">
+									<Label className="flex min-h-9 w-full cursor-pointer items-center gap-2 py-1 rounded-md px-2 text-sm font-normal hover:bg-accent/50">
 										<Checkbox
 											className="rounded-full"
 											checked={service.isDone(habit.id)}
 											onCheckedChange={() => service.toggle(habit.id)}
 										/>
-										<span className="min-w-0 flex-1 truncate" title={habit.name}>
+										<span className="min-w-0 flex-1 line-clamp-2 [overflow-wrap:anywhere]">
 											{habit.name}
 										</span>
 										<span className="flex shrink-0 items-center gap-0.5 text-xs text-muted-foreground tabular-nums">

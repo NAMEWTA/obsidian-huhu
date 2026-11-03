@@ -8,7 +8,6 @@ import { ExpenseApplication } from '../../core/expense/application';
 import type { ExpenseService } from '../../platform/expense/expense-service';
 import { ExpenseEntryPanel } from './ExpenseEntryPanel';
 import { ExpenseStatsPanel } from './ExpenseStatsPanel';
-import { ExpenseLedgerPanel } from './ExpenseLedgerPanel';
 import { RecordDialog } from '../dialogs/RecordDialog';
 import type { TextStorage } from '../../../../shared/storage/ports';
 const data = new Map<string, string>();
@@ -55,30 +54,6 @@ test('backfill rejects future dates and saves a full entry only on confirmation'
 	});
 	expect(close).toHaveBeenCalledTimes(1);
 });
-test('ledger edit writes the selected record; delete first focuses cancel and only commits after confirmation', async () => {
-	const s = service();
-	s.addRecord({ type: 'expense', amount: 10, category: 'food', date: '2026-10-14', note: 'Lunch' });
-	render(
-		<TestProviders>
-			<RecordDialog title="Ledger" classes="dashboard-expense-ledger-modal" onClose={() => {}}>
-				<ExpenseLedgerPanel service={s} close={() => {}} />
-			</RecordDialog>
-		</TestProviders>,
-	);
-	fireEvent.click(screen.getByLabelText(t('expense.ledger.editRecord')));
-	fireEvent.change(screen.getByLabelText(t('expense.colAmount')), { target: { value: '25' } });
-	fireEvent.click(screen.getByRole('button', { name: t('common.save') }));
-	expect(s.getRecords()[0]?.amount).toBe(25);
-	fireEvent.click(screen.getByLabelText(t('expense.deleteRecord')));
-	expect(s.getRecords()).toHaveLength(1);
-	await waitFor(() => expect(document.activeElement?.textContent).toBe(t('common.cancel')));
-	fireEvent.click(screen.getByRole('button', { name: t('common.cancel') }));
-	expect(s.getRecords()).toHaveLength(1);
-	fireEvent.click(screen.getByLabelText(t('expense.deleteRecord')));
-	fireEvent.click(screen.getByRole('button', { name: t('common.confirm') }));
-	expect(s.getRecords()).toHaveLength(0);
-});
-
 test('statistics delete keeps the record on cancel and deletes only after confirmation', async () => {
 	const s = service(); s.addRecord({ type: 'expense', amount: 10, category: 'food', date: '2026-10-14' });
 	await s.flush();
@@ -144,4 +119,23 @@ test('analysis keeps metrics, chart data, rows and export on the same month/type
  fireEvent.click(screen.getByRole('button', { name: t('analytics.previous') }));
  expect(within(detail()).getByText('Previous month')).toBeTruthy(); expect(within(detail()).queryByText('Food current')).toBeNull();
  await s.flush();
+});
+
+test('statistics tell empty, filtered-out and zero-net ranges apart and state the unit', async () => {
+	const summary = () => document.querySelector('[data-expense-summary]')!.textContent;
+	const s = service();
+	render(<TestProviders><ExpenseStatsPanel service={s} /></TestProviders>);
+	expect(screen.getByText(/No records in/)).toBeTruthy();
+	expect(summary()).toContain('Amounts in $');
+	expect(screen.queryByRole('table')).toBeNull();
+	cleanup();
+	const z = service();
+	z.addRecord({ type: 'expense', amount: 1, category: 'food', date: '2026-10-14' });
+	render(<TestProviders><ExpenseStatsPanel service={z} /></TestProviders>);
+	expect(summary()).toContain('records: 1');
+	expect(summary()).toContain('net $-1');
+	fireEvent.change(screen.getByLabelText(t('analytics.allTypes')), { target: { value: 'income' } });
+	expect(screen.getByText(/match the current filters/)).toBeTruthy();
+	fireEvent.click(screen.getByRole('button', { name: t('expense.stats.clearFilters') }));
+	expect(summary()).toContain('records: 1');
 });

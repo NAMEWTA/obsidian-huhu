@@ -73,7 +73,7 @@ export function NavigatorListWidget({ store, mode }: { store: BoardStore; mode: 
 					{items.map((item) => (
 						<li key={item.key} className="shrink-0">
 							<RowButton
-								title={item.title}
+								wrap
 								icon={
 									item.target.kind === 'note' ? (
 										<FileGlyph path={item.target.key} />

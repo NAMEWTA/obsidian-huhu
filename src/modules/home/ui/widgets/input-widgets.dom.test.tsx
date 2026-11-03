@@ -3,13 +3,14 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createStore } from 'zustand/vanilla';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { setLanguage, t } from '../../../../shared/i18n';
 import { DEFAULT_DASHBOARD_SETTINGS, type SkillShortcut } from '../../core/board/types/model';
 import type { BoardStore } from '../../services/board-store';
 import { FileSearchWidget } from './InputWidgets';
 import { SkillWidget } from './SkillWidget';
 import { normalizeDashboardSettings } from '../../core/board/settings';
-vi.mock('sonner', () => ({ toast: vi.fn(), Toaster: () => null }));
+vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), { getToasts: () => [], dismiss: vi.fn() }), Toaster: () => null }));
 afterEach(cleanup);
 function fixture() {
 	setLanguage('en');
@@ -53,9 +54,9 @@ function fixture() {
 test('file search floats results, cancels with Escape and opens the keyboard-selected file', async () => {
 	const f = fixture();
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<FileSearchWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const floating = () => document.querySelector('.huhu-portal-root [data-file-results]');
 	const input = screen.getByRole('textbox');
@@ -74,9 +75,9 @@ test('file search floats results, cancels with Escape and opens the keyboard-sel
 test('file search is one 36px row: input fills the line beside the recent and search buttons', () => {
 	const f = fixture();
 	const { container } = render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<FileSearchWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const row = container.querySelector('[data-input-widget="search"] > div')!;
 	expect(row.className).toContain('flex');
@@ -88,9 +89,9 @@ test('file search is one 36px row: input fills the line beside the recent and se
 test('standalone skills preview edited text and keep their configuration separate from board chips', async () => {
 	const f = fixture();
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByRole('button', { name: 'Review' }));
 	const prompt = await screen.findByLabelText(t('home.dashboard.prompt'));
@@ -113,9 +114,9 @@ test('standalone skills preview edited text and keep their configuration separat
 test('skill buttons sit in an equal-width grid and an empty widget says so', () => {
 	const f = fixture();
 	const view = render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const grid = view.container.querySelector('[data-skill-grid]')!;
 	expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
@@ -124,9 +125,9 @@ test('skill buttons sit in an equal-width grid and an empty widget says so', () 
 	view.unmount();
 	f.store.state.setState({ settings: { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS), skillWidgetButtons: [] } });
 	const empty = render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	expect(empty.container.querySelector('[data-slot="empty-state"]')).toBeTruthy();
 	expect(empty.container.querySelector('[data-skill-grid]')).toBeNull();

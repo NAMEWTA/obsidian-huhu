@@ -8,7 +8,7 @@ design_ref: {"revision":3,"digest":"78dd227f70b86804078218988b35850af8f2078a02ea
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-30
 title: "home 其他子项与数据可视化"
-status: ready
+status: done
 kind: refactor
 planning_depth: standard
 planning_depth_reason: "UI 迁移切片，依赖 change DESIGN"

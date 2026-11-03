@@ -1,6 +1,7 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { t } from '../../../../shared/i18n';
 import type { SkillsSectionConfig } from '../../core/board/types';
 import type { BoardStore } from '../../services/board-store';
@@ -25,9 +26,9 @@ function renderSkills(names: string[], config: SkillsSectionConfig) {
 	});
 	const store = { host: { app: {} }, widgets: {} } as unknown as BoardStore;
 	return render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<SkillsSection store={store} column={{ name: 'Skills', color: '', cards: [], skillsConfig: config }} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 }
 

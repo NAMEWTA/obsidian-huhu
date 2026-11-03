@@ -3,6 +3,7 @@ import type { HomeHost } from '../../services/home-host';
 import { BoardStore } from '../../services/board-store';
 import { createRoot } from 'react-dom/client';
 import { ContainerProviders } from '../../../../ui/react/providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { ThemeBridge } from '../theme/ThemeBridge';
 import { WIDGET_COMPONENTS } from '../canvas/widget-components';
 import { ImmersiveWidgetFrame } from './WidgetBackground';
@@ -34,12 +35,14 @@ export async function renderBuiltinWidget(
 			root.render(
 				<ContainerProviders container={element}>
 					<ThemeBridge store={store} layout="canvas">
-						<ImmersiveWidgetFrame store={store} kind={kind}>
-							<Component
-								store={store}
-								entryId={context.instanceId === 'default' ? undefined : context.instanceId}
-							/>
-						</ImmersiveWidgetFrame>
+						<DesignScope className="h-full min-h-0">
+							<ImmersiveWidgetFrame store={store} kind={kind}>
+								<Component
+									store={store}
+									entryId={context.instanceId === 'default' ? undefined : context.instanceId}
+								/>
+							</ImmersiveWidgetFrame>
+						</DesignScope>
 					</ThemeBridge>
 				</ContainerProviders>,
 			);

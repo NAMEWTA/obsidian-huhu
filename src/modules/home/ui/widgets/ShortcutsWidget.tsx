@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { Settings } from 'lucide-react';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { Button } from '../../../../ui/components/button';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { ObsidianIcon } from '../../../../ui/components/huhu/ObsidianIcon';
@@ -17,6 +17,7 @@ import { WidgetActions } from '../canvas/widget-frame';
 /** A configurable set of buttons: open a note, run an Obsidian command, run a saved automation or start an agent. */
 export function ShortcutsWidget({ store }: { store: BoardStore }) {
 	const t = useT(),
+		notice = useDesignNotice(),
 		visible = useVisible(),
 		buttons = useStore(store.state, (state) => state.settings.shortcutButtons),
 		[config, setConfig] = useState(false),
@@ -46,7 +47,7 @@ export function ShortcutsWidget({ store }: { store: BoardStore }) {
 			quickCommands: () => widgets.quickCommands?.(),
 			agents: () => widgets.agents?.() ?? [],
 			dispatch: widgets.acquireDispatch ?? (async () => undefined),
-			notify: (message) => toast(message),
+			notify: (message) => notice(message),
 			boardPath: store.state.getState().path + '.md',
 			signal,
 		}).finally(() => {

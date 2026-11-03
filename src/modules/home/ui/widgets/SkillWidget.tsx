@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Settings, Sparkles } from 'lucide-react';
 import { useStore } from 'zustand';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { Button } from '../../../../ui/components/button';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { Textarea } from '../../../../ui/components/textarea';
@@ -21,7 +21,8 @@ import { SkillList } from '../quickbar/SkillList';
 function SkillConfig({ store, close }: { store: BoardStore; close(this: void): void }) {
 	const t = useT(),
 		[draft, setDraft] = useState(() => structuredClone(store.state.getState().settings.skillWidgetButtons)),
-		[busy, setBusy] = useState(false);
+		[busy, setBusy] = useState(false),
+		[failed, setFailed] = useState(false);
 	return (
 		<DashboardDialog
 			title={t('skillsWidget.cfgTitle')}
@@ -30,6 +31,7 @@ function SkillConfig({ store, close }: { store: BoardStore; close(this: void): v
 			onSave={() => {
 				if (busy) return;
 				setBusy(true);
+				setFailed(false);
 				void store
 					.settings((settings) => {
 						settings.skillWidgetButtons = draft
@@ -37,17 +39,23 @@ function SkillConfig({ store, close }: { store: BoardStore; close(this: void): v
 							.map((s) => ({ ...s, label: s.label.trim() }));
 					})
 					.then(close)
-					.catch(() => toast(t('storage.unsaved')))
+					.catch(() => setFailed(true))
 					.finally(() => setBusy(false));
 			}}
 		>
 			<SkillList store={store} skills={draft} onChange={setDraft} />
+			{failed && (
+				<p role="alert" className="m-0 border-l-2 border-destructive pl-2 text-sm">
+					{t('storage.unsaved')}
+				</p>
+			)}
 		</DashboardDialog>
 	);
 }
 function SkillWidgetBody({ store }: { store: BoardStore }) {
 	const buttons = useStore(store.state, (state) => state.settings.skillWidgetButtons).filter((s) => s.label.trim()),
 		t = useT(),
+		notice = useDesignNotice(),
 		visible = useVisible();
 	const [config, setConfig] = useState(false),
 		[preview, setPreview] = useState<SkillDraft | null>(null),
@@ -79,7 +87,7 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 			{
 				dispatch: store.widgets.acquireDispatch ?? (async () => undefined),
 				signal: abort.signal,
-				notify: (message) => toast(message),
+				notify: (message) => notice(message),
 				preview: (_skill, _context, draft) =>
 					new Promise((done) => {
 						resolver.current = done;
@@ -123,8 +131,7 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 							key={skill.id}
 							variant="outline"
 							disabled={busy}
-							title={skill.label}
-							className="h-9 min-w-0 justify-start gap-2 px-2.5 font-normal"
+							className="h-auto min-h-9 min-w-0 justify-start gap-2 whitespace-normal px-2.5 py-1 font-normal"
 							onClick={() => run(skill)}
 						>
 							<span
@@ -133,7 +140,7 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 							>
 								<ObsidianIcon name={skill.icon || 'sparkles'} />
 							</span>
-							<span className="min-w-0 flex-1 truncate text-left">{skill.label}</span>
+							<span className="min-w-0 flex-1 line-clamp-2 text-left [overflow-wrap:anywhere]">{skill.label}</span>
 						</Button>
 					))}
 				</div>

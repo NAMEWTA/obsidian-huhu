@@ -6,6 +6,7 @@ import type { AgentDispatchRequest } from '../../../agent/api';
 import type { AgentUsage } from '../../../agent/api';
 import type { UsageSnapshot } from '../../../../app/contracts/workbench';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { setLanguage, t } from '../../../../shared/i18n';
 import { DEFAULT_DASHBOARD_SETTINGS } from '../../core/board/types/model';
 import { normalizeDashboardSettings } from '../../core/board/settings';
@@ -14,7 +15,7 @@ import type { BoardStore } from '../../services/board-store';
 import { UsageWidget } from './UsageWidget';
 import { ShortcutsWidget } from './ShortcutsWidget';
 
-vi.mock('sonner', () => ({ toast: vi.fn(), Toaster: () => null }));
+vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), { getToasts: () => [], dismiss: vi.fn() }), Toaster: () => null }));
 
 beforeEach(() => {
 	setLanguage('en');
@@ -78,9 +79,9 @@ function usageFixture(providers: UsageSnapshot['providers']) {
 test('usage ranks providers busiest first; the smallest tile hides every row after the first, and the card owns the title', () => {
 	const f = usageFixture([claude, codex, quiet]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const rows = [...document.querySelectorAll<HTMLElement>('[data-usage-provider]')];
 	expect(rows.map((row) => row.getAttribute('data-usage-provider'))).toEqual(['codex', 'claude', 'gemini']);
@@ -96,9 +97,9 @@ test('usage ranks providers busiest first; the smallest tile hides every row aft
 test('usage keeps a refresh control, also while empty, and disables it while refreshing', () => {
 	const f = usageFixture([codex]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText(t('usage.refresh')));
 	expect(f.refresh).toHaveBeenCalledTimes(1);
@@ -115,9 +116,9 @@ test('usage in Chinese spells reset times and statuses in Chinese and shows no r
 	const raw = { id: 'gemini', name: 'Gemini', windows: [], status: 'idle', failed: false };
 	const f = usageFixture([claude, raw]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const text = document.body.textContent ?? '';
 	expect(text).toContain('尚未加载');
@@ -129,9 +130,9 @@ test('usage in Chinese spells reset times and statuses in Chinese and shows no r
 test('usage lists every provider busiest first with its earliest reset', () => {
 	const f = usageFixture([claude, codex, quiet]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const order = [...document.querySelectorAll('[data-usage-provider]')].map((el) => el.getAttribute('data-usage-provider'));
 	expect(order).toEqual(['codex', 'claude', 'gemini']);
@@ -142,9 +143,9 @@ test('usage lists every provider busiest first with its earliest reset', () => {
 test('usage lists every window and refreshes on request', async () => {
 	const f = usageFixture([claude, codex]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const row = document.querySelector('[data-usage-provider="claude"]') as HTMLElement;
 	expect(within(row).getByText('5h')).toBeTruthy();
@@ -159,9 +160,9 @@ test('usage lists every window and refreshes on request', async () => {
 test('usage follows snapshots, the service coming and going, and releases its subscription', async () => {
 	const f = usageFixture([codex]);
 	const view = render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	expect(f.subscribers()).toBe(1);
 	act(() => f.set({ providers: [codex, claude], refreshing: false }));
@@ -178,9 +179,9 @@ test('usage follows snapshots, the service coming and going, and releases its su
 test('usage tones the percentage by how close the limit is', () => {
 	const f = usageFixture([{ ...codex, windows: [{ label: '5h', usedPercent: 97 }] }, { ...claude, windows: [{ label: '5h', usedPercent: 85 }] }]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<UsageWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	expect(screen.getAllByText('97%')[0]!.className).toContain('text-destructive');
 	expect(screen.getAllByText('85%')[0]!.className).toContain('text-status-warning');
@@ -249,9 +250,9 @@ const messages = () => vi.mocked(toast).mock.calls.map((call) => String(call[0])
 test('shortcut buttons act at once, say what they start, and report the agent delivery', async () => {
 	const f = shortcutsFixture(buttons);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText('Inbox'));
 	fireEvent.click(screen.getByLabelText('Pin'));
@@ -284,9 +285,9 @@ test('shortcut buttons act at once, say what they start, and report the agent de
 test('a saved target that is gone is named, and the user is told to edit the shortcut', async () => {
 	const f = shortcutsFixture(buttons, { files: [], commands: [], automations: false, quick: false });
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	for (const label of ['Inbox', 'Pin', 'Digest', 'Build it']) fireEvent.click(screen.getByLabelText(label));
 	await waitFor(() => expect(messages()).toHaveLength(4));
@@ -306,9 +307,9 @@ test('a saved target that is gone is named, and the user is told to edit the sho
 test('a command Obsidian refuses to run is reported instead of looking done', async () => {
 	const f = shortcutsFixture([buttons[1]!], { runCommand: false });
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText('Pin'));
 	await waitFor(() => expect(messages()).toContain(t('shortcuts.failed.command', { name: 'Pin' })));
@@ -323,9 +324,9 @@ test('an agent that is not installed and a deleted automation or quick command d
 		],
 	);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	for (const label of ['Review', 'Digest', 'Build it']) fireEvent.click(screen.getByLabelText(label));
 	await waitFor(() => expect(messages()).toHaveLength(3));
@@ -341,9 +342,9 @@ test('a run that throws names the shortcut and the reason', async () => {
 	const f = shortcutsFixture([buttons[2]!]);
 	f.runAction.mockRejectedValueOnce(new Error('disk full'));
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText('Digest'));
 	await waitFor(() => expect(messages()).toContain(t('shortcuts.failed', { name: 'Digest', detail: 'disk full' })));
@@ -352,9 +353,9 @@ test('a run that throws names the shortcut and the reason', async () => {
 test('every control of the new widgets keeps a 32px (44px touch) hit area', () => {
 	const f = shortcutsFixture(buttons);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const small = [...document.querySelectorAll<HTMLElement>('button')].filter((button) => button.className.match(/\bh-(?:5|6|7)\b|\bsize-5\b/));
 	// A control drawn smaller than 32px must carry the pseudo-element hit area (`data-hit-control`).
@@ -366,9 +367,9 @@ test('every control of the new widgets keeps a 32px (44px touch) hit area', () =
 test('shortcuts are equal-width grid cells that wrap by the room of the tile; a hotkey is in the tooltip', () => {
 	const f = shortcutsFixture(buttons);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	const grid = document.querySelector('[data-shortcuts] ul')!;
 	expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(9rem,1fr))]');
@@ -382,9 +383,9 @@ test('shortcuts are equal-width grid cells that wrap by the room of the tile; a 
 test('an incomplete button does nothing but say so', async () => {
 	const f = shortcutsFixture([{ id: 'x', label: 'Empty', icon: 'zap', type: 'command', target: '' }]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText('Empty'));
 	await waitFor(() => expect(messages()).toEqual([t('shortcuts.incomplete', { name: 'Empty' })]));
@@ -395,9 +396,9 @@ test('an incomplete button does nothing but say so', async () => {
 test('the editor drafts changes, saves them once and writes nothing on cancel', async () => {
 	const f = shortcutsFixture([]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	expect(screen.getByText(t('shortcuts.empty'))).toBeTruthy();
 	fireEvent.click(screen.getByLabelText(t('shortcuts.configure')));
@@ -439,9 +440,9 @@ test('stored shortcut buttons are validated: unknown types, missing ids and repe
 test('the editor offers the agent module\'s saved terminal quick commands and keeps the chosen id', async () => {
 	const f = shortcutsFixture([]);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	fireEvent.click(screen.getByLabelText(t('shortcuts.configure')));
 	const dialog = await screen.findByRole('dialog');
@@ -460,9 +461,9 @@ test('the editor offers the agent module\'s saved terminal quick commands and ke
 test('a button pressed after its board was left does nothing and says nothing', async () => {
 	const f = shortcutsFixture(buttons);
 	render(
-		<TestProviders>
+		<TestProviders><DesignScope>
 			<ShortcutsWidget store={f.store} />
-		</TestProviders>,
+		</DesignScope></TestProviders>,
 	);
 	f.board.current = false;
 	for (const label of ['Pin', 'Digest', 'Build it', 'Review']) fireEvent.click(screen.getByLabelText(label));
