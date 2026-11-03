@@ -1,4 +1,3 @@
-import { BROWSER_WORKSPACE, BROWSER_OPEN } from '../../browser/api';
 import { captureControlExecutionContext, observeControlPreparation } from './control/terminal-coordination';
 
 import type { ActivityWaitBaseline } from '../core/control/terminal-coordination';
@@ -280,11 +279,9 @@ export class AgentController {
 			workspaceStore,
 			this.sessions,
 			this.workspaceLaunchPort(),
-			() => context.services.peek(BROWSER_WORKSPACE),
 			this.spaces,
 			!!shared,
 		);
-		context.lifetime.register(context.services.watch(BROWSER_WORKSPACE, () => this.changed()));
 		context.lifetime.register(this.workspace.store.subscribe(() => this.changed()));
 		// A fresh HUHU launch claims its conversation as soon as its native id and transcript are known.
 		context.lifetime.register(this.sessions.subscribe(() => this.claimRunningNative()));
@@ -575,25 +572,6 @@ export class AgentController {
 		return absolutePluginDir(this.vaultPath() ?? '', this.context.manifest.dir ?? '');
 	}
 
-	configureBrowser() {
-		return this.context.shell.open({ feature: 'settings', section: 'browser' });
-	}
-	browserWorkspace() {
-		return this.context.services.peek(BROWSER_WORKSPACE);
-	}
-	browserOpener() {
-		return this.context.services.peek(BROWSER_OPEN);
-	}
-	browserPage(target: { spaceId?: string; pageId: string }) {
-		if (!target.spaceId) return undefined;
-		return this.browserWorkspace()
-			?.getState()
-			.spaces.find((space) => space.id === target.spaceId)
-			?.pages.find((page) => page.id === target.pageId);
-	}
-	openBrowserWorkspace(target?: { spaceId?: string; pageId: string }) {
-		return this.context.shell.open({ feature: 'browser', resourceId: target?.spaceId, focusId: target?.pageId });
-	}
 	/** The vault-scoped native history owner, with HUHU-owned sessions admitted regardless of cwd. */
 	workspaceHistoryService(): NativeHistory {
 		return (this.workspaceHistory ??= new NativeHistory(
@@ -1308,13 +1286,8 @@ export class AgentController {
 		const before = new Set(Object.keys(this.workspace.store.getState().tabs));
 		await this.resume(row);
 		const tab = Object.values(this.workspace.store.getState().tabs).find((tab) => !before.has(tab.id));
-		if (tab && groupId && tab.kind !== 'browser')
+		if (tab && groupId)
 			this.workspace.moveFromUI(tab.id, split ? { split, ofGroupId: groupId } : { groupId, index: Number.MAX_SAFE_INTEGER });
-		else if (tab && groupId)
-			this.workspace.move(
-				tab.id,
-				split ? { split, ofGroupId: groupId } : { groupId, index: Number.MAX_SAFE_INTEGER },
-			);
 	}
 
 	/**
@@ -1571,7 +1544,6 @@ export class AgentController {
 		const add = this.context.commands.add.bind(this.context.commands);
 		for (const action of [
 			'newAgent',
-			'newBrowser',
 			'newMenu',
 			'close',
 			'reopen',
@@ -1587,7 +1559,7 @@ export class AgentController {
 				name: t(nameKey),
 				nameKey,
 				callback: () => {
-					if ((action === 'splitRight' || action === 'splitDown') && this.workspace.active?.kind !== 'browser') {
+					if (action === 'splitRight' || action === 'splitDown') {
 						void this.splitWorkspaceCommand(action === 'splitRight' ? 'right' : 'down').catch(report);
 						return;
 					}
@@ -1597,21 +1569,12 @@ export class AgentController {
 						if (action === 'newAgent') {
 							const agent = this.agents.list()[0];
 							if (agent) await this.workspace.newAgent(agent.id);
-						} else if (action === 'newBrowser') await this.workspace.newBrowser();
-						else if (action === 'newMenu') this.workspace.requestMenu();
+						} else if (action === 'newMenu') this.workspace.requestMenu();
 						else if (action === 'close' && tab && !tab.pinned) await this.closeTab(tab.id);
 						else if (action === 'reopen') this.workspace.reopen();
 						else if (action === 'next' || action === 'previous')
 							this.workspace.next(action === 'next' ? 1 : -1);
 						else if (action === 'recent') this.workspace.recent();
-						else if (tab && (action === 'splitRight' || action === 'splitDown')) {
-							const group = this.workspace.group(tab.id);
-							if (group)
-								this.workspace.move(tab.id, {
-									split: action === 'splitRight' ? 'right' : 'down',
-									ofGroupId: group.id,
-								});
-						}
 					})().catch(report);
 				},
 			});

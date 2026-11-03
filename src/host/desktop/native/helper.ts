@@ -653,7 +653,6 @@ export class PtyHelper {
 				this.closeReplies(sid);
 				this.retireSession(sid);
 				return;
-			case 'cookies-result':
 			case 'history-result': {
 				const id = typeof message.rid === 'string' ? message.rid : '';
 				const pending = this.requests.get(id);
@@ -1045,7 +1044,7 @@ export class PtyHelper {
 	}
 
 	request<T>(
-		type: 'history' | 'cookies',
+		type: 'history',
 		op: string,
 		payload: Record<string, unknown>,
 		signal?: AbortSignal,
@@ -1060,14 +1059,14 @@ export class PtyHelper {
 		return new Promise<T>((resolve, reject) => {
 			const rid = crypto.randomUUID();
 			const cancel = () => {
-				if (type === 'history') this.send({ type, op: 'cancel', rid });
+				this.send({ type, op: 'cancel', rid });
 				const pending = this.requests.get(rid);
 				this.requests.delete(rid);
 				pending?.cleanup();
 				reject(
 					signal?.reason instanceof Error
 						? signal.reason
-						: new Error(type === 'history' ? 'History request cancelled' : 'Cookie request cancelled'),
+						: new Error('History request cancelled'),
 				);
 			};
 			const timer = this.win.setTimeout(cancel, HISTORY_TIMEOUT);

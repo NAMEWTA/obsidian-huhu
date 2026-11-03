@@ -10,7 +10,7 @@ import { normalizeTerminalSettings, type TerminalSettings } from '../core/termin
 import { freeWriterPorts } from '../platform/desktop/spaces/free-writer-port.fixture';
 import { AgentController } from './controller';
 import createAgentModule from '../module';
-import { AGENT_WORKBENCH, AGENT_USAGE, NATIVE_HELPER_SQLITE } from '../api';
+import { AGENT_WORKBENCH, AGENT_USAGE } from '../api';
 
 vi.mock('electron', () => ({ shell: {}, webUtils: {} }));
 
@@ -67,7 +67,7 @@ test('desktop Agent module activation publishes passive ports without preparing 
 	try {
 		await instance.activate?.(new AbortController().signal);
 		const services = instance.services ?? [];
-		expect(services.map(([key]) => key)).toContain(NATIVE_HELPER_SQLITE);
+		expect(services.map(([key]) => key)).toContain(AGENT_WORKBENCH);
 		const workbench = services.find(([key]) => key === AGENT_WORKBENCH)?.[1] as import('../api').AgentWorkbench;
 		const usage = services.find(([key]) => key === AGENT_USAGE)?.[1] as import('../api').AgentUsage;
 		expect(workbench.status()).toEqual([]);

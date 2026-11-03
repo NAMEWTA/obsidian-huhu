@@ -878,17 +878,22 @@ describe('definitions must be readable by the automations repository (M2)', () =
 });
 
 describe('what counts as data in the target (L3, L4)', () => {
-	test('a Space-less web layout, a grant, a history owner or a selection is data, not an empty target', async () => {
+	test('a Space-less layout, a grant, a history owner or a selection is data, not an empty target', async () => {
 		const { pkg } = await makePackage();
 		const dst = new ListStorage();
 		const records = emptyRecords(DST);
 		records.sharedLayout = openTab({ version: 1, tabs: {}, groups: [], closedTabs: [] }, undefined, {
-			kind: 'browser',
+			kind: 'terminal',
 			id: 'tab-x',
 			title: 'x',
-			spaceId: 'browser-space',
-			pageId: 'p',
 			createdAt: 1,
+			sessionIds: ['session-x'],
+			paneLayout: { kind: 'pane', session: 'session-x' },
+			focusedSessionId: 'session-x',
+			panes: {},
+			state: 'idle',
+			unread: false,
+			updatedAt: 1,
 		});
 		dst.files.set(agentWorkbenchPath(DST.deviceId), JSON.stringify(records));
 		const target = await new World(dst, { vault: DST, automationsExecute: false }).boot();

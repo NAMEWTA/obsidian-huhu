@@ -1,7 +1,6 @@
 import { shell, webUtils } from 'electron';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { retainedBrowserFile } from '../../../../host/desktop/retained-browser-file';
 
 export type ResolvedReference = { kind: 'vault'; path: string } | { kind: 'external'; path: string } | null;
 
@@ -15,8 +14,6 @@ export async function resolveReference(reference: string, cwd: string, vault: st
 		if (relative.startsWith('.huhu' + path.sep) && fs.existsSync(absolute)) return { kind: 'external', path: absolute };
 		if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) return { kind: 'vault', path: relative.split(path.sep).join('/') };
 		if (fs.existsSync(absolute)) return { kind: 'external', path: absolute };
-		const retained = await retainedBrowserFile(vault, absolute);
-		if (retained) return { kind: 'external', path: retained };
 	}
 	return fs.existsSync(absolute) ? { kind: 'external', path: absolute } : null;
 }

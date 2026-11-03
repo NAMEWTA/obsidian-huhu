@@ -287,7 +287,7 @@ export function normalizeWorkspace(raw: unknown): WorkspaceState {
 	if (v.version !== 1) return state;
 	for (const [id, value] of Object.entries(record(v.tabs)).slice(0, 200)) {
 		const tab = record(value);
-		if (tab.id !== id || !id || !['terminal', 'browser', 'page'].includes(text(tab.kind))) continue;
+		if (tab.id !== id || !id || !['terminal', 'page'].includes(text(tab.kind))) continue;
 		const base = {
 			id,
 			title: text(tab.title).slice(0, 200),
@@ -308,28 +308,6 @@ export function normalizeWorkspace(raw: unknown): WorkspaceState {
 				kind: 'page',
 				page,
 				resourceId: text(tab.resourceId).slice(0, 512) || undefined,
-			};
-			continue;
-		}
-		if (tab.kind === 'browser') {
-			const spaceId = text(tab.spaceId),
-				pageId = text(tab.pageId);
-			if (spaceId && pageId && spaceId.length <= 180 && pageId.length <= 180) {
-				state.tabs[id] = { ...base, kind: 'browser', spaceId, pageId };
-				continue;
-			}
-			// A pre-Space workbench tab keeps the address on the row. A bare page id is not an address.
-			const url = text(tab.url);
-			if (!pageId || pageId.length > 180 || (!url && !text(tab.profileId) && typeof tab.zoom !== 'number')) continue;
-			const favicon = text(tab.faviconUrl);
-			state.tabs[id] = {
-				...base,
-				kind: 'browser',
-				pageId,
-				url,
-				profileId: text(tab.profileId) || 'default',
-				zoom: typeof tab.zoom === 'number' && Number.isFinite(tab.zoom) ? Math.min(3, Math.max(0.25, tab.zoom)) : 1,
-				...(favicon ? { faviconUrl: favicon } : {}),
 			};
 			continue;
 		}

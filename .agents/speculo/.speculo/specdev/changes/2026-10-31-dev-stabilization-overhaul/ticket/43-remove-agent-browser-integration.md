@@ -8,7 +8,7 @@ design_ref: {"revision":3,"digest":"78dd227f70b86804078218988b35850af8f2078a02ea
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-43
 title: "移除 Agent 工作区中的浏览器标签、资料移交与 Cookie 辅助"
-status: draft
+status: done
 kind: refactor
 planning_depth: deep
 planning_depth_reason: "移除 Agent Browser 标签类型及消费者，只验证现行终端/页面会话；无旧布局兼容要求（ADR-011）"

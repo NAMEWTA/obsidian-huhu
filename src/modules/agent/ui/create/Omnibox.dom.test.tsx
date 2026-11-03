@@ -15,13 +15,9 @@ function fixture(allProviders = false) {
 	const spaces = createStore(() => ({ records: { selectedSpaceId: 'space-a' as string | undefined } }));
 	const workspace = {
 		store: createStore(emptyWorkspace),
-		browserAvailable: false,
 		newTerminal: vi.fn(async () => 'session'),
 		newAgent: vi.fn(async () => 'agent-session'),
 		createManagedInteractive: vi.fn<() => Promise<ManagedCreateResult>>(async () => created),
-		newBrowser: vi.fn(() => {
-			throw new Error(t('agent.workspace.browserDisabled'));
-		}),
 		activate: vi.fn(),
 	};
 	const settings = normalizeTerminalSettings(undefined);
@@ -30,7 +26,6 @@ function fixture(allProviders = false) {
 		: [{ id: 'claude-code', title: 'Claude Code', installed: true, enabled: true }];
 	const controller = {
 		workspace,
-		browserWorkspace: () => undefined,
 		spaces: { store: spaces },
 		runtime: { listAgents: () => [{ id: 'claude-code', title: 'Claude Code', installed: true, enabled: true }] },
 		settings: { get: () => settings, subscribe: () => () => {} },
@@ -55,7 +50,7 @@ test('empty Enter opens the default terminal in the current group', async () => 
 	await waitFor(() => expect(f.workspace.createManagedInteractive).toHaveBeenCalledWith({ kind: 'shell', groupId: 'group', spaceId: 'space-a', foreground: true, title: undefined, shell: undefined }));
 	expect(f.done).toHaveBeenCalledOnce();
 });
-test('agent alias Enter launches and browser failure retains input and menu', async () => {
+test('agent alias Enter launches; unmatched text offers no creation action and keeps the input', async () => {
 	const f = fixture(),
 		user = userEvent.setup();
 	await user.type(f.input, 'claude');
@@ -64,9 +59,9 @@ test('agent alias Enter launches and browser failure retains input and menu', as
 	await user.clear(f.input);
 	await user.type(f.input, 'example.com');
 	await user.keyboard('{Enter}');
-	await waitFor(() => expect(screen.getByRole('alert').textContent).toContain(t('agent.workspace.browserDisabled')));
 	expect((f.input as HTMLInputElement).value).toBe('example.com');
-	expect(f.workspace.newBrowser).toHaveBeenCalledWith('https://example.com/', { groupId: 'group' });
+	expect(screen.queryAllByRole('option')).toHaveLength(0);
+	expect(f.workspace.createManagedInteractive).toHaveBeenCalledOnce();
 });
 test('Arrow keys select static actions; composition Enter never launches', async () => {
 	const f = fixture(),

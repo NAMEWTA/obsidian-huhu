@@ -12,7 +12,7 @@ test('inspect distinguishes absent, empty, importable, newer and damaged without
 	expect(inspectLegacyLayout(null).status).toBe('absent');
 	expect(inspectLegacyLayout(JSON.stringify(legacyLayout()))).toMatchObject({
 		status: 'importable',
-		counts: { tabs: 4, groups: 2, panes: 4 },
+		counts: { tabs: 3, groups: 2, panes: 4 },
 	});
 	expect(inspectLegacyLayout('[]').status).toBe('corrupt');
 	expect(inspectLegacyLayout('{"version":"1"}').status).toBe('corrupt');

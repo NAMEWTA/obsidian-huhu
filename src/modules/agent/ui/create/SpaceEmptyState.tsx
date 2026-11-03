@@ -17,7 +17,6 @@ export function SpaceEmptyState({ spaces, workspace }: { spaces: SpaceService; w
 			description={state.error ? spaceErrorMessage(state.error) : t(selected ? 'agent.spaces.emptyHint' : 'agent.spaces.noSpacesHint')}
 			action={<div className="flex flex-wrap justify-center gap-2 pointer-coarse:[&_button]:min-h-11">
 				{spaces.canWrite && (selected ? <Button onClick={() => { void workspace.newTerminal({ spaceId: selected.id }).catch(error => workspace.report(error)); }}>{t('agent.workspace.newTerminal')}</Button> : <Button onClick={() => setCreating(true)}>{t('agent.spaces.create')}</Button>)}
-				{workspace.browserAvailable && <Button variant="outline" onClick={() => { void workspace.newBrowser().catch((error) => workspace.report(error)); }}>{t('agent.workspace.newBrowser')}</Button>}
 			</div>} />
 		{creating && <SpaceForm spaces={spaces} finish={space => { setCreating(false); if (space) void workspace.selectSpace(space.id).catch(error => workspace.report(error)); }} />}
 	</>;

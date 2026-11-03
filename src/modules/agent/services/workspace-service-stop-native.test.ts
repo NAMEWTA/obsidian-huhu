@@ -80,21 +80,10 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			createdAt: 0,
 			lastAttempt: { runtimeId: 'natural-runtime', acceptedAt: 0, state: 'unconfirmed' },
 		});
-		const browser = await native.acquire('cookies');
+		const secondary = await native.acquire('history');
 		let session: Awaited<ReturnType<TerminalSessions['create']>> | undefined;
 		try {
-			const sqlite = createRequire(import.meta.url)('node:sqlite') as {
-				DatabaseSync: new (path: string) => { exec(sql: string): void; close(): void };
-			};
-			const path = join(root, 'cookie.sqlite'),
-				db = new sqlite.DatabaseSync(path);
-			try {
-				db.exec(
-					"CREATE TABLE moz_cookies(host TEXT,name TEXT,value TEXT,path TEXT,expiry INTEGER,isSecure INTEGER,isHttpOnly INTEGER,sameSite INTEGER); INSERT INTO moz_cookies VALUES('.example.test','owned','fixture','/',1800000000,1,1,2)",
-				);
-			} finally {
-				db.close();
-			}
+			const missingVault = join(root, 'missing-vault');
 			session = await sessions.create({
 				runtime: ref,
 				kind: 'shell',
@@ -127,9 +116,12 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				'explicit cleanup',
 			);
 			await until(() => gone(childPid!), 'descendant gone');
-			const cookieReceipt = await browser.value.request('cookies', 'read', { path, kind: 'firefox' });
-			expect(cookieReceipt).toMatchObject({ rows: [{ name: 'owned', value: 'fixture' }] });
-			expect(browser.value.alive).toBe(true);
+			// The second capability still answers on the same helper after the PTY owner's explicit cleanup.
+			const historyReceipt = await secondary.value
+				.history('query', { vault: missingVault, index: join(missingVault, 'index.sqlite') })
+				.catch((error: unknown) => (error instanceof Error ? error.message : String(error)));
+			expect(historyReceipt).toEqual(expect.any(String));
+			expect(secondary.value.alive).toBe(true);
 			console.log(
 				JSON.stringify({
 					binary,
@@ -140,8 +132,8 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 					childPid,
 					requests: requested.mock.calls,
 					termination: sessions.managedSummary(ref)?.termination,
-					browserAlive: browser.value.alive,
-					cookieReceipt,
+					secondLeaseAlive: secondary.value.alive,
+					historyReceipt,
 				}),
 			);
 		} finally {
@@ -163,7 +155,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				});
 			}
 			await clean(() => sessions.dispose());
-			await clean(() => browser.release());
+			await clean(() => secondary.release());
 			await clean(() => native.dispose());
 			if (childPid) await clean(() => until(() => gone(childPid!), 'owned descendant exit'));
 			if (session?.pid) await clean(() => until(() => gone(session!.pid!), 'owned root exit'));
@@ -195,7 +187,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 );
 
 test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
-	'real managed stop checkpoints cleanup before Space archival, preserves records on reload, and leaves Browser ownership connected',
+	'real managed stop checkpoints cleanup before Space archival, preserves records on reload, and leaves a second capability owner connected',
 	async () => {
 		const root = await mkdtemp(join(tmpdir(), 'huhu-t04-stop-native-')),
 			home = join(root, 'home');
@@ -228,7 +220,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			};
 		const spaces = new SpaceService({ ...ports, storage, instanceId: 'stop-fixture', report });
 		const pids = new Set<number>();
-		let helper: PtyHelper | undefined, shellPid: number | undefined, browser: NativeLease | undefined;
+		let helper: PtyHelper | undefined, shellPid: number | undefined, secondary: NativeLease | undefined;
 		let nativeClosed = false,
 			workspaceClosed = false,
 			sessionsClosed = false;
@@ -282,7 +274,6 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				account: () => '',
 				report,
 			},
-			undefined,
 			spaces,
 		);
 		try {
@@ -309,7 +300,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			if (otherSession.pid) pids.add(otherSession.pid);
 			await until(() => session.text().includes('HUHU_STOP_READY'), 'headless output');
 			expect(Object.keys(workspace.store.getState().tabs)).toHaveLength(0);
-			browser = await native.acquire('cookies', {}); // Capability only; no account, Cookie or user file is read.
+			secondary = await native.acquire('history', {}); // Capability only; no history request is made.
 			const stop = await bounded(workspace.stopManaged(ref), 'managed cleanup');
 			expect(stop).toMatchObject({
 				status: 'stopped',
@@ -356,7 +347,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			await bounded(workspace.drainManaged(), 'strict checkpoint drain');
 			await bounded(sessions.dispose(), 'PTY release');
 			sessionsClosed = true;
-			expect(browser.value.alive).toBe(true);
+			expect(secondary.value.alive).toBe(true);
 			await bounded(workspace.dispose(), 'writer release');
 			workspaceClosed = true;
 			const reload = new SpaceService({ ...ports, storage, instanceId: 'reload', report });
@@ -379,7 +370,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 					termination: stop.termination,
 					realSpawns: spawns.mock.calls.length,
 					reloadZeroSpawn: true,
-					browserSurvivedPtyRelease: true,
+					secondLeaseSurvivedPtyRelease: true,
 				}),
 			);
 			expect(errors).toEqual([]);
@@ -400,7 +391,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				await clean(() => sessions.dispose());
 			}
 			if (!workspaceClosed) await clean(() => workspace.dispose());
-			if (browser) await clean(() => browser!.release());
+			if (secondary) await clean(() => secondary!.release());
 			await clean(() => native.dispose());
 			nativeClosed = true;
 			if (helper) await clean(() => helper!.dispose());

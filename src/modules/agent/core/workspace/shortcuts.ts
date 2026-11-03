@@ -2,7 +2,6 @@ export type WorkspaceCommand =
 	| 'jump'
 	| 'newTerminal'
 	| 'newAgent'
-	| 'newBrowser'
 	| 'newMenu'
 	| 'close'
 	| 'reopen'
@@ -28,7 +27,6 @@ export function workspaceShortcut(event: {
 	if (key === 'j' && !event.shiftKey) return 'jump';
 	if (key === 't') return event.shiftKey ? 'reopen' : 'newTerminal';
 	if (key === 'w' && !event.shiftKey) return 'close';
-	if (event.shiftKey && key === 'b') return 'newBrowser';
 	if (event.shiftKey && key === 'n') return 'newMenu';
 	if (event.shiftKey && [']', '}'].includes(key)) return 'next';
 	if (event.shiftKey && ['[', '{'].includes(key)) return 'previous';

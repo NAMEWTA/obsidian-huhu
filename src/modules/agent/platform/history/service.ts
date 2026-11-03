@@ -9,7 +9,6 @@ import { t } from '../../../../shared/i18n/index';
 import { JsonStore } from '../../../../shared/json-store';
 import { accountEnv, historyAccountEnv } from '../desktop/agents/accounts';
 import { accountPaths, historyBase, historySource, isSystemAccount } from '../desktop/agents/system-homes';
-import { legacyReferences } from '../desktop/agents/legacy-references';
 import { AGENT_CATALOG } from '../../core/launch/catalog';
 import { readHistoryDetails } from '../desktop/history/details';
 import { historyNodeModules } from '../desktop/history/node-modules';
@@ -369,16 +368,6 @@ export class NativeHistory {
 						accountId: name,
 						...(system ? { systemBase: historyBase(agent.id, paths) } : {}),
 					});
-					const references = system ? [] : await legacyReferences(scope.vault, device, agent.id);
-					for (const reference of references)
-						if (
-							reference.name === keyEnv.HUHU_ACCOUNT_NAME &&
-							references.filter((row) => row.from === reference.from).length === 1
-						)
-							aliases.set(
-								JSON.stringify([agent.id, JSON.stringify(reference.env)]),
-								JSON.stringify(keyEnv),
-							);
 				} catch (error) {
 					warnings.push(agent.title + ': ' + (error instanceof Error ? error.message : String(error)));
 				}

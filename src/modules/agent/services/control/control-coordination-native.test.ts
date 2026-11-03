@@ -173,7 +173,6 @@ async function runBusiness(ctx: FixtureContext) {
 		createSpaceWorkspaceStore(spaces, win, report),
 		sessions,
 		launch,
-		undefined,
 		spaces,
 	);
 	router = new ControlRouter(new ControlCommands(spaces, workspace, sessions));

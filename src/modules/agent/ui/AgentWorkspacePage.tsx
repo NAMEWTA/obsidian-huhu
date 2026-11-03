@@ -188,19 +188,13 @@ export function AgentWorkspace({
 		else if (action === 'newAgent') {
 			const agent = controller.agents.list()[0];
 			if (agent) void workspace.newAgent(agent.id).catch((error) => workspace.report(error));
-		} else if (action === 'newBrowser') {
-			void workspace.newBrowser().catch((error) => workspace.report(error));
 		} else if (action === 'close' && tab && !tab.pinned) close(tab.id);
 		else if (action === 'reopen') workspace.reopen();
 		else if (action === 'next' || action === 'previous') workspace.next(action === 'next' ? 1 : -1);
 		else if (action === 'recent') workspace.recent();
-		else if ((action === 'splitRight' || action === 'splitDown') && tab?.kind !== 'browser') {
+		else if (action === 'splitRight' || action === 'splitDown') {
 			const group = tab ? workspace.group(tab.id) : undefined;
 			workspace.moveFromUI(tab?.id ?? '', { split: action === 'splitRight' ? 'right' : 'down', ofGroupId: group?.id ?? '' });
-		} else if (tab && (action === 'splitRight' || action === 'splitDown')) {
-			const group = workspace.group(tab.id);
-			if (group)
-				workspace.move(tab.id, { split: action === 'splitRight' ? 'right' : 'down', ofGroupId: group.id });
 		}
 	};
 	const commandRef = useRef(command);

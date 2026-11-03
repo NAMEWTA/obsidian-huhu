@@ -18,40 +18,7 @@ import { normalizeTerminalSettings } from '../core/terminal/settings';
 import { SpaceService } from './spaces/space-service';
 import { createSpaceWorkspaceStore } from './workspace-store';
 import { TerminalSessions } from './terminal/sessions';
-import type { BrowserPage, BrowserSpace, BrowserWorkspaceState } from '../../browser/core/contracts';
-import { WorkspaceService, type WorkspaceBrowserHost, type WorkspaceLaunchPort } from './workspace-service';
-
-const browserPage = (spaceId: string): BrowserPage => ({
-	id: 'browser',
-	spaceId,
-	url: 'about:blank',
-	title: 'browser',
-	documentId: 'document',
-	status: 'open',
-	zoom: 1,
-	viewportVersion: 0,
-});
-const browserSpace = (id: string): BrowserSpace => ({
-	id,
-	label: id,
-	kind: 'task',
-	retention: 'persistent',
-	status: 'ready',
-	pages: [],
-	control: { mode: 'paused', epoch: 0 },
-	createdAt: 1,
-	updatedAt: 1,
-});
-const browserState = (): BrowserWorkspaceState => ({
-	ready: true,
-	readOnly: false,
-	availability: { state: 'ready' },
-	persistence: 'secure',
-	ephemeralConsent: false,
-	spaces: [],
-	requests: [],
-	cleanupPending: 0,
-});
+import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
 
 const clock = { setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms) as unknown as number, clearTimeout: (id: number) => clearTimeout(id) } as Pick<Window, 'setTimeout' | 'clearTimeout'>;
 async function fixture() {
@@ -73,12 +40,7 @@ async function fixture() {
 		resume: (info, title, beforeSpawn) => sessions.create({ kind: 'agent', agentId: info.agentId, title, file: 'agent', args: [], cwd: info.cwd, beforeSpawn }),
 		account: () => 'system', report: vi.fn(),
 	};
-	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), sessions, launch, (): WorkspaceBrowserHost => ({
-		resolveInput: (value: string) => value,
-		getState: browserState,
-		createSpace: async () => browserSpace('browser-space'),
-		openPage: async () => browserPage('browser-space'),
-	}), spaces);
+	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), sessions, launch, spaces);
 	await workspace.persistence.ready;
 	return { root, ports, portFor, spaces, adapter, workspace, sessions, native, launch, spawn, acquired, chooser, environment, exit, async cleanup() { try { await workspace.dispose(); } finally { await sessions.dispose(); await native.dispose(); await rm(root, { recursive: true, force: true }); } } };
 }
@@ -155,7 +117,7 @@ test('disk-read restored views restart from the persistent Session Shell even if
 		const spaces = new SpaceService({ ...f.ports, storage: f.adapter, instanceId: 'readback', report: vi.fn() });
 		sessions = new TerminalSessions({ native: f.native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 		const current = sessions, shell = vi.fn((options: Parameters<WorkspaceLaunchPort['shell']>[0]) => current.create({ kind: 'shell', title: 'readback', file: options.shell === 'bash' ? 'explicit-bash' : 'global-default-zsh', args: [], cwd: options.cwd!, runtime: options.runtime, beforeSpawn: options.beforeSpawn }));
-		reopened = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), current, { ...f.launch, shell }, undefined, spaces);
+		reopened = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), current, { ...f.launch, shell }, spaces);
 		await reopened.persistence.ready;
 		expect(f.spawn).toHaveBeenCalledTimes(1); // Reading/opening a restored view must not launch.
 		await reopened.restore(tabId, oldId, true);
@@ -167,7 +129,7 @@ test('disk-read restored views restart from the persistent Session Shell even if
 test('real desktop owner + JsonStore + WorkspaceService preserve independent Space/layout/Session identity and never write v1', async () => {
 	const f = await fixture();
 	try {
-		await f.workspace.newBrowser();
+		f.workspace.openPage('board');
 		await f.workspace.persistence.flush();
 		expect(f.acquired).not.toHaveBeenCalled();
 		expect(f.spawn).not.toHaveBeenCalled();
@@ -192,7 +154,7 @@ test('real desktop owner + JsonStore + WorkspaceService preserve independent Spa
 		const records = JSON.parse(await readFile(join(f.root, f.spaces.path), 'utf8'));
 		expect(Object.keys(records.layouts[a.id].tabs)).toHaveLength(1);
 		expect(Object.keys(records.layouts[b.id].tabs)).toHaveLength(1);
-		expect(Object.values(records.sharedLayout.tabs)).toMatchObject([{ kind: 'browser' }]);
+		expect(Object.values(records.sharedLayout.tabs)).toMatchObject([{ kind: 'page', page: 'board' }]);
 		await expect(access(join(f.root, '.huhu/terminal-agent/device/workspace.json'))).rejects.toThrow();
 		const second = new SpaceService({ ...f.ports, storage: f.adapter, instanceId: 'competing', report: vi.fn() });
 		await second.ready;
@@ -323,7 +285,7 @@ test('two admitted launches completing together append both tabs to the latest b
 		const first = f.workspace.newTerminal({ spaceId: a.id }), second = f.workspace.newTerminal({ spaceId: a.id });
 		await waiting;
 		await f.workspace.selectSpace(b.id);
-		await f.workspace.newBrowser();
+		f.workspace.openPage('board');
 		await f.workspace.persistence.flush();
 		const bLayout = structuredClone(f.spaces.store.getState().records.layouts[b.id]);
 		releases.forEach(release => release());
@@ -423,7 +385,7 @@ test('strict background launch is queryable during environment preparation witho
 	try {
 		const space = await f.spaces.create({ name: 'background', relativePath: '' });
 		await f.workspace.selectSpace(space.id);
-		await f.workspace.newBrowser();
+		f.workspace.openPage('board');
 		const before = f.workspace.store.getState();
 		let entered!: () => void;
 		const waiting = new Promise<void>(resolve => { entered = resolve; });
@@ -463,7 +425,7 @@ test('a GUI background Space choice binds B without selecting it or displaying i
 	const f = await fixture();
 	try {
 		const a = await f.spaces.create({ name: 'A', relativePath: '' }), b = await f.spaces.create({ name: 'B', relativePath: '' });
-		await f.workspace.selectSpace(a.id); await f.workspace.newBrowser();
+		await f.workspace.selectSpace(a.id); f.workspace.openPage('board');
 		const before = f.workspace.store.getState();
 		f.chooser.mockResolvedValueOnce(b.id);
 		const result = await f.workspace.createManagedInteractive({ kind: 'shell', foreground: false });
@@ -499,7 +461,7 @@ test('concurrent off-Space unfocused attachment commits one view and reports act
 	let bId = '';
 	try {
 		const a = await f.spaces.create({ name: 'A', relativePath: '' }), b = await f.spaces.create({ name: 'B', relativePath: '' }); bId = b.id;
-		await f.workspace.selectSpace(a.id); await f.workspace.newBrowser();
+		await f.workspace.selectSpace(a.id); f.workspace.openPage('board');
 		await f.workspace.createManaged({ kind: 'shell', spaceId: b.id });
 		const row = f.workspace.listManaged(b.id)[0]!, before = f.workspace.store.getState();
 		let entered!: () => void;

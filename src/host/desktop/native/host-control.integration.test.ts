@@ -15,7 +15,7 @@ test('frozen helper and CLI reach the captured host and control closes without e
 	const scope: ControlScope = { vaultId: 'transport-vault', deviceId: 'transport-device', instanceId: crypto.randomUUID(), rootPath: root, root: { canonicalPath, dev: String(identity.dev), ino: String(identity.ino) } };
 	const host = new NativeHost(events => PtyHelper.start(binaries.helper.path, events, globalThis as unknown as Window, { HOME: root, XDG_RUNTIME_DIR: runtime }));
 	try {
-		const browser = await host.acquire('cookies'), pty = await host.acquire('pty'), control = await pty.acquireControl!();
+		const secondary = await host.acquire('history'), pty = await host.acquire('pty'), control = await pty.acquireControl!();
 		try {
 			let forwards = 0;
 			const finals: Promise<void>[] = [];
@@ -35,10 +35,10 @@ test('frozen helper and CLI reach the captured host and control closes without e
 			await Promise.all(finals);
 			await registration.close();
 			expect(pty.value.alive).toBe(true);
-			await expect(browser.value.request('cookies', 'read', { path: join(root, 'missing-cookie-database'), kind: 'firefox' })).rejects.toBeDefined();
-			expect(browser.value.alive).toBe(true);
+			await expect(secondary.value.history('query', { vault: join(root, 'missing-history-vault'), index: join(root, 'missing-history-vault', 'x') })).rejects.toBeDefined();
+			expect(secondary.value.alive).toBe(true);
 		} finally {
-			await control.release(); await pty.release(); await browser.release();
+			await control.release(); await pty.release(); await secondary.release();
 		}
 	} finally {
 		await host.dispose(); await rm(root, { recursive: true, force: true });

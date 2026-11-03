@@ -107,7 +107,7 @@ test.skipIf(!!unavailable)('real managed Shell stays alive and keeps its headles
 		resume: async () => { throw new Error('Attach must not relaunch a runtime'); },
 		account: () => 'system', show: shown, report,
 	};
-	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, win, report), sessions, launch, undefined, spaces);
+	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, win, report), sessions, launch, spaces);
 	const pids = new Set<number>();
 	let unsubscribe: (() => void) | undefined;
 	try {

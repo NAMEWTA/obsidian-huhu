@@ -1,11 +1,9 @@
 import { existsSync } from 'node:fs';
 import { mkdtemp, readFile, realpath, rename, rm, stat, writeFile } from 'node:fs/promises';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
-import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
-import { nativeCookieReader } from '../../../shared/native/cookies';
 import { FrameDecoder } from '../../../shared/native/frames';
 import { NativeShutdownError, type NativeLease } from '../../../shared/native/host';
 import { NativeHost } from './host';
@@ -23,17 +21,9 @@ const binary =
 		.find((file) => existsSync(file));
 
 test.skipIf(!binary)(
-	'real PTY shutdown leaves an admitted SQLite Cookie read connected and final release reaps the helper',
+	'real PTY shutdown leaves an admitted history lease connected and final release reaps the helper',
 	async () => {
 		const root = await mkdtemp(join(tmpdir(), 'huhu-native-owner-'));
-		const sqlite = createRequire(import.meta.url)('node:sqlite') as {
-			DatabaseSync: new (path: string) => { exec(sql: string): void; close(): void };
-		};
-		const path = join(root, 'cookies.sqlite'),
-			db = new sqlite.DatabaseSync(path);
-		db.exec(
-			"CREATE TABLE moz_cookies(host TEXT,name TEXT,value TEXT,path TEXT,expiry INTEGER,isSecure INTEGER,isHttpOnly INTEGER,sameSite INTEGER); INSERT INTO moz_cookies VALUES('.example.org','session','retained','/',1800000000,1,1,2); BEGIN EXCLUSIVE;",
-		);
 		let helper: PtyHelper | undefined;
 		const host = new NativeHost(async (events) => {
 			helper = await PtyHelper.start(binary!, events, globalThis as unknown as Window, {});
@@ -43,7 +33,6 @@ test.skipIf(!binary)(
 		// writes startup sequences, and unacknowledged output would correctly keep release waiting.
 		const agent: NativeLease = await host.acquire('pty', { output: (sid, bytes) => agent.value.acknowledge(sid, bytes.byteLength) });
 		const sid = agent.allocateSessionId();
-		let locked = true;
 		try {
 			const pid = await agent.value.spawnSession(sid, {
 				file: process.execPath,
@@ -53,25 +42,21 @@ test.skipIf(!binary)(
 				cols: 80,
 				rows: 24,
 			});
-			const reading = nativeCookieReader(host).readCookies(path, 'firefox');
-			// The Cookie lease is admitted synchronously before Agent release; the SQLite read waits on this fixture's lock.
+			// The history lease is admitted before Agent release and keeps the helper connected.
+			const second = await host.acquire('history');
 			await agent.release();
 			expect(helper?.alive).toBe(true);
 			if (pid && process.platform !== 'win32') expect(() => process.kill(pid, 0)).toThrow();
-			db.exec('COMMIT');
-			locked = false;
-			await expect(reading).resolves.toMatchObject({ rows: [{ name: 'session', value: 'retained' }] });
+			await expect(second.value.history('query', { vault: join(root, 'missing'), index: join(root, 'missing', 'x') })).rejects.toThrow();
+			expect(helper?.alive).toBe(true);
+			await second.release();
 			expect(helper?.alive).toBe(false);
 			expect(() => process.kill(helper!.pid, 0)).toThrow();
 		} finally {
 			const errors: unknown[] = [];
 			for (const close of [
-				() => {
-					if (locked) db.exec('ROLLBACK');
-				},
 				() => agent.release(),
 				() => host.dispose(),
-				() => db.close(),
 				() => rm(root, { recursive: true, force: true }),
 			]) {
 				try {
@@ -87,9 +72,9 @@ test.skipIf(!binary)(
 );
 
 test.skipIf(!binary || process.platform !== 'linux')(
-	'Cookie read and final native cleanup failures both survive the public reader and allow a later explicit generation',
+	'history request and final native cleanup failures both surface and allow a later explicit generation',
 	async () => {
-		const root = await mkdtemp('/tmp/huhu-t08-cookie-repair-');
+		const root = await mkdtemp('/tmp/huhu-t08-history-repair-');
 		let evidence: string | undefined;
 		const identity = async (path: string) => {
 			const canonical = await realpath(path), info = await stat(canonical, { bigint: true });
@@ -99,7 +84,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 		const helpers: PtyHelper[] = [];
 		const children: ChildProcessWithoutNullStreams[] = [];
 		const exits: Array<{ code: number | null; signal: string | null } | undefined> = [];
-		const cookieFrames: Record<string, unknown>[] = [];
+		const historyFrames: Record<string, unknown>[] = [];
 		let settled!: () => void;
 		const fence = new Promise<void>(resolve => { settled = resolve; });
 		const host = new NativeHost(async events => {
@@ -114,7 +99,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 			const frames = new FrameDecoder();
 			child.stdout.on('data', chunk => {
 				for (const frame of frames.push(chunk))
-					if (frame.kind === 1 && frame.message.type === 'cookies-result') cookieFrames.push(frame.message);
+					if (frame.kind === 1 && frame.message.type === 'history-result') historyFrames.push(frame.message);
 			});
 			return helper;
 		});
@@ -123,8 +108,8 @@ test.skipIf(!binary || process.platform !== 'linux')(
 		let failed = false, failure: unknown;
 		try {
 			observations.rootMode = (await stat(root)).mode & 0o777;
-			if (process.env.HUHU_COOKIE_TEST_EVIDENCE)
-				evidence = await mkdtemp(join(process.env.HUHU_COOKIE_TEST_EVIDENCE, 'native-dual-'));
+			if (process.env.HUHU_HISTORY_TEST_EVIDENCE)
+				evidence = await mkdtemp(join(process.env.HUHU_HISTORY_TEST_EVIDENCE, 'native-dual-'));
 			const entry = join(root, 'entry.cjs');
 			await writeFile(entry, "const fs=require('node:fs');const cap=JSON.parse(fs.readFileSync(process.env.HUHU_EDITOR_CAPABILITY_FILE));fs.writeFileSync('endpoint',cap.endpoint);", { mode: 0o600 });
 			agent = await host.acquire('pty', {
@@ -135,7 +120,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 			const pid = await agent.value.spawnSession(sid, {
 				file: process.execPath, args: [entry], cwd: root, env: {}, cols: 80, rows: 24,
 				editor: {
-					identity: { runtimeId: 'cookie-cleanup-fixture' }, provider: 'pi',
+					identity: { runtimeId: 'history-cleanup-fixture' }, provider: 'pi',
 					recipe: { version: 1, profileId: 'controlled-node-test', artifactDigest: 'a'.repeat(64), executable: await identity(process.execPath), entry: await identity(entry) },
 				},
 			});
@@ -149,51 +134,30 @@ test.skipIf(!binary || process.platform !== 'linux')(
 			observations.endpoint = endpoint;
 			observations.originalSocket = await identity(endpoint);
 			await rename(endpoint, endpoint + '.original');
-			const sentinel = 'Cookie cleanup replacement sentinel';
+			const sentinel = 'History cleanup replacement sentinel';
 			await writeFile(endpoint, sentinel, { mode: 0o600 });
 			const sentinelIdentity = await identity(endpoint);
 			observations.sentinelBefore = { ...sentinelIdentity, content: sentinel };
 			observations.helperPid = helpers[0]!.pid;
 			observations.ptyPid = pid;
 			if (evidence) await writeFile(join(evidence, 'before-read.json'), JSON.stringify(observations, null, 2));
-			const missing = join(root, 'missing-cookie-snapshot.sqlite');
-			let acquires = 0;
-			const reader = nativeCookieReader({
-				async acquire(...args) {
-					acquires++;
-					const cookies = await host.acquire(...args);
-					// The real Cookie owner is admitted before releasing the original PTY owner.
-					await agent!.release();
-					return cookies;
-				},
-			});
-			const result: unknown = await reader.readCookies(missing, 'chromium').catch(error => error);
-			cleanupError = result instanceof AggregateError
-				? result.errors.find((error: unknown): error is NativeShutdownError => error instanceof NativeShutdownError)
-				: result instanceof NativeShutdownError ? result : undefined;
-			observations.cookieFrames = cookieFrames;
-			observations.publicError = result instanceof Error ? {
-				name: result.name, message: result.message,
-				cause: result.cause instanceof Error ? result.cause.message : result.cause,
-				errors: result instanceof AggregateError ? result.errors.map((error: unknown) => error instanceof Error ? { name: error.name, message: error.message } : error) : undefined,
-			} : result;
-			if (result instanceof AggregateError)
-				observations.originalObjectRelations = { causeIsRead: result.cause === result.errors[0], cleanupIsSecond: result.errors[1] === cleanupError };
+			const missing = join(root, 'missing-history-vault');
+			// The real history owner is admitted before releasing the original PTY owner.
+			const second = await host.acquire('history');
+			await agent!.release();
+			const result: unknown = await second.value.history('query', { vault: missing, index: join(missing, 'x') }).catch(error => error);
+			const releaseFailure: unknown = await second.release().then(() => undefined, error => error);
+			cleanupError = releaseFailure instanceof NativeShutdownError ? releaseFailure : undefined;
+			observations.historyFrames = historyFrames;
+			observations.publicError = result instanceof Error ? { name: result.name, message: result.message } : result;
 			observations.cleanupOutcome = cleanupError?.outcome;
 			observations.exits = exits;
 			observations.sentinelAfter = { ...await identity(endpoint), content: await readFile(endpoint, 'utf8') };
 			if (evidence) await writeFile(join(evidence, 'after-read.json'), JSON.stringify(observations, null, 2));
-			expect(acquires).toBe(1);
-			expect(cookieFrames).toHaveLength(1);
-			expect(cookieFrames[0]).toMatchObject({ type: 'cookies-result', error: expect.stringContaining(missing) });
-			expect(result).toBeInstanceOf(AggregateError);
-			const aggregate = result as AggregateError;
-			expect(aggregate.errors).toHaveLength(2);
-			expect(aggregate.errors[0]).toBeInstanceOf(Error);
-			expect(aggregate.errors[0].message).toBe(cookieFrames[0]!.error);
-			expect(aggregate.cause).toBe(aggregate.errors[0]);
-			expect(aggregate.message).toContain(aggregate.errors[0].message);
-			expect(aggregate.errors[1]).toBe(cleanupError);
+			expect(historyFrames).toHaveLength(1);
+			expect(historyFrames[0]).toMatchObject({ type: 'history-result', error: expect.any(String) });
+			expect(result).toBeInstanceOf(Error);
+			expect((result as Error).message).toBe(historyFrames[0]!.error);
 			expect(cleanupError).toBeInstanceOf(NativeShutdownError);
 			expect(cleanupError!.outcome).toMatchObject({ state: 'exited', code: 1, signal: null, forced: false, stdioClosed: true });
 			const termination = await cleanupError!.termination;
@@ -205,7 +169,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 			expect(() => process.kill(helpers[0]!.pid, 0)).toThrow();
 			if (pid) expect(() => process.kill(pid, 0)).toThrow();
 			expect(helpers).toHaveLength(1);
-			next = await host.acquire('cookies');
+			next = await host.acquire('history');
 			expect(helpers).toHaveLength(2);
 			expect(helpers[1]!.pid).not.toBe(helpers[0]!.pid);
 			await next.release();
@@ -227,7 +191,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 					const closed = new Promise<void>(resolve => { child.once('close', () => resolve()); });
 					child.kill('SIGKILL');
 					await closed;
-					errors.push(new Error('Cookie fixture required external process cleanup'));
+					errors.push(new Error('History fixture required external process cleanup'));
 				}
 			}
 			for (const close of [
@@ -238,7 +202,7 @@ test.skipIf(!binary || process.platform !== 'linux')(
 				try { await close(); } catch (error) { errors.push(error); }
 			}
 			if (errors.length === 1) throw errors[0];
-			if (errors.length) throw new AggregateError(errors, 'Cookie integration fixture failed');
+			if (errors.length) throw new AggregateError(errors, 'History integration fixture failed');
 		}
 	},
 	15_000,

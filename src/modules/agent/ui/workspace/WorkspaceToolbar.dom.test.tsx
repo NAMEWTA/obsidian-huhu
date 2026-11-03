@@ -66,7 +66,6 @@ async function fixture() {
 		persistence,
 		{ subscribe: () => () => {}, get: () => undefined } as unknown as TerminalSessions,
 		{ shell: vi.fn(), agent: vi.fn(), resume: vi.fn(), account: () => '', report: vi.fn() },
-		() => undefined,
 		spaces,
 	);
 	const settings = normalizeTerminalSettings(undefined);

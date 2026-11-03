@@ -1,5 +1,5 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-bar/TerminalTabLeadingIcon.tsx
-import { BellRing, Globe, TerminalSquare } from 'lucide-react';
+import { BellRing, TerminalSquare } from 'lucide-react';
 import type { WorkspaceTab } from '../../core/workspace/model';
 import { AgentIcon } from '../../../../ui/components/huhu/AgentIcon';
 import { StatusDot } from '../../../../ui/components/huhu/StatusDot';
@@ -16,8 +16,6 @@ export function TabLeadingIcon({ tab, sidebar = false }: { tab: WorkspaceTab; si
 		<span className="inline-flex shrink-0 items-center gap-1">
 			{tab.kind === 'page' ? (
 				<PageIcon page={tab.page} className="size-3" />
-			) : tab.kind === 'browser' ? (
-				<Globe className="size-3" />
 			) : tab.agentId ? (
 				<AgentIcon agent={tab.agentId} size={12} />
 			) : (

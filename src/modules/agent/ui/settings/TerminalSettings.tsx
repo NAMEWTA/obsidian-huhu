@@ -132,19 +132,6 @@ export function TerminalSettings({ controller }: { controller: AgentController }
 						/>
 					))}
 			</SettingsSection>
-			<SettingsRow
-				label={t('agent.manage.terminalLinks')}
-				control={
-					<Button
-						variant="outline"
-						onClick={() => {
-							void controller.configureBrowser().catch((error) => controller.workspace.report(error));
-						}}
-					>
-						{t('agent.manage.browserSettings')}
-					</Button>
-				}
-			/>
 			<SettingsSection title={t('agent.settings.helperHeading')} description={t('agent.settings.helperDesc')}>
 				<SettingsSwitchRow
 					label={t('agent.settings.offline')}

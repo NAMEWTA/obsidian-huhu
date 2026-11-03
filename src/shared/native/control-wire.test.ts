@@ -348,7 +348,7 @@ test('legacy large result and deep data keep their old JSON semantics', () => {
 	expect(parseHelperControlBody(bytes(legacy))).toEqual(legacy);
 	let data: unknown = 0;
 	for (let i = 0; i < 60; i++) data = [data];
-	expect(parseHelperControlBody(bytes({ type: 'cookies-result', data })).data).toEqual(data);
+	expect(parseHelperControlBody(bytes({ type: 'history-result', data })).data).toEqual(data);
 });
 
 test('editor namespace is strict before legacy JSON fallback and forbids JSON body injection', () => {

@@ -1,4 +1,3 @@
-import { BrowserTabView } from '../browser/BrowserTabView';
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-group/TabGroupSplitNodeTree.tsx, TabGroupPanel.tsx
 import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors, pointerWithin, rectIntersection } from '@dnd-kit/core';
@@ -80,8 +79,6 @@ function Tree({
 							>
 								{tab.kind === 'terminal' ? (
 									<TerminalTabView tab={tab} active={active && visible} retention={retention} />
-								) : tab.kind === 'browser' ? (
-									<BrowserTabView tab={tab} active={active && visible} />
 								) : (
 									<PageTabView tab={tab} active={active && visible} />
 								)}
@@ -156,7 +153,7 @@ export function WorkspaceLayout() {
 		[retention] = useState(() => new HiddenRendererRetention(2));
 	const root = useRef<HTMLDivElement>(null),
 		[narrow, setNarrow] = useState(false);
-	const dragOwner = useRef<{ browser: boolean; document?: Document; spaceId?: string; groupId?: string }>({ browser: false });
+	const dragOwner = useRef<{ document?: Document; spaceId?: string; groupId?: string }>({});
 	useLayoutEffect(() => {
 		const el = root.current;
 		if (!el) return;
@@ -182,7 +179,6 @@ export function WorkspaceLayout() {
 			onDragStart={({ active }) => {
 				const id = String(active.id);
 				dragOwner.current = {
-					browser: workspace.store.getState().tabs[id]?.kind === 'browser',
 					document: root.current?.ownerDocument,
 					spaceId: controller.spaces?.store.getState().records.selectedSpaceId,
 					groupId: workspace.group(id)?.id,
@@ -197,30 +193,19 @@ export function WorkspaceLayout() {
 					{ kind?: string; groupId?: string; edge?: 'left' | 'right' | 'up' | 'down' | 'center' } | undefined;
 				const group = state.groups.find((g) => g.id === data?.groupId);
 				const tabId = String(active.id);
-				const browser = dragOwner.current.browser || workspace.store.getState().tabs[tabId]?.kind === 'browser';
-				if (!browser && (root.current?.ownerDocument !== dragOwner.current.document ||
+				if ((root.current?.ownerDocument !== dragOwner.current.document ||
 					controller.spaces?.store.getState().records.selectedSpaceId !== dragOwner.current.spaceId ||
 					(workspace.group(tabId) && workspace.group(tabId)?.id !== dragOwner.current.groupId))) {
 					workspace.reportMoveRejection('target-changed');
 					return;
 				}
 				if (!group) {
-					if (!browser && data?.groupId) workspace.moveFromUI(tabId, { groupId: data.groupId, index: 0 });
+					if (data?.groupId) workspace.moveFromUI(tabId, { groupId: data.groupId, index: 0 });
 					return;
 				}
-				if (!browser) {
-					workspace.moveFromUI(tabId, data?.edge && data.edge !== 'center'
-						? { split: data.edge, ofGroupId: group.id }
-						: { groupId: group.id, index: data?.kind === 'tab' ? group.tabIds.indexOf(String(over.id)) : group.tabIds.length });
-					return;
-				}
-				if (data?.edge && data.edge !== 'center')
-					workspace.move(String(active.id), { split: data.edge, ofGroupId: group.id });
-				else
-					workspace.move(String(active.id), {
-						groupId: group.id,
-						index: data?.kind === 'tab' ? group.tabIds.indexOf(String(over.id)) : group.tabIds.length,
-					});
+				workspace.moveFromUI(tabId, data?.edge && data.edge !== 'center'
+					? { split: data.edge, ofGroupId: group.id }
+					: { groupId: group.id, index: data?.kind === 'tab' ? group.tabIds.indexOf(String(over.id)) : group.tabIds.length });
 			}}
 		>
 			<div ref={root} data-workspace-layout="" className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">

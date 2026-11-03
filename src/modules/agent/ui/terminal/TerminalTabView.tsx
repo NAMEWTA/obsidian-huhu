@@ -1,4 +1,3 @@
-import { openTerminalUrl } from '../../core/terminal/links';
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/terminal-pane/TerminalContextMenu.tsx, TerminalProcessExitOverlay.tsx
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, useCallback, Fragment } from 'react';
 import { RotateCw, X } from 'lucide-react';
@@ -133,10 +132,8 @@ export function TerminalHost({
 			vaultPath: () => controller.vaultPath(),
 			focused: () => workspace.focusSession(sessionId),
 			presented: (current, receipt) => activityReceipt.current?.(current, receipt),
-			openLink: (url, event) => {
-				void openTerminalUrl(url, event, controller.browserOpener(), () => {
-					ref.current?.win.open(url);
-				}).catch((error) => controller.workspace.report(error));
+			openLink: (url) => {
+				ref.current?.win.open(url);
 			},
 		});
 		view.current = current;

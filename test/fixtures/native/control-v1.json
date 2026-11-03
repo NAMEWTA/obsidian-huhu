@@ -136,7 +136,7 @@
 		{
 			"name": "nested legacy duplicate keys preserved",
 			"kind": "helper",
-			"json": "{\"type\":\"cookies-result\",\"value\":{\"a\":1,\"a\":2}}",
+			"json": "{\"type\":\"history-result\",\"value\":{\"a\":1,\"a\":2}}",
 			"valid": true
 		},
 		{

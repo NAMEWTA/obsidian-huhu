@@ -407,9 +407,9 @@ sock.on('error',()=>{});setInterval(()=>{},1000);
             "dispatched timeout must retain the original 256KiB charge"
         );
         h.send(
-            json!({"type":"cookies","op":"unknown","rid":"cookie-during-retiring","payload":{}}),
+            json!({"type":"history","rid":"history-during-retiring","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}),
         );
-        assert_eq!(h.next("cookies-result")["rid"], "cookie-during-retiring");
+        assert_eq!(h.next("history-result")["rid"], "history-during-retiring");
         h.send(json!({"type":"spawn","sid":2,"file":"/bin/sh","args":["-c","printf alive"],"cols":80,"rows":24}));
         assert_eq!(h.next("spawned")["sid"], 2);
         fs::write(f.path.join("release"), b"").unwrap();
@@ -626,8 +626,8 @@ sock.on('error',()=>{});setInterval(()=>{},1000);
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
             h.send(json!({"type":"end","sid":1,"force":true}));
             h.next("exit");
-            h.send(json!({"type":"cookies","op":"unknown","rid":"cookie-while-cap-closing","payload":{}}));
-            assert_eq!(h.next("cookies-result")["rid"], "cookie-while-cap-closing");
+            h.send(json!({"type":"history","rid":"history-while-cap-closing","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+            assert_eq!(h.next("history-result")["rid"], "history-while-cap-closing");
             h.send(json!({"type":"spawn","sid":1,"file":"/bin/sh","args":["-c","exit"],"cols":80,"rows":24}));
             assert_eq!(
                 h.next("spawn-failed")["failure"]["code"],

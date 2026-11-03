@@ -75,7 +75,6 @@ describe('package contents', () => {
 				'env-values',
 				'caches',
 				'endpoints-locks',
-				'browser-data',
 				'yolo-acknowledgement',
 			]),
 		);

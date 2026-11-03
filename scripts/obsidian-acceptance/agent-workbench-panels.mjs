@@ -266,7 +266,6 @@ async function browserFixture() {
 			createSpaceWorkspaceStore(spaces, clock, (error) => errors.push(String(error))),
 			sessions,
 			launch,
-			() => undefined,
 			spaces,
 		);
 	let workspace = createWorkspace();

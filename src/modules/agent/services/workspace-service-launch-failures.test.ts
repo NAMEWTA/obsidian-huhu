@@ -58,7 +58,7 @@ for (const lostReply of [false, true]) test.skipIf(process.platform !== 'linux')
 	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, globalThis as unknown as Window, report), sessions, {
 		shell: options => sessions.create({ kind: 'shell', title: 'missing', file: lostReply ? '/bin/bash' : join(root, 'no-such-shell'), args: lostReply ? ['--noprofile', '--norc', '-c', 'read -r -t 8'] : [], cwd: options.cwd!, runtime: options.runtime, beforeSpawn: options.beforeSpawn }),
 		agent: async () => undefined, resume: async () => undefined, account: () => '', report,
-	}, undefined, spaces);
+	}, spaces);
 	try {
 		await workspace.persistence.ready;
 		const space = await spaces.create({ name: 'Launch fixture', relativePath: '' });

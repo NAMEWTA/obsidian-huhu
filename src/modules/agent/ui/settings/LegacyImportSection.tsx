@@ -75,7 +75,6 @@ function Report({ view }: { view: LegacyImportView }) {
 							tabs: c.tabs,
 							groups: c.groups,
 							terminal: c.terminal,
-							browser: c.browser,
 							page: c.page,
 						})
 					: t('agent.migration.layoutKept', {
@@ -84,7 +83,6 @@ function Report({ view }: { view: LegacyImportView }) {
 			</p>
 			{!layout.spaceId && layout.status !== 'empty' && <p>{t('agent.migration.reimport')}</p>}
 			{view.sourceChanged && <p role="status">{t('agent.migration.sourceChanged')}</p>}
-			{c.browser > 0 && layout.spaceId && <p>{t('agent.migration.browserNote')}</p>}
 			{annotations.unattributable > 0 && <p>{t('agent.migration.annotations', { ...annotations })}</p>}
 			{sources.accountIndex.state === 'present' && <p>{t('agent.migration.accountIndex')}</p>}
 			<p>{t('agent.migration.unbound')}</p>

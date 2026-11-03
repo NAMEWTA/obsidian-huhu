@@ -49,11 +49,7 @@ export function JumpPalette({
 		.filter((tab) =>
 			[
 				tabTitle(tab, t),
-				tab.kind === 'terminal'
-					? tab.panes[tab.focusedSessionId]?.cwd
-					: tab.kind === 'browser'
-						? (controller.browserPage(tab)?.url ?? '')
-						: '',
+				tab.kind === 'terminal' ? tab.panes[tab.focusedSessionId]?.cwd : '',
 			]
 				.join(' ')
 				.toLowerCase()
@@ -63,9 +59,7 @@ export function JumpPalette({
 	const choose = (id: string, split = false) => {
 		if (split) {
 			const group = controller.workspace.store.getState().activeGroupId;
-			if (controller.workspace.store.getState().tabs[id]?.kind !== 'browser') {
-				if (!controller.workspace.moveFromUI(id, { split: 'right', ofGroupId: group ?? '' }).ok) return;
-			} else if (group) controller.workspace.move(id, { split: 'right', ofGroupId: group });
+			if (!controller.workspace.moveFromUI(id, { split: 'right', ofGroupId: group ?? '' }).ok) return;
 		}
 		select(id);
 		close();
@@ -128,10 +122,7 @@ export function JumpPalette({
 								{tab.kind === 'page' ? (
 									<PageIcon page={tab.page} />
 								) : (
-									<AgentIcon
-										agent={tab.kind === 'terminal' ? tab.agentId || 'terminal' : 'browser'}
-										size={14}
-									/>
+									<AgentIcon agent={tab.agentId || 'terminal'} size={14} />
 								)}
 								{tab.kind === 'terminal' && tab.agentId && <StatusDot state={tab.state} />}
 								<span className="min-w-0 flex-1 truncate">{tabTitle(tab, t)}</span>
@@ -174,18 +165,6 @@ export function JumpPalette({
 						>
 							{t('agent.workspace.newTerminal')}
 						</CommandItem>
-						{controller.workspace.browserAvailable && (
-							<CommandItem
-								onSelect={() => {
-									close();
-									void controller.workspace
-										.newBrowser()
-										.catch((error) => controller.workspace.report(error));
-								}}
-							>
-								{t('agent.workspace.newBrowser')}
-							</CommandItem>
-						)}
 						<CommandItem
 							onSelect={() => {
 								close();

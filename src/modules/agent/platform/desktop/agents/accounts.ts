@@ -7,8 +7,6 @@ import { absoluteHuhuPath } from '../../../../../host/desktop/huhu-paths';
 import { nativeVaultStorage } from '../../../../../host/desktop/vault-storage';
 import { checkOwnedDirectory, secureOwnedDirectory } from '../../../../../host/desktop/owned-permissions';
 import { t } from '../../../../../shared/i18n/index';
-import { legacyAccountConfig } from './legacy-accounts';
-import { legacyReferences, uniqueLegacyReference } from './legacy-references';
 import { SYSTEM_ACCOUNT_SUFFIX, isSystemAccount } from './system-homes';
 
 /**
@@ -132,16 +130,7 @@ export async function managedAccountEnv(
 	const root = await absoluteHuhuPath(vault, relative),
 		home = accountConfigDir(agent.id, name, root),
 		owner = path.dirname(home);
-	const legacy = await legacyAccountConfig(
-		vault,
-		device,
-		agent.id,
-		name === LEGACY_VAULT_ACCOUNT ? '' : name,
-		owner,
-		interactive,
-	);
 	const env = managedHomes(home, owner);
-	if (legacy) env[agent.id === 'codex' ? 'CODEX_HOME' : 'CLAUDE_CONFIG_DIR'] = legacy;
 	const storage = nativeVaultStorage(vault);
 	for (const directory of new Set(Object.values(env))) {
 		const owned = relative + '/' + path.relative(root, directory).split(path.sep).join('/');
@@ -187,18 +176,6 @@ export async function restoredAccountReference(
 	device: string,
 	transcriptPath?: string,
 ): Promise<{ env: Record<string, string>; transcriptPath?: string }> {
-	if (!Object.hasOwn(saved, 'HUHU_ACCOUNT_ID')) {
-		const binding = uniqueLegacyReference(await legacyReferences(vault, device, agent.id), saved);
-		if (!binding) throw new Error(t('agent.accountScopeMismatch'));
-		const env = await managedAccountEnv(agent, binding.name, vault, device);
-		if (transcriptPath) {
-			const tail = path.relative(binding.from, transcriptPath);
-			if (!tail || tail === '..' || tail.startsWith('..' + path.sep) || path.isAbsolute(tail))
-				throw new Error(t('agent.sessionMissing'));
-			transcriptPath = path.join(binding.to, tail);
-		}
-		return { env, transcriptPath };
-	}
 	if (typeof saved.HUHU_ACCOUNT_NAME !== 'string' || typeof saved.HUHU_ACCOUNT_ID !== 'string')
 		throw new Error(t('agent.accountScopeMismatch'));
 	const expected = await resolveAccountEnv(agent, saved, vault, device);

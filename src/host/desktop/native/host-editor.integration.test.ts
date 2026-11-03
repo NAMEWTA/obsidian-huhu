@@ -56,7 +56,7 @@ editorTest.each([false, true])('real Host retains EOF cleanup result (replaced e
    const shutdown = error as NativeShutdownError;expect(shutdown.outcome).toMatchObject({ state: 'exited', code: 1, signal: null, forced: false, stdioClosed: true });expect(shutdown.outcome.diagnostic).toContain('identity changed');
    const retained = await stat(endpoint);expect([retained.dev, retained.ino]).toEqual([replacement!.dev, replacement!.ino]);expect(await readFile(endpoint, 'utf8')).toBe('own replacement sentinel');
    trace.shutdown = shutdown.outcome;trace.sentinel = { dev: retained.dev, ino: retained.ino, contents: 'own replacement sentinel' };await expect(lease.release()).rejects.toBe(error);
-   const next = await host.acquire('cookies');expect(helpers).toHaveLength(2);await expect(lease.release()).rejects.toBe(error);await next.release();
+   const next = await host.acquire('history');expect(helpers).toHaveLength(2);await expect(lease.release()).rejects.toBe(error);await next.release();
   } else { await release;await expect(stat(endpoint)).rejects.toMatchObject({ code: 'ENOENT' });trace.normalEof = true; }
  } catch (error) { primary = error; }
  const cleanupErrors: unknown[] = [];
@@ -132,7 +132,7 @@ async function until(check: () => Promise<boolean>, label: string) {
  while (!(await check())) { if (performance.now() >= end) throw Error(label); await new Promise(resolve => setTimeout(resolve, 5)); }
 }
 
-editorTest('real Host/helper keep unknown dispatch charged while another SID, replies, ACK, cookies and stop stay live', async () => {
+editorTest('real Host/helper keep unknown dispatch charged while another SID, replies, ACK, history and stop stay live', async () => {
  const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-editor-lifetime-')), entry = join(root, 'controlled.mjs');
  await writeFile(entry, controlledApp); await writeFile(join(root, 'hold'), '');
  const launch: NativeEditorLaunch = { identity: { runtimeId: 'controlled-runtime' }, provider: 'pi', recipe: {
@@ -142,7 +142,7 @@ editorTest('real Host/helper keep unknown dispatch charged while another SID, re
  const host = new NativeHost(async events => (helper = await PtyHelper.start(bins.helper.path, events, globalThis as unknown as Window, { HOME: root, XDG_RUNTIME_DIR: root })));
  const output: number[] = [], exits: number[] = [], fences: number[] = [];
  const owner = await host.acquire('pty', { output(sid, bytes) { output.push(sid); owner.value.acknowledge(sid, bytes.byteLength); }, exit: sid => exits.push(sid), replySettled: sid => fences.push(sid) });
- const browser = await host.acquire('cookies'), sibling = await host.acquire('pty');
+ const secondary = await host.acquire('history'), sibling = await host.acquire('pty');
  try {
   const sid = owner.allocateSessionId();await owner.value.spawnSession(sid, { file: process.execPath, args: [entry], cwd: root, env: {}, cols: 80, rows: 24, editor: launch });
   const binding = owner.value.editorBinding!(sid)!;await bounded(binding.ready, 'app auth missing');expect(await readFile(join(root, 'wrong-role-rejected'), 'utf8')).toBe('2');
@@ -160,14 +160,14 @@ editorTest('real Host/helper keep unknown dispatch charged while another SID, re
   owner.value.reply!(sid, 'reply-lane');await until(async () => { try { return (await readFile(join(root, 'manual-observed'), 'utf8')).includes('reply-lane'); } catch { return false; } }, 'reply lane blocked behind editor');
   const second = owner.allocateSessionId();await owner.value.spawnSession(second, { file: process.execPath, args: ['-e', 'console.log("sibling output");setInterval(()=>{},1000)'], cwd: root, env: {}, cols: 80, rows: 24 });
   await until(async () => output.includes(second), 'other SID output/ACK blocked');
-  await expect(browser.value.request('cookies', 'read', { path: join(root, 'missing-db'), kind: 'firefox' })).rejects.toBeDefined();expect(browser.value.alive).toBe(true);
+  await expect(secondary.value.history('query', { vault: join(root, 'missing-db'), index: join(root, 'missing-db', 'x') })).rejects.toBeDefined();expect(secondary.value.alive).toBe(true);
   await writeFile(join(root, 'release'), '');await bounded(op.settled, 'late settlement did not release physical slot');expect(helper.streamStats.editorOperations).toBe(0);
   expect(await op.finished).toMatchObject({ state: 'unknown' });
   owner.value.requestStop!(second, { requestId: 'stop-sibling', force: true });await until(async () => exits.includes(second) && fences.includes(second), 'sibling stop/reply fence stalled');
   const closing = binding.close();expect(binding.active).toBe(false);await bounded(closing, 'app close unconfirmed');
   expect(await binding.submit('stale handle', { sourceInstance, remainingMs: 1000 }).finished).toMatchObject({ state: 'none', reason: 'closed' });
   console.log(JSON.stringify({ scope: 'controlled app transport, not Pi gate', helper: bins.helper, cli: bins.cli, sid, second, unknownRetainedUntilLateSettlement: true, replyCookieAckStopLive: true }));
- } finally { await owner.release();await sibling.release();await browser.release();await host.dispose();await rm(root, { recursive: true, force: true }); }
+ } finally { await owner.release();await sibling.release();await secondary.release();await host.dispose();await rm(root, { recursive: true, force: true }); }
 }, 20000);
 
 editorTest('ordinary terminal fences retain a late editor close and the same real helper retires every original binding', async () => {
@@ -202,7 +202,7 @@ editorTest('ordinary terminal fences retain a late editor close and the same rea
    const original = await stat(displaced + '.original', { bigint: true });
    expect(helper.editorBinding(sid)).toBe(binding);expect(binding.active).toBe(false);
    expect(await binding.submit('old handle cannot reopen input', { sourceInstance, remainingMs: 1000 }).finished).toMatchObject({ state: 'none', reason: 'closed' });
-   await expect(helper.request('cookies', 'read', { path: join(root, 'missing-cookie-db'), kind: 'firefox' })).rejects.toBeDefined();expect(helper.alive).toBe(true);
+   await expect(helper.history('query', { vault: join(root, 'missing-history-db'), index: join(root, 'missing-history-db', 'x') })).rejects.toBeDefined();expect(helper.alive).toBe(true);
    events.push({ type: 'ordinary-fences-with-original-binding', sid, retained: helper.editorBinding(sid) === binding, statistics: helper.streamStats, originalInode: String(original.ino) });
    await unlink(displaced);await rename(displaced + '.original', displaced);
    expect((await stat(displaced, { bigint: true })).ino).toBe(original.ino);displaced = undefined;

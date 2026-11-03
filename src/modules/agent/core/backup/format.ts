@@ -34,7 +34,6 @@ export const EXCLUSION_CATEGORIES = [
 	'launch-arguments',
 	'caches',
 	'endpoints-locks',
-	'browser-data',
 	'helper-binaries',
 	'yolo-acknowledgement',
 	'machine-paths',

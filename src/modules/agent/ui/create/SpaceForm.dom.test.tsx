@@ -139,14 +139,12 @@ test('pending save ignores Escape/close; a failed save stays visible and explici
 	nav.unmount(); await f.spaces.dispose();
 });
 
-test('production empty-state actions keep Browser available without a Space and freeze the selected ID for terminal creation', async () => {
+test('production empty-state actions freeze the selected ID for terminal creation', async () => {
 	const f = fixture(); await f.spaces.ready;
 	const user = userEvent.setup();
-	const actions = { browserAvailable: true, newBrowser: vi.fn(), newTerminal: vi.fn(async () => undefined), selectSpace: (id: string) => f.spaces.select(id), report: vi.fn() };
+	const actions = { newTerminal: vi.fn(async () => undefined), selectSpace: (id: string) => f.spaces.select(id), report: vi.fn() };
 	render(<TestProviders><SpaceEmptyState spaces={f.spaces} workspace={actions as unknown as WorkspaceService} /></TestProviders>);
 	expect(screen.getByText(t('agent.spaces.noSpaces'))).toBeTruthy();
-	await user.click(screen.getByRole('button', { name: t('agent.workspace.newBrowser') }));
-	expect(actions.newBrowser).toHaveBeenCalledOnce();
 	expect(actions.newTerminal).not.toHaveBeenCalled();
 	const a = await act(async () => f.spaces.create({ name: 'A', relativePath: '' }));
 	await act(async () => { await f.spaces.select(a.id); });

@@ -89,8 +89,8 @@ export function automationRegistryOwner(
 }
 
 /**
- * Space records, sessions, inbox and every layout (Agent and Browser share them) as one owner. Quiesce makes
- * every writer, including Browser edits through the shared workspace store, fail with BUSY; drain saves dirty
+ * Space records, sessions, inbox and every layout as one owner. Quiesce makes
+ * every writer, including edits through the shared workspace store, fail with BUSY; drain saves dirty
  * drafts and queued writes strictly; adopt reloads the records and drops all cached drafts and JsonStore baselines.
  */
 export function spaceWorkspaceOwner(

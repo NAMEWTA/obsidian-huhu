@@ -39,7 +39,7 @@ export function shortPath(path: string): string {
 	const parts = path.split(/[\\/]/).filter(Boolean);
 	return parts.length > 2 ? `…/${parts.slice(-2).join('/')}` : path;
 }
-/** A session or browser tab; pages (board, usage, automations) are listed by the entries above, not here. */
+/** A session tab; pages (board, usage, automations) are listed by the entries above, not here. */
 function SessionCard({
 	tab,
 	managedSnapshot,
@@ -55,10 +55,7 @@ function SessionCard({
 		[draft, setDraft] = useState('');
 	const current = workspace.active?.id === tab.id,
 		group = workspace.group(tab.id)!;
-	const path =
-		tab.kind === 'terminal'
-			? (tab.panes[tab.focusedSessionId]?.cwd ?? '')
-			: (controller.browserPage(tab)?.url ?? '');
+	const path = tab.kind === 'terminal' ? (tab.panes[tab.focusedSessionId]?.cwd ?? '') : '';
 	const session = tab.kind === 'terminal' ? controller.sessions.get(tab.focusedSessionId) : undefined;
 	const pane = tab.kind === 'terminal' ? tab.panes[tab.focusedSessionId] : undefined;
 	const managed =
@@ -92,20 +89,18 @@ function SessionCard({
 		},
 		{
 			label: t('agent.workspace.split.right'),
-			run: () => tab.kind === 'browser' ? workspace.move(tab.id, { split: 'right', ofGroupId: group.id }) : workspace.moveFromUI(tab.id, { split: 'right', ofGroupId: group.id }),
+			run: () => workspace.moveFromUI(tab.id, { split: 'right', ofGroupId: group.id }),
 		},
 		{
 			label: t('agent.workspace.split.down'),
-			run: () => tab.kind === 'browser' ? workspace.move(tab.id, { split: 'down', ofGroupId: group.id }) : workspace.moveFromUI(tab.id, { split: 'down', ofGroupId: group.id }),
+			run: () => workspace.moveFromUI(tab.id, { split: 'down', ofGroupId: group.id }),
 		},
 		{
 			label: t('agent.copyId'),
 			run: () => {
 				void doc.defaultView?.navigator.clipboard
 					.writeText(
-						tab.kind === 'terminal'
-							? tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId
-							: tab.pageId,
+						tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId,
 					)
 					.catch((e) => workspace.report(e));
 			},
@@ -680,7 +675,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 		t = useT();
 	const [query, setQuery] = useState(''),
 		[collapsed, setCollapsed] = useState<string[]>([]);
-	const [filters, setFilters] = useState({ terminal: true, browser: true, done: true, idle: false }),
+	const [filters, setFilters] = useState({ terminal: true, done: true, idle: false }),
 		[grouping, setGrouping] = useState<'status' | 'agent' | 'none'>('status');
 	const managedSnapshot = useSyncExternalStore(
 		controller.workspace.subscribeManaged,
@@ -699,15 +694,13 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 			grouping === 'none'
 				? 'all'
 				: grouping === 'agent'
-					? tab.kind === 'terminal'
-						? (tab.agentId ?? 'terminal')
-						: 'browser'
+					? (tab.agentId ?? 'terminal')
 					: bucket;
 		(grouped[key] ??= []).push(tab);
 	}
 	const order =
 		grouping === 'status'
-			? ['attention', 'working', 'done', 'unknown', 'idle', 'terminal', 'browser']
+			? ['attention', 'working', 'done', 'unknown', 'idle', 'terminal']
 			: Object.keys(grouped);
 	return (
 		<aside
@@ -834,7 +827,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 						))}
 						<DropdownMenuItem
 							onSelect={() => {
-								setFilters({ terminal: true, browser: true, done: true, idle: false });
+								setFilters({ terminal: true, done: true, idle: false });
 								setGrouping('status');
 								setQuery('');
 							}}
@@ -868,7 +861,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 								}
 							>
 								<ChevronDown className={cn('size-3', collapsed.includes(key) && '-rotate-90')} />
-								{grouping === 'agent' && !['terminal', 'browser'].includes(key)
+								{grouping === 'agent' && key !== 'terminal'
 									? grouped[key][0]?.kind === 'terminal' &&
 										controller.agentTitle(grouped[key][0].agentId!)
 									: t(`agent.workspace.bucket.${key}`)}

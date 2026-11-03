@@ -573,7 +573,6 @@ async function browserFixture() {
 			createSpaceWorkspaceStore(spaces, clock, (error) => notices.push(String(error))),
 			sessions,
 			launch,
-			() => undefined,
 			spaces,
 		);
 		await workspace.persistence.ready;

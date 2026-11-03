@@ -856,7 +856,6 @@ async function focusHostFixture() {
 		),
 		sessions,
 		launch,
-		() => undefined,
 		spaces,
 	);
 	await workspace.persistence.ready;

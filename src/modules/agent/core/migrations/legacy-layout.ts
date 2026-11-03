@@ -8,7 +8,6 @@ export type LegacyLayoutStatus = 'absent' | 'empty' | 'importable' | 'unsupporte
 export interface LayoutCounts {
 	readonly tabs: number;
 	readonly terminal: number;
-	readonly browser: number;
 	readonly page: number;
 	readonly groups: number;
 	readonly closedTabs: number;
@@ -21,7 +20,7 @@ export interface LegacyLayoutInspection {
 	/** The validated source layout, byte-for-byte as parsed. Present only when importable. */
 	readonly layout?: WorkspaceState;
 }
-const ZERO: LayoutCounts = { tabs: 0, terminal: 0, browser: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 };
+const ZERO: LayoutCounts = { tabs: 0, terminal: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 };
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 
 export function countLayout(layout: WorkspaceState): LayoutCounts {
@@ -32,7 +31,6 @@ export function countLayout(layout: WorkspaceState): LayoutCounts {
 	return {
 		tabs: tabs.length,
 		terminal: tabs.filter((t) => t.kind === 'terminal').length,
-		browser: tabs.filter((t) => t.kind === 'browser').length,
 		page: tabs.filter((t) => t.kind === 'page').length,
 		groups: layout.groups.length,
 		closedTabs: layout.closedTabs.length,
@@ -55,7 +53,7 @@ export function inspectLegacyLayout(text: string | null): LegacyLayoutInspection
 	if (!object(parsed.tabs) || !Array.isArray(parsed.groups) || !Array.isArray(parsed.closedTabs))
 		return { status: 'corrupt', counts: ZERO };
 	for (const [id, tab] of Object.entries(parsed.tabs)) {
-		if (!object(tab) || tab.id !== id || !['terminal', 'browser', 'page'].includes(String(tab.kind)))
+		if (!object(tab) || tab.id !== id || !['terminal', 'page'].includes(String(tab.kind)))
 			return { status: 'corrupt', counts: ZERO };
 	}
 	const layout = parsed as unknown as WorkspaceState;

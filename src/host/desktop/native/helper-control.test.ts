@@ -140,15 +140,15 @@ for (const row of fixture.cases.filter(row => row.kind === 'helper' && !row.vali
 	} finally { await expect(io.helper.dispose()).rejects.toMatchObject({ outcome: { state: 'exited', code: 1 } }); }
 });
 
-test('the production raw hook rejects malformed UTF8 but keeps legal large legacy history and deep Cookie bodies', async () => {
+test('the production raw hook rejects malformed UTF8 but keeps legal large legacy history and deep history bodies', async () => {
 	const io = await receivingHelper();
 	try {
 		const history = new TextEncoder().encode(JSON.stringify({ type: 'history-result', rid: 'not-pending', data: 'x'.repeat(2 * 1024 * 1024) }));
 		io.stdout.write(encodeControlBody(history, history.length));
 		let nested: unknown = null;
 		for (let depth = 0; depth < 60; depth++) nested = { nested };
-		const cookie = new TextEncoder().encode(JSON.stringify({ type: 'cookies-result', rid: 'not-pending', data: nested }));
-		io.stdout.write(encodeControlBody(cookie, cookie.length));
+		const deep = new TextEncoder().encode(JSON.stringify({ type: 'history-result', rid: 'not-pending', data: nested }));
+		io.stdout.write(encodeControlBody(deep, deep.length));
 		expect(io.helper.alive).toBe(true);
 		const row = fixture.cases.find(row => row.name === 'request forward')!;
 		const body = new TextEncoder().encode(row.json);

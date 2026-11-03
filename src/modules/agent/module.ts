@@ -1,11 +1,8 @@
 import { messages as nativeStrings } from '../../shared/i18n/lazy/native';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { registerMessages } from '../../shared/i18n/index';
-import { t } from '../../shared/i18n';
 import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_INVOCATIONS } from '../automations/api';
-import { BROWSER_MATERIAL_CONSUMERS, type BrowserMaterialConsumer } from '../browser/api';
 import {
-	AGENT_BROWSER_TABS,
 	AGENT_DIRECTORY,
 	AGENT_DISPATCH,
 	AGENT_PROMPT_RUNNER,
@@ -15,9 +12,7 @@ import {
 	AGENT_WORKBENCH,
 	AGENT_USAGE,
 	AGENT_QUICK_COMMANDS,
-	NATIVE_HELPER_SQLITE,
 } from './api';
-import { cookieClient } from './platform/desktop/server/cookie-client';
 import { messages } from './i18n';
 import { messages as automationStrings } from '../../shared/i18n/lazy/automation';
 import { messages as commonStrings } from '../../shared/i18n/lazy/common';
@@ -31,11 +26,8 @@ import { agentSettings } from './settings';
 import { AgentSkillDirectory } from './services/skills';
 import { createSkillCatalog } from './services/skill-catalog';
 import type { SkillManager } from './services/skill-manager';
-import { browserMaterialConsumer } from './services/browser-material-consumer';
-import type { BrowserMaterialFiles } from './platform/desktop/browser-material';
 import type { App } from 'obsidian';
-import type { SharedBrowserPort, SharedWorkspaceOwner } from '../../app/contracts/shared-workspace';
-import type { BrowserTabData, WorkspaceState } from './core/workspace/model';
+import type { SharedWorkspaceOwner } from '../../app/contracts/shared-workspace';
 
 registerMessages(automationStrings);
 registerMessages(commonStrings);
@@ -63,14 +55,12 @@ export async function createSharedWorkspaceOwner(
 		{ createDesktopSpacePorts },
 		{ SpaceService },
 		{ createSpaceWorkspaceStore },
-		ops,
 		{ vaultIdentity },
 		{ privateVaultStorage },
 	] = await Promise.all([
 		import('./platform/desktop/spaces/ports'),
 		import('./services/spaces/space-service'),
 		import('./services/workspace-store'),
-		import('./core/workspace/ops'),
 		import('../../host/obsidian/storage/device-id'),
 		import('../../host/obsidian/storage/private-storage'),
 	]);
@@ -89,137 +79,16 @@ export async function createSharedWorkspaceOwner(
 		report,
 	});
 	const workspaceStore = createSpaceWorkspaceStore(spaces, win, report);
-	// Agent and Browser both write through this one SpaceService/store, so one owner gates both.
+	// Agent writes through this one SpaceService/store, so one owner gates it.
 	const registered = recovery
 		? await (await import('./services/migrations/entry')).registerSpaceOwner(recovery, identity.deviceId, spaces, workspaceStore)
 		: undefined;
 	const recoveryOwner = registered?.owner;
 	const unregister = registered?.unregister;
-	const selected = () => spaces.store.getState().records.selectedSpaceId;
-	const snapshot = () => workspaceStore.readLayoutNow?.(selected())?.view ?? workspaceStore.store.getState();
-	let pendingEdits: Promise<void> = Promise.resolve();
-	const edit = (transform: (state: WorkspaceState) => WorkspaceState): Promise<void> => {
-		const spaceId = selected();
-		const queued = pendingEdits.then(async () => {
-			if (!workspaceStore.editLayout) {
-				workspaceStore.updateLayout?.(transform);
-				return;
-			}
-			const result = await workspaceStore.editLayout(spaceId, transform);
-			if (result.error !== undefined)
-				throw result.error instanceof Error ? result.error : new Error(t('agent.browser.editFailed'), { cause: result.error });
-			if (result.effect === 'partial' || result.effect === 'unknown')
-				throw new Error(t('agent.browser.editIncomplete', { effect: result.effect }));
-		});
-		pendingEdits = queued.catch(() => {});
-		return queued;
-	};
-	/** Layout rows may still carry the address the shared port uses to reuse a tab. The browser module owns the page. */
-	type LayoutBrowserTab = BrowserTabData & { url?: string; profileId?: string; zoom?: number; faviconUrl?: string };
-	const layoutBrowser = (value: { kind: string }): LayoutBrowserTab | undefined =>
-		value.kind === 'browser' ? (value as LayoutBrowserTab) : undefined;
-	const browser: SharedBrowserPort = {
-		async open(tab, options) {
-			await Promise.all([spaces.ready, workspaceStore.ready]);
-			await pendingEdits;
-			const state = snapshot();
-			const found = options?.reuse
-				? Object.values(state.tabs)
-						.map(layoutBrowser)
-						.find((value) => value?.url === tab.url && value.profileId === tab.profileId)
-				: undefined;
-			if (found) {
-				await edit((value) => ops.activateTab(value, found.id));
-				return found.pageId;
-			}
-			const value: LayoutBrowserTab = {
-				kind: 'browser',
-				id: tab.id,
-				spaceId: selected() || 'shared',
-				pageId: tab.pageId,
-				title: tab.title,
-				createdAt: tab.createdAt,
-				url: tab.url,
-				profileId: tab.profileId,
-				zoom: tab.zoom,
-				faviconUrl: tab.faviconUrl,
-			};
-			await edit((current) => ops.openTab(current, undefined, value));
-			return value.pageId;
-		},
-		async close(pageId) {
-			await pendingEdits;
-			// Duplicate records for one page can exist; an explicit close removes every one of them.
-			const ids = (state: WorkspaceState) =>
-				Object.values(state.tabs).flatMap((value) =>
-					value.kind === 'browser' && value.pageId === pageId ? [value.id] : [],
-				);
-			const closeAll = (current: WorkspaceState) =>
-				ids(current).reduce((next, id) => ops.closeTab(next, id), current);
-			if (!ids(snapshot()).length) return;
-			// An explicit close must report a failed removal instead of leaving a record that would resurrect the tab.
-			if (!workspaceStore.editLayout) {
-				workspaceStore.updateLayout?.(closeAll);
-				return;
-			}
-			const result = await workspaceStore.editLayout(selected(), closeAll);
-			if (result.error !== undefined)
-				throw result.error instanceof Error
-					? result.error
-					: new Error(t('agent.browser.removeFailed'), { cause: result.error });
-			if (result.effect === 'partial' || result.effect === 'unknown')
-				throw new Error(t('agent.browser.removeIncomplete', { effect: result.effect }));
-		},
-		list() {
-			return Object.values(snapshot().tabs).flatMap((value) => {
-				const row = layoutBrowser(value);
-				return row
-					? [
-							{
-								id: row.id,
-								pageId: row.pageId,
-								title: row.title,
-								url: row.url ?? '',
-								profileId: row.profileId ?? '',
-								zoom: row.zoom ?? 1,
-								createdAt: row.createdAt,
-								faviconUrl: row.faviconUrl,
-							},
-						]
-					: [];
-			});
-		},
-		activate(pageId) {
-			const tab = Object.values(snapshot().tabs).find(
-				(value) => value.kind === 'browser' && value.pageId === pageId,
-			);
-			if (tab) void edit((current) => ops.activateTab(current, tab.id)).catch(report);
-		},
-		update(pageId, state) {
-			void edit((current) => {
-				const tab = Object.values(current.tabs).find(
-					(value) => value.kind === 'browser' && value.pageId === pageId,
-				);
-				const row = tab && layoutBrowser(tab);
-				if (!row) return current;
-				const next: LayoutBrowserTab = { ...row, ...state, title: state.title || row.title };
-				return { ...current, tabs: { ...current.tabs, [row.id]: next } };
-			}).catch(report);
-		},
-		subscribe(listener) {
-			const offStore = workspaceStore.store.subscribe(listener);
-			const offSpaces = spaces.store.subscribe(listener);
-			return () => {
-				offStore();
-				offSpaces();
-			};
-		},
-	};
 	return {
 		ready: Promise.all([spaces.ready, workspaceStore.ready]).then(() => undefined),
 		spaces,
 		workspaceStore,
-		browser,
 		setSpaceChooser(chooser) {
 			spaces.setSpaceChooser(chooser as import('./core/space/ports').SpaceChooser | undefined);
 		},
@@ -245,8 +114,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 	let skillManager: SkillManager | undefined;
 	let skillManagerLoading: Promise<SkillManager> | undefined;
 	let closed = false;
-	let materialFiles: BrowserMaterialFiles | undefined;
-	let materialConsumer: BrowserMaterialConsumer | undefined;
 	let unregisterRecovery: Array<() => void> = [];
 	/** The skills manager is created on first use (the settings page or a skill listing); nothing scans until `refresh` is called. */
 	const ensureSkillManager = async (): Promise<SkillManager | undefined> => {
@@ -266,11 +133,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 		(await import('./platform/desktop/skills/skill-fs')).readSkillDoc(dir),
 	);
 	const migrationLifetime = new AbortController();
-	let releaseMigration: (() => void) | undefined;
 	return {
-		get contributions() {
-			return materialConsumer ? [[BROWSER_MATERIAL_CONSUMERS, materialConsumer] as const] : [];
-		},
 		/** Read after `activate()`. */
 		get services() {
 			const current = controller;
@@ -306,26 +169,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 										},
 									] as const,
 									[AGENT_SESSIONS, sessionMaterialPort(current)] as const,
-									[
-										AGENT_BROWSER_TABS,
-										{
-											sessionOrder: (pageId: string) => {
-												const state = current.workspace.store.getState();
-												const tab = Object.values(state.tabs).find(
-													(t) => t.kind === 'browser' && t.pageId === pageId,
-												);
-												const group = tab ? current.workspace.group(tab.id) : undefined;
-												return (group?.tabIds ?? []).flatMap((id) => {
-													const t = state.tabs[id];
-													return t?.kind === 'terminal' ? t.sessionIds : [];
-												});
-											},
-										},
-									] as const,
-									[
-										NATIVE_HELPER_SQLITE,
-										cookieClient(context.native, migrationLifetime.signal),
-									] as const,
 									[AGENT_WORKBENCH, agentWorkbench(current)] as const,
 									[AGENT_USAGE, current.workspaceUsage] as const,
 									[
@@ -397,24 +240,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				context,
 				settings,
 				{
-					prepare: async () => {
-						const { prepareAccounts } = await import('./platform/desktop/agents/prepare-accounts');
-						const release = await prepareAccounts(
-							context.app,
-							context.manifest.dir ?? '',
-							async (options) =>
-								(await import('./ui/terminal/legacy-account-choice')).chooseLegacyAccount(
-									context.app,
-									options,
-									migrationLifetime.signal,
-								),
-						);
-						if (migrationLifetime.signal.aborted) {
-							release();
-							throw new Error('The terminal module is off');
-						}
-						releaseMigration = release;
-					},
 					confirm: async (app, message) =>
 						(await import('./ui/terminal/confirm')).confirmAction(app, message, migrationLifetime.signal),
 					selectSpace: async (request) =>
@@ -427,7 +252,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				},
 				sharedWorkspace,
 			);
-			// Failed metadata remains visible in the workbench; it must not disable Browser or erase data.
+			// Failed metadata remains visible in the workbench; it must not disable the terminal or erase data.
 			await controller.workspace.persistence.ready.catch(() => {});
 			if (context.recovery)
 				unregisterRecovery = await (
@@ -435,11 +260,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				).registerLiveOwners(context.recovery, context.app, controller);
 			controller.registerCommands();
 			const current = controller;
-			if (current.vaultPath()) {
-				const { BrowserMaterialFiles: Files } = await import('./platform/desktop/browser-material');
-				materialFiles = new Files(current.vaultPath()!);
-				materialConsumer = browserMaterialConsumer(current, materialFiles, migrationLifetime.signal);
-			}
 			dispatch = createAgentDispatch({
 				agents: () => current.runtime.listAgents(),
 				invocations: () => context.services.peek(AUTOMATION_INVOCATIONS),
@@ -453,9 +273,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 		},
 		async dispose() {
 			migrationLifetime.abort();
-			materialConsumer = undefined;
-			releaseMigration?.();
-			releaseMigration = undefined;
 			skills?.dispose();
 			skills = undefined;
 			closed = true;
@@ -474,8 +291,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				sharedWorkspace?.setSpaceChooser?.(undefined);
 				sharedWorkspace = undefined;
 			}
-			await materialFiles?.dispose();
-			materialFiles = undefined;
 		},
 	};
 }

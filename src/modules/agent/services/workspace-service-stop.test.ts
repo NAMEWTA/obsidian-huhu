@@ -24,7 +24,7 @@ async function fixture() {
 	const environment = vi.fn(async () => ({}));
 	const sessions = new TerminalSessions({ native, environment, platform: 'linux', settings: () => normalizeTerminalSettings({}), colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	const launchPort: WorkspaceLaunchPort = { shell: options => sessions.create({ ...options, kind: 'shell', title: 'shell', file: 'sh', args: [], cwd: options.cwd! }), agent: async () => undefined, resume: async () => undefined, account: () => '', report };
-	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, globalThis as unknown as Window, report), sessions, launchPort, undefined, spaces);
+	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, globalThis as unknown as Window, report), sessions, launchPort, spaces);
 	await workspace.persistence.ready;
 	const space = await spaces.create({ name: 'A' });
 	async function launch() { const result = await workspace.createManaged({ kind: 'shell', spaceId: space.id }); if (result.status !== 'created') throw new Error(JSON.stringify(result)); return { spaceId: space.id, sessionId: result.session.sessionId, runtimeId: result.session.runtime.runtimeId }; }
@@ -349,7 +349,7 @@ test('a background record without a Pane opens after reload with zero native wor
 		sessions = new TerminalSessions({ native: f.native, environment: f.environment, platform: process.platform, settings: () => normalizeTerminalSettings({}), colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 		const current = sessions;
 		const launchShell = vi.fn((options: { shell?: import('../core/terminal/settings').ShellChoice; cwd?: string; runtime?: typeof ref; beforeSpawn?: () => Promise<void> }) => current.create({ ...options, kind: 'shell', title: 'restored', file: options.shell === 'bash' ? 'original-bash' : 'different-default', args: [], cwd: options.cwd! }));
-		reopened = new WorkspaceService(createSpaceWorkspaceStore(spaces, globalThis as unknown as Window, f.report), sessions, { shell: launchShell, agent: async () => undefined, resume: async () => undefined, account: () => '', report: f.report }, undefined, spaces);
+		reopened = new WorkspaceService(createSpaceWorkspaceStore(spaces, globalThis as unknown as Window, f.report), sessions, { shell: launchShell, agent: async () => undefined, resume: async () => undefined, account: () => '', report: f.report }, spaces);
 		await reopened.persistence.ready;
 		const before = f.spawn.mock.calls.length;
 		const opened = await reopened.openManagedRecord(ref);

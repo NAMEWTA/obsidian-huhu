@@ -268,7 +268,7 @@ for (const lateFailure of [false, true])
 				win: f.win,
 				writerPort: f.writerPort,
 			});
-			let browser: Awaited<ReturnType<NativeHost['acquire']>> | undefined;
+			let secondary: Awaited<ReturnType<NativeHost['acquire']>> | undefined;
 			const messages = Reflect.get(Notice, 'messages') as string[],
 				messageCount = messages.length;
 			try {
@@ -276,7 +276,7 @@ for (const lateFailure of [false, true])
 				const created = await f.controller.workspace.createManaged({ kind: 'shell', spaceId: space.id });
 				if (created.status !== 'created') throw new Error(JSON.stringify(created));
 				const session = f.controller.sessions.get(created.session.runtime.runtimeId)!;
-				browser = await f.native.acquire('cookies');
+				secondary = await f.native.acquire('history');
 				const released = vi.spyOn(f.controller.spaces, 'dispose');
 				const nativeCleanup = vi.spyOn(f.controller.sessions, 'dispose');
 				if (stalled === 'registry') {
@@ -341,7 +341,7 @@ for (const lateFailure of [false, true])
 				await expect(
 					writer.owners.acquire(await writer.directories.inspectVault(), 'second-owner'),
 				).rejects.toMatchObject({ code: 'OWNER_CONFLICT' });
-				await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({});
+				await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({});
 				if (stalled === 'checkpoint')
 					expect(
 						JSON.parse(f.files.get(f.controller.spaces.path)!).sessions[created.session.sessionId]
@@ -373,7 +373,7 @@ for (const lateFailure of [false, true])
 				vi.useRealTimers();
 				release();
 				await operation?.catch(() => {});
-				if (browser) await browser.release();
+				if (secondary) await secondary.release();
 				await f.cleanup().catch(() => {});
 			}
 		});

@@ -3,7 +3,7 @@ import { stringify } from 'yaml';
 import { automationDocuments } from '../../src/modules/automations/core/documents';
 import type { AutomationDefinition } from '../../src/shared/automation/types';
 import { openTab } from '../../src/modules/agent/core/workspace/ops';
-import type { BrowserTabData } from '../../src/modules/agent/core/workspace/model';
+import type { TerminalTabData } from '../../src/modules/agent/core/workspace/model';
 import { automationRuntimePath } from '../../src/modules/automations/api';
 import { notificationInboxPath } from '../../src/modules/notifications/api';
 import { agentWorkbenchPath } from '../../src/shared/storage/vault-layout';
@@ -15,13 +15,18 @@ export const OTHER_DEVICE = 'dev-c';
 
 export const SECRET = 'sk-test-SECRET-token-0001';
 
-const browserTab = (id: string): BrowserTabData => ({
-	kind: 'browser',
+const terminalTab = (id: string): TerminalTabData => ({
+	kind: 'terminal',
 	id,
 	title: id,
-	spaceId: 'browser-space',
-	pageId: `page-${id}`,
 	createdAt: 1,
+	sessionIds: [`session-${id}`],
+	paneLayout: { kind: 'pane', session: `session-${id}` },
+	focusedSessionId: `session-${id}`,
+	panes: {},
+	state: 'idle',
+	unread: false,
+	updatedAt: 1,
 });
 
 /** Two Spaces on the same directory, one external Space with a grant, two accounts that share a session id. */
@@ -68,7 +73,7 @@ export function sourceRecords(vault = SRC): WorkbenchRecords {
 	records.layouts['space-1'] = openTab(
 		{ version: 1, tabs: {}, groups: [], closedTabs: [] },
 		undefined,
-		browserTab('tab-1'),
+		terminalTab('tab-1'),
 	);
 	records.inbox = {
 		version: 1,

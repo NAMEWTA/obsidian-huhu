@@ -1,10 +1,8 @@
 import { existsSync } from 'node:fs';
 import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
-import { nativeCookieReader } from '../../../shared/native/cookies';
 import { NativeHost } from './host';
 import { PtyHelper } from './helper';
 import { FrameDecoder, encodeControl } from '../../../shared/native/frames';
@@ -39,18 +37,12 @@ async function finishFixture(errors: unknown[], ...steps: Array<() => unknown | 
 }
 
 test.skipIf(process.platform !== 'linux' || !binary)(
-	'real whole input under a blocked PTY leaves sibling input, Cookie and stop independent',
+	'real whole input under a blocked PTY leaves sibling input, a history request and stop independent',
 	async () => {
 		const root = await mkdtemp(join(tmpdir(), 'huhu-stream-pressure-'));
-		const sqlite = createRequire(import.meta.url)('node:sqlite') as {
-			DatabaseSync: new (path: string) => { exec(sql: string): void; close(): void };
-		};
-		const path = join(root, 'cookies.sqlite'),
-			db = new sqlite.DatabaseSync(path);
-		db.exec(
-			"CREATE TABLE moz_cookies(host TEXT,name TEXT,value TEXT,path TEXT,expiry INTEGER,isSecure INTEGER,isHttpOnly INTEGER,sameSite INTEGER); INSERT INTO moz_cookies VALUES('.example.org','sid','complete','/',1800000000,1,1,2);",
-		);
-		db.close();
+		// A request to a missing vault answers with an error: the second capability stays usable while PTY input is blocked.
+		const missing = join(root, 'missing-vault'),
+			probe = { vault: missing, index: join(missing, 'index.sqlite') };
 		const metricsPath = join(root, 'metrics.json');
 		let stage = 'prepare',
 			currentCycle = -1,
@@ -75,7 +67,7 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 			});
 			return helper;
 		});
-		const browser = await host.acquire('cookies');
+		const secondary = await host.acquire('history');
 		const output = new Map<number, string>();
 		const lease = await host.acquire('pty', {
 			output(sid, bytes) {
@@ -129,10 +121,8 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 			expect(await echo.finished).toMatchObject({ state: 'written' });
 			mark('sibling-echo');
 			await wait(() => (output.get(sibling) ?? '').includes('REPLY:ping'));
-			mark('cookie-first');
-			expect(await nativeCookieReader(host).readCookies(path, 'firefox')).toMatchObject({
-				rows: [{ name: 'sid', value: 'complete' }],
-			});
+			mark('history-first');
+			await expect(secondary.value.history('query', probe)).rejects.toThrow();
 			const siblingLatency = performance.now() - controlAt;
 			mark('stop-blocked', blocked);
 			lease.value.end(blocked, true);
@@ -143,7 +133,7 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 			mark('initial-release');
 			await lease.release();
 			expect(helper.alive).toBe(true);
-			// More than the 32 native session slots: retaining Browser prevents last-owner
+			// More than the 32 native session slots: retaining Secondary prevents last-owner
 			// helper termination from concealing a leaked blocked writer or retiring slot.
 			for (let cycle = 0; cycle < 34; cycle++) {
 				currentCycle = cycle;
@@ -188,15 +178,13 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 				mark('reuse-helper-alive');
 				expect(helper.alive).toBe(true);
 			}
-			mark('cookie-final');
-			expect(await browser.value.request('cookies', 'read', { path, kind: 'firefox' })).toMatchObject({
-				rows: [{ name: 'sid', value: 'complete' }],
-			});
+			mark('history-final');
+			await expect(secondary.value.history('query', probe)).rejects.toThrow();
 			expect(helperStarts).toBe(1);
 			console.info(
 				JSON.stringify({
 					workload:
-						'Linux blocked input, sibling input+Cookie; Browser retained through 34 subsequent blocked-input PTY stop/reuse cycles',
+						'Linux blocked input, sibling input+history; second lease retained through 34 subsequent blocked-input PTY stop/reuse cycles',
 					siblingLatencyMs: siblingLatency,
 					elapsedMs: performance.now() - started,
 					...helper.streamStats,
@@ -213,8 +201,8 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 					return lease.release();
 				},
 				() => {
-					mark('cleanup-browser');
-					return browser.release();
+					mark('cleanup-secondary');
+					return secondary.release();
 				},
 				() => {
 					mark('cleanup-host');
@@ -429,7 +417,7 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 			helper = await PtyHelper.start(binary!, events, globalThis as unknown as Window, {});
 			return helper;
 		});
-		const browser = await host.acquire('cookies'),
+		const secondary = await host.acquire('history'),
 			lease = await host.acquire('pty');
 		const child = (helper as unknown as { child: ChildProcessWithoutNullStreams }).child;
 		const filled = new Map<number, number>(),
@@ -509,7 +497,7 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 			} satisfies Partial<NativeSpawnError>);
 			await wait(() => helper.streamStats.sessionRoutes === 0, 1000);
 			expect(helper.streamStats.replyClosePending).toBe(0);
-			expect(browser.value.alive).toBe(true);
+			expect(secondary.value.alive).toBe(true);
 		} catch (error) {
 			failures.push(error);
 		} finally {
@@ -521,7 +509,7 @@ test.skipIf(process.platform !== 'linux' || !binary)(
 				},
 				() => wait(() => exited.size === filled.size),
 				() => lease.release(),
-				() => browser.release(),
+				() => secondary.release(),
 				() => host.dispose(),
 				() => {
 					child.stdout.off('data', observe);

@@ -363,7 +363,7 @@ fn editor_pools_are_independent_and_return_only_after_the_real_stdout_writer() {
         .unwrap();
     out.send(
         encode_json(
-            &json!({"type":"cookies-result","rid":"sibling","data":{}}),
+            &json!({"type":"history-result","rid":"sibling","data":{}}),
             8192,
         )
         .unwrap(),

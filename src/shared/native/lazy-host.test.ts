@@ -6,7 +6,7 @@ test('unused and already-aborted capabilities never load the desktop host', asyn
 	const host = lazyNativeHost(async () => { loads++; throw new Error('desktop unavailable'); });
 	expect(loads).toBe(0);
 	const abort = new AbortController(); abort.abort();
-	await expect(host.acquire('cookies', undefined, abort.signal)).rejects.toBeDefined();
+	await expect(host.acquire('history', undefined, abort.signal)).rejects.toBeDefined();
 	expect(loads).toBe(0);
 	await host.dispose();
 	await expect(host.acquire('pty')).rejects.toThrow('closed');
@@ -17,7 +17,7 @@ test('unload during desktop loading reclaims the late host without acquiring any
 	let complete!: (host: NativeHostOwner) => void;
 	let acquisitions = 0, disposals = 0;
 	const host = lazyNativeHost(() => new Promise(resolve => { complete = resolve; }));
-	const acquiring = expect(host.acquire('cookies')).rejects.toThrow('closed');
+	const acquiring = expect(host.acquire('history')).rejects.toThrow('closed');
 	const closing = host.dispose();
 	complete({ acquire: async () => { acquisitions++; throw new Error('must not acquire'); }, dispose: async () => { disposals++; } });
 	await acquiring;

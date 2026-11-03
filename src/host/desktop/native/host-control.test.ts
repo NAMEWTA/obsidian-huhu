@@ -29,7 +29,7 @@ function fixture(options: { holdProgress?: boolean; holdResult?: boolean; holdUn
 			if (wire.type === 'control-register') receive({ type: 'control-registered', controlId: wire.controlId as string, endpoint: '/fixture/socket', locator: '/fixture/locator' });
 			if (wire.type === 'control-result' && options.settleResults !== false) receive({ type: 'control-settled', controlId: wire.controlId as string, bridgeId: wire.bridgeId as string });
 			if (wire.type === 'control-unregister' && !options.holdUnregister) receive({ type: 'control-unregistered', controlId: wire.controlId as string });
-			if (wire.type === 'cookies') stdout.write(encodeControl({ type: 'cookies-result', rid: wire.rid, ok: true, data: { rows: [] } }));
+			if (wire.type === 'history') stdout.write(encodeControl({ type: 'history-result', rid: wire.rid, ok: true, data: { rows: [] } }));
 		}
 		if ((options.holdProgress && sent.at(-1)?.type === 'control-progress') || (options.holdResult && sent.at(-1)?.type === 'control-result')) held.push(done);
 		else done();
@@ -41,7 +41,7 @@ function fixture(options: { holdProgress?: boolean; holdResult?: boolean; holdUn
 }
 
 test('a captured PTY lease registers same-generation control and synchronously forwards a captured call', async () => {
-	const io = fixture(), browser = await io.host.acquire('cookies'), pty = await io.host.acquire('pty');
+	const io = fixture(), secondary = await io.host.acquire('history'), pty = await io.host.acquire('pty');
 	try {
 		expect(typeof pty.acquireControl).toBe('function');
 		const control = await pty.acquireControl!();
@@ -57,11 +57,11 @@ test('a captured PTY lease registers same-generation control and synchronously f
 		expect(io.sent.filter(x => x.type === 'control-result')).toHaveLength(1);
 		await registration.close();
 		expect(registration.current(pty)).toBe(false);
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [] });
 		await control.release();
 	} finally {
 		await pty.release();
-		await browser.release();
+		await secondary.release();
 		await io.host.dispose();
 	}
 });
@@ -136,8 +136,8 @@ test('native settled cannot release a call before the actual final callback and 
 	} finally { io.releaseProgress(); await io.host.dispose(); }
 });
 
-test('cancel, release and local result keep all sixteen original slots until native settled; Browser remains usable', async () => {
-	const io = fixture({ settleResults: false }), browser = await io.host.acquire('cookies'), pty = await io.host.acquire('pty'), control = await pty.acquireControl!();
+test('cancel, release and local result keep all sixteen original slots until native settled; Secondary remains usable', async () => {
+	const io = fixture({ settleResults: false }), secondary = await io.host.acquire('history'), pty = await io.host.acquire('pty'), control = await pty.acquireControl!();
 	try {
 		const calls: NativeControlCall[] = [], cancelled: NativeControlCall[] = [];
 		const registration = await control.registerControl!(scope, { forward: value => calls.push(value), cancel: call => cancelled.push(call), closed() {} });
@@ -156,22 +156,22 @@ test('cancel, release and local result keep all sixteen original slots until nat
 		await expect(other.registerControl!(scope, { forward() {}, closed() {} })).rejects.toMatchObject({ code: 'BUSY' });
 		await Promise.all(calls.map(call => registration.result(call, success(call))));
 		await tick(); expect(released).toBe(false); expect(io.host.controlStats.calls).toBe(16);
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [] });
 		for (const call of calls) io.receive({ type: 'control-settled', controlId: registration.route.controlId, bridgeId: call.wire.bridgeId });
 		await release; expect(io.host.controlStats.calls).toBe(0);
 		const next = await other.registerControl!(scope, { forward() {}, closed() {} });
 		await expect(next.result(calls[0]!, success(calls[0]!))).rejects.toMatchObject({ code: 'INVALID_ARGUMENT' });
 		await next.close(); await other.release();
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [] });
 	} finally { await io.host.dispose(); }
 });
 
 test('private lease and call identities reject structural copies, foreign hosts and a released captured PTY without restarting', async () => {
-	const io = fixture(), pty = await io.host.acquire('pty'), control = await pty.acquireControl!(), browser = await io.host.acquire('cookies');
+	const io = fixture(), pty = await io.host.acquire('pty'), control = await pty.acquireControl!(), secondary = await io.host.acquire('history');
 	try {
 		let call: NativeControlCall | undefined;
 		const registration = await control.registerControl!(scope, { forward: value => { call = value; }, closed() {} });
-		expect(registration.current({ ...pty })).toBe(false); expect(registration.current(browser)).toBe(false);
+		expect(registration.current({ ...pty })).toBe(false); expect(registration.current(secondary)).toBe(false);
 		const foreign = fixture(), foreignPty = await foreign.host.acquire('pty');
 		try { expect(registration.current(foreignPty)).toBe(false); } finally { await foreign.host.dispose(); }
 		io.receive({ type: 'control-request', controlId: registration.route.controlId, bridgeId: 'owned', request: { protocolVersion: 1, requestId: 'external', operation: 'space.list' } });
@@ -184,7 +184,7 @@ test('private lease and call identities reject structural copies, foreign hosts 
 		await registration.result(call!, success(call!));
 		await expect(registration.result(call!, success(call!))).rejects.toMatchObject({ code: 'INVALID_ARGUMENT' });
 		await registration.close();
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [] });
 	} finally { await io.host.dispose(); }
 });
 
@@ -207,8 +207,8 @@ test('failed progress replacement preserves the last valid effect and target wit
 	} finally { io.releaseProgress(); await io.host.dispose(); }
 });
 
-test('missing physical unregister confirmation returns typed unknown and retains closing BUSY without disrupting Browser', async () => {
-	const io = fixture({ holdUnregister: true }), browser = await io.host.acquire('cookies'), pty = await io.host.acquire('pty'), control = await pty.acquireControl!();
+test('missing physical unregister confirmation returns typed unknown and retains closing BUSY without disrupting Secondary', async () => {
+	const io = fixture({ holdUnregister: true }), secondary = await io.host.acquire('history'), pty = await io.host.acquire('pty'), control = await pty.acquireControl!();
 	try {
 		const registration = await control.registerControl!(scope, { forward() {}, closed() {} });
 		const close = registration.close();
@@ -216,7 +216,7 @@ test('missing physical unregister confirmation returns typed unknown and retains
 		await expect(close).rejects.toMatchObject({ code: 'EFFECT_UNKNOWN', effect: 'unknown' });
 		expect(io.host.controlStats.phase).toBe('closing');
 		await expect(control.registerControl!(scope, { forward() {}, closed() {} })).rejects.toMatchObject({ code: 'BUSY' });
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [] });
 		io.receive({ type: 'control-unregistered', controlId: registration.route.controlId });
 		await tick(); expect(io.host.controlStats.phase).toBeUndefined();
 		const next = await control.registerControl!(scope, { forward() {}, closed() {} });

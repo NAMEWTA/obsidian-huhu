@@ -17,8 +17,6 @@ vi.mock('../../platform/desktop/files', () => {
 		vaultFilePath: vi.fn(unavailable),
 	};
 });
-vi.mock('../browser/BrowserTabView', () => ({ BrowserTabView: () => null }));
-vi.mock('../browser/BrowserWorkspaceTab', () => ({ BrowserWorkspaceTab: () => null }));
 vi.mock('../create/NewTabMenu', () => ({ NewTabMenu: () => null }));
 vi.mock('../quick-commands/QuickCommandsButton', () => ({ QuickCommandsButton: () => null }));
 vi.mock('../dashboard/AgentBoard', () => ({ AgentBoard: () => <div>board page</div> }));

@@ -1,6 +1,5 @@
 import type { ModuleManifest } from '../../app/contracts/module';
 import { AUTOMATION_AGENT_RUNTIME } from '../automations/api';
-import { BROWSER_MATERIAL_CONSUMERS } from '../browser/api';
 import {
 	AGENT_SESSIONS,
 	AGENT_USAGE,
@@ -23,7 +22,6 @@ export const agentManifest: ModuleManifest = {
 	platforms: { desktop: true, mobile: true },
 	defaultEnabled: true,
 	activation: 'startup',
-	contributes: [BROWSER_MATERIAL_CONSUMERS],
 	provides: [
 		AUTOMATION_AGENT_RUNTIME,
 		AGENT_SESSIONS,

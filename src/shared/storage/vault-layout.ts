@@ -82,8 +82,6 @@ export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.exports}`;
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
 /** Per-device managed Chromium, encrypted identities and operation records. */
 export const BROWSER_ROOT = '.huhu/browser';
-/** User-selected material copies for Agent inputs; excluded from Git. */
-export const BROWSER_MATERIALS_ROOT = '.huhu/browser-materials';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
 export const VERSIONING_RECOVERY_ROOT = '.huhu/recovery/versioning';

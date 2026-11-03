@@ -114,7 +114,6 @@ test.skipIf(!process.env.HUHU_TEST_PANE_EVIDENCE)(
 			createSpaceWorkspaceStore(spaces, win, report),
 			sessions,
 			launch,
-			undefined,
 			spaces,
 		);
 		router = new ControlRouter(new ControlCommands(spaces, workspace, sessions));

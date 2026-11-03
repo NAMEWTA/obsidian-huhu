@@ -574,7 +574,7 @@ export class NativeHost implements NativeHostAccess {
 			return generation.helper;
 		};
 		const request = async <T>(
-			type: 'history' | 'cookies',
+			type: 'history',
 			op: string,
 			payload: Record<string, unknown>,
 			signal?: AbortSignal,

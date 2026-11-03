@@ -1,4 +1,4 @@
-/** Material attached to an agent session's input (notes, archive records, browser captures). */
+/** Material attached to an agent session's input (notes, archive records). */
 export interface ContextMaterial {
 	id: string;
 	kind: 'web' | 'element' | 'screenshot' | 'note' | 'archive';

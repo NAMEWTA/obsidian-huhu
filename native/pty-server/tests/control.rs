@@ -675,8 +675,8 @@ mod process {
         );
         h.send(json!({"type":"control-unregister","controlId":h.id}));
         h.next("control-unregistered");
-        h.send(json!({"type":"cookies","rid":"browser-r1-timeout","op":"fixture-unsupported","payload":{}}));
-        assert_eq!(h.next("cookies-result")["rid"], "browser-r1-timeout");
+        h.send(json!({"type":"history","rid":"history-r1-timeout","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+        assert_eq!(h.next("history-result")["rid"], "history-r1-timeout");
         h.finish();
     }
     #[test]
@@ -718,8 +718,8 @@ mod process {
                 h.frames.try_recv().is_err(),
                 "query observation must not replay business"
             );
-            h.send(json!({"type":"cookies","rid":"browser-r1-query","op":"fixture-unsupported","payload":{}}));
-            assert_eq!(h.next("cookies-result")["rid"], "browser-r1-query");
+            h.send(json!({"type":"history","rid":"history-r1-query","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+            assert_eq!(h.next("history-result")["rid"], "history-r1-query");
             h.finish();
             observed.push((closing, exit, response));
         }
@@ -795,8 +795,8 @@ mod process {
                     h.send(json!({"type":"control-unregister","controlId":h.id}));
                 }
                 h.next("control-unregistered");
-                h.send(json!({"type":"cookies","rid":"stage1-browser","op":"fixture-unsupported","payload":{}}));
-                assert_eq!(h.next("cookies-result")["rid"], "stage1-browser");
+                h.send(json!({"type":"history","rid":"history-stage1","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+                assert_eq!(h.next("history-result")["rid"], "history-stage1");
                 h.finish();
                 assert_eq!(exit, if closing { 130 } else { 6 });
                 assert_eq!(
@@ -902,8 +902,8 @@ mod process {
             let receipt = json!({"kind":receipt_kind.unwrap_or("read-only"),"op":21});
             h.send(json!({"type":"control-progress","controlId":h.id,"bridgeId":bridge,"progress":{"phase":phase,"effect":effect,"target":request["request"]["target"],"data":{"receipt":receipt}}}));
             // Same stdin FIFO: this completed response proves main already adopted the preceding progress.
-            h.send(json!({"type":"cookies","rid":"sigint-stage-barrier","op":"fixture-unsupported","payload":{}}));
-            assert_eq!(h.next("cookies-result")["rid"], "sigint-stage-barrier");
+            h.send(json!({"type":"history","rid":"history-sigint-barrier","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+            assert_eq!(h.next("history-result")["rid"], "history-sigint-barrier");
             assert_eq!(unsafe { libc::kill(client.id() as i32, libc::SIGINT) }, 0);
             let (exit, response) = collect(&mut client);
             let cancelled = h.next("control-cancel");
@@ -911,8 +911,8 @@ mod process {
             assert_eq!(h.next("control-settled")["bridgeId"], bridge);
             h.send(json!({"type":"control-unregister","controlId":h.id}));
             h.next("control-unregistered");
-            h.send(json!({"type":"cookies","rid":"sigint-browser-after","op":"fixture-unsupported","payload":{}}));
-            assert_eq!(h.next("cookies-result")["rid"], "sigint-browser-after");
+            h.send(json!({"type":"history","rid":"history-sigint-after","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+            assert_eq!(h.next("history-result")["rid"], "history-sigint-after");
             h.finish();
             println!("stage1 sigint operation={operation} exit={exit} response={response} cancel={cancelled}");
             assert_eq!(exit, 130);
@@ -977,8 +977,8 @@ mod process {
         assert_eq!(h.next("control-settled")["bridgeId"], bridge);
         h.send(json!({"type":"control-unregister","controlId":h.id}));
         h.next("control-unregistered");
-        h.send(json!({"type":"cookies","rid":"conflicting-final-browser","op":"fixture-unsupported","payload":{}}));
-        assert_eq!(h.next("cookies-result")["rid"], "conflicting-final-browser");
+        h.send(json!({"type":"history","rid":"history-conflicting-final","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+        assert_eq!(h.next("history-result")["rid"], "history-conflicting-final");
         h.finish();
         println!("stage1 conflicting final exit={exit} response={response}");
         assert_eq!(exit, 6);
@@ -1022,8 +1022,8 @@ mod process {
         h.send(json!({"type":"control-unregister","controlId":h.id}));
         h.next("control-unregistered");
         assert!(!locator.exists());
-        h.send(json!({"type":"cookies","rid":"browser-after-control","op":"fixture-unsupported","payload":{}}));
-        assert_eq!(h.next("cookies-result")["rid"], "browser-after-control");
+        h.send(json!({"type":"history","rid":"history-after-control","op":"query","payload":{"vault":"/huhu-fixture-missing","index":"/huhu-fixture-missing/index.sqlite"}}));
+        assert_eq!(h.next("history-result")["rid"], "history-after-control");
         h.finish();
     }
     #[test]

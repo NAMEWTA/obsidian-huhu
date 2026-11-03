@@ -1,4 +1,3 @@
-import type { BrowserWorkspace, BrowserPage } from '../../browser/api';
 import type { CapturedManagedCreate } from '../core/control/context';
 import { spaceBoundCwd } from './agent-runtime';
 import { lifecycleClock, observeLifecycle, SHUTDOWN_OBSERVE_MS } from './terminal/clock';
@@ -24,7 +23,6 @@ import {
 	type WorkspaceMoveReason,
 } from '../core/workspace/ops';
 import type {
-	BrowserTabData,
 	PageKind,
 	ResumeInfo,
 	TabColor,
@@ -88,8 +86,6 @@ import {
 
 /** In-page confirmation; the optional wording replaces the "end session" texts of the shared dialog. */
 export type ConfirmFn = (message: string, options?: { title?: string; action?: string }) => Promise<boolean>;
-/** The browser's public facade is optional; Agent never owns a native browser resource. */
-export type WorkspaceBrowserHost = Pick<BrowserWorkspace, 'resolveInput' | 'getState' | 'createSpace' | 'openPage'>;
 function normalizeManagedFailure(cause: unknown) {
 	if (cause instanceof PaneCommandError && cause.code === 'CAPACITY_EXCEEDED')
 		return { ...managedFailure('CAPABILITY_UNAVAILABLE', 'pane-capacity'), nextAction: 'inspect-runtime' as const };
@@ -203,7 +199,6 @@ export class WorkspaceService {
 		readonly persistence: WorkspaceStore,
 		private sessions: TerminalSessions,
 		private launch: WorkspaceLaunchPort,
-		private browser: () => WorkspaceBrowserHost | undefined = () => undefined,
 		readonly spaces?: SpaceService,
 		private readonly retainsPersistence = false,
 	) {
@@ -1654,9 +1649,6 @@ export class WorkspaceService {
 		return this.drainObservation;
 	}
 
-	get browserAvailable(): boolean {
-		return !!this.browser();
-	}
 	get active(): WorkspaceTab | undefined {
 		return activeTab(this.store.getState());
 	}
@@ -1893,39 +1885,6 @@ export class WorkspaceService {
 		await this.spaces.select(spaceId);
 		this.sync();
 	}
-	async newBrowser(
-		input?: string,
-		options: { groupId?: string; spaceId?: string; pageId?: string } = {},
-	): Promise<string | undefined> {
-		await this.persistence.ready;
-		if (this.disposed) return undefined;
-		const host = this.browser();
-		if (!host) throw new Error(t('agent.workspace.browserDisabled'));
-		const url = input ? host.resolveInput(input) : undefined;
-		if (input && !url) throw new Error(t('browser.browser_invalid_url'));
-		let space = options.spaceId ? host.getState().spaces.find((item) => item.id === options.spaceId) : undefined;
-		if (options.spaceId && !space) throw new Error(t('agent.workspace.browserTargetMissing'));
-		if (!space) {
-			// Temporary storage requires an explicit consent flow in Browser Workspace.
-			if (host.getState().persistence !== 'secure') throw new Error(t('agent.workspace.browserNeedsWorkspace'));
-			space = await host.createSpace({ kind: 'task', url: url ?? undefined });
-		}
-		let page = options.pageId ? space.pages.find((item) => item.id === options.pageId) : space.pages[0];
-		if (options.pageId && !page) throw new Error(t('agent.workspace.browserTargetMissing'));
-		if (options.spaceId && url) page = await host.openPage({ spaceId: space.id, url });
-		if (!page) page = await host.openPage({ spaceId: space.id, url: url ?? undefined });
-		if (this.disposed) return undefined;
-		const tab: BrowserTabData = {
-			kind: 'browser',
-			id: `tab-${crypto.randomUUID()}`,
-			spaceId: space.id,
-			pageId: page.id,
-			title: page.title || t('browser.newTab'),
-			createdAt: Date.now(),
-		};
-		this.update((s) => openTab(s, options.groupId, tab));
-		return tab.id;
-	}
 	/**
 	 * Show a page (the board or usage) as a tab. A page that is already open is activated instead of opened
 	 * again, so repeated clicks never stack tabs.
@@ -1943,14 +1902,6 @@ export class WorkspaceService {
 			return opened?.state ?? s;
 		});
 		return tabId;
-	}
-	updateBrowser(tabId: string, state: Pick<BrowserPage, 'title'>): void {
-		this.update((s) => {
-			const tab = s.tabs[tabId];
-			if (tab?.kind !== 'browser') return s;
-			const next = { ...tab, title: state.title || t('browser.newTab') };
-			return JSON.stringify(next) === JSON.stringify(tab) ? s : { ...s, tabs: { ...s.tabs, [tabId]: next } };
-		});
 	}
 	activate(tabId: string): void {
 		this.activateForPresentation(tabId);
@@ -2128,7 +2079,7 @@ export class WorkspaceService {
 		});
 		return result;
 	}
-	/** Opt-in feedback for non-Browser presentation entry points. The shared move stays silent. */
+	/** Opt-in feedback for presentation entry points. The shared move stays silent. */
 	moveFromUI(tabId: string, to: WorkspaceMoveTarget): WorkspaceMoveResult {
 		try {
 			const result = this.move(tabId, to);

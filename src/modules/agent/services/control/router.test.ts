@@ -127,7 +127,6 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 		createSpaceWorkspaceStore(spaces, clock, vi.fn()),
 		sessions,
 		launch,
-		() => undefined,
 		spaces,
 	);
 	await workspace.persistence.ready;

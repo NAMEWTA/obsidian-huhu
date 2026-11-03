@@ -35,7 +35,7 @@ async function fixture() {
 		agent: async () => undefined, resume: async () => undefined, account: () => '', report: vi.fn(),
 	};
 	const clock = { setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms) as unknown as number, clearTimeout: (id: number) => clearTimeout(id) };
-	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), sessions, launch, undefined, spaces);
+	const workspace = new WorkspaceService(createSpaceWorkspaceStore(spaces, clock, vi.fn()), sessions, launch, spaces);
 	await workspace.persistence.ready;
 	const space = await spaces.create({ name: 'A', relativePath: '' }); await workspace.selectSpace(space.id);
 	const create = async (title: string, spaceId = space.id) => {

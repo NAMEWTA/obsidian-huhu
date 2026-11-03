@@ -82,7 +82,7 @@ test('a paste exception rejects the delivery and frees its timer and reservation
 	expect(vi.getTimerCount()).toBe(0); await f.attach();
 	expect(f.session.paste).toHaveBeenCalledTimes(2);
 });
-test('browser delivery can wait on the existing input without hiding its source viewer or opening another page', async () => {
+test('delivery can wait on the existing input without hiding its source viewer or opening another page', async () => {
 	const f = fixture(); const pending = f.delivery.attachMaterial('selected', f.material, { reveal: false });
 	expect(f.open).not.toHaveBeenCalled(); expect(f.show).not.toHaveBeenCalled(); f.session.ready = true; await vi.advanceTimersByTimeAsync(50); await pending; expect(f.session.paste).toHaveBeenCalledOnce();
 });

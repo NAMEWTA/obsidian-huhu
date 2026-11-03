@@ -1,11 +1,20 @@
 import { expect, test } from 'vitest';
 import { NativeHost } from '../../../../host/desktop/native/host';
 import { NativeReleaseError, type NativeEvents, type NativeTransport } from '../../../../shared/native/host';
-import { nativeCookieReader } from '../../../../shared/native/cookies';
 import { normalizeTerminalSettings } from '../../core/terminal/settings';
 import { TerminalSessions } from './sessions';
 
-/** Cookie reads share the PTY helper. Terminal cleanup must not drop an admitted read or open a second helper. */
+/** History reads share the PTY helper. Terminal cleanup must not drop an admitted read or open a second helper. */
+/** A history request that owns its lease through release, like the production readers. */
+async function readHistory(host: NativeHost, payload: Record<string, unknown>) {
+	const abort = new AbortController();
+	const lease = await host.acquire('history', undefined, abort.signal);
+	try {
+		return await lease.value.request<{ rows: Array<Record<string, unknown>> }>('history', 'query', payload, abort.signal);
+	} finally {
+		await lease.release();
+	}
+}
 async function fixture(protocol: 'confirmed' | 'legacy') {
 	let complete!: (value: { rows: Array<Record<string, unknown>> }) => void;
 	let admitted!: () => void;
@@ -80,7 +89,7 @@ async function fixture(protocol: 'confirmed' | 'legacy') {
 }
 
 for (const protocol of ['confirmed', 'legacy'] as const)
-	test(`an admitted Cookie read survives ${protocol} terminal cleanup on the same helper`, async () => {
+	test(`an admitted history read survives ${protocol} terminal cleanup on the same helper`, async () => {
 		const f = await fixture(protocol);
 		const agent = new TerminalSessions({
 			native: f.host,
@@ -93,7 +102,7 @@ for (const protocol of ['confirmed', 'legacy'] as const)
 		try {
 			expect(f.starts).toBe(0);
 			const session = await agent.create({ kind: 'shell', title: 'shell', file: 'sh', args: [], cwd: '/vault' });
-			const reading = nativeCookieReader(f.host).readCookies('/snapshot', 'chromium');
+			const reading = readHistory(f.host, { vault: '/snapshot' });
 			await f.accepted;
 			stopping = agent.dispose();
 			if (protocol === 'confirmed') await expect(stopping).resolves.toBeUndefined();
@@ -107,8 +116,8 @@ for (const protocol of ['confirmed', 'legacy'] as const)
 			expect(f.ended).toContain(session.sid);
 			expect(f.connected).toBe(true);
 			expect(f.starts).toBe(1);
-			f.complete({ rows: [{ name: 'browser-survives' }] });
-			await expect(reading).resolves.toEqual({ rows: [{ name: 'browser-survives' }] });
+			f.complete({ rows: [{ name: 'history-survives' }] });
+			await expect(reading).resolves.toEqual({ rows: [{ name: 'history-survives' }] });
 			expect(f.connected).toBe(false);
 			expect(f.starts).toBe(1);
 		} finally {

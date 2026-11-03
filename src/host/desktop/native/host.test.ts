@@ -12,11 +12,11 @@ test('only the last owner observes shutdown failure; confirmed gone permits the 
 		const helper = transport(events), original = helper.dispose, index = ++starts;
 		return { ...helper, dispose: async () => { disposals++;await original();if (index === 1) throw failure; } };
 	});
-	const pty = await host.acquire('pty'), cookies = await host.acquire('cookies');
-	await pty.release();expect(disposals).toBe(0);await expect(cookies.value.request('cookies', 'read', {})).resolves.toBeDefined();
-	const release = cookies.release();expect(cookies.release()).toBe(release);await expect(release).rejects.toBe(failure);
+	const pty = await host.acquire('pty'), second = await host.acquire('history');
+	await pty.release();expect(disposals).toBe(0);await expect(second.value.request('history', 'query', {})).resolves.toBeDefined();
+	const release = second.release();expect(second.release()).toBe(release);await expect(release).rejects.toBe(failure);
 	const next = await host.acquire('history');expect(starts).toBe(2);
-	await expect(cookies.release()).rejects.toBe(failure);await expect(next.value.history('scan', {})).resolves.toEqual({ rows: [{ name: 'cookie' }] });
+	await expect(second.release()).rejects.toBe(failure);await expect(next.value.history('scan', {})).resolves.toEqual({ rows: [{ name: 'history' }] });
 	await next.release();await host.dispose();expect(disposals).toBe(2);
 });
 
@@ -27,12 +27,12 @@ test('unconfirmed shutdown blocks a second helper until its late physical fence,
 		callbacks.push(events);const helper = transport(events), original = helper.dispose, index = ++starts;
 		return { ...helper, dispose: async () => { await original();if (index === 1) throw failure; } };
 	});
-	const first = await host.acquire('cookies'), release = first.release();
+	const first = await host.acquire('history'), release = first.release();
 	await expect(release).rejects.toBe(failure);await expect(host.acquire('history')).rejects.toBe(failure);expect(starts).toBe(1);
 	gone.resolve(helperOutcome('exited'));await Promise.resolve();await Promise.resolve();expect(starts).toBe(1);
-	const next = await host.acquire('cookies');expect(starts).toBe(2);
+	const next = await host.acquire('history');expect(starts).toBe(2);
 	callbacks[0]!.closed('late old callback');await expect(first.release()).rejects.toBe(failure);
-	await expect(next.value.request('cookies', 'read', {})).resolves.toBeDefined();expect(starts).toBe(2);
+	await expect(next.value.request('history', 'query', {})).resolves.toBeDefined();expect(starts).toBe(2);
 	await next.release();await host.dispose();
 });
 
@@ -56,15 +56,15 @@ test('startup and unconfirmed cleanup retain both errors and forbid a second hel
 	const gone = deferred<Readonly<NativeHelperTermination>>(), cleanup = new NativeShutdownError('startup cleanup unconfirmed', helperOutcome('unconfirmed'), gone.promise);
 	const primary = new Error('original startup failure'), combined = new AggregateError([primary, cleanup], primary.message, { cause: primary });let starts = 0;
 	const host = new NativeHost(async events => { if (++starts === 1) throw combined;return transport(events); });
-	await expect(host.acquire('pty')).rejects.toBe(combined);await expect(host.acquire('cookies')).rejects.toBe(combined);expect(starts).toBe(1);
+	await expect(host.acquire('pty')).rejects.toBe(combined);await expect(host.acquire('history')).rejects.toBe(combined);expect(starts).toBe(1);
 	gone.resolve(helperOutcome('exited'));await Promise.resolve();await Promise.resolve();
-	const next = await host.acquire('cookies');expect(starts).toBe(2);await next.release();await host.dispose();
+	const next = await host.acquire('history');expect(starts).toBe(2);await next.release();await host.dispose();
 });
 
 test('Host dispose after an already retired failed last release retains that original shutdown result', async () => {
 	const outcome = helperOutcome('exited'), failure = new NativeShutdownError('retired cleanup failure', outcome, Promise.resolve(outcome));
 	const host = new NativeHost(async events => ({ ...transport(events), dispose: async () => { throw failure; } }));
-	const lease = await host.acquire('cookies');await expect(lease.release()).rejects.toBe(failure);
+	const lease = await host.acquire('history');await expect(lease.release()).rejects.toBe(failure);
 	const closing = host.dispose();expect(host.dispose()).toBe(closing);await expect(closing).rejects.toBe(failure);
 });
 
@@ -87,7 +87,7 @@ function transport(events: NativeEvents) {
 		history: async <T>() => [] as T,
 		request: async <T>() => {
 			if (!alive) throw new Error('disconnected');
-			return { rows: [{ name: 'cookie' }] } as T;
+			return { rows: [{ name: 'history' }] } as T;
 		},
 		dispose: async () => {
 			alive = false;
@@ -96,17 +96,17 @@ function transport(events: NativeEvents) {
 	} satisfies NativeTransport;
 }
 
-test('reply faults keep the captured SID owner through release drain and cannot reach Browser or a new generation', async () => {
+test('reply faults keep the captured SID owner through release drain and cannot reach Secondary or a new generation', async () => {
 	const callbacks: NativeEvents[] = [],
 		first: unknown[] = [],
 		sibling: unknown[] = [],
-		browserFaults: unknown[] = [];
+		secondaryFaults: unknown[] = [];
 	const stopped = deferred<number>();
 	const host = new NativeHost(async (events) => {
 		callbacks.push(events);
 		return Object.assign(transport(events), { requestStop: (sid: number) => stopped.resolve(sid) });
 	});
-	const browser = await host.acquire('cookies', { replyFailure: (_sid, value) => browserFaults.push(value) });
+	const secondary = await host.acquire('history', { replyFailure: (_sid, value) => secondaryFaults.push(value) });
 	const a = await host.acquire('pty', { replyFailure: (sid, value) => first.push({ sid, value }) });
 	const b = await host.acquire('pty', { replyFailure: (sid, value) => sibling.push({ sid, value }) });
 	const aid = a.allocateSessionId(),
@@ -140,14 +140,14 @@ test('reply faults keep the captured SID owner through release drain and cannot 
 		callbacks[0]!.replyFailure?.(999, { state: 'none', reason: 'closed' });
 		expect(first).toEqual([{ sid: aid, value: { state: 'none', reason: 'capacity' } }]);
 		expect(sibling).toEqual([{ sid: bid, value: { state: 'unknown', reason: 'write-failed' } }]);
-		expect(browserFaults).toEqual([]);
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+		expect(secondaryFaults).toEqual([]);
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} catch (error) {
 		errors.push(error);
 	} finally {
 		complete(aid);
 		complete(bid);
-		for (const step of [() => closing, () => b.release(), () => browser.release()]) {
+		for (const step of [() => closing, () => b.release(), () => secondary.release()]) {
 			try {
 				await step();
 			} catch (error) {
@@ -173,17 +173,17 @@ test('reply faults keep the captured SID owner through release drain and cannot 
 	if (errors.length) throw new AggregateError(errors, 'Reply owner fixture failed');
 });
 
-test('releasing Agent leaves the Browser Cookie capability connected until its owner releases', async () => {
+test('releasing Agent leaves the second history capability connected until its owner releases', async () => {
 	const host = new NativeHost(async (events) => transport(events));
 	const agent = await host.acquire('pty');
-	const browser = await host.acquire('cookies');
+	const secondary = await host.acquire('history');
 	try {
 		await agent.release();
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toEqual({ rows: [{ name: 'cookie' }] });
+		await expect(secondary.value.request('history', 'query', {})).resolves.toEqual({ rows: [{ name: 'history' }] });
 	} finally {
-		await browser.release();
+		await secondary.release();
 	}
-	expect(browser.value.alive).toBe(false);
+	expect(secondary.value.alive).toBe(false);
 });
 
 test('crash notifies every owner and a fresh acquisition cannot reuse the failed generation', async () => {
@@ -194,21 +194,21 @@ test('crash notifies every owner and a fresh acquisition cannot reuse the failed
 		return transport(events);
 	});
 	const first = await host.acquire('history', { closed: (reason) => reasons.push(reason) });
-	const browser = await host.acquire('cookies', { closed: (reason) => reasons.push(reason) });
+	const secondary = await host.acquire('history', { closed: (reason) => reasons.push(reason) });
 	try {
 		crashes[0]!('native crash');
 		expect(reasons).toEqual(['native crash', 'native crash']);
 		await expect(first.value.history('query', {})).rejects.toThrow('native crash');
-		const next = await host.acquire('cookies');
+		const next = await host.acquire('history');
 		try {
 			expect(crashes).toHaveLength(2);
-			await expect(next.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+			await expect(next.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 		} finally {
 			await next.release();
 		}
 	} finally {
 		await first.release();
-		await browser.release();
+		await secondary.release();
 	}
 });
 
@@ -272,7 +272,7 @@ test.each(['complete', 'new-owner', 'timeout'])(
 			expect(disposed).toBe(0);
 			expect(agent.value.alive).toBe(false); // admission is revoked, but its captured drain remains owned
 			if (mode === 'new-owner') {
-				next = await host.acquire('cookies');
+				next = await host.acquire('history');
 				expect(callbacks).toHaveLength(1);
 			}
 			if (mode === 'timeout') {
@@ -290,7 +290,7 @@ test.each(['complete', 'new-owner', 'timeout'])(
 				expect(acks).toEqual([3]);
 				if (next) {
 					expect(disposed).toBe(0);
-					expect(await next.value.request('cookies', 'read', {})).toHaveProperty('rows');
+					expect(await next.value.request('history', 'query', {})).toHaveProperty('rows');
 					await next.release();
 				}
 				expect(disposed).toBe(1);
@@ -336,7 +336,7 @@ test('cancellation closes admission immediately and a helper that starts late is
 	});
 	const abort = new AbortController();
 	let result = 'pending';
-	const acquiring = host.acquire('cookies', undefined, abort.signal).then(
+	const acquiring = host.acquire('history', undefined, abort.signal).then(
 		() => {
 			result = 'acquired';
 		},
@@ -365,7 +365,7 @@ test('session numbers survive Agent reactivation and stale owners cannot send in
 		events = callbacks;
 		return transport(callbacks);
 	});
-	const browser = await host.acquire('cookies');
+	const secondary = await host.acquire('history');
 	const first = await host.acquire('pty');
 	const oldSid = first.allocateSessionId();
 	await first.release();
@@ -379,12 +379,12 @@ test('session numbers survive Agent reactivation and stale owners cannot send in
 		expect(() => first.value.input(oldSid, 'late')).toThrow('lease is closed');
 	} finally {
 		await second.release();
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
 
-test('releasing a PTY lease waits for its own exit while Browser keeps the helper alive', async () => {
+test('releasing a PTY lease waits for its own exit while Secondary keeps the helper alive', async () => {
 	let events!: NativeEvents;
 	const endRequested = deferred<number>();
 	const host = new NativeHost(async (callbacks) => {
@@ -395,7 +395,7 @@ test('releasing a PTY lease waits for its own exit while Browser keeps the helpe
 			},
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'sh', args: [], env: {}, cols: 80, rows: 24 });
@@ -407,11 +407,11 @@ test('releasing a PTY lease waits for its own exit while Browser keeps the helpe
 		expect(await endRequested.promise).toBe(sid);
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(released).toBe(false);
-		expect(browser.value.alive).toBe(true);
+		expect(secondary.value.alive).toBe(true);
 	} finally {
 		complete(events, sid);
 		await stopping;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -429,7 +429,7 @@ test('a spawn completing after release is ended before the PTY owner finishes cl
 			},
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	const spawning = expect(
@@ -445,13 +445,13 @@ test('a spawn completing after release is ended before the PTY owner finishes cl
 		await spawning;
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(closed).toBe(false);
-		expect(browser.value.alive).toBe(true);
+		expect(secondary.value.alive).toBe(true);
 	} finally {
 		spawn.resolve(42);
 		complete(events, sid);
 		await spawning;
 		await closing;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -465,7 +465,7 @@ test.each([
 	const ready = deferred<void>();
 	let events!: NativeEvents;
 	const faults: unknown[] = [],
-		browserFaults: unknown[] = [];
+		secondaryFaults: unknown[] = [];
 	const clock = vi.spyOn(performance, 'now').mockReturnValue(0);
 	const failure = new NativeSpawnError(
 		'controlled spawn result',
@@ -482,7 +482,7 @@ test.each([
 			},
 		});
 	});
-	const browser = await host.acquire('cookies', { replyFailure: (_sid, value) => browserFaults.push(value) });
+	const secondary = await host.acquire('history', { replyFailure: (_sid, value) => secondaryFaults.push(value) });
 	const agent = await host.acquire('pty', { replyFailure: (_sid, value) => faults.push(value) });
 	const sid = agent.allocateSessionId();
 	const spawning = agent.value
@@ -515,15 +515,15 @@ test.each([
 			events.replySettled?.(sid);
 			expect(() => agent.value.acknowledge(sid, 1)).toThrow();
 		}
-		expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
-		expect(browserFaults).toEqual([]);
+		expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
+		expect(secondaryFaults).toEqual([]);
 	} catch (error) {
 		errors.push(error);
 	} finally {
 		ready.resolve();
 		complete(events, sid);
 		events.replySettled?.(sid);
-		for (const close of [() => release ?? agent.release(), () => browser.release(), () => host.dispose()])
+		for (const close of [() => release ?? agent.release(), () => secondary.release(), () => host.dispose()])
 			try {
 				const result = await close();
 				if (result instanceof Error && result !== expectedReleaseError) errors.push(result);
@@ -554,7 +554,7 @@ test('release before a fast exit does not end an already settled successful spaw
 			},
 		});
 	});
-	const browser = await host.acquire('cookies');
+	const secondary = await host.acquire('history');
 	const agent = await host.acquire('pty', { replySettled: (sid) => settlements.push(sid) });
 	const sid = agent.allocateSessionId();
 	const spawning = agent.value
@@ -572,14 +572,14 @@ test('release before a fast exit does not end an already settled successful spaw
 		expect(await release).toBeUndefined();
 		expect(ends).toEqual([sid]);
 		expect(settlements).toEqual([sid]);
-		expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
+		expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
 	} catch (error) {
 		errors.push(error);
 	} finally {
 		ready.resolve();
 		complete(events, sid);
 		events.replySettled?.(sid);
-		for (const close of [() => release, () => browser.release(), () => host.dispose()])
+		for (const close of [() => release, () => secondary.release(), () => host.dispose()])
 			try {
 				const result = await close();
 				if (result instanceof Error) errors.push(result);
@@ -608,7 +608,7 @@ test('a new owner waits for the prior process to exit and cannot be killed by an
 			},
 		});
 	});
-	const previous = await host.acquire('cookies');
+	const previous = await host.acquire('history');
 	const closing = previous.release();
 	await stopping.promise;
 	let acquired = false;
@@ -638,7 +638,7 @@ test('a new owner waits for the prior process to exit and cannot be killed by an
 	}
 });
 
-test('a root exit cannot release a negotiated PTY scope before separate cleanup evidence while Browser continues', async () => {
+test('a root exit cannot release a negotiated PTY scope before separate cleanup evidence while Secondary continues', async () => {
 	let events!: NativeEvents;
 	const endRequested = deferred<number>();
 	const host = new NativeHost(async (callbacks) => {
@@ -649,7 +649,7 @@ test('a root exit cannot release a negotiated PTY scope before separate cleanup 
 			requestStop: (sid: number) => endRequested.resolve(sid),
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'fixture', args: [], env: {}, cols: 80, rows: 24 });
@@ -662,7 +662,7 @@ test('a root exit cannot release a negotiated PTY scope before separate cleanup 
 		events.exit(sid, 0, null);
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(released).toBe(false);
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} finally {
 		events.termination?.(sid, {
 			version: 1,
@@ -678,12 +678,12 @@ test('a root exit cannot release a negotiated PTY scope before separate cleanup 
 			},
 		});
 		await closing;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
 
-test('legacy numeric exit rejects scope release and leaves the Browser sibling usable', async () => {
+test('legacy numeric exit rejects scope release and leaves the Secondary sibling usable', async () => {
 	let events!: NativeEvents;
 	const requested = deferred<number>();
 	const host = new NativeHost(async (callbacks) => {
@@ -694,7 +694,7 @@ test('legacy numeric exit rejects scope release and leaves the Browser sibling u
 			end: (sid: number) => requested.resolve(sid),
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'fixture', args: [], env: {}, cols: 80, rows: 24 });
@@ -703,10 +703,10 @@ test('legacy numeric exit rejects scope release and leaves the Browser sibling u
 		await requested.promise;
 		events.exit(sid, 0, null);
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'cleanup-incomplete' }] });
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} finally {
 		await closing;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -725,7 +725,7 @@ test('released owners retain captured ACK and parser-reply routes through incomp
 			},
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'fixture', args: [], env: {}, cols: 80, rows: 24 });
@@ -768,11 +768,11 @@ test('released owners retain captured ACK and parser-reply routes through incomp
 			},
 		});
 		expect(() => agent.value.acknowledge(sid, 1)).toThrow();
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} finally {
 		complete(events, sid);
 		await closing;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -783,7 +783,7 @@ test('confirmed scope without the post-drain numeric exit remains an incomplete 
 		events = callbacks;
 		return transport(callbacks);
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'fixture', args: [], env: {}, cols: 80, rows: 24 });
@@ -803,11 +803,11 @@ test('confirmed scope without the post-drain numeric exit remains an incomplete 
 	});
 	try {
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'timeout' }] });
-		expect(browser.value.alive).toBe(true);
+		expect(secondary.value.alive).toBe(true);
 	} finally {
 		events.exit(sid, 0, null);
 		await closing;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 }, 15000);
@@ -819,7 +819,7 @@ test('release reuses the first captured stop observation deadline after a force 
 		events = callbacks;
 		return transport(callbacks);
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'fixture', args: [], env: {}, cols: 80, rows: 24 });
@@ -839,17 +839,17 @@ test('release reuses the first captured stop observation deadline after a force 
 		await new Promise<void>((resolve) => setTimeout(resolve, 50));
 		expect(settled).toBe(true);
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'timeout' }] });
-		expect(browser.value.alive).toBe(true);
+		expect(secondary.value.alive).toBe(true);
 	} finally {
 		complete(events, sid);
 		await closing;
 		clock.mockRestore();
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
 
-test('negotiated output ownership survives confirmed numeric exit until late parse ACK while Browser continues', async () => {
+test('negotiated output ownership survives confirmed numeric exit until late parse ACK while Secondary continues', async () => {
 	let events!: NativeEvents;
 	const acknowledgements: Array<[number, number]> = [];
 	const host = new NativeHost(async (callbacks) => {
@@ -861,7 +861,7 @@ test('negotiated output ownership survives confirmed numeric exit until late par
 			},
 		});
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty');
 	const sid = agent.allocateSessionId();
 	await agent.value.spawnSession(sid, { file: 'sh', args: [], env: {}, cols: 80, rows: 24 });
@@ -874,7 +874,7 @@ test('negotiated output ownership survives confirmed numeric exit until late par
 	try {
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(released).toBe(false);
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 		agent.value.acknowledge(sid, 12);
 		await stopping;
 		expect(acknowledgements).toEqual([[sid, 12]]);
@@ -882,7 +882,7 @@ test('negotiated output ownership survives confirmed numeric exit until late par
 	} finally {
 		if (!released) agent.value.acknowledge(sid, 12);
 		await stopping;
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -897,7 +897,7 @@ test('negotiated reply settlement retains a released owner through timeout and i
 			callbacks.push(events);
 			return Object.assign(transport(events), { replySettlement: 1 as const });
 		});
-		const browser = await host.acquire('cookies'),
+		const secondary = await host.acquire('history'),
 			a = await host.acquire('pty', { replyFailure: (sid, value) => received.push({ sid, value }) }),
 			b = await host.acquire('pty', { replyFailure: (sid, value) => sibling.push({ sid, value }) });
 		const sid = a.allocateSessionId(),
@@ -930,7 +930,7 @@ test('negotiated reply settlement retains a released owner through timeout and i
 			events.replyFailure?.(other, { state: 'none', reason: 'capacity' });
 			expect(received).toHaveLength(1);
 			expect(sibling).toHaveLength(1);
-			expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
+			expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
 			if (mode === 'disconnected') {
 				events.closed('injected actual transport loss');
 				expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'disconnected' }] });
@@ -939,7 +939,7 @@ test('negotiated reply settlement retains a released owner through timeout and i
 				await closing;
 				events.replyFailure?.(sid, { state: 'none', reason: 'closed' });
 				expect(received).toHaveLength(1);
-				expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
+				expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
 			}
 		} finally {
 			complete(events, sid);
@@ -955,7 +955,7 @@ test('negotiated reply settlement retains a released owner through timeout and i
 								outcomes: [{ sid: other, reason: 'disconnected' }],
 							})
 						: b.release(),
-				() => browser.release(),
+				() => secondary.release(),
 				() => host.dispose(),
 			])
 				try {
@@ -975,15 +975,15 @@ test('spawn environment access stays with the original live PTY lease and never 
 			values: Object.freeze({ CAPTURED_ONLY: 'original', ...overrides }), completeness: 'unix-shell-default' as const,
 		}),
 	}));
-	const pty = await host.acquire('pty'), browser = await host.acquire('cookies');
+	const pty = await host.acquire('pty'), secondary = await host.acquire('history');
 	try {
 		expect(typeof pty.value.spawnEnvironment).toBe('function');
 		expect(pty.value.spawnEnvironment!({ SELECTED: 'override' })).toEqual({
 			values: { CAPTURED_ONLY: 'original', SELECTED: 'override' }, completeness: 'unix-shell-default',
 		});
-		expect(() => browser.value.spawnEnvironment!({})).toThrow();
+		expect(() => secondary.value.spawnEnvironment!({})).toThrow();
 		await pty.release();
 		expect(() => pty.value.spawnEnvironment!({})).toThrow();
-		await expect(browser.value.request('cookies', 'read', {})).resolves.toHaveProperty('rows');
-	} finally { await pty.release(); await browser.release(); }
+		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
+	} finally { await pty.release(); await secondary.release(); }
 });

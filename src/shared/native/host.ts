@@ -54,7 +54,7 @@ import type {
 export type { RootEvidence, TerminationEvidence, TerminationReason, NativeTerminationNotice } from './termination';
 export { NATIVE_TERMINATION_TIMEOUT_MS, NATIVE_TERMINATION_OBSERVE_MS } from './termination';
 
-export type NativeCapability = 'pty' | 'history' | 'cookies' | 'control';
+export type NativeCapability = 'pty' | 'history' | 'control';
 
 /** Immutable observation; exited/not-started prove no helper process remains, not successful cleanup. */
 export interface NativeHelperTermination {
@@ -199,7 +199,7 @@ export interface NativeConnection {
 	end(sid: number, force?: boolean): void;
 	history<T>(op: 'scan' | 'query' | 'read', payload: Record<string, unknown>, signal?: AbortSignal): Promise<T>;
 	request<T>(
-		type: 'history' | 'cookies',
+		type: 'history',
 		op: string,
 		payload: Record<string, unknown>,
 		signal?: AbortSignal,
@@ -252,14 +252,6 @@ export interface NativeHostAccess {
 	 * shows the state itself (settings); otherwise a failure raises one localized notice per state and version.
 	 */
 	cli?(options?: { readonly notify?: boolean }): Promise<NativeCliState>;
-}
-
-export interface NativeCookieReader {
-	readCookies(
-		path: string,
-		kind: 'chromium' | 'firefox',
-		signal?: AbortSignal,
-	): Promise<{ rows: Array<Record<string, unknown>> }>;
 }
 
 /** Release rejected because one or more captured PTY scopes were not confirmed quiescent. */

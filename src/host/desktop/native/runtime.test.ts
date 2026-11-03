@@ -17,7 +17,7 @@ for (const language of ['en', 'zh'] as const) test(`independent native installat
 	setLanguage(language);
 	const host = createNativeHost(() => ({ vault, device: 'test-device', version: '0.0.1', platform: 'linux', arch: 'x64', offline: false, fetch: async () => Buffer.from('invalid checksum') }), globalThis as unknown as Window);
 	try {
-		await expect(host.acquire('cookies')).rejects.toThrow('checksum');
+		await expect(host.acquire('history')).rejects.toThrow('checksum');
 		const messages = notices.slice(before);
 		expect(messages).toContain(language === 'en' ? 'Downloading the terminal helper…' : '正在下载终端组件…');
 		expect(messages.at(-1)).toBe(language === 'en' ? 'The terminal helper is not available: the published checksum is missing or invalid' : '终端组件不可用：发布的校验值缺失或无效');

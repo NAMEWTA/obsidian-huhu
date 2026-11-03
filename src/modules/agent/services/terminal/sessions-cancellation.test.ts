@@ -23,7 +23,12 @@ beforeAll(async () => {
 import { NativeHost } from './src/host/desktop/native/host.ts';
 import { TerminalSessions } from './src/modules/agent/services/terminal/sessions.ts';
 import { normalizeTerminalSettings } from './src/modules/agent/core/terminal/settings.ts';
-import { nativeCookieReader } from './src/shared/native/cookies.ts';
+async function readHistory(host, payload) {
+ const abort = new AbortController();
+ const lease = await host.acquire('history', undefined, abort.signal);
+ try { return await lease.value.request('history', 'query', payload, abort.signal); }
+ finally { await lease.release(); }
+}
 const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
 const entered = deferred(), spawned = deferred();
 const generations = [];
@@ -31,7 +36,7 @@ const uncaught = [];
 process.on('uncaughtException', error => uncaught.push(error.message));
 let spawningFinished = false;
 const host = new NativeHost(async events => {
- const state = { alive: true, events, cookie: deferred(), read: deferred(), lateEnds: 0 };
+ const state = { alive: true, events, reply: deferred(), read: deferred(), lateEnds: 0 };
  generations.push(state);
  return {
   get alive() { return state.alive; }, version: 'fixture', terminalTermination: 1, requestStop() {},
@@ -44,7 +49,7 @@ const host = new NativeHost(async events => {
    let cancel;
    const cancelled = new Promise((_resolve, reject) => { cancel = () => reject(signal.reason); });
    signal.addEventListener('abort', cancel, { once: true });
-   try { return await Promise.race([state.cookie.promise, cancelled]); }
+   try { return await Promise.race([state.reply.promise, cancelled]); }
    finally { signal.removeEventListener('abort', cancel); }
   },
   dispose: async () => { state.alive = false; events.closed('closed'); },
@@ -54,8 +59,7 @@ const sessions = new TerminalSessions({ native: host, environment: async () => (
 const abort = new AbortController();
 const creating = sessions.create({ signal: abort.signal, kind: 'shell', title: 'race', file: 'sh', args: [], cwd: '/tmp' });
 await entered.promise;
-const reader = nativeCookieReader(host);
-const initialReading = reader.readCookies('/snapshot', 'chromium').then(value => ({ ok: true, value }), error => ({ ok: false, error: error.message }));
+const initialReading = readHistory(host, { vault: '/snapshot' }).then(value => ({ ok: true, value }), error => ({ ok: false, error: error.message }));
 await generations[0].read.promise;
 const mode = process.argv[2];
 let closing;
@@ -67,8 +71,8 @@ await new Promise(resolve => setImmediate(resolve));
 let reading = initialReading;
 if (mode === 'crash-abort') {
  const failed = await initialReading;
- if (failed.ok || failed.error !== 'native crash') throw new Error('crash must fail the original Cookie owner');
- reading = reader.readCookies('/new-snapshot', 'chromium').then(value => ({ ok: true, value }), error => ({ ok: false, error: error.message }));
+ if (failed.ok || failed.error !== 'native crash') throw new Error('crash must fail the original history owner');
+ reading = readHistory(host, { vault: '/new-snapshot' }).then(value => ({ ok: true, value }), error => ({ ok: false, error: error.message }));
  await new Promise(resolve => setImmediate(resolve));
  await generations[1].read.promise;
 }
@@ -83,11 +87,11 @@ generations[0].events.termination?.(1, { version: 1, sequence: 1, evidence: { ro
 generations[0].events.exit(1, 0, null);
 const cleanup = await closing;
 const current = generations.at(-1);
-const browserConnected = current.alive;
-current.cookie.resolve({ rows: [{ name: 'browser-survives' }] });
-const cookie = await reading;
+const secondConnected = current.alive;
+current.reply.resolve({ rows: [{ name: 'history-survives' }] });
+const reply = await reading;
 await host.dispose();
-console.log(JSON.stringify({ cleanup, uncaught, browserConnected, cookie, cleanupPendingBeforeExit, lateEnds: generations[0].lateEnds, newGenerationEnds: generations[1]?.lateEnds ?? 0, finalAlive: current.alive }));
+console.log(JSON.stringify({ cleanup, uncaught, secondConnected, reply, cleanupPendingBeforeExit, lateEnds: generations[0].lateEnds, newGenerationEnds: generations[1]?.lateEnds ?? 0, finalAlive: current.alive }));
 `,
 		},
 		bundle: true, platform: 'node', format: 'esm', target: 'node22', outfile: probe, logLevel: 'silent',
@@ -96,12 +100,12 @@ console.log(JSON.stringify({ cleanup, uncaught, browserConnected, cookie, cleanu
 });
 afterAll(async () => { if (directory) await rm(directory, { recursive: true, force: true }); });
 
-for (const mode of ['dispose-abort', 'abort-dispose', 'crash-abort']) test(`pending spawn cancellation stays local for ${mode} while Browser can continue`, async () => {
+for (const mode of ['dispose-abort', 'abort-dispose', 'crash-abort']) test(`pending spawn cancellation stays local for ${mode} while a history lease can continue`, async () => {
 	const { stdout } = await execute(process.execPath, [probe, mode], { encoding: 'utf8', timeout: 10_000, windowsHide: true });
-	const result = JSON.parse(stdout) as { cleanup: { confirmed: boolean }; uncaught: string[]; browserConnected: boolean; cookie: unknown; cleanupPendingBeforeExit: boolean; lateEnds: number; newGenerationEnds: number; finalAlive: boolean };
+	const result = JSON.parse(stdout) as { cleanup: { confirmed: boolean }; uncaught: string[]; secondConnected: boolean; reply: unknown; cleanupPendingBeforeExit: boolean; lateEnds: number; newGenerationEnds: number; finalAlive: boolean };
 	expect(result.uncaught).toEqual([]);
-	expect(result.browserConnected).toBe(true);
-	expect(result.cookie).toEqual({ ok: true, value: { rows: [{ name: 'browser-survives' }] } });
+	expect(result.secondConnected).toBe(true);
+	expect(result.reply).toEqual({ ok: true, value: { rows: [{ name: 'history-survives' }] } });
 	expect(result.finalAlive).toBe(false);
 	if (mode === 'crash-abort') { expect(result.newGenerationEnds).toBe(0); expect(result.cleanup.confirmed).toBe(false); }
 	else { expect(result.cleanup.confirmed).toBe(true); expect(result.cleanupPendingBeforeExit).toBe(true); expect(result.lateEnds).toBeGreaterThan(0); }

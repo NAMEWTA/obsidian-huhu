@@ -1,4 +1,4 @@
-/** Existing helper keys remain stable for Agent settings and independent Browser requests. */
+/** Existing helper keys remain stable for Agent settings. */
 export const messages = {
 	en: {
 		'agent.helper.downloading': 'Downloading the terminal helper…',

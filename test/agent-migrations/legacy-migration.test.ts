@@ -49,16 +49,15 @@ describe('legacy workbench import', () => {
 		expect(r.selectedSpaceId).toBe(id);
 		// Counts and identities match the source layout exactly; the layout is stored untouched.
 		expect(state.layout.counts).toEqual({
-			tabs: 4,
+			tabs: 3,
 			terminal: 2,
-			browser: 1,
 			page: 1,
 			groups: 2,
 			closedTabs: 1,
 			panes: 4,
 		});
 		expect(r.layouts[id]).toEqual(legacyLayout());
-		expect(Object.keys(r.layouts[id]!.tabs).sort()).toEqual(['a', 'b', 'tab-page-board', 'w']);
+		expect(Object.keys(r.layouts[id]!.tabs).sort()).toEqual(['a', 'b', 'tab-page-board']);
 		// Nothing was moved or rewritten: legacy bytes identical, a verified copy of each present source exists.
 		expect(bytes(storage, sources)).toEqual(before);
 		const journal = (await readJournal(storage))!;

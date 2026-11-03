@@ -38,21 +38,7 @@ export interface TerminalTabData extends TabBase {
 	unread: boolean;
 	updatedAt: number;
 }
-export interface BrowserTabData extends TabBase {
-	kind: 'browser';
-	/**
-	 * Independent browser Space. Absent on a legacy layout tab, which still carries its own address.
-	 * New tabs persist only this id plus `pageId`; the browser module owns the page.
-	 */
-	spaceId?: string;
-	pageId: string;
-	/** Legacy layout address. New Space/Page refs do not persist a URL. */
-	url?: string;
-	faviconUrl?: string;
-	profileId?: string;
-	zoom?: number;
-}
-/** The pages the workspace can hold as stable tabs next to sessions and browser tabs. */
+/** The pages the workspace can hold as stable tabs next to sessions. */
 export const PAGE_KINDS = ['board', 'usage'] as const;
 export type PageKind = (typeof PAGE_KINDS)[number];
 /** A workbench page shown as a tab. Each page is a singleton with a fixed id; opening it again only activates it. */
@@ -62,7 +48,7 @@ export interface PageTabData extends TabBase {
 	/** `usage`: the provider filter. */
 	resourceId?: string;
 }
-export type WorkspaceTab = TerminalTabData | BrowserTabData | PageTabData;
+export type WorkspaceTab = TerminalTabData | PageTabData;
 export interface TabGroup {
 	id: string;
 	tabIds: string[];

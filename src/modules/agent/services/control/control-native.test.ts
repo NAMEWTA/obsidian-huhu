@@ -186,7 +186,6 @@ test('required real CLI routes background create/read/rename/stop through the pr
 			show: shown,
 			report,
 		},
-		undefined,
 		spaces,
 	);
 	router = new ControlRouter(new ControlCommands(spaces, workspace, sessions));
@@ -198,7 +197,7 @@ test('required real CLI routes background create/read/rename/stop through the pr
 			void router.close().catch(report);
 		},
 	});
-	let browser: Awaited<ReturnType<NativeHost['acquire']>> | undefined;
+	let secondary: Awaited<ReturnType<NativeHost['acquire']>> | undefined;
 	const cliProcesses = new Set<ReturnType<typeof spawn>>();
 	const pendingCli = new Set<Promise<unknown>>();
 	const cli = (
@@ -325,23 +324,12 @@ test('required real CLI routes background create/read/rename/stop through the pr
 		);
 		expect(stopped.value).toMatchObject({ ok: true, phase: 'exited' });
 		expect(spawnCount).toBe(2);
-		browser = await native.acquire('cookies');
-		const sqlite = createRequire(import.meta.url)('node:sqlite') as {
-				DatabaseSync: new (path: string) => { exec(sql: string): void; close(): void };
-			},
-			cookiePath = join(root, 'cookie.sqlite'),
-			db = new sqlite.DatabaseSync(cookiePath);
-		try {
-			db.exec(
-				"CREATE TABLE moz_cookies(host TEXT,name TEXT,value TEXT,path TEXT,expiry INTEGER,isSecure INTEGER,isHttpOnly INTEGER,sameSite INTEGER); INSERT INTO moz_cookies VALUES('.example.test','owned','fixture','/',1800000000,1,1,2)",
-			);
-		} finally {
-			db.close();
-		}
+		secondary = await native.acquire('history');
+		const missingVault = join(root, 'missing-vault');
 		await environment.close();
-		expect(await browser.value.request('cookies', 'read', { path: cookiePath, kind: 'firefox' })).toMatchObject({
-			rows: [{ name: 'owned', value: 'fixture' }],
-		});
+		await expect(
+			secondary.value.history('query', { vault: missingVault, index: join(missingVault, 'index.sqlite') }),
+		).rejects.toThrow();
 		console.info(
 			'[control-native observed]',
 			JSON.stringify({
@@ -359,7 +347,7 @@ test('required real CLI routes background create/read/rename/stop through the pr
 				helperPid: helper?.pid,
 				readBytes: JSON.stringify(read.value).length,
 				seenCalls: mark.mock.calls.length,
-				cookieRequestAwaited: true,
+				historyRequestAwaited: true,
 			}),
 		);
 		expect(errors).toEqual([]);
@@ -380,7 +368,7 @@ test('required real CLI routes background create/read/rename/stop through the pr
 		await clean(() => router.close());
 		await clean(() => workspace.drainManaged());
 		await clean(() => sessions.dispose());
-		await clean(() => browser?.release());
+		await clean(() => secondary?.release());
 		await clean(() => native.dispose());
 		await clean(() => workspace.dispose());
 		await clean(() => spaces.dispose());

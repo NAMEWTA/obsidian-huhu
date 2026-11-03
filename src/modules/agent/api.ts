@@ -65,7 +65,7 @@ export interface AgentDirectory {
 }
 export const AGENT_DIRECTORY = serviceKey<AgentDirectory>('agent', 'directory');
 
-/** A running agent session that can receive material (browser selections, screenshots). */
+/** A running agent session that can receive material (selections, screenshots). */
 export interface AgentSessionSummary {
 	id: string;
 	title: string;
@@ -210,13 +210,3 @@ export interface AgentQuickCommands {
 	run(id: string, options?: { spaceId?: string }): Promise<void>;
 }
 export const AGENT_QUICK_COMMANDS = serviceKey<AgentQuickCommands>('agent', 'quick-commands');
-
-/** Read-only SQLite access for user-initiated browser Cookie snapshot imports. */
-export type NativeHelperSqlite = import('../../shared/native/host').NativeCookieReader;
-export const NATIVE_HELPER_SQLITE = serviceKey<NativeHelperSqlite>('agent', 'native-helper-sqlite');
-
-/** The terminal sessions grouped with a browser page (service `agent.browser-tabs`); page open/close lives in the shared workspace. */
-export interface AgentBrowserTabs {
-	sessionOrder(pageId: string): string[];
-}
-export const AGENT_BROWSER_TABS = serviceKey<AgentBrowserTabs>('agent', 'browser-tabs');

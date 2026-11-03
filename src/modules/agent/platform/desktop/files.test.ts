@@ -5,11 +5,9 @@ import { expect, test, vi } from 'vitest';
 vi.mock('electron', () => ({ shell: {}, webUtils: {} }));
 import { resolveReference } from './files';
 
-test('ordinary vault links remain available when another device migration receipt is corrupt', async () => {
+test('ordinary vault links resolve inside the vault', async () => {
 	const vault = await mkdtemp(path.join(tmpdir(), 'huhu-file-link-'));
 	try {
-		await mkdir(path.join(vault, '.huhu/browser/other/legacy-runtime'), { recursive: true });
-		await writeFile(path.join(vault, '.huhu/browser/other/legacy-runtime/migration.json'), 'corrupt');
 		await writeFile(path.join(vault, 'ordinary.md'), 'note');
 		expect(await resolveReference('ordinary.md', vault, vault)).toEqual({ kind: 'vault', path: 'ordinary.md' });
 	} finally { await rm(vault, { recursive: true, force: true }); }

@@ -12,50 +12,12 @@ import { normalizeAgentSettings } from '../../../core/launch/defaults.ts';
 import type { HistoryPage } from './agent-data-client.ts';
 import { nativeVaultStorage } from '../../../../../host/desktop/vault-storage';
 import { deviceId } from '../../../../../host/obsidian/storage/device-id';
-import { prepareLegacyAccounts } from '../agents/legacy-accounts';
 import { LEGACY_VAULT_ACCOUNT, accountEnv } from '../agents/accounts';
 import { getAgent } from '../../../core/launch/catalog';
 import { t } from '../../../../../shared/i18n';
 
 globalThis.window = { require: createRequire(import.meta.url) } as unknown as Window & typeof globalThis;
 const page: HistoryPage = { rows: [], total: 0, usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null, known: false }, revision: 1 };
-test('an unbound legacy account produces a warning while other account history is scanned', async () => {
-	const vault = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-history-unbound-')));
-	const plugin = path.join(vault, '.obsidian/plugins/huhu');
-	await fs.mkdir(path.join(plugin, 'accounts/claude/old/home'), { recursive: true });
-	await fs.writeFile(path.join(plugin, 'accounts/claude/old/home/auth.json'), '{}');
-	try {
-		const app = { vault: { adapter: { ...nativeVaultStorage(vault), getBasePath: () => vault } } } as unknown as App;
-		await initializeTestDevice(app);
-		await assert.rejects(prepareLegacyAccounts({ vault, device: deviceId(app), plugin, boot: 'one' }));
-		const release = await prepareLegacyAccounts({ vault, device: deviceId(app), plugin, boot: 'two' });
-		const settings = normalizeAgentSettings({}); settings.agents['claude-code'].enabled = false;
-		settings.agents['claude-code'].accountId = LEGACY_VAULT_ACCOUNT;
-		let roots: Array<{ agentId: string; accountKey: string }> = [];
-		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async (_op: string, payload: { roots: typeof roots }) => { roots = payload.roots; return { warnings: [], revision: 1 }; } };
-		const history = new NativeHistory(app, { historyClient: async () => client } as unknown as HistoryClientSource, () => settings);
-		try {
-			const warnings = await history.scan();
-			assert.ok(roots.some(row => row.agentId === 'codex'));
-			// Only the system account is scanned; the unbound former default directory is a warning instead.
-			assert.deepEqual(roots.filter(row => row.agentId === 'claude-code').map(row => (JSON.parse(row.accountKey) as Record<string, string>).HUHU_ACCOUNT_ID), ['claude-code/system']);
-			assert.equal(warnings.length, 1);
-			const oldKey = JSON.stringify(['claude-code', JSON.stringify({ CLAUDE_CONFIG_DIR: path.join(plugin, 'accounts/claude/old/home') }), 'session']);
-			await history.update(oldKey, { title: '保留标题', favorite: true, tags: ['重要'] });
-			const unbind = await prepareLegacyAccounts({ vault, device: deviceId(app), plugin, boot: 'two', choose: async () => 'old' });
-			settings.agents['claude-code'].accountId = 'a.b';
-			await accountEnv(getAgent('claude-code'), 'a.b', vault, deviceId(app), true);
-			await history.scan();
-			const current = roots.find(row => row.agentId === 'claude-code' && (JSON.parse(row.accountKey) as Record<string, string>).HUHU_ACCOUNT_NAME === 'a.b')!;
-			const key = JSON.stringify(['claude-code', current.accountKey, 'session']);
-			assert.deepEqual(history.meta(key), { title: '保留标题', favorite: true, tags: ['重要'] });
-			await history.update(key, { title: '新标题' });
-			assert.equal(history.meta(key).title, '新标题');
-			assert.equal(history.meta(oldKey).title, '保留标题');
-			unbind();
-		} finally { await history.dispose(); release(); }
-	} finally { await fs.rm(vault, { recursive: true, force: true }); }
-}, 30000);
 test('history scan sends managed sources from the vault and system sources from the real provider directories', async () => {
 	const vault = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-history-owned-'))), home = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-history-home-')));
 	vi.stubEnv('HOME', home); vi.stubEnv('USERPROFILE', home);

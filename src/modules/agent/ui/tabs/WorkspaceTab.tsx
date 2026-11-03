@@ -46,7 +46,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 		isOver,
 		active: dragged,
 	} = useSortable({ id: tab.id, data: { groupId, kind: 'tab' } });
-	// The fixed pages are named by the language, so only sessions and browser tabs can be renamed.
+	// The fixed pages are named by the language, so only sessions can be renamed.
 	const renamable = tab.kind !== 'page';
 	const rename = () => {
 		if (!renamable) return;
@@ -199,10 +199,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 				{(['right', 'down'] as const).map((edge) => (
 					<ContextMenuItem
 						key={edge}
-						disabled={tab.kind === 'browser' && workspace.store.getState().groups.length >= 4}
-						onSelect={() => tab.kind === 'browser'
-							? workspace.move(tab.id, { split: edge, ofGroupId: groupId })
-							: workspace.moveFromUI(tab.id, { split: edge, ofGroupId: groupId })}
+						onSelect={() => workspace.moveFromUI(tab.id, { split: edge, ofGroupId: groupId })}
 					>
 						{t(`agent.workspace.split.${edge}`)}
 					</ContextMenuItem>
@@ -211,15 +208,11 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 					<ContextMenuItem
 						onSelect={() => {
 							void doc.defaultView?.navigator.clipboard
-								.writeText(
-									tab.kind === 'browser'
-										? (controller.browserPage(tab)?.url ?? tab.url ?? '')
-										: tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId,
-								)
+								.writeText(tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId)
 								.catch((error) => workspace.report(error));
 						}}
 					>
-						{t(tab.kind === 'browser' ? 'agent.workspace.copyUrl' : 'agent.copyId')}
+						{t('agent.copyId')}
 					</ContextMenuItem>
 				)}
 				<ContextMenuSeparator />

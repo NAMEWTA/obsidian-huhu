@@ -15,7 +15,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/componen
 import { useT } from '../../../../ui/react/hooks';
 import { useWorkspaceUI } from '../workspace/workspace-context';
 import { WorkspaceTab } from './WorkspaceTab';
-import { BrowserWorkspaceTab } from '../browser/BrowserWorkspaceTab';
 import { QuickCommandsButton } from '../quick-commands/QuickCommandsButton';
 import { NewTabMenu } from '../create/NewTabMenu';
 export function TabStrip({ group }: { group: TabGroup }) {
@@ -80,14 +79,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 				>
 					{group.tabIds.map((id) => {
 						const tab = state.tabs[id];
-						return tab?.kind === 'browser' ? (
-							<BrowserWorkspaceTab
-								key={id}
-								tab={tab}
-								groupId={group.id}
-								active={id === group.activeTabId}
-							/>
-						) : tab ? (
+						return tab ? (
 							<WorkspaceTab key={id} tab={tab} groupId={group.id} active={id === group.activeTabId} />
 						) : null;
 					})}

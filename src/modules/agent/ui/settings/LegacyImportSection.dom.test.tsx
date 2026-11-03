@@ -23,7 +23,7 @@ const state = (overrides: Partial<LegacyImportState> = {}): LegacyImportState =>
 	},
 	layout: {
 		status: 'importable',
-		counts: { tabs: 4, terminal: 2, browser: 1, page: 1, groups: 2, closedTabs: 1, panes: 4 },
+		counts: { tabs: 3, terminal: 2, page: 1, groups: 2, closedTabs: 1, panes: 4 },
 		spaceId: 'legacy-import-x',
 		spaceCreated: true,
 	},
@@ -54,10 +54,9 @@ test('shows a polite loading status, then the counted report, kept items, unboun
 	expect(screen.getByRole('status').textContent).toMatch(/Reading the import report/);
 	resolve(view());
 	await waitFor(() =>
-		expect(screen.getByText(/Imported 4 tabs in 2 groups \(2 terminal, 1 web, 1 page\)/)).toBeTruthy(),
+		expect(screen.getByText(/Imported 3 tabs in 2 groups \(2 terminal, 1 page\)/)).toBeTruthy(),
 	);
 	expect(screen.getByText(/1 of 3 history annotations have no known account/)).toBeTruthy();
-	expect(screen.getByText(/Web tabs are in the Import Space/)).toBeTruthy();
 	expect(screen.getByText(/retired account index/)).toBeTruthy();
 	expect(screen.getByText(/stay unbound/)).toBeTruthy();
 	expect(screen.getByText(/Nothing was deleted/)).toBeTruthy();
@@ -73,7 +72,7 @@ test('a damaged legacy layout is explained and a changed source is flagged', asy
 	const damaged = state({
 		layout: {
 			status: 'corrupt',
-			counts: { tabs: 0, terminal: 0, browser: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 },
+			counts: { tabs: 0, terminal: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 },
 			spaceCreated: false,
 		},
 	});
@@ -92,7 +91,7 @@ test('a failing read is announced as an alert', async () => {
 test('the Chinese dictionary is complete for the report', async () => {
 	setLanguage('zh');
 	show(async () => view());
-	await waitFor(() => expect(screen.getByText(/已将 2 个分组中的 4 个标签/)).toBeTruthy());
+	await waitFor(() => expect(screen.getByText(/已将 2 个分组中的 3 个标签/)).toBeTruthy());
 	expect(screen.getByText(/保持未绑定/)).toBeTruthy();
 });
 
@@ -113,7 +112,7 @@ test('a damaged legacy source shows how to import again after repairing it', asy
 	const damaged = state({
 		layout: {
 			status: 'corrupt',
-			counts: { tabs: 0, terminal: 0, browser: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 },
+			counts: { tabs: 0, terminal: 0, page: 0, groups: 0, closedTabs: 0, panes: 0 },
 			spaceCreated: false,
 		},
 	});

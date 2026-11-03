@@ -124,12 +124,12 @@ async function helperFixture(
 			}
 			if (message?.type === 'reply-close' && !settlementHolds.has(message.sid as number))
 				stdout.write(encodeControl({ type: 'reply-settled', sid: message.sid }));
-			if (message?.type === 'cookies')
+			if (message?.type === 'history')
 				stdout.write(
 					encodeControl({
-						type: 'cookies-result',
+						type: 'history-result',
 						rid: message.rid,
-						data: { rows: [{ name: 'cookie', value: 'retained' }] },
+						data: { rows: [{ name: 'history', value: 'retained' }] },
 					}),
 				);
 			if (message?.type === 'spawn') {
@@ -358,7 +358,7 @@ test('cancelled and expired local resize is removed before blocked writer drains
 			}
 			return result;
 		}) as typeof stream.write);
-		await fixture.helper.request('cookies', 'read', {});
+		await fixture.helper.request('history', 'query', {});
 		const resize = fixture.helper.submitResize(7, 100, 40);
 		resize.cancel();
 		expect(await resize.finished).toEqual({ op: 1, state: 'none', reason: 'cancelled' });
@@ -402,7 +402,7 @@ test('production host plus helper rejects oversized spawn before wire as none an
 	}
 });
 
-test('failed user spawn retains only late parser ACK ownership while a Browser Cookie lease continues', async () => {
+test('failed user spawn retains only late parser ACK ownership while a second history lease continues', async () => {
 	let fixture!: Awaited<ReturnType<typeof helperFixture>>;
 	const host = new NativeHost(async (events) => {
 		fixture = await helperFixture(true, events, false);
@@ -410,7 +410,7 @@ test('failed user spawn retains only late parser ACK ownership while a Browser C
 	});
 	const output: Uint8Array[] = [];
 	const lease = await host.acquire('pty', { output: (_sid, bytes) => output.push(bytes) });
-	const browser = await host.acquire('cookies');
+	const secondary = await host.acquire('history');
 	try {
 		const sid = lease.allocateSessionId();
 		fixture.rejectSpawns.add(sid);
@@ -428,8 +428,8 @@ test('failed user spawn retains only late parser ACK ownership while a Browser C
 		lease.value.acknowledge(sid, 4);
 		await releasing;
 		expect(fixture.helper.alive).toBe(true);
-		expect(await browser.value.request('cookies', 'read', {})).toEqual({
-			rows: [{ name: 'cookie', value: 'retained' }],
+		expect(await secondary.value.request('history', 'query', {})).toEqual({
+			rows: [{ name: 'history', value: 'retained' }],
 		});
 		const replacement = await host.acquire('pty');
 		await replacement.value.spawnSession(replacement.allocateSessionId(), {
@@ -441,7 +441,7 @@ test('failed user spawn retains only late parser ACK ownership while a Browser C
 		});
 		await replacement.release();
 	} finally {
-		await browser.release();
+		await secondary.release();
 		await host.dispose();
 	}
 });
@@ -540,7 +540,7 @@ test.each(['cancel', 'timeout', 'close', 'stop'] as const)(
 				}
 				return result;
 			}) as typeof stream.write);
-			await fixture.helper.request('cookies', 'read', {});
+			await fixture.helper.request('history', 'query', {});
 			fixture.state('reserved');
 			if (action === 'cancel') {
 				submission.cancel();
@@ -586,7 +586,7 @@ test('late claimed reply failure reaches the exited production Session before ne
 		routed = events;
 		return fixture.helper;
 	});
-	const browser = await native.acquire('cookies');
+	const secondary = await native.acquire('history');
 	const sessions = new TerminalSessions({
 		native,
 		platform: process.platform,
@@ -637,8 +637,8 @@ test('late claimed reply failure reaches the exited production Session before ne
 		expect(session.replyDiagnostic?.reason).toBe('write-failed');
 		expect(received).toHaveLength(1);
 		expect(fixture.sent.filter((frame) => frame.message?.type === 'end')).toHaveLength(0);
-		expect(await browser.value.request('cookies', 'read', {})).toEqual({
-			rows: [{ name: 'cookie', value: 'retained' }],
+		expect(await secondary.value.request('history', 'query', {})).toEqual({
+			rows: [{ name: 'history', value: 'retained' }],
 		});
 		fixture.control({ type: 'reply-settled', sid: session.sid });
 		await closing;
@@ -651,7 +651,7 @@ test('late claimed reply failure reaches the exited production Session before ne
 		fixture.settlementHolds.clear();
 		// Always release every owned layer, preserving each failure and the primary.
 		const errors: unknown[] = primary ? [primary] : [];
-		for (const close of [() => sessions.dispose(), () => browser.release(), () => native.dispose()])
+		for (const close of [() => sessions.dispose(), () => secondary.release(), () => native.dispose()])
 			try {
 				await close();
 			} catch (error) {
@@ -773,7 +773,7 @@ test('a zero-output reserved spawn failure retains the Host route until its actu
 		events = callbacks;
 		return fixture.helper;
 	});
-	const browser = await host.acquire('cookies'),
+	const secondary = await host.acquire('history'),
 		agent = await host.acquire('pty', { replyFailure: (_sid, value) => failures.push(value) });
 	const sid = agent.allocateSessionId();
 	fixture.rejectSpawns.add(sid);
@@ -794,12 +794,12 @@ test('a zero-output reserved spawn failure retains the Host route until its actu
 		fixture.control({ type: 'reply-settled', sid });
 		await release;
 		expect(fixture.helper.streamStats.sessionRoutes).toBe(0);
-		expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
+		expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
 	} finally {
 		fixture.control({ type: 'reply-settled', sid });
 		fixture.settlementHolds.clear();
 		const errors: unknown[] = [];
-		for (const close of [() => agent.release(), () => browser.release(), () => host.dispose()])
+		for (const close of [() => agent.release(), () => secondary.release(), () => host.dispose()])
 			try {
 				await close();
 			} catch (error) {
@@ -872,7 +872,7 @@ test.each(['active', 'released', 'late-ACK'])(
 	async (mode) => {
 		let events!: NativeEvents;
 		const settlements: number[] = [],
-			browserFaults: unknown[] = [];
+			secondaryFaults: unknown[] = [];
 		const fixture = await helperFixture(
 			true,
 			{
@@ -890,7 +890,7 @@ test.each(['active', 'released', 'late-ACK'])(
 			events = callbacks;
 			return fixture.helper;
 		});
-		const browser = await host.acquire('cookies', { replyFailure: (_sid, value) => browserFaults.push(value) });
+		const secondary = await host.acquire('history', { replyFailure: (_sid, value) => secondaryFaults.push(value) });
 		const agent = await host.acquire('pty', { replySettled: (sid) => settlements.push(sid) });
 		const sid = agent.allocateSessionId();
 		fixture.heldSpawns.add(sid);
@@ -924,12 +924,12 @@ test.each(['active', 'released', 'late-ACK'])(
 			expect(settlements).toEqual([sid]);
 			expect(fixture.sent.filter((frame) => frame.message?.type === 'end')).toHaveLength(1);
 			expect(() => agent.value.acknowledge(sid, 1)).toThrow();
-			expect(await browser.value.request('cookies', 'read', {})).toHaveProperty('rows');
-			expect(browserFaults).toEqual([]);
+			expect(await secondary.value.request('history', 'query', {})).toHaveProperty('rows');
+			expect(secondaryFaults).toEqual([]);
 		} catch (error) {
 			errors.push(error);
 		} finally {
-			for (const close of [() => release ?? agent.release(), () => browser.release(), () => host.dispose()])
+			for (const close of [() => release ?? agent.release(), () => secondary.release(), () => host.dispose()])
 				try {
 					const result = await close();
 					if (result instanceof Error) errors.push(result);

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { createServer } from 'node:net';
 
 /** Kernel ownership serializes all v2 generations; an unrelated port collision fails closed.
- *  This band is 16384–32767, disjoint from the space writer and the browser owner. */
+ *  This band is 16384–32767, disjoint from the space writer. */
 export async function readerLease(root: string, dev: bigint, ino: bigint): Promise<{ assertHeld(): void; close(): Promise<void> }> {
 	const port = 16384 + createHash('sha256').update(JSON.stringify(['huhu-hook-reader-v2', root, String(dev), String(ino)])).digest().readUInt32BE(0) % 16384;
 	const server = createServer(socket => { socket.on('error', () => socket.destroy()); socket.destroy(); });

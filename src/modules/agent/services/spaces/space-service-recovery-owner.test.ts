@@ -6,7 +6,7 @@ import { recoverPending } from '../../../../shared/storage/recovery-transaction'
 import { agentWorkbenchPath } from '../../../../shared/storage/vault-layout';
 import type { VaultBinding } from '../../core/space/model';
 import { openTab } from '../../core/workspace/ops';
-import type { BrowserTabData } from '../../core/workspace/model';
+import type { TerminalTabData } from '../../core/workspace/model';
 import { spaceWorkspaceOwner } from '../migrations/agent-owners';
 import { createSpaceWorkspaceStore } from '../workspace-store';
 import { emptyRecords, isWorkbenchRecords, type WorkbenchRecords } from './records';
@@ -20,13 +20,18 @@ const vault: VaultBinding = {
 };
 const path = agentWorkbenchPath('device');
 const clock = { setTimeout: () => 1, clearTimeout: () => {} } as unknown as Pick<Window, 'setTimeout' | 'clearTimeout'>;
-const browserTab = (id: string): BrowserTabData => ({
-	kind: 'browser',
+const terminalTab = (id: string): TerminalTabData => ({
+	kind: 'terminal',
 	id,
 	title: id,
-	spaceId: 'space',
-	pageId: `page-${id}`,
 	createdAt: 1,
+	sessionIds: [`session-${id}`],
+	paneLayout: { kind: 'pane', session: `session-${id}` },
+	focusedSessionId: `session-${id}`,
+	panes: {},
+	state: 'idle',
+	unread: false,
+	updatedAt: 1,
 });
 
 function live(storage: FaultStorage) {
@@ -73,7 +78,7 @@ const withSpace = (name: string, id: string, tab?: string): WorkbenchRecords => 
 		records.layouts[id] = openTab(
 			records.layouts[id] ?? { version: 1, tabs: {}, groups: [], closedTabs: [] },
 			undefined,
-			browserTab(tab),
+			terminalTab(tab),
 		);
 	return records;
 };
@@ -92,13 +97,13 @@ async function seeded() {
 	await first.spaces.ready;
 	const a = await first.spaces.create({ name: 'A', relativePath: '' });
 	await first.layouts.ready;
-	await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, browserTab('old')));
+	await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, terminalTab('old')));
 	await first.spaces.flush();
 	return { storage, first, a };
 }
 
 describe('live SpaceService as a recovery owner', () => {
-	test('writes during quiesce get BUSY (Agent and Browser alike); nothing is accepted then lost; release reopens', async () => {
+	test('writes during quiesce get BUSY (Agent layouts); nothing is accepted then lost; release reopens', async () => {
 		const { storage, first, a } = await seeded();
 		const errors: unknown[] = [];
 		const seenInside = async () => {
@@ -106,11 +111,11 @@ describe('live SpaceService as a recovery owner', () => {
 				code: 'SOURCE_UNAVAILABLE',
 				reason: 'recovery-busy',
 			});
-			// Browser opens/closes/updates go through editLayout/updateLayout of the same store.
-			const result = await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, browserTab('late')));
+			// Layout opens/closes/updates go through editLayout/updateLayout of the same store.
+			const result = await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, terminalTab('late')));
 			expect(result).toMatchObject({ effect: 'none', layoutPublished: false });
 			errors.push(result.error);
-			first.layouts.updateLayout!((v) => openTab(v, undefined, browserTab('late2')));
+			first.layouts.updateLayout!((v) => openTab(v, undefined, terminalTab('late2')));
 			expect(first.layouts.readLayoutNow!(a.id).view.tabs['late']).toBeUndefined();
 			expect(first.layouts.readLayoutNow!(a.id).view.tabs['late2']).toBeUndefined();
 		};
@@ -128,7 +133,7 @@ describe('live SpaceService as a recovery owner', () => {
 		expect(first.layouts.readLayoutNow!('b').view.tabs['restored']).toBeDefined();
 		expect(first.layouts.readLayoutNow!(a.id).view.tabs['old']).toBeUndefined();
 		// First edits after restore: the restored layout survives, the old Space/tab never returns.
-		await first.layouts.editLayout!('b', (v) => openTab(v, undefined, browserTab('new')));
+		await first.layouts.editLayout!('b', (v) => openTab(v, undefined, terminalTab('new')));
 		const c = await first.spaces.create({ name: 'C', relativePath: '' });
 		await first.spaces.flush();
 		const written = stored(storage);
@@ -142,13 +147,13 @@ describe('live SpaceService as a recovery owner', () => {
 		const { storage, first, a } = await seeded();
 		const before = storage.files.get(path)!;
 		// A dirty draft the debounce never flushes, and a disk that refuses the save.
-		first.layouts.store.setState((v) => openTab(v, undefined, browserTab('dirty')), true);
+		first.layouts.store.setState((v) => openTab(v, undefined, terminalTab('dirty')), true);
 		storage.failWrite = (p) => p === path;
 		await expect(first.host.run(restoreTo(withSpace('B', 'b')))).rejects.toMatchObject({ code: 'DRAIN_FAILED' });
 		storage.failWrite = undefined;
 		expect(storage.files.get(path)).toBe(before);
 		// Owner released: the same service saves again.
-		await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, browserTab('again')));
+		await first.layouts.editLayout!(a.id, (v) => openTab(v, undefined, terminalTab('again')));
 		await first.layouts.drainEdits!();
 		expect(stored(storage).layouts[a.id]!.tabs['again']).toBeDefined();
 	});

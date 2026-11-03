@@ -18,7 +18,7 @@ function fixture() {
 		store: createStore(emptyWorkspace), active: { kind: 'terminal', id: 'tab', focusedSessionId: 'original' },
 		createManagedInteractive: vi.fn<() => Promise<ManagedCreateResult>>(),
 	};
-	const controller = { workspace, browserWorkspace: () => undefined, settings: { get: () => settings, subscribe: () => () => {} }, agents: { store: createStore(() => ({ detected: {} })), list: () => [] }, runtime: { listAgents: () => [] }, shells: () => [], agentTitle: () => '' } as unknown as AgentController;
+	const controller = { workspace, settings: { get: () => settings, subscribe: () => () => {} }, agents: { store: createStore(() => ({ detected: {} })), list: () => [] }, runtime: { listAgents: () => [] }, shells: () => [], agentTitle: () => '' } as unknown as AgentController;
 	render(<TestProviders><button type="button">Other target</button><div data-terminal-host="original"><textarea aria-label="Original terminal" /></div><NewTabMenu controller={controller} /></TestProviders>);
 	return { workspace, trigger: screen.getByRole('button', { name: t('agent.workspace.newTab') }), outside: screen.getByRole('button', { name: 'Other target' }) };
 }

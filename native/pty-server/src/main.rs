@@ -12,7 +12,6 @@
 mod agent_data;
 #[cfg(any(windows, test))]
 mod bootstrap;
-mod cookies;
 mod data;
 mod inherited_fds;
 mod job;
@@ -78,12 +77,6 @@ enum Message {
         request_id: Option<String>,
     },
     History {
-        op: String,
-        rid: String,
-        #[serde(default)]
-        payload: Value,
-    },
-    Cookies {
         op: String,
         rid: String,
         #[serde(default)]
@@ -308,7 +301,6 @@ fn dispatch(
             }
         }
         Message::History { op, rid, payload } => history.handle(&op, rid, payload),
-        Message::Cookies { op, rid, payload } => cookies::handle(out.clone(), op, rid, payload),
         Message::Shutdown => return false,
     }
     true

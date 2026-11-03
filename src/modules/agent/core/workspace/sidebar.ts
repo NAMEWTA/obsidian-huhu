@@ -1,8 +1,7 @@
 import type { WorkspaceTab } from './model';
 
-export type SessionBucket = 'attention' | 'working' | 'done' | 'idle' | 'unknown' | 'terminal' | 'browser' | 'page';
+export type SessionBucket = 'attention' | 'working' | 'done' | 'idle' | 'unknown' | 'terminal' | 'page';
 export function sessionBucket(tab: WorkspaceTab): SessionBucket {
-	if (tab.kind === 'browser') return 'browser';
 	// Pages (board, usage) are not sessions; the session lists leave them out.
 	if (tab.kind === 'page') return 'page';
 	if (!tab.agentId) return 'terminal';

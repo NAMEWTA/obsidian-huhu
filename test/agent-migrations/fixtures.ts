@@ -29,7 +29,7 @@ const terminal = (id: string, cwd: string) => ({
 	createdAt: 1,
 	updatedAt: 2,
 });
-/** A legacy v1 layout: two groups, two terminal tabs (same cwd), one web tab, one page tab, one closed tab. */
+/** A legacy v1 layout: two groups, two terminal tabs (same cwd), one page tab, one closed tab. */
 export function legacyLayout(): WorkspaceState {
 	const a = terminal('a', '/work/same'),
 		b = terminal('b', '/work/same');
@@ -38,20 +38,10 @@ export function legacyLayout(): WorkspaceState {
 		tabs: {
 			a,
 			b,
-			w: {
-				kind: 'browser',
-				id: 'w',
-				title: 'Docs',
-				pageId: 'pg1',
-				url: 'https://example.com/',
-				profileId: 'default',
-				zoom: 1,
-				createdAt: 3,
-			},
 			'tab-page-board': { kind: 'page', id: 'tab-page-board', title: 'Board', page: 'board', createdAt: 4 },
 		} as unknown as WorkspaceState['tabs'],
 		groups: [
-			{ id: 'g1', tabIds: ['a', 'w'], activeTabId: 'a', recentTabIds: ['a'] },
+			{ id: 'g1', tabIds: ['a'], activeTabId: 'a', recentTabIds: ['a'] },
 			{ id: 'g2', tabIds: ['b', 'tab-page-board'], activeTabId: 'b', recentTabIds: ['b'] },
 		],
 		layout: {
