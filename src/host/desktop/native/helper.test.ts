@@ -4,6 +4,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { expect, test, vi } from 'vitest';
 import { encodeControl, FrameDecoder } from '../../../shared/native/frames';
 import { PtyHelper } from './helper';
+import { HELLO_CURRENT } from '../../../../test/fixtures/native/hello';
 
 vi.mock('node:child_process', () => ({ spawn: vi.fn() }));
 
@@ -17,7 +18,7 @@ for (const [wire, expected] of [
 ] as const) test(`spawn rejection evidence is validated conservatively: ${JSON.stringify(wire)}`, async () => {
 	const child = new EventEmitter(), stdout = new PassThrough(), stderr = new PassThrough(), decoder = new FrameDecoder();
 	const stdin = new Writable({ write(chunk: Buffer, _encoding, done) {
-		for (const frame of decoder.push(chunk)) if (frame.kind === 1 && frame.message.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'fixture' }));
+		for (const frame of decoder.push(chunk)) if (frame.kind === 1 && frame.message.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'fixture', platform: process.platform, ...HELLO_CURRENT }));
 		done();
 	} });
 	stdin.on('finish', () => { child.emit('exit', 0, null); child.emit('close', 0, null); });
@@ -38,7 +39,7 @@ test('negotiated termination notices retain exact evidence and reject malformed 
 	const stdin = new Writable({ write(chunk: Buffer, _encoding, done) {
 		for (const frame of decoder.push(chunk)) if (frame.kind === 1) {
 			sent.push(frame.message);
-			if (frame.message.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'fixture', platform: process.platform, capabilities: { terminalTermination: 1 } }));
+			if (frame.message.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'fixture', platform: process.platform, ...HELLO_CURRENT }));
 		}
 		done();
 	} });

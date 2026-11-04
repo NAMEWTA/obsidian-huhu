@@ -7,6 +7,7 @@ import { encodeControl, encodeControlBody, FrameDecoder, FRAME_CONTROL } from '.
 import { CONTROL_LIMITS, encodeHelperControlBody, parseHelperControlBody, type ControlMessage, type ControlProgressMessage } from '../../../shared/native/control-wire';
 import { BoundedHelperWriter, PtyHelper } from './helper';
 import { NativeShutdownError } from '../../../shared/native/host';
+import { HELLO_CURRENT } from '../../../../test/fixtures/native/hello';
 
 vi.mock('node:child_process', () => ({ spawn: vi.fn() }));
 
@@ -14,7 +15,7 @@ function shutdownProcess(options: { protocol?: number; noHello?: boolean; noPid?
 	const child = new EventEmitter(), stdout = new PassThrough(), stderr = new PassThrough();
 	const closed = vi.fn(), kill = vi.fn(() => true);
 	const stdin = new Writable({ write(_chunk, _encoding, done) {
-		if (!options.noHello) stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: options.protocol ?? 3, pid: 123, version: 'shutdown-fixture' }));
+		if (!options.noHello) stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: options.protocol ?? 3, pid: 123, version: 'shutdown-fixture', platform: process.platform, ...HELLO_CURRENT }));
 		done();
 	} });
 	vi.mocked(spawn).mockReturnValue(Object.assign(child, { stdin, stdout, stderr, kill, pid: options.noPid ? undefined : 123 }) as unknown as ChildProcessWithoutNullStreams);
@@ -118,7 +119,7 @@ async function receivingHelper() {
 	const controls: ControlMessage[] = [], closed: string[] = [];
 	const stdin = new Writable({ write(chunk: Buffer, _encoding, done) {
 		for (const frame of decoder.push(chunk)) if (frame.kind === FRAME_CONTROL && frame.message.type === 'hello')
-			stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 12, version: 'controlled-io', capabilities: { localControl: 1 } }));
+			stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 12, version: 'controlled-io', platform: process.platform, ...HELLO_CURRENT }));
 		done();
 	} });
 	stdin.on('finish', () => { child.emit('exit', 0, null); child.emit('close', 0, null); });

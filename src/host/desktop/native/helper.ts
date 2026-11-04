@@ -2,7 +2,6 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import {
 	encodeControl,
 	encodeControlBody,
-	encodeInput,
 	encodeInputPart,
 	encodeReply,
 	utf8Length,
@@ -122,10 +121,10 @@ export class PtyHelper {
 	private operationBytes = 0;
 	private operationBytesPeak = 0;
 	private operationsPeak = 0;
-	inputAdmission?: 1;
-	outputAbandon?: 1;
+	readonly inputAdmission = 1;
+	readonly outputAbandon = 1;
 	private readonly abandoned = new Set<number>();
-	inputLimits?: Readonly<NativeInputLimits>;
+	inputLimits: Readonly<NativeInputLimits> = NATIVE_INPUT_LIMITS;
 	private readonly spawns = new Map<number, Pending<number | null>>();
 	private readonly requests = new Map<string, Pending<unknown> & { cleanup(): void }>();
 	private hello?: Pending<Record<string, unknown>>;
@@ -140,9 +139,9 @@ export class PtyHelper {
 	pid = 0;
 	version = '';
 	terminalTermination?: 1;
-	replySettlement?: 1;
-	localControl?: 1;
-	editorTransactions?: 1;
+	readonly replySettlement = 1;
+	readonly localControl = 1;
+	readonly editorTransactions = 1;
 	private platform = '';
 	private readonly terminationSequences = new Map<number, number>();
 
@@ -226,56 +225,22 @@ export class PtyHelper {
 				`The terminal helper speaks protocol ${String(hello.protocol)}; this plugin needs ${HELPER_PROTOCOL}. Install the matching release.`,
 			));
 		}
+		const capabilities: Record<string, unknown> = hello.capabilities && typeof hello.capabilities === 'object' ? hello.capabilities as Record<string, unknown> : {};
+		const limits = parseNativeInputLimits(hello.inputLimits);
+		const missing = ['inputAdmission', 'outputAbandon', 'replySettlement', 'localControl', 'editorTransactions'].filter(name => capabilities[name] !== 1);
+		if (!limits) missing.push('inputLimits');
+		if (missing.length)
+			return helper.startFailed(new Error(
+				`The terminal helper does not declare the required capabilities (${missing.join(', ')}); this plugin needs protocol ${HELPER_PROTOCOL} with all of them. Install the matching release.`,
+			));
 		helper.pid = typeof hello.pid === 'number' ? hello.pid : 0;
 		helper.version = typeof hello.version === 'string' ? hello.version : '';
 		helper.platform = typeof hello.platform === 'string' ? hello.platform : '';
-		if (hello.capabilities && typeof hello.capabilities === 'object' && 'localControl' in hello.capabilities && hello.capabilities.localControl === 1)
-			helper.localControl = 1;
-		if (
-			hello.capabilities &&
-			typeof hello.capabilities === 'object' &&
-			'terminalTermination' in hello.capabilities &&
-			hello.capabilities.terminalTermination === 1 &&
-			helper.platform === process.platform
-		)
-			helper.terminalTermination = 1;
-		if (
-			hello.capabilities &&
-			typeof hello.capabilities === 'object' &&
-			'outputAbandon' in hello.capabilities &&
-			hello.capabilities.outputAbandon === 1
-		)
-			helper.outputAbandon = 1;
-		if (
-			hello.capabilities &&
-			typeof hello.capabilities === 'object' &&
-			'replySettlement' in hello.capabilities &&
-			hello.capabilities.replySettlement === 1
-		)
-			helper.replySettlement = 1;
-		const limits = parseNativeInputLimits(hello.inputLimits);
-		if (
-			hello.capabilities &&
-			typeof hello.capabilities === 'object' &&
-			'inputAdmission' in hello.capabilities &&
-			hello.capabilities.inputAdmission === 1 &&
-			limits
-		) {
-			// The peer can reduce our profile, never enlarge any local allocation/admission bound.
-			const effective = Object.fromEntries(
-				Object.entries(NATIVE_INPUT_LIMITS).map(([key, cap]) => [
-					key,
-					Math.min(cap, limits[key as keyof NativeInputLimits]),
-				]),
-			) as unknown as NativeInputLimits;
-			if (parseNativeInputLimits(effective)) {
-				helper.inputLimits = Object.freeze(effective);
-				helper.inputAdmission = 1;
-			}
-		}
-		if (helper.inputAdmission === 1 && hello.capabilities && typeof hello.capabilities === 'object' &&
-			'editorTransactions' in hello.capabilities && hello.capabilities.editorTransactions === 1)
-			helper.editorTransactions = 1;
+		if (capabilities.terminalTermination === 1 && helper.platform === process.platform) helper.terminalTermination = 1;
+		// The peer can reduce our profile, never enlarge any local allocation/admission bound.
+		helper.inputLimits = Object.freeze(Object.fromEntries(
+			Object.entries(NATIVE_INPUT_LIMITS).map(([key, cap]) => [key, Math.min(cap, limits![key as keyof NativeInputLimits])]),
+		) as unknown as NativeInputLimits);
 		return helper;
 	}
 
@@ -344,7 +309,7 @@ export class PtyHelper {
 		let bytes: number;
 		try { bytes = editorBodyBytes(text); } catch (error) { return none(error instanceof NativeEditorError && error.failure.state === 'none' && error.failure.reason === 'capacity' ? 'capacity' : 'invalid'); }
 		const session = [...this.operations.values(), ...this.editorOperations.values()].filter(row => row.sid === sid);
-		const limits = this.inputLimits ?? NATIVE_INPUT_LIMITS;
+		const limits = this.inputLimits;
 		if (this.operations.size + this.editorOperations.size >= limits.helperQueuedOperations || session.length >= limits.sessionQueuedOperations ||
 			this.operationBytes + bytes > Math.min(limits.helperQueuedBytes, EDITOR_LIMITS.nodeRetainedBodyBytes) ||
 			session.reduce((sum, row) => sum + row.bytes, 0) + bytes > limits.sessionQueuedBytes) return none('capacity');
@@ -423,7 +388,7 @@ export class PtyHelper {
 	}
 	private editorMessage(message: EditorMessage): void {
 		const state = this.editors.get(message.sid);
-		if (!state || this.editorTransactions !== 1) return;
+		if (!state) return;
 		if (!editorDescriptor().messages[message.type].directions.includes('native-to-node')) throw new Error('Invalid editor message direction');
 		if (state.editorId !== undefined && message.editorId !== state.editorId) return;
 		if (message.type === 'editor-ready') {
@@ -481,7 +446,7 @@ export class PtyHelper {
 		};
 	}
 	prepareControl(message: ControlMessage, valid?: () => boolean): NativeControlFrame {
-		if (this.ended || this.localControl !== 1)
+		if (this.ended)
 			throw new NativeControlError('CAPABILITY_UNAVAILABLE', 'Local native control is unavailable');
 		const type = Object.getOwnPropertyDescriptor(message, 'type');
 		if (!type || !('value' in type)) throw new NativeControlError('INVALID_ARGUMENT', 'Invalid native control message');
@@ -546,7 +511,6 @@ export class PtyHelper {
 			this.editorMessage(message as EditorMessage); return;
 		}
 		if (typeof message.type === 'string' && message.type.startsWith('control-')) {
-			if (this.localControl !== 1) throw new Error('Unnegotiated local control message');
 			if (!['control-registered', 'control-unregistered', 'control-request', 'control-cancel', 'control-settled', 'control-error'].includes(message.type))
 				throw new Error('Invalid native control message direction');
 			this.events.control?.(message as ControlMessage);
@@ -555,10 +519,9 @@ export class PtyHelper {
 		const sid = typeof message.sid === 'number' ? message.sid : -1;
 		switch (message.type) {
 			case 'reply-settled': {
-				const wire = parseNativeInputControl(message, this.inputLimits ?? NATIVE_INPUT_LIMITS);
+				const wire = parseNativeInputControl(message, this.inputLimits);
 				if (
 					wire?.type !== 'reply-settled' ||
-					this.replySettlement !== 1 ||
 					!this.numericExits.has(wire.sid) ||
 					this.replyCloses.get(wire.sid) !== 'handed' ||
 					this.settledReplies.has(wire.sid)
@@ -570,7 +533,7 @@ export class PtyHelper {
 				return;
 			}
 			case 'reply-failure': {
-				const wire = parseNativeInputControl(message, this.inputLimits ?? NATIVE_INPUT_LIMITS);
+				const wire = parseNativeInputControl(message, this.inputLimits);
 				if (
 					wire?.type !== 'reply-failure' ||
 					!this.terminationSequences.has(wire.sid) ||
@@ -628,7 +591,7 @@ export class PtyHelper {
 					this.userClosed.add(sid);
 					this.numericExits.add(sid);
 					this.confirmed.add(sid);
-					if (this.replySettlement === 1 && message.replySettled === true && !this.sawOutput.has(sid)) {
+					if (message.replySettled === true && !this.sawOutput.has(sid)) {
 						this.settledReplies.add(sid);
 						this.events.replySettled?.(sid);
 					} else this.closeReplies(sid);
@@ -675,12 +638,11 @@ export class PtyHelper {
 				new NativeSpawnError('Native session already exists', { code: 'session-conflict', effect: 'unknown' }),
 			);
 		const none = (message: string) => {
-			if (this.replySettlement === 1) this.events.replySettled?.(sid);
+			this.events.replySettled?.(sid);
 			return Promise.reject(new NativeSpawnError(message, { code: 'pty-unavailable', effect: 'none' }));
 		};
 		if (this.spawns.size >= 32 || this.terminationSequences.size >= 32)
 			return none('Native session capacity exceeded');
-		if (options.editor && this.editorTransactions !== 1) return none('Native editor transactions are unavailable');
 		let editor: EditorBindingState | undefined;
 		try {
 			controlBytes({ type: 'spawn', sid, ...options });
@@ -710,7 +672,7 @@ export class PtyHelper {
 					editor.phase = 'closed'; editor.rejectReady(new NativeEditorError({ state: 'none', effect: 'none', reason: 'capacity' }));
 					editor.resolveClosed({ reason: 'closed' }); this.editors.delete(sid);
 				}
-				if (this.replySettlement === 1) this.events.replySettled?.(sid);
+				this.events.replySettled?.(sid);
 				reject(
 					new NativeSpawnError('Native request capacity exceeded', {
 						code: 'pty-unavailable',
@@ -722,7 +684,7 @@ export class PtyHelper {
 	}
 
 	abandonOutput(sid: number): void {
-		if (this.outputAbandon !== 1 || this.ended || !this.terminationSequences.has(sid))
+		if (this.ended || !this.terminationSequences.has(sid))
 			throw new Error('Captured output abandonment is unavailable');
 		if (!this.send({ type: 'output-abandon', sid }) || this.ended)
 			throw new Error('Native output abandonment was not submitted');
@@ -740,7 +702,7 @@ export class PtyHelper {
 			throw new NativeReplyError({ state: 'none', reason: 'invalid' });
 		if (this.ended || this.numericExits.has(sid)) throw new NativeReplyError({ state: 'none', reason: 'closed' });
 		if (!this.terminationSequences.has(sid)) throw new NativeReplyError({ state: 'none', reason: 'closed' });
-		const limit = this.inputLimits?.replyFrameBytes ?? NATIVE_INPUT_LIMITS.replyFrameBytes;
+		const limit = this.inputLimits.replyFrameBytes;
 		if ((typeof data === 'string' ? data.length : data.byteLength) > limit)
 			throw new NativeReplyError({ state: 'none', reason: 'capacity' });
 		// At most three UTF8 bytes per UTF16 code unit; this bounded scan cannot
@@ -751,46 +713,22 @@ export class PtyHelper {
 		const size = bytes + 9;
 		if (
 			!this.writer.canEnqueue(size, 'reply') ||
-			!this.write(this.inputAdmission === 1 ? encodeReply(sid, data) : encodeInput(sid, data), 'reply', sid)
+			!this.write(encodeReply(sid, data), 'reply', sid)
 		)
 			throw new NativeReplyError({ state: 'none', reason: 'capacity' });
 		if (this.ended) throw new NativeReplyError({ state: 'unknown', reason: 'transport-lost' });
 	}
 	input(sid: number, data: string | Uint8Array): void {
-		if (this.inputAdmission === 1) {
-			const submission = this.submitInput(sid, data);
-			void submission.finished.then((result) => {
-				if (result.state === 'none' || result.state === 'unknown') this.events.inputFailure?.(sid, result);
-			});
-		} else {
-			if (this.userClosed.has(sid) || this.ended) {
-				this.events.inputFailure?.(sid, { op: 0, state: 'none', reason: 'closed' });
-				return;
-			}
-			const size = utf8Length(data, NATIVE_INPUT_LIMITS.operationBytes) + 9;
-			if (
-				!this.writer.canEnqueue(size, 'user') ||
-				!this.write(encodeInput(sid, data), 'user', sid, () => !this.userClosed.has(sid))
-			)
-				this.events.inputFailure?.(sid, { op: 0, state: 'none', reason: 'capacity' });
-		}
+		const submission = this.submitInput(sid, data);
+		void submission.finished.then((result) => {
+			if (result.state === 'none' || result.state === 'unknown') this.events.inputFailure?.(sid, result);
+		});
 	}
 	resize(sid: number, cols: number, rows: number): void {
-		if (this.inputAdmission === 1) {
-			const submission = this.submitResize(sid, cols, rows);
-			void submission.finished.then((result) => {
-				if (result.state === 'none' || result.state === 'unknown') this.events.inputFailure?.(sid, result);
-			});
-		} else if (
-			!this.send(
-				{ type: 'resize', sid, cols: Math.max(1, Math.floor(cols)), rows: Math.max(1, Math.floor(rows)) },
-				'user',
-				sid,
-				undefined,
-				() => !this.userClosed.has(sid),
-			)
-		)
-			this.events.inputFailure?.(sid, { op: 0, state: 'none', reason: 'capacity' });
+		const submission = this.submitResize(sid, cols, rows);
+		void submission.finished.then((result) => {
+			if (result.state === 'none' || result.state === 'unknown') this.events.inputFailure?.(sid, result);
+		});
 	}
 	submitInput(sid: number, data: string | Uint8Array, options?: NativeInputOptions): NativeInputSubmission {
 		return this.submit(sid, 'input', data, undefined, options) as NativeInputSubmission;
@@ -831,10 +769,6 @@ export class PtyHelper {
 		};
 		if (this.ended || this.userClosed.has(sid) || !this.terminationSequences.has(sid) || op > 0xffff_ffff) {
 			failure('closed');
-			return handle as NativeInputSubmission;
-		}
-		if (this.inputAdmission !== 1 || !limits) {
-			failure('unsupported');
 			return handle as NativeInputSubmission;
 		}
 		if (options?.signal?.aborted) {
@@ -943,13 +877,13 @@ export class PtyHelper {
 				this.settle(pending, { op: pending.op, state: 'unknown', reason });
 	}
 	private operationState(message: Record<string, unknown>): void {
-		const wire = parseNativeInputControl(message, this.inputLimits ?? NATIVE_INPUT_LIMITS);
+		const wire = parseNativeInputControl(message, this.inputLimits);
 		if (!wire || (wire.type !== 'input-state' && wire.type !== 'resize-state')) return;
 		const pending = this.operations.get(`${wire.sid}:${wire.op}`);
 		if (!pending || (pending.kind === 'input') !== (wire.type === 'input-state')) return;
 		if (wire.state === 'reserved') {
 			if (pending.kind !== 'input' || pending.stage !== 'begin' || !pending.data || pending.cancelled) return;
-			const size = this.inputLimits!.fragmentBytes,
+			const size = this.inputLimits.fragmentBytes,
 				count = Math.ceil(pending.bytes / size);
 			if (!this.writer.canEnqueue(pending.bytes + count * 17 + 128, 'user', count + 1)) {
 				pending.cancelled = true;
@@ -1091,7 +1025,7 @@ export class PtyHelper {
 	}
 
 	private closeReplies(sid: number): void {
-		if (this.replySettlement !== 1 || this.replyCloses.has(sid)) return;
+		if (this.replyCloses.has(sid)) return;
 		this.replyCloses.set(sid, 'pending');
 		this.scheduleReplyCloses();
 	}
@@ -1118,7 +1052,7 @@ export class PtyHelper {
 	private retireSession(sid: number): void {
 		if (
 			!this.numericExits.has(sid) ||
-			(this.replySettlement === 1 && !this.settledReplies.has(sid)) ||
+			!this.settledReplies.has(sid) ||
 			(this.terminalTermination === 1 && !this.confirmed.has(sid)) ||
 			(this.outputBytes.get(sid) ?? 0) > 0
 		)

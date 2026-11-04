@@ -68,7 +68,7 @@ async function helperFixture(
 	events?: NativeEvents,
 	seed = true,
 	limits = NATIVE_INPUT_LIMITS,
-	settlement = false,
+	_settlement = false,
 ) {
 	const child = new EventEmitter(),
 		stdout = new PassThrough(),
@@ -96,7 +96,10 @@ async function helperFixture(
 							? {
 									inputAdmission: 1,
 									terminalTermination: 1,
-									...(settlement ? { replySettlement: 1 } : {}),
+									outputAbandon: 1,
+									replySettlement: 1,
+									localControl: 1,
+									editorTransactions: 1,
 								}
 							: {},
 						inputLimits: limits,
@@ -321,17 +324,8 @@ test('whole input waits for reservation; started cannot be changed by a late non
 	}
 });
 
-test('legacy strong submission sends nothing and reports unsupported; cancellation needs matched acknowledgement', async () => {
-	const legacy = await helperFixture(false);
-	try {
-		const count = legacy.sent.length,
-			submission = legacy.helper.submitInput(7, 'abc');
-		expect(await submission.queued).toEqual({ op: 1, state: 'none', reason: 'unsupported' });
-		expect(await submission.finished).toEqual({ op: 1, state: 'none', reason: 'unsupported' });
-		expect(legacy.sent).toHaveLength(count);
-	} finally {
-		await legacy.helper.dispose();
-	}
+test('a helper that does not declare every required capability is refused at the handshake; cancellation needs matched acknowledgement', async () => {
+	await expect(helperFixture(false)).rejects.toThrow('required capabilities');
 	const fixture = await helperFixture();
 	try {
 		const submission = fixture.helper.submitInput(7, 'abc');
@@ -728,28 +722,26 @@ test('negotiated reply close waits for bounded capacity and physically follows p
 	}
 });
 
-test('pending reply close markers are cleared on disconnect and legacy peers receive no new wire', async () => {
-	for (const negotiated of [false, true]) {
-		const fixture = await helperFixture(true, undefined, true, NATIVE_INPUT_LIMITS, negotiated);
-		fixture.settlementHolds.add(7);
-		const stdin = (fixture.child as unknown as ChildProcessWithoutNullStreams).stdin;
-		const original = stdin.write.bind(stdin);
-		stdin.write = (() => false) as typeof stdin.write;
-		try {
-			fixture.helper.reply(7, 'held');
-			fixture.control({ type: 'exit', sid: 7, code: 0, signal: null });
-			await Promise.resolve();
-			expect(fixture.helper.streamStats.replyClosePending).toBe(negotiated ? 1 : 0);
-			fixture.child.emit('exit', 1, null); fixture.child.emit('close', 1, null);
-			await Promise.resolve();
-			expect(fixture.helper.streamStats.replyClosePending).toBe(0);
-			stdin.emit('drain');
-			await Promise.resolve();
-			expect(fixture.sent.filter((frame) => frame.message?.type === 'reply-close')).toHaveLength(0);
-		} finally {
-			stdin.write = original;
-			await expect(fixture.helper.dispose()).rejects.toMatchObject({ outcome: { state: 'exited', code: 1 } });
-		}
+test('pending reply close markers are cleared on disconnect', async () => {
+	const fixture = await helperFixture();
+	fixture.settlementHolds.add(7);
+	const stdin = (fixture.child as unknown as ChildProcessWithoutNullStreams).stdin;
+	const original = stdin.write.bind(stdin);
+	stdin.write = (() => false) as typeof stdin.write;
+	try {
+		fixture.helper.reply(7, 'held');
+		fixture.control({ type: 'exit', sid: 7, code: 0, signal: null });
+		await Promise.resolve();
+		expect(fixture.helper.streamStats.replyClosePending).toBe(1);
+		fixture.child.emit('exit', 1, null); fixture.child.emit('close', 1, null);
+		await Promise.resolve();
+		expect(fixture.helper.streamStats.replyClosePending).toBe(0);
+		stdin.emit('drain');
+		await Promise.resolve();
+		expect(fixture.sent.filter((frame) => frame.message?.type === 'reply-close')).toHaveLength(0);
+	} finally {
+		stdin.write = original;
+		await expect(fixture.helper.dispose()).rejects.toMatchObject({ outcome: { state: 'exited', code: 1 } });
 	}
 });
 
@@ -973,11 +965,11 @@ test('foreign spawn-failed and premature settlement frames cannot allocate or re
 	}
 });
 
-test('unowned spawn settlement needs negotiated literal evidence and never overrides observed bootstrap output', async () => {
-	for (const mode of ['literal', 'array', 'string', 'legacy', 'output']) {
+test('unowned spawn settlement needs literal evidence and never overrides observed bootstrap output', async () => {
+	for (const mode of ['literal', 'array', 'string', 'output']) {
 		let settled = 0;
 		const fixture = await helperFixture(
-			mode !== 'legacy',
+			true,
 			{
 				output() {},
 				exit() {},
@@ -988,7 +980,7 @@ test('unowned spawn settlement needs negotiated literal evidence and never overr
 			},
 			false,
 			NATIVE_INPUT_LIMITS,
-			mode !== 'legacy',
+			true,
 		);
 		fixture.rejectSpawns.add(7);
 		if (mode !== 'output') fixture.silentRejections.add(7);
@@ -999,10 +991,10 @@ test('unowned spawn settlement needs negotiated literal evidence and never overr
 				fixture.helper.spawnSession(7, { file: 'fixture', args: [], env: {}, cols: 20, rows: 4 }),
 			).rejects.toMatchObject({ failure: { effect: 'none' } });
 			await Promise.resolve();
-			if (mode === 'literal' || mode === 'legacy') {
+			if (mode === 'literal') {
 				expect(fixture.helper.streamStats.sessionRoutes).toBe(0);
 				expect(fixture.sent.filter((frame) => frame.message?.type === 'reply-close')).toHaveLength(0);
-				expect(settled).toBe(mode === 'literal' ? 1 : 0);
+				expect(settled).toBe(1);
 			} else {
 				expect(fixture.helper.streamStats.sessionRoutes).toBe(1);
 				expect(fixture.sent.filter((frame) => frame.message?.type === 'reply-close')).toHaveLength(1);

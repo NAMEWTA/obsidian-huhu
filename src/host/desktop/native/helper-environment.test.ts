@@ -3,6 +3,7 @@ import { PassThrough } from 'node:stream';
 import { expect, test, vi } from 'vitest';
 import { encodeControl, HELPER_PROTOCOL } from '../../../shared/native/frames';
 import { PtyHelper } from './helper';
+import { HELLO_CURRENT } from '../../../../test/fixtures/native/hello';
 
 const native = vi.hoisted(() => ({ spawn: vi.fn() }));
 vi.mock('node:child_process', () => ({ spawn: native.spawn }));
@@ -18,7 +19,7 @@ test('the native helper receives the vault process environment before its first 
 	child.stdin.once('data', () =>
 		queueMicrotask(() =>
 			child.stdout.write(
-				encodeControl({ type: 'hello', accepted: true, protocol: HELPER_PROTOCOL, pid: 1, version: 'fixture' }),
+				encodeControl({ type: 'hello', accepted: true, protocol: HELPER_PROTOCOL, pid: 1, version: 'fixture', platform: process.platform, ...HELLO_CURRENT }),
 			),
 		),
 	);
@@ -54,7 +55,7 @@ test('helper disposal completes only after the child exit is observed', async ()
 	native.spawn.mockReturnValue(child);
 	child.stdin.once('data', () =>
 		queueMicrotask(() =>
-			child.stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: HELPER_PROTOCOL })),
+			child.stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: HELPER_PROTOCOL, platform: process.platform, ...HELLO_CURRENT })),
 		),
 	);
 	const helper = await PtyHelper.start(

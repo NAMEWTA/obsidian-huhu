@@ -7,6 +7,7 @@ import { encodeHelperControlBody, parseHelperControlBody, type ControlMessage, t
 import type { NativeControlCall } from '../../../shared/native/host';
 import { NativeHost } from './host';
 import { PtyHelper } from './helper';
+import { HELLO_CURRENT } from '../../../../test/fixtures/native/hello';
 
 vi.mock('node:child_process', () => ({ spawn: vi.fn() }));
 
@@ -25,7 +26,7 @@ function fixture(options: { holdProgress?: boolean; holdResult?: boolean; holdUn
 			const wire = frame.message;
 			sent.push(wire);
 			options.onWrite?.(wire, () => { child.emit('error', new Error('Synchronous controlled write failure')); child.emit('exit', 1, null); child.emit('close', 1, null); });
-			if (wire.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'io-fixture', capabilities: { localControl: 1 } }));
+			if (wire.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, pid: 123, version: 'io-fixture', platform: process.platform, ...HELLO_CURRENT }));
 			if (wire.type === 'control-register') receive({ type: 'control-registered', controlId: wire.controlId as string, endpoint: '/fixture/socket', locator: '/fixture/locator' });
 			if (wire.type === 'control-result' && options.settleResults !== false) receive({ type: 'control-settled', controlId: wire.controlId as string, bridgeId: wire.bridgeId as string });
 			if (wire.type === 'control-unregister' && !options.holdUnregister) receive({ type: 'control-unregistered', controlId: wire.controlId as string });

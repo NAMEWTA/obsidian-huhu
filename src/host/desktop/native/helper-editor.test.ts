@@ -6,6 +6,7 @@ import { encodeControl, encodeControlBody, encodeInput } from '../../../shared/n
 import { encodeEditorMessage, parseEditorMessage, type EditorMessage, type NativeEditorLaunch } from '../../../shared/native/control-wire';
 import { NATIVE_INPUT_LIMITS } from '../../../shared/native/input';
 import { PtyHelper } from './helper';
+import { HELLO_CURRENT } from '../../../../test/fixtures/native/hello';
 
 vi.mock('node:child_process', () => ({ spawn: vi.fn() }));
 const instance = '11111111-1111-4111-8111-111111111111';
@@ -26,7 +27,7 @@ async function backend(options: { deferSettlement?: boolean; deferReserved?: boo
 			const length = carry.readUInt32BE(0), frame = carry.subarray(0, length + 4); carry = carry.subarray(length + 4);
 			if (frame[4] === 4) { body.push(Buffer.from(frame.subarray(17))); continue; }
 			const raw = JSON.parse(frame.subarray(5).toString()) as Record<string, unknown>;rawWrites.push(raw);
-			if (raw.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, version: 'external-io-fixture', platform: process.platform, capabilities: { inputAdmission: 1, editorTransactions: 1, ...(options.terminalFences ? { terminalTermination: 1, replySettlement: 1 } : {}) }, inputLimits: NATIVE_INPUT_LIMITS }));
+			if (raw.type === 'hello') stdout.write(encodeControl({ type: 'hello', accepted: true, protocol: 3, version: 'external-io-fixture', platform: process.platform, ...HELLO_CURRENT }));
 			else if (raw.type === 'spawn') {
 				receive({ type: 'editor-ready', version: 1, sid: raw.sid as number, editorId, identity: enrollment.identity, provider: 'pi', profileId: 'pi-fixture', sourceInstance: instance });
 				stdout.write(encodeControl({ type: 'spawned', sid: raw.sid, pid: 123 }));
@@ -193,12 +194,14 @@ for (const first of ['callback', 'drain'] as const) test(`editor-close frame wai
   const closing = binding.close();await binding.closed;
   let closeDone = false;void closing.then(() => { closeDone = true; });
   await new Promise<void>(resolve => setImmediate(resolve));
-  io.receiveNative({ type: 'exit', sid: 1, code: 0, signal: null });
+  io.receiveNative({ type: 'exit', sid: 1, code: 0, signal: null });io.receiveNative(confirmedTermination(1));
   expect(io.helper.editorBinding(1)).toBe(binding);expect(closeDone).toBe(false);expect(io.helper.streamStats.frames).toBeGreaterThan(0);
   if (first === 'callback') io.releaseCallbacks();else io.drain();
   await new Promise<void>(resolve => setImmediate(resolve));
   expect(io.helper.editorBinding(1)).toBe(binding);expect(closeDone).toBe(false);
   if (first === 'callback') io.drain();else io.releaseCallbacks();
+  await vi.waitFor(() => expect(io.rawWrites.some(message => message.type === 'reply-close' && message.sid === 1)).toBe(true));
+  io.receiveNative({ type: 'reply-settled', sid: 1 });
   await closing;expect(io.helper.editorBinding(1)).toBeUndefined();
  } finally { io.releaseCallbacks();io.drain();await io.helper.dispose(); }
 });
