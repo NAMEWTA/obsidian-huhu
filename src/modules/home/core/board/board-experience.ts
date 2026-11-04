@@ -48,7 +48,7 @@ export function focalForWrite(value: unknown): FocalPoint | undefined {
 	return { x, y };
 }
 
-/** The legacy single template still reads. An empty list is the blank note. Cancel chooses nothing. */
-export function templateChoices(legacyPath: string | undefined, templates?: readonly string[]): string[] {
-	return [...new Set((templates ?? (legacyPath ? [legacyPath] : [])).map(item => item.trim()).filter(Boolean))];
+/** Trimmed, unique template paths in order. An empty list is the blank note. Cancel chooses nothing. */
+export function templateChoices(templates: readonly string[]): string[] {
+	return [...new Set(templates.map(item => item.trim()).filter(Boolean))];
 }

@@ -89,9 +89,8 @@ describe('home grid and board rules', () => {
 		assert.deepEqual(displayFocal(undefined), { x: 50, y: 50 });
 		assert.equal(focalForWrite(undefined), undefined);
 		assert.deepEqual(focalForWrite({ x: 140, y: -3 }), { x: 100, y: 0 });
-		assert.deepEqual(templateChoices('old.md'), ['old.md']);
-		assert.deepEqual(templateChoices('old.md', []), []);
-		assert.deepEqual(templateChoices('old.md', [' b.md ', 'a.md', 'b.md', '']), ['b.md', 'a.md']);
+		assert.deepEqual(templateChoices([]), []);
+		assert.deepEqual(templateChoices([' b.md ', 'a.md', 'b.md', '']), ['b.md', 'a.md']);
 	});
 
 	test('the icon authority keeps the full host list, promotes preferred names and invents none', () => {

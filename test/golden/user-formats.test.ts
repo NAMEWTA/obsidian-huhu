@@ -67,12 +67,10 @@ test('anniversary settings retain real solar instants and optional lunar recurre
 });
 
 test('multi-template library and folder lists preserve order and explicit blank choices', async () => {
-	const original = '---\ncustom: keep # author\ncolumns: [{name: Library, type: library, library: {filters: [], templatePath: Templates/Old.md}}, {name: Folder, type: folder, library: {filters: [], folders: [Work], templatePath: Templates/Old.md}}]\n---\n## Library\nAuthor prose.\n\n## Folder\n';
+	const original = '---\ncustom: keep # author\ncolumns: [{name: Library, type: library, library: {filters: [], templatePaths: [Templates/Old.md]}}, {name: Folder, type: folder, library: {filters: [], folders: [Work], templatePaths: [Templates/Old.md]}}]\n---\n## Library\nAuthor prose.\n\n## Folder\n';
 	const board = parse(original);
 	board.columns[0]!.libraryConfig!.templatePaths = ['Templates/B.md', 'Templates/A.md'];
-	board.columns[0]!.libraryConfig!.templatePath = 'Templates/B.md';
 	board.columns[1]!.libraryConfig!.templatePaths = [];
-	board.columns[1]!.libraryConfig!.templatePath = undefined;
 	const text = serialize(board);
 	await expect(text).toMatchFileSnapshot(snapshot('board-multi-templates.md'));
 	assert.deepEqual(parse(text).columns.map(column => column.libraryConfig!.templatePaths), [['Templates/B.md', 'Templates/A.md'], []]);

@@ -417,10 +417,8 @@ export interface LibraryConfig {
 	 *  folders reach the section (excludes still subtract within the scope).
 	 *  Empty = whole vault. */
 	includeFolders?: string[];
-	/** New notes created from this section's toolbar button start from this
-	 *  template note's content ({{title}} / {{date:...}} substituted). Empty = bare note. */
-	templatePath?: string;
-	/** Ordered choices. Missing projects templatePath; an explicit empty list creates a blank note. */
+	/** Ordered template notes for new notes created from this section's toolbar button ({{title}} / {{date:...}}
+	 *  substituted). Absent or an explicit empty list creates a blank note. */
 	templatePaths?: string[];
 	/** All-tasks section: dimension used to group tasks into list sections / kanban columns. */
 	taskGroupBy?: 'date' | 'priority' | 'none';

@@ -173,15 +173,15 @@ async function verifyCreation() {
 			'      viewMode: kanban',
 			'      sortBy: modified',
 			'      sortDesc: true',
-			'      templatePath: "Templates/note.md"',
+			'      templatePaths: ["Templates/note.md"]',
 			'---',
 			'',
 			'## 文案写作',
 		].join('\n');
 		const parsed = parse(md).columns[0]!.libraryConfig!;
-		assert.equal(parsed.templatePath, 'Templates/note.md', 'templatePath parses out of the library block');
+		assert.deepEqual(parsed.templatePaths, ['Templates/note.md'], 'templatePaths parses out of the library block');
 		const round = parse(serialize({ ...parse(md), columns: parse(md).columns })).columns[0]!.libraryConfig!;
-		assert.equal(round.templatePath, 'Templates/note.md', 'templatePath survives the serialize round-trip');
+		assert.deepEqual(round.templatePaths, ['Templates/note.md'], 'templatePaths survives the serialize round-trip');
 	}
 	{
 		const { app, created, mkdirs } = makeVaultApp(new Set());

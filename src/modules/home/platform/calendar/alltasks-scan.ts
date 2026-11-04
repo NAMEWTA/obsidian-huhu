@@ -107,7 +107,7 @@ export function scanFileTasks(file: ContentFile, content: string): VaultTask[] {
 				text = text.replace(CALENDAR_REGEX, '');
 			}
 		}
-		// A reminder-only legacy task still anchors its day; an explicit due date keeps its own identity.
+		// A reminder-only task still anchors its day; an explicit due date keeps its own identity.
 		if (reminder && !due) due = reminder.slice(0, 10);
 
 		let priority: Priority | undefined;

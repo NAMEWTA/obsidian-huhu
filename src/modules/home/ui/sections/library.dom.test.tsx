@@ -116,7 +116,7 @@ test.each(['library', 'folder'] as const)(
 		column.sectionType = sectionType;
 		Object.assign(column.libraryConfig!, {
 			folders: ['Notes', 'Projects'],
-			templatePath: 'T.md',
+			templatePaths: ['T.md'],
 			filters: [
 				{ property: 'status', values: ['draft', 'done'] },
 				{ property: 'title', operator: 'contains', values: ['book'] },
@@ -201,7 +201,6 @@ test('library config operator, tags, folders and template edits survive one save
 			expect.objectContaining({
 				filters: [{ property: 'tags', operator: 'contains', values: ['work', 'personal'] }],
 				folders: ['Notes', 'Projects'],
-				templatePath: 'Template.md',
 				templatePaths: ['Template.md'],
 			}),
 		),

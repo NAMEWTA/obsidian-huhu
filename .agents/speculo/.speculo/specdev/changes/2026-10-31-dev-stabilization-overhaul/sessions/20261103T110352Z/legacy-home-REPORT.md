@@ -44,3 +44,10 @@
 ## Lead 补充（第二轮后）
 
 审查发现 `normalizeDashboardSettings` 以 `...raw` 保留全部未知字段，而 `domainSettings.pick` 保存整个值：旧设置文件中残留的 `ticktickCookie`/`wereadApiKey` 等凭据会被写回库内设置（随 Git 同步）。修复：只保留当前字段（defaults 键 + 无默认值的可选键）。新增 `core/board/settings.test.ts`（修复前红：仍含 ticktickCookie），home 97 文件 448 例通过。这是当前格式的字段收窄，不是兼容逻辑。
+
+## 第三轮
+- LibraryConfig 去掉 `templatePath` 单值镜像：只读写 `templatePaths`（types/model.ts、parse.ts 写入、extract-card-parts.ts 读取、SectionOptions/LibrarySection）；`templateChoices` 简化为仅去空去重（单参数）。快捷按钮 `templatePath`、`preset.templatePath`、library-new-note 未动。旧文件里的 `templatePath:` 键现按普通未知字段原样保留，不再被读成模板。
+- pipeline/codec.ts：删除 `templatePath` 回退、`sortBy: 'ctime'` 映射、单数 `filter:{dim,value}` 旧形态，只认 `templatePaths`/当前 `sortBy`/`filters`。
+- alltasks-scan.ts：“reminder-only task”是当前仍可创建的仅提醒任务，保留逻辑，注释去掉 legacy。
+- 测试/样本：multi-note-templates、home-grid、library.dom、golden user-formats 及 `board-multi-templates.md` 快照、`scripts/verify-library-new-note.ts` 同步改为 `templatePaths`。文档中无 `templatePath` 单值描述，无需改。
+- 验证：`tsc -p tsconfig.test.json` 0 错误；主 tsc 仅剩 agent 区他人在途错误（`agent/services/backup/records.ts`），home 无错误；vitest home+golden 101 文件/470 用例全过；eslint 改动文件 0 警告；`test:dashboard-isolation`、`test:i18n`、`test:docs` 退出码 0。

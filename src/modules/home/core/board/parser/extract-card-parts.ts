@@ -97,11 +97,10 @@ export function parseLibraryConfig(raw: Record<string, unknown>): LibraryConfig 
 		includeFolders: Array.isArray(raw.includeFolders)
 			? raw.includeFolders.map((v: unknown) => String(v))
 			: undefined,
-		templatePath: typeof raw.templatePath === 'string' ? raw.templatePath : undefined,
 		tableOrder: Array.isArray(raw.tableOrder) ? [...new Set(raw.tableOrder.filter((value): value is string => typeof value === 'string' && value.length > 0))] : undefined,
 		tableHidden: Array.isArray(raw.tableHidden) ? [...new Set(raw.tableHidden.filter((value): value is string => typeof value === 'string' && value.length > 0))] : undefined,
-		templatePaths: Array.isArray(raw.templatePaths) || typeof raw.templatePath === 'string'
-			? templateChoices(typeof raw.templatePath === 'string' ? raw.templatePath : undefined, Array.isArray(raw.templatePaths) ? raw.templatePaths.filter((value): value is string => typeof value === 'string') : undefined) : undefined,
+		templatePaths: Array.isArray(raw.templatePaths)
+			? templateChoices(raw.templatePaths.filter((value): value is string => typeof value === 'string')) : undefined,
 		taskGroupBy: ['date', 'priority', 'none'].includes(str(raw.taskGroupBy ?? ''))
 			? (raw.taskGroupBy as import('../types/index').LibraryConfig['taskGroupBy'])
 			: undefined,

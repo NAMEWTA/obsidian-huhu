@@ -171,9 +171,6 @@ function serializeManaged(data: DashboardData): string {
 					lines.push(`        - "${escapeYamlString(f)}"`);
 				}
 			}
-			if (lc.templatePath) {
-				lines.push(`      templatePath: "${escapeYamlString(lc.templatePath)}"`);
-			}
 			if (lc.templatePaths !== undefined) lines.push(`      templatePaths: ${JSON.stringify(lc.templatePaths)}`);
 			if (lc.tableOrder !== undefined) lines.push(`      tableOrder: ${JSON.stringify(lc.tableOrder)}`);
 			if (lc.tableHidden !== undefined) lines.push(`      tableHidden: ${JSON.stringify(lc.tableHidden)}`);

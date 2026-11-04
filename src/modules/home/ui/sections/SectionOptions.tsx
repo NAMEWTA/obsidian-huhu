@@ -22,7 +22,7 @@ export function SectionOptions({
 }) {
 	const t = useT(),
 		[cover, setCover] = useState(column.showCover !== false),
-		[template, setTemplate] = useState(column.libraryConfig?.templatePaths?.[0] ?? column.libraryConfig?.templatePath ?? ''),
+		[template, setTemplate] = useState(column.libraryConfig?.templatePaths?.[0] ?? ''),
 
 		[tasks, setTasks] = useState<TaskTemplate[]>(() => structuredClone(store.host.settings.taskTemplates));
 	const project = column.sectionType === 'projects' || column.sectionType === 'notes';

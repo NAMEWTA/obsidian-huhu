@@ -311,7 +311,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 		[draft, setDraft] = useState(config),
 		[name, setName] = useState(''),
 		[folder, setFolder] = useState(config.folders?.[0] ?? ''),
-		[template, setTemplate] = useState(config.templatePaths?.[0] ?? config.templatePath ?? ''),
+		[template, setTemplate] = useState(config.templatePaths?.[0] ?? ''),
 		[remove, setRemove] = useState<LibraryFileResult | null>(null),
 		[collapsed, setCollapsed] = useState<string[]>([]);
 	const patch = (next: Partial<LibraryConfig>) => {
@@ -687,9 +687,9 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							app={store.host.app}
 							kind="file"
 							label={t('home.dashboard.template')}
-							folders={draft.templatePaths ?? (draft.templatePath ? [draft.templatePath] : [])}
+							folders={draft.templatePaths ?? []}
 							onChange={(templatePaths) =>
-								setDraft({ ...draft, templatePaths, templatePath: templatePaths[0] ?? '' })
+								setDraft({ ...draft, templatePaths })
 							}
 						/>
 					</Label>

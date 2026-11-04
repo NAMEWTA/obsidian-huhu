@@ -58,22 +58,14 @@ export function readPipelineConfig(value: unknown): PipelineConfig {
 		}),
 		excludeFolders: strings(raw.excludeFolders),
 		...(text(raw.archiveFolder) ? { archiveFolder: text(raw.archiveFolder) } : {}),
-		templatePaths: strings(raw.templatePaths).length
-			? strings(raw.templatePaths)
-			: text(raw.templatePath)
-				? [text(raw.templatePath)]
-				: [],
+		templatePaths: strings(raw.templatePaths),
 		sortBy: ['title', 'created', 'due'].includes(text(raw.sortBy))
 			? (raw.sortBy as PipelineConfig['sortBy'])
-			: raw.sortBy === 'ctime'
-				? 'created'
-				: 'modified',
+			: 'modified',
 		sortDesc: raw.sortDesc !== false,
 		filterFields: strings(raw.filterFields),
 		filters: Object.fromEntries(
-			Object.entries(
-				raw.filter ? { [text(record(raw.filter).dim)]: text(record(raw.filter).value) } : record(raw.filters),
-			).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
+			Object.entries(record(raw.filters)).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
 		),
 		search: text(raw.search),
 		skills,
