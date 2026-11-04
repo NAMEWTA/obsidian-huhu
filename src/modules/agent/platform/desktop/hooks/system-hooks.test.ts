@@ -376,7 +376,9 @@ test.skipIf(process.platform === 'win32')(
 				HUHU_HOOK_ROOT: resource,
 			});
 			expect(result.status).toBe(0);
-			const published = path.join(resource, 'small', '0');
+			// The publisher picks its global slot at a random start; exactly one is occupied here.
+			const [slot] = (await readdir(path.join(resource, 'small'))).filter((name) => /^\d+$/.test(name));
+			const published = path.join(resource, 'small', slot!);
 			const events = (await readdir(published)).filter((name) => name.endsWith('.ready'));
 			expect(events).toHaveLength(1);
 			expect(JSON.parse(await readFile(path.join(published, events[0]!), 'utf8'))).toMatchObject({

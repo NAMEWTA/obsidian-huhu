@@ -729,10 +729,10 @@ const hookLimits=${JSON.stringify(HOOK_SPOOL_LIMITS)};
 const root=process.env.HUHU_HOOK_ROOT;
 function hookCode(error) { return error&&error.code;}
 ${SPOOL_GUARD}
-function hookClaim(parent, count) {
+function hookClaim(parent, count, start=0) {
  hookPath(parent);
  let denied, used;
- for (let i=0;i<count;i++) { const target=path.join(parent, String(i));try { fs.mkdirSync(target, { mode: 0o700 });return target;} catch (error) { if (hookCode(error)==='EPERM'&&process.platform==='win32') denied=error;else if (hookCode(error)!=='EEXIST') throw error;else used=1;} }
+ for (let n=0;n<count;n++) { const i=(start + n)%count, target=path.join(parent, String(i));try { fs.mkdirSync(target, { mode: 0o700 });return target;} catch (error) { if (hookCode(error)==='EPERM'&&process.platform==='win32') denied=error;else if (hookCode(error)!=='EEXIST') throw error;else used=1;} }
  if (denied&&!used) throw denied;
  throw Error('hookCapacity');
 }
@@ -791,7 +791,10 @@ function hookPublish(event, data, source, provider) {
  let local, global, committed=false;
  try {
   local=hookClaim(path.join(dir, kind), kind==='small'?hookLimits.smallPerScope:hookLimits.largePerScope);
-  global=hookClaim(path.join(root, kind), kind==='small'?hookLimits.smallGlobal:hookLimits.largeGlobal);
+  // Global data slots carry no order (a scope's order is its seq): start at a random slot so a busy pool is not
+  // scanned from 0 by every publisher, each failed mkdir being a filesystem round trip (costly on Windows).
+  const globalCount=kind==='small'?hookLimits.smallGlobal:hookLimits.largeGlobal;
+  global=hookClaim(path.join(root, kind), globalCount, Math.floor(Math.random()*globalCount));
   const metadata={ token, nonce: publication, scope: path.basename(dir), local: path.basename(local) };
   fs.writeFileSync(path.join(global, 'claim.json'), JSON.stringify(metadata), { flag: 'wx', mode: 0o600 });
   fs.writeFileSync(path.join(local, 'ref.json'), JSON.stringify({ token, nonce: publication, seq, slot: Number(path.basename(global)) }), { flag: 'wx', mode: 0o600 });

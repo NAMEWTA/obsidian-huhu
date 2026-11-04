@@ -29,7 +29,7 @@ function publisher(platform: string, denied: (target: string) => boolean, root?:
 		process: { platform, env: root ? { HUHU_HOOK_ROOT: root } : {} },
 	});
 	vm.runInContext(HOOK_PUBLISHER_SCRIPT, context);
-	return context as unknown as { hookClaim(parent: string, count: number): string; hookPath(file: string): void };
+	return context as unknown as { hookClaim(parent: string, count: number, start?: number): string; hookPath(file: string): void };
 }
 const claimer = (platform: string, denied: (target: string) => boolean) => publisher(platform, denied).hookClaim;
 
@@ -50,6 +50,24 @@ test('a slot directory still being deleted on Windows is treated as occupied, no
 		}
 		// Elsewhere EPERM has no delete-pending meaning and is never masked.
 		assert.throws(() => claimer('linux', (target) => path.basename(target) === '0')(parent, 4), { code: 'EPERM' });
+	} finally {
+		fs.rmSync(parent, { recursive: true, force: true });
+	}
+});
+
+test('a claim can start at an offset and wraps, so a busy pool is not scanned from slot 0 on every publication', () => {
+	const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'huhu-hook-claim-'));
+	try {
+		const claim = publisher(process.platform, () => false).hookClaim;
+		for (let i = 1; i < 6; i++) fs.mkdirSync(path.join(parent, String(i)));
+		// Slot 0 is free, but a claim starting at 6 takes 6 on its first attempt instead of scanning from 0.
+		assert.equal(claim(parent, 8, 6), path.join(parent, '6'));
+		// From 7: 7 is free.
+		assert.equal(claim(parent, 8, 7), path.join(parent, '7'));
+		// From 7 again: 7 and then nothing up to the end, so it wraps to 0.
+		assert.equal(claim(parent, 8, 7), path.join(parent, '0'));
+		// Every slot taken is ordinary capacity.
+		assert.throws(() => claim(parent, 8, 3), /hookCapacity/);
 	} finally {
 		fs.rmSync(parent, { recursive: true, force: true });
 	}

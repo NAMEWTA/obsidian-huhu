@@ -662,7 +662,9 @@ test('an opened small publication is read only through E plus one even when its 
 		const script = path.join(directory, 'publisher.cjs');
 		await fs.writeFile(script, HOOK_SCRIPT);
 		await publish(script, scope.env);
-		const global = path.join(pool.root, 'small', '0'),
+		// The publisher picks its global slot at a random start; exactly one is occupied here.
+		const [slot] = (await fs.readdir(path.join(pool.root, 'small'))).filter((name) => /^\d+$/.test(name));
+		const global = path.join(pool.root, 'small', slot!),
 			ready = (await fs.readdir(global)).find((file) => file.endsWith('.ready'))!;
 		await fs.appendFile(path.join(global, ready), 'x'.repeat(65537));
 		await wait(() => errors.includes('hookEventInvalid'));
