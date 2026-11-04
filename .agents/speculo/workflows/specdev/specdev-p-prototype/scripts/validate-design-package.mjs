@@ -112,6 +112,8 @@ export async function validate(path, options = {}) {
   const digest = await prototypeDigest(designPath);
   const change = await validateChangeDesign(join(dirname(dirname(root)), 'DESIGN.md'), { ...options, requireApproved: !checkPreview });
   if (change.meta.prototype_ref.id !== meta.design_id || change.meta.prototype_ref.digest !== digest || change.meta.selection.candidate_id !== meta.selected_candidate) throw new Error('change DESIGN does not approve this prototype/selection digest');
+  // conclusion-report changes keep only approval records; browser captures are process material that is not committed.
+  if (options.conclusionReport) return meta;
   if (!meta.browser_evidence) throw new Error('ready prototype requires browser evidence');
   const evidence = await browserEvidence(root, meta.browser_evidence, digest, meta.candidates);
   for (const page of change.meta.pages) for (const state of page.states) if (!evidence.cases.some(c => c.entry.startsWith('final/') && c.states.includes(`${page.id}:${state}`))) throw new Error(`browser evidence missing final page state ${page.id}:${state}`);
@@ -126,6 +128,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
     else if (arg === '--allow-draft') options.allowDraft=true;
     else if (arg === '--check-ready') options.checkReady=true;
     else if (arg === '--check-preview') options.checkPreview=true;
+    else if (arg === '--conclusion-report') options.conclusionReport=true;
     else paths.push(arg);
   }
   if (paths.length !== 1) { console.error('usage: validate-design-package.mjs [--allow-draft|--check-ready|--check-preview] [--repo project --method-root method --state-root specdev] <design-system.md>'); process.exitCode = 2; }

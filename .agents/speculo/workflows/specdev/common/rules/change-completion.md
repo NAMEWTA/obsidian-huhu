@@ -63,3 +63,25 @@ A 只验证取消结果，不代替用户取消。单 Ticket cancelled 不推导
 
 独立 Spec 的无票 Direct Spec 使用原 evidence/direct-spec 的 `## Acceptance Verification` JSON array 逐 AC 回读实际结果：id/result/method/source/observed；command 存在时 exit 为 0，外部 evidence 引用须有匹配 sha256，内联观察无需另建文件。空 Evidence、仅标题或 passed 自评不通过。`--stage complete` 只判本地完成；A 移动前使用 `--stage archive-ready` 同时核对对应 completed/cancelled 门和已承诺远程交付，目标移动后再使用 archived。
 
+
+## 结论报告证据模式（conclusion-report）
+
+仓库规定 `changes/**/evidence/` 只入库检验结论报告、过程材料（冻结评审输入 JSON、执行记录、日志、截图、浏览器 JSON、哈希清单）不入库时，change 可显式选用本模式。**未声明的 change 完全沿用上文的全套证据门，行为不变。**
+
+激活只有一种方式，必须写在 change README 正文（围栏代码块内无效）并可审计：
+
+```
+Evidence-Mode: conclusion-report
+Evidence-Basis: <依据，如根 AGENTS.md「SpecDev evidence 入库规则」与对应 LOG 条目>
+History-Rewrite: <可选；仅当 Execution Context 的 base_sha 因仓库历史重写不再是 Git 对象时，写明原因>
+```
+
+`Evidence-Basis` 必填；未知模式值、重复行、缺 Basis、没有 Mode 却有 Basis/History-Rewrite 均报错。校验器对激活的 change 输出一条 warning 提示模式与依据。
+
+模式下仍然校验：Ticket/Map/Goal 依赖与状态一致、AC 覆盖、README Outcome 门、delivery/publish 门、PR 交付门、设计批准摘要与 approval 记录、每张 done Ticket 的结论报告、cancelled Ticket 的取消原因。
+
+每张 done Ticket 在 evidence 目录下的 T-xx 报告（多 Ticket 时再加 final-review 报告；Direct Spec 为 direct-spec 报告）必须有：`## 结论` 且含 `Result: passed`（可带说明；`partial` 等不通过）；`修改范围`、`验收与合同映射`（逐一提到 Ticket 的每个 AC）、`验证`（反引号命令与退出码或通过/失败结果）三个标题段；`input_sha256` 若出现必须是 64 位十六进制，但不要求能回读被排除的 JSON。cancelled Ticket 在 Ticket 正文或 Evidence 写明取消原因。UI Ticket（`ui_change`/`design_ref`）须有 `## Design Conformance` 段，绑定 DESIGN digest 与页面/验收 ID，纯删除等不适用时写 `不适用：<原因>`。
+
+模式下不要求：9 个固定章节、`## Acceptance Verification` JSON、Workspace Execution Record、`## Skill Execution Records`、冻结评审 JSON 与 independent-review 输入引用、prototype 的 `browser_evidence` 过程文件、Execution Context 的 base_sha 与最终 HEAD 的评审基线比对。不支持父 Implementation Map/Plan。
+
+base_sha 不再是 Git 对象时：有 `History-Rewrite` 则降级为 warning（消息带说明），没有则仍然报错。

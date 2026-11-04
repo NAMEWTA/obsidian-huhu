@@ -48,3 +48,7 @@ C 可只审明确不可变 commit；I 完成还须确认实际工作副本与交
 历史 CR 保留当时的策略、固定输入与原结果，只读核验记录自身完整性。将其重新采用为当前审查或完成证据时，才按本轮权威范围与风险重验适用性；后来新增的要求不改写旧报告，也不能靠保留旧报告跳过当前门。
 
 完成校验验证记录、原文和输入一致性，不代替语义判断、实际测试、Lead-owned E2E 或重大迁移验收。未验证事项明示，不将静态通过写成实际宿主/模型成功。
+
+## 结论报告证据模式
+
+change README 声明 `Evidence-Mode: conclusion-report`（见 <Path>{roots.workflows}/specdev/common/rules/change-completion.md</Path>）时，仓库只入库结论报告：不要求冻结评审 JSON、independent-review 输入引用或 `## Skill Execution Records`，评审结论写进 Ticket 证据报告的 `## 结论`（`Result: passed`）与验证段。审查本身仍须真实进行并如实记录；高风险或用户要求独立审查时，应在报告中写明独立 reviewer 与结论。校验器对该模式只检查报告结构与 Result，不能替代审查。未声明的 change 仍按本文全套规则。

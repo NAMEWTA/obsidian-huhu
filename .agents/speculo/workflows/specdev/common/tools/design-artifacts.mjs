@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { parseFrontmatter } from '../../../../lib/speculo-runtime.mjs';
 import * as runtime from '../../../../lib/speculo-runtime.mjs';
 import { resolveToolContext, canonicalToolPath } from './plan-contract.mjs';
+import { readEvidenceMode, designConformanceOk } from './evidence-mode.mjs';
 import * as schemas from '../../../../lib/design-validators.mjs';
 
 export const sha256 = value => createHash('sha256').update(value).digest('hex');
@@ -214,7 +215,7 @@ export async function validateArchived(path, options = {}) {
     const packagePath = await safePath(path, `prototypes/${design.meta.prototype_ref.id}/design-system.md`);
     if (!cancelled && (await readDesign(packagePath)).meta.status !== 'ready') throw new Error('archived design references a prototype that is not ready');
     const { validate } = await import('../../specdev-p-prototype/scripts/validate-design-package.mjs');
-    await validate(packagePath, { checkReady: !cancelled, allowDraft:cancelled, context });
+    await validate(packagePath, { checkReady: !cancelled, allowDraft:cancelled, context, conclusionReport: readEvidenceMode(path).mode === 'conclusion-report' });
   }
   const current = join(state, 'design/DESIGN.md');
   if (await lstat(current).catch(() => null)) {
@@ -242,7 +243,9 @@ export async function validateDesignHandoff(changeRoot, options = {}) {
     for (const ac of ref.acceptance) if (!design.meta.pages.filter(p => ref.pages.includes(p.id)).some(p => p.acceptance.includes(ac))) throw new Error(`${file}: unknown DESIGN acceptance ${ac}`);
     if (ticket.meta.status === 'done') {
       const evidence = await readFile(await safePath(changeRoot, `evidence/${ticket.meta.id}.md`), 'utf8');
-      if (!evidence.includes('## Design Conformance') || !evidence.includes(ref.digest) || [...ref.pages, ...ref.acceptance].some(id => !evidence.includes(id))) throw new Error(`${file}: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs`);
+      const conformant = options.conclusionReport ? designConformanceOk(evidence, ref)
+        : evidence.includes('## Design Conformance') && evidence.includes(ref.digest) && ![...ref.pages, ...ref.acceptance].some(id => !evidence.includes(id));
+      if (!conformant) throw new Error(`${file}: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs`);
     }
   }
 }
@@ -252,6 +255,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const options = {};
   for (let i=0;i<args.length;i+=2) {
     if(args[i] === '--sealed' && operation === '--archived' && !options.sealed){options.sealed=true;i--;continue;}
+    if(args[i] === '--conclusion-report' && !options.conclusionReport){options.conclusionReport=true;i--;continue;}
     const field = {'--repo':'repoRoot','--method-root':'methodRoot','--state-root':'stateRoot'}[args[i]];
     if (!field || !args[i+1] || args[i+1].startsWith('--') || field in options) throw new Error('invalid explicit design context arguments');
     options[field] = args[i+1];

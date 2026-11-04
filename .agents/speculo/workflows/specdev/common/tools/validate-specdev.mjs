@@ -32,6 +32,7 @@ import { validateChangeClosure, readChangeOwner } from "./change-artifacts.mjs";
 import { validateRecord, validateRecords, checkSchema, validatePublish, VALID_TICKET_KIND, FORBIDDEN_PUBLISH_LABELS } from "./delivery-artifacts.mjs";
 import { ticketPolicy } from './execution-context.mjs';
 import { validateChangeExecution } from './execution-validation.mjs';
+import { readEvidenceMode, validateConclusionReport, validateCancellationReason, CONCLUSION_REPORT } from './evidence-mode.mjs';
 import { diagnosticErrors, addDiagnostic, appendDiagnostics, validationResult } from './validation-diagnostics.mjs';
 import { reviewScopeCLI } from "./review-scope.mjs";
 import { hasReview, validateReviewRecord, validateCompletionReview, readReviewRequirements } from "./review-evidence.mjs";
@@ -1283,7 +1284,7 @@ function validateReviews(change, required, errors, repoRoot = null) {
   return paths;
 }
 
-function validatePrototypes(change, required, errors, prototypeId = null, consumingDesign = false, context = null) {
+function validatePrototypes(change, required, errors, prototypeId = null, consumingDesign = false, context = null, conclusionReport = false) {
   const root = join(change, "prototypes");
   const changeDesign = isFile(join(change, "DESIGN.md")) ? parseFrontmatter(join(change, "DESIGN.md")).meta : null;
   const boundId = changeDesign?.prototype_ref?.id;
@@ -1341,7 +1342,7 @@ function validatePrototypes(change, required, errors, prototypeId = null, consum
     if (consumingDesign && entry.name === boundId && meta.status !== "ready") errors.push(`${label}: bound UI prototype must be ready before downstream consumption`);
     if (meta.status === "ready") readyCount += 1;
     try {
-      execFileSync(process.execPath, [validator, ...contextArguments(context), ...(consumingDesign && entry.name === boundId ? ["--check-ready"] : []), designPath], {
+      execFileSync(process.execPath, [validator, ...contextArguments(context), ...(consumingDesign && entry.name === boundId ? ["--check-ready"] : []), ...(conclusionReport ? ["--conclusion-report"] : []), designPath], {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
       });
@@ -2317,6 +2318,13 @@ function validateParentImplementation(change, parentStatus, stage, errors, warni
   return { map, plan, members, tasks, memberStatuses, ticketByTask };
 }
 
+function conclusionEvidenceErrors(change, artifact, contractIds, requireContracts = true) {
+  try {
+    const path = runtime.safeWorkPathSync(change, artifact, {mustExist:true,type:'file'});
+    return validateConclusionReport(artifact, readText(path), {contractIds, requireContracts});
+  } catch (error) { return [`${artifact}: ${error.message}`]; }
+}
+
 function validateChange(change, stage = null, repoRoot = null, engineeringKind = null, prototypeId = null, options = {}) {
   const errors = diagnosticErrors({code: "change-contract-invalid", scope: "change", change: basename(change)});
   const warnings = [];
@@ -2332,6 +2340,11 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
   if (errors.length) return validationResult(errors, warnings);
   options = {...options, context:workspace.context};
   change = canonicalToolPath(workspace.context, change);
+  // Opt-in only: an undeclared change keeps the full process-evidence contract unchanged.
+  const evidenceMode = stage === 'archived' ? {mode:null,errors:[]} : readEvidenceMode(change);
+  errors.push(...evidenceMode.errors);
+  const conclusionReport = evidenceMode.mode === CONCLUSION_REPORT;
+  if (conclusionReport) warnings.push(`Evidence-Mode: ${CONCLUSION_REPORT} (basis: ${evidenceMode.basis ?? 'missing'}); process evidence is not required, conclusion reports are validated instead`);
 
   // Resolve every consumed artifact subtree before individual validators can read it.
   // Unrelated preserved links are not consumers and remain in the archive manifest.
@@ -2347,7 +2360,7 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
   const isParentImplementation = isFile(join(change, "implementation-map.md")) ||
     isFile(join(change, "implementation-plan.md")) ||
     (isFile(mapPath) && parseFrontmatter(mapPath).meta.artifact === "goal-tickets-map");
-  const changeStatus = stage === "archived" ? null : validateChangeExecution(change, errors, workspace.context);
+  const changeStatus = stage === "archived" ? null : validateChangeExecution(change, errors, workspace.context, {conclusionReport, historyRewrite: evidenceMode.historyRewrite, warnings});
   if (stage !== "archived" && !changeStatus) return validationResult(errors, warnings);
   if (stage === "complete" || changeStatus?.outcome === "completed") errors.push(...validateChangeClosure({context:workspace.context,change:basename(change),forArchive:archiveReady}).errors);
   if (archiveReady && changeStatus?.outcome === "cancelled") return validationResult(errors, warnings);
@@ -2391,8 +2404,8 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
     validateDiagnosis(diagnosisPath, basename(change), errors);
   }
   validateReviews(change, stage === "review", errors, workspace.context.projectRoot);
-  validatePrototypes(change, stage === "prototype", errors, prototypeId, new Set(["spec", "tickets", "goal-plan", "implement", "review", "complete"]).has(stage), workspace.context);
-  if (new Set(["tickets", "goal-plan", "implement", "review", "complete"]).has(stage)) runDesignCheck("--handoff", change, errors, workspace.context);
+  validatePrototypes(change, stage === "prototype", errors, prototypeId, new Set(["spec", "tickets", "goal-plan", "implement", "review", "complete"]).has(stage), workspace.context, conclusionReport);
+  if (new Set(["tickets", "goal-plan", "implement", "review", "complete"]).has(stage)) runDesignCheck("--handoff", change, errors, workspace.context, conclusionReport ? ['--conclusion-report'] : []);
   validateChangeLearning(change, stage === "learn", errors);
   const prs = validateRecords(change, "pull-request", parseFrontmatter);
   errors.push(...prs.errors);
@@ -2454,7 +2467,7 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
     if (!artifact) continue;
     const ticketId = String(artifact.meta.id);
     const localErrors = ticketDiagnostics(errors, change, ticketId, path);
-    localErrors.push(...validateTicketPlan(artifact, { repoRoot, requirePlan: stage === "implement" }).map(error => `${basename(path)}: ${error}`));
+    localErrors.push(...validateTicketPlan(artifact, { repoRoot, requirePlan: stage === "implement", checkEvidence: !conclusionReport }).map(error => `${basename(path)}: ${error}`));
     if (artifact.meta.change !== basename(change)) {
       localErrors.push(`${basename(path)}: change must equal directory name ${basename(change)}`);
     }
@@ -2531,7 +2544,7 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
   if (stage === "implement" && spec && !ticketMode && (spec.meta.ready_for_tickets !== true || spec.meta.status !== "ready")) errors.push("Direct Spec implementation requires a ready Spec with ready_for_tickets=true");
   if (spec?.meta.ready_for_tickets === true && !/\bAC-\d+\b/.test(spec.body)) errors.push("ready Spec must define at least one AC-### acceptance contract");
 
-  if (stage === "complete" && spec && !ticketMode && !isParentImplementation) errors.push(...validateAcceptanceEvidence(change,"evidence/direct-spec.md",[...new Set(spec.body.match(/\bAC-\d+\b/g) ?? [])]));
+  if (stage === "complete" && spec && !ticketMode && !isParentImplementation) errors.push(...(conclusionReport ? conclusionEvidenceErrors(change,"evidence/direct-spec.md",[...new Set(spec.body.match(/\bAC-\d+\b/g) ?? [])]) : validateAcceptanceEvidence(change,"evidence/direct-spec.md",[...new Set(spec.body.match(/\bAC-\d+\b/g) ?? [])])));
 
   // Completion consumes actual review evidence; sealed archive validation returned earlier.
   let nonImplementation = false;
@@ -2550,7 +2563,11 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
       : units.length > 1 ? 'evidence/final-review.md'
       : units.length === 1 ? `evidence/${units[0].meta.id}.md`
       : lightweight ? 'README.md' : 'evidence/direct-spec.md';
-    try {
+    if (conclusionReport) {
+      // Process review inputs are not committed; the final verdict is still a checked conclusion report.
+      if (isParentImplementation) errors.push('Evidence-Mode: conclusion-report does not support parent Implementation Map/Plan changes');
+      else if (units.length > 1) errors.push(...conclusionEvidenceErrors(change,'evidence/final-review.md',[],false));
+    } else try {
       const deliveryRoot = changeStatus.workspaceRoot ?? workspace.context.projectRoot;
       const head = execFileSync('git',['-C',deliveryRoot,'rev-parse','--verify','HEAD^{commit}'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
       const executions = [...(changeStatus.executions ?? []), ...[...(parentImplementation?.memberStatuses?.values() ?? [])].flatMap(status=>status.executions ?? [])];
@@ -2665,6 +2682,10 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
   }
   const evidenceDir = join(change, "evidence");
   for (const [ticketId, artifact] of tickets) {
+    if (conclusionReport && artifact.meta.status === "cancelled") {
+      const cancelEvidence = join(evidenceDir, `${ticketId}.md`);
+      if (!validateCancellationReason(artifact.body, isFile(cancelEvidence) ? readText(cancelEvidence) : '')) ticketDiagnostics(errors, change, ticketId, cancelEvidence, 'ticket-evidence-invalid').push(`${ticketId}: cancelled Ticket needs a stated reason in the Ticket or evidence`);
+    }
     if (artifact.meta.status !== "done") continue;
     const evidence = join(evidenceDir, `${ticketId}.md`);
     const localErrors = ticketDiagnostics(errors, change, ticketId, evidence, 'ticket-evidence-invalid');
@@ -2673,6 +2694,10 @@ function validateChange(change, stage = null, repoRoot = null, engineeringKind =
       continue;
     }
     const text = readText(evidence);
+    if (conclusionReport) {
+      localErrors.push(...conclusionEvidenceErrors(change,`evidence/${ticketId}.md`,artifact.meta.contract_ids ?? []));
+      continue;
+    }
     localErrors.push(...validateAcceptanceEvidence(change,`evidence/${ticketId}.md`,artifact.meta.contract_ids ?? []));
     // The execution validator owns each record's independent review. The final
     // delivery gate above additionally checks current code and aggregate scope.

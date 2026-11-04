@@ -103,3 +103,7 @@ Goal schema v8、父 Implementation Plan v3 使用 ticket_execution: auto|serial
 Triage 的 `--stage triage` 核验 intake v3；Delivery 的 `--stage delivery` 核验独立交付记录与 publish v2，PR 仍使用 pr-delivery。独立 CI/发布记录使用 `--delivery-run <DEL-NNN.md>`，不创建 change。发布状态只有一个账本权威，归档同时核对未闭合动作；旧版本明确报错，原件保持不变。
 
 会话来源只读工具 <Path>{roots.workflows}/specdev/specdev-r-retro/scripts/session-evidence.mjs</Path> 的定位、有限区间读取与截止点使用见 <Path>{roots.workflows}/specdev/specdev-r-retro/references/session-provenance.md</Path>。报告校验不自动扫描本机会话，真实日志仅按显式根和会话 ID 回读。
+
+## 结论报告证据模式
+
+change README 声明 `Evidence-Mode: conclusion-report` 与 `Evidence-Basis:`（可选 `History-Rewrite:`）后，done/cancelled Ticket 按结论报告校验，不再要求过程材料；未声明行为不变。规则见 <Path>{roots.workflows}/specdev/common/rules/change-completion.md</Path>，实现与测试在 tools 目录的 evidence-mode 模块及其测试。

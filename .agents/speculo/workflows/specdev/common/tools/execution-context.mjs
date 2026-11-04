@@ -43,7 +43,7 @@ export function ticketPolicy(...sources) {
   return {ticket_execution:modes.includes('serial') ? 'serial' : modes[0] ?? 'auto', max_parallel_tickets:modes.includes('serial') ? 1 : limits.length ? Math.min(...limits) : null};
 }
 
-export function resolveExecutionWorkspace(repoRoot, context) {
+export function resolveExecutionWorkspace(repoRoot, context, {historyRewrite = null, warn = null} = {}) {
   if (!context || !repoRoot) return repoRoot;
   const root = realpathSync.native(repoRoot);
   const workspace = context.workspace_ref === 'current' ? root : runtime.safeWorkPathSync(root, context.workspace_ref, {mustExist:true,type:'directory'});
@@ -51,8 +51,15 @@ export function resolveExecutionWorkspace(repoRoot, context) {
   const common = cwd => realpathSync.native(resolve(cwd, git(cwd,['rev-parse','--git-common-dir'])));
   if (common(root) !== common(workspace)) throw new Error('selected workspace belongs to another repository');
   if (git(workspace,['symbolic-ref','--short','HEAD']) !== context.branch) throw new Error('selected workspace branch drifted');
-  git(workspace,['cat-file','-e',`${context.base_sha}^{commit}`]);
-  git(workspace,['merge-base','--is-ancestor',context.base_sha,'HEAD']);
+  let baseReachable = true;
+  try { git(workspace,['cat-file','-e',`${context.base_sha}^{commit}`]); }
+  catch (error) {
+    // Only an explicitly declared history rewrite may downgrade an unreachable baseline, and it stays visible.
+    if (!historyRewrite) throw error;
+    baseReachable = false;
+    warn?.(`Execution Context base_sha ${context.base_sha} is not a Git object; accepted because of History-Rewrite: ${historyRewrite}`);
+  }
+  if (baseReachable) git(workspace,['merge-base','--is-ancestor',context.base_sha,'HEAD']);
   if (context.workspace_policy === 'worktree') {
     const paths = git(root,['worktree','list','--porcelain','-z']).split('\0').filter(row=>row.startsWith('worktree ')).map(row=>realpathSync.native(row.slice(9)));
     if (!paths.includes(realpathSync.native(workspace)) || realpathSync.native(workspace) === root) throw new Error('selected change worktree is not registered');

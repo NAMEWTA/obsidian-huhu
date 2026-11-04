@@ -6,7 +6,7 @@ import { readChangeOwner } from './change-artifacts.mjs';
 import { EXECUTION_VERSION, readExecutionContext, resolveExecutionWorkspace, validateExecutionRecord } from './execution-context.mjs';
 import { diagnosticErrors } from './validation-diagnostics.mjs';
 
-export function validateChangeExecution(change, errors, context) {
+export function validateChangeExecution(change, errors, context, {conclusionReport = false, historyRewrite = null, warnings = null} = {}) {
   const name = basename(change);
   let data;
   try {
@@ -20,10 +20,11 @@ export function validateChangeExecution(change, errors, context) {
   if (data.executionContext) {
     try {
       if (readChangeOwner(context, name).owner !== data.executionContext.owner) errors.push('Execution Context owner differs from original Lead');
-      data.workspaceRoot = resolveExecutionWorkspace(context.projectRoot, data.executionContext);
+      data.workspaceRoot = resolveExecutionWorkspace(context.projectRoot, data.executionContext, {historyRewrite: conclusionReport ? historyRewrite : null, warn: message => warnings?.push(message)});
     } catch (error) { errors.push(error.message); }
   }
-  for (const record of data.executions) {
+  // Execution records are process material; conclusion-report changes do not carry them.
+  if (!conclusionReport) for (const record of data.executions) {
     const local = diagnosticErrors({
       code: 'execution-record-invalid', scope: record.ticket_id ? 'ticket' : 'change',
       change: name, ...(record.ticket_id ? {ticket: record.ticket_id} : {}),
