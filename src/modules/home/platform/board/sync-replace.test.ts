@@ -14,8 +14,7 @@ test('replaceData adopts the new board data and writes it to disk', async () => 
 		...engine.getData(),
 		quickActions: [{ name: 'Adopted', icon: 'file-text', type: 'file', target: 'x.md' }],
 	} as never);
-	await engine.writeQueue;
-	expect(engine.getData().quickActions[0]?.name).toBe('Adopted');
+	expect(engine.getData()?.quickActions[0]?.name).toBe('Adopted');
 	expect(parse(await fixture.app.vault.adapter.read(boardPath)).quickActions[0]?.name).toBe('Adopted');
 	await engine.close?.();
 });

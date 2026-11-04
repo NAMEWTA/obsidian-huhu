@@ -331,3 +331,10 @@ round 1 收录来源中维护者已作出的决定（来源作者即仓库 OWNER
 - **验证：** hook-windows run 41752095795 连续两次 20/20；dev 338f26a 全部 CI success；本地全量 pnpm test 4227 例通过。
 - **结论：** Lead 按 change-completion 将 Outcome 改为 completed；release 工作流（发版）未授权，not-applicable；真机项由用户验收（LOG-012）；#41 关闭由用户决定。待 A 网关：T-45 列出的永久 ADR/context 修订。
 
+## LOG-029 — 2026-11-04 — 发布前旧数据兼容整体删除
+
+- **来源：** 用户 2026-11-04："针对旧数据的问题，请你完成整体的重构删除，无需兼容任何旧数据。保证最新的代码和文档一定是最新的，符合当前代码情况的。不需要什么V1适配。因为我还没有最终发版"。依据 ADR-011。
+- **执行：** 4 个 sonnet 执行者按 agent / archives / home+comments / safe+versioning+storage+host 并行，多轮收尾；Lead 复核、二分、按区域提交推送（b79c3e3 … fae97ef 及本条提交）。
+- **结果：** 旧格式读取与升级链、旧路径/设置键、旧导入界面、退役集成（含凭据字段）、旧 helper 能力降级、旧字段双写/回退全部删除；遇旧数据走当前无效/损坏路径且不改写文件；设置归一化只保留当前字段。删除误伤 `SyncEngine.replaceData` 一处已修复并补单元回归。
+- **证据：** `<Path>{roots.state}/specdev/changes/{change}/evidence/report-legacy-removal.md</Path>`。
+
