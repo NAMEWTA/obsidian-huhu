@@ -2,7 +2,7 @@ import { taskMetaSuffix } from '../../../../../shared/automation/metadata';
 import type { DashboardData, TaskItem } from '../types/model';
 import { escapeYamlString, serializeDocTree } from './extract-card-parts';
 import { preserveDashboardDocument } from './preserve-document';
-import { readBoardMembers, readLegacyTiles } from '../board-codec';
+import { readBoardMembers } from '../board-codec';
 import { readGrid, serializeGrid } from '../grid';
 import { readSkillShortcuts } from '../skill-shortcuts';
 import { readMarkdownDocument, readYaml } from '../../../../../shared/storage/markdown-document';
@@ -15,32 +15,8 @@ import {
 	splitFrontmatter,
 } from './generate-default-markdown';
 
-/**
- * Frontmatter of the retired layouts (immersive tiles, the banner). They are read once so an old board can convert
- * to the grid (see `retireLegacyKeys`).
- */
-const RETIRED_KEYS = ['layout', 'canvas', 'immersive', 'gridPacked', 'banner', 'banners'] as const;
-
 const record = (value: unknown): value is Record<string, unknown> =>
 	!!value && typeof value === 'object' && !Array.isArray(value);
-
-/**
- * The conversion to the grid takes over the retired keys the file still carries: from here on they belong to the
- * owned projection, so the write that stores the grid removes them. Reading alone never touches them.
- */
-export function retireLegacyKeys(data: DashboardData): DashboardData {
-	if (!data.document) return data;
-	const { frontmatter } = splitFrontmatter(data.document.source);
-	const present = RETIRED_KEYS.filter((key) => key in frontmatter);
-	if (!present.length) return data;
-	const { yaml, body } = readMarkdownDocument(data.document.baseline);
-	const doc = readYaml(yaml);
-	for (const key of present) doc.set(key, frontmatter[key]);
-	return {
-		...data,
-		document: { ...data.document, baseline: `---\n${doc.toString({ lineWidth: 0 })}---\n${body}` },
-	};
-}
 
 export function parse(markdown: string): DashboardData {
 	const { frontmatter, body } = splitFrontmatter(markdown);
@@ -50,15 +26,9 @@ export function parse(markdown: string): DashboardData {
 	const columns = parseColumns(body, columnDefs);
 
 	const data: DashboardData = { quickActions, columns };
-	if (frontmatter.widgetMigration === 1) data.widgetMigration = 1;
 	data.widgets = readBoardMembers(frontmatter.widgets);
 	const grid = readGrid(frontmatter.grid);
 	if (grid) data.grid = grid;
-	else {
-		const legacy = readLegacyTiles(frontmatter.immersive);
-		if (legacy) data.legacyTiles = legacy;
-		if (frontmatter.gridPacked === true) data.gridPacked = true;
-	}
 	data.skills = readSkillShortcuts(frontmatter.skills);
 	if (quickActionOrder) data.quickActionOrder = quickActionOrder;
 	const hiddenPresets = parseHiddenPresets(frontmatter);
@@ -128,7 +98,6 @@ function serializeManaged(data: DashboardData): string {
 
 	lines.push('---');
 	lines.push('dashboard: true');
-	if (data.widgetMigration) lines.push(`widgetMigration: ${data.widgetMigration}`);
 	if (data.widgets) lines.push(`widgets: ${JSON.stringify(data.widgets)}`);
 	if (data.grid) lines.push(`grid: ${serializeGrid(data.grid)}`);
 	if (data.skills) lines.push(`skills: ${JSON.stringify(data.skills)}`);

@@ -2,7 +2,7 @@
 
 当前布局、主题与交互固定参考 [apex-dashboard ac4d2c745d950b9c4d53d3fd33388204b0769841](https://github.com/PandoraReads/apex-dashboard/tree/ac4d2c745d950b9c4d53d3fd33388204b0769841)（v3.8.4）。根目录 LICENSE 为 MIT，Copyright (c) 2025 PandoraReads，以 LICENSE 原文为准，不采用 package.json 的 `0-BSD` 值。[NOTICE](../../NOTICE) 保留完整许可。
 
-以下早期规则保留来源追溯：`core/board/board-codec.ts` 的粗高度换算（现在只用于旧看板转换到网格时读取 `immersive`）和 `core/board/focal-point.ts` 的焦点格式与裁剪语义，仍来自 `db9d2892032c27f5f8899a72c0dca61d72572a9a`（v3.7.5）。这两个文件的原有来源头保持不变；新 React 界面仍参考 `ac4d2c7`。下表在历史来源行注明版本，其余现行映射对应 v3.8.4。
+以下早期规则保留来源追溯：`core/board/focal-point.ts` 的焦点格式与裁剪语义，仍来自 `db9d2892032c27f5f8899a72c0dca61d72572a9a`（v3.7.5）。该文件的原有来源头保持不变；新 React 界面仍参考 `ac4d2c7`。下表在历史来源行注明版本，其余现行映射对应 v3.8.4。
 
 `NOTICE` 中保留的 `home/core/board/immersive-grid.ts` 是已退役的历史路径。当前网格规则在 `src/modules/home/core/board/grid.ts`，页面入口在 `src/modules/home/ui/canvas/BoardCanvas.tsx`，布局引擎使用 react-grid-layout。历史署名继续保留，现行入口以本页映射为准；许可核对范围与局限见[参考映射与许可](../references.md)。
 
@@ -10,7 +10,6 @@
 |---|---|---|
 | `src/modules/home/core/board/focal-point.ts` | `db9d289`（v3.7.5）的 `src/focal-point-picker.ts`、`src/parser.ts`（`imagePos`、`coverPos`） | 保留百分比字符串格式、默认居中和铺满裁剪的位置语义；仅在编辑对应图片时规范化原始非法值。 |
 | `src/modules/home/ui/cards/ImagePosition.tsx`、卡片编辑器 | `ac4d2c7`（v3.8.4）的 `src/focal-point-picker.ts` 及图片编辑入口 | HUHU 使用懒加载 React 编辑器，提供键盘、数值输入及可取消的指针预览，并按明确的库资源重命名事件迁移引用；底层焦点格式沿用上行历史来源。 |
-| `src/modules/home/core/board/board-codec.ts` | `db9d289`（v3.7.5）的 `src/immersive-grid.ts` 的 `migrateLegacyHeight` 与行转换、`src/parser.ts` 的 `parseImmersiveItems` | 改编旧 92px 高度单位到细行的转换和 `cap` 迁移标记。HUHU 另行验证成对的有限坐标，并保留未知提供方引用。 |
 | `src/modules/home/core/board/types/model.ts`、`parser/parse.ts` | `src/types.ts`、`src/parser.ts` | 既有看板模型与解析器改编；新增成员和网格字段使用 HUHU 的模块边界及现有文档保真写入器，不替换为上游的整篇序列化写入器。 |
 | `src/modules/home/{core,platform,ui}/pipeline/` | `src/pipeline-model.ts`、`src/pipeline-due-modal.ts` | 参考根目录与状态匹配、可选阶段目录、笔记级 due/remind 字段的行为。HUHU 分别实现纯规则、最新原文补丁、移动前冲突检查、显式重试未完成步骤，并接入既有自动化来源；不复制上游计时器、个人目录预设或单体渲染器。 |
 

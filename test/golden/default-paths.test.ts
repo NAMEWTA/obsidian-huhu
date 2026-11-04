@@ -174,7 +174,7 @@ test.each(['en', 'zh'] as const)(
 			await collection(readingDocuments, VISIBLE_NAMES.json.reading, reading);
 			expect(vault.read('huhu/expenses/categories.md')).toContain('expense-settings');
 			expect(vault.read('huhu/pomodoro/activities.md')).toContain('pomodoro');
-			const port = vaultContactsFiles(vault.app, () => 'guide');
+			const port = vaultContactsFiles(vault.app);
 			const runtime = await ArchiveRuntime.create(port, () => 'huhu/archives');
 			const application = new ArchivesApplication(runtime);
 			await application.commands.initialize();

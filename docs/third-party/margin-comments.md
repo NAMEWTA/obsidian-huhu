@@ -15,4 +15,4 @@
 | `src/navigation.ts`、`src/editor/comment-navigation.ts` | `ui/navigation.ts`、`commands.ts` | 跳转、上一条/下一条及编辑器定位 |
 | `styles.css` | `styles/comments.css` | 编辑器与阅读标记样式；界面色彩接 HUHU 主题令牌 |
 
-HUHU 保留自己的串行写入、pending 恢复日志、损坏文件隔离、模块生命周期与跨窗口管理。批注不修改笔记正文；v1 不迁移、不覆盖。上游仅作为列出的 MIT 实现来源，不意味着可直接互换数据目录。其他批注项目只用于思路参考，未作为本次复制来源；未引入 GPL/AGPL 代码。
+HUHU 保留自己的串行写入、pending 恢复日志、损坏文件隔离、模块生命周期与跨窗口管理。批注不修改笔记正文；非 v3 数据不读取、不覆盖。上游仅作为列出的 MIT 实现来源，不意味着可直接互换数据目录。其他批注项目只用于思路参考，未作为本次复制来源；未引入 GPL/AGPL 代码。

@@ -51,7 +51,6 @@ export function seedDashboardSettings(
 ): DashboardSettings {
 	return {
 		...settings,
-		quickNotesEnabled: true,
 		countdowns: [
 			{
 				id: 'cd-default',

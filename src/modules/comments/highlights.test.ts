@@ -44,34 +44,6 @@ test('one-click highlight persists with zero messages, exact range reuses card a
 	expect(JSON.parse(fs.files.get(indexPath)!).version).toBe(3);
 	await restarted.close();
 });
-test('v2 migration preserves discussion ids/authors/status and backs up original bytes', async () => {
-	const fs = memoryFs();
-	const first = new CommentStore(fs, { timers, debounceMs: 1e6 });
-	const text = 'alpha beta gamma';
-	const old = await first.add('legacy.md', { anchor: createAnchor(text, 6, 10), text: 'Original note', author: 'Alice' });
-	await first.reply(old.id, 'A second comment', 'Bob');
-	await first.resolve(old.id); await first.close();
-	const index = JSON.parse(fs.files.get(indexPath)!);
-	const hash = index.files['legacy.md'].hash as string;
-	const sidecarPath = `.huhu/editor/comments/files/${hash}.json`;
-	const doc = JSON.parse(fs.files.get(sidecarPath)!);
-	index.version = 2; doc.version = 2;
-	// Reflect the old schema: no color, note, tags, or timestamps beyond thread fields.
-	for (const thread of doc.threads) { delete thread.color; delete thread.note; delete thread.tags; }
-	const originalIndex = JSON.stringify(index), originalSidecar = JSON.stringify(doc);
-	fs.files.set(indexPath, originalIndex); fs.files.set(sidecarPath, originalSidecar);
-	const store = new CommentStore(fs, { timers, debounceMs: 1e6 });
-	const [migrated] = await store.loadFile('legacy.md');
-	expect(migrated).toMatchObject({ id: old.id, color: 'legacy', status: 'resolved', messages: [
-		{ author: 'Alice', text: 'Original note' }, { author: 'Bob', text: 'A second comment' },
-	] });
-	expect(JSON.parse(fs.files.get(indexPath)!).version).toBe(3);
-	expect(JSON.parse(fs.files.get(sidecarPath)!).version).toBe(3);
-	const backupPaths = [...fs.files.keys()].filter(path => path.startsWith('.huhu/editor/comments-backups/'));
-	expect(backupPaths.some(path => fs.files.get(path) === originalIndex)).toBe(true);
-	expect(backupPaths.some(path => fs.files.get(path) === originalSidecar)).toBe(true);
-	await store.close();
-});
 test('failed zero-message highlight flush retains operation id and never duplicates on retry', async () => {
 	const fs = memoryFs();
 	const write = fs.write; let failure = true;

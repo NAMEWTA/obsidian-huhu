@@ -29,18 +29,14 @@ vi.mock('obsidian', async (original) => ({
 	},
 }));
 vi.mock('./instances', () => ({ homeServices: {} }));
-import { convertToGrid } from '../core/board/canvas';
 import { parse, serialize } from '../core/board/parser/parse';
 import { withStableSectionIds } from '../core/board/section-identity';
 const board = '.huhu/dashboards/board.md';
-/** A board that already is on the grid, so opening it writes nothing. */
+/** A board that already carries its grid, so opening it writes nothing. */
 const source = serialize(
 	withStableSectionIds(
-		convertToGrid(
-			parse(
-				'# Board\n\n## Todo\n\n### Tasks\n- [ ] Parent\n  - [ ] Child\n- [x] Finished\n\n### Memo\nOriginal memo\n',
-			),
-			undefined,
+		parse(
+			'---\ngrid: {"v":2,"lg":[{"i":"section:Todo","x":0,"y":0,"w":12,"h":4}]}\n---\n# Board\n\n## Todo\n\n### Tasks\n- [ ] Parent\n  - [ ] Child\n- [x] Finished\n\n### Memo\nOriginal memo\n',
 		),
 		() => `section-${crypto.randomUUID()}`,
 	),

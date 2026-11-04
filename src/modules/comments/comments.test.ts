@@ -30,12 +30,15 @@ test('v3 round trip, author ownership, edit/reply/delete/restore, rename and del
 	await store.close(); const fresh = new CommentStore(fs, { timers }); expect(await fresh.loadFile('moved/a.md')).toHaveLength(1);
 	await fresh.deletePath('moved/a.md'); expect(await fresh.listFiles()).toEqual([]); await fresh.close(); expect(source).toBe('alpha\nbeta');
 });
-test('v1 index and pending data remain byte-for-byte, ignored and never overwritten', async () => {
+test('an index or pending journal of another schema version is set aside intact and never overwritten', async () => {
 	for (const pending of [false, true]) {
-		const fs = memoryFs(), legacy = JSON.stringify(pending ? { index: { version: 1, files: {} }, files: {}, remove: [] } : { version: 1, files: { 'old.md': { hash: '1234567890abcdef' } } });
-		const path = `.huhu/editor/comments/${pending ? 'pending' : 'index'}.json`; fs.files.set(path, legacy);
-		const store = new CommentStore(fs, { timers, debounceMs: 1e6 }); expect(await store.loadFile('old.md')).toEqual([]); expect(store.legacyData).toBe(true);
-		await expect(store.add('new.md', { anchor: createAnchor('new', 0, 3), text: 'new' })).rejects.toThrow('Legacy'); await store.close(); expect(fs.files.get(path)).toBe(legacy); store.dispose();
+		const fs = memoryFs(), old = JSON.stringify(pending ? { index: { version: 2, files: {} }, files: {}, remove: [] } : { version: 2, files: {} });
+		const path = `.huhu/editor/comments/${pending ? 'pending' : 'index'}.json`; fs.files.set(path, old);
+		const store = new CommentStore(fs, { timers, debounceMs: 1e6 });
+		await expect(store.loadFile('old.md')).rejects.toThrow();
+		expect(fs.files.has(path)).toBe(false);
+		expect([...fs.files].some(([name, body]) => name.includes('/set-aside/') && body === old)).toBe(true);
+		store.dispose();
 	}
 });
 test('deleted text stays orphaned until explicit reattach; initial stale offsets are not mapped', async () => {
@@ -67,14 +70,15 @@ test('typing into an annotated empty line retains its line thread', async () => 
 	store.applyChanges('a.md', { mapPos: (_pos, assoc) => assoc === 1 ? 5 : 0 }, 'hello\nnext', '\nnext');
 	expect(thread).toMatchObject({ status: 'open', anchor: { text: 'hello', start: 0, end: 5 } }); await store.close();
 });
-test('unindexed legacy sidecar is detected before accepting a draft', async () => {
+test('an unindexed sidecar of another schema version is set aside before accepting a draft', async () => {
 	const fs = memoryFs(), initial = new CommentStore(fs, { timers, debounceMs: 1e6 });
 	await initial.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'root' }); await initial.close();
 	const path = [...fs.files.keys()].find(path => path.includes('/files/'))!;
 	fs.files.delete('.huhu/editor/comments/index.json'); const body = JSON.stringify({ version: 1, comments: [] }); fs.files.set(path, body);
 	const store = new CommentStore(fs, { timers });
-	await expect(store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'new' })).rejects.toThrow('Legacy');
-	expect(store.threadsFor('a.md')).toEqual([]); await store.close(); expect(fs.files.get(path)).toBe(body);
+	await expect(store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'new' })).rejects.toThrow();
+	expect(store.threadsFor('a.md')).toEqual([]); await store.close();
+	expect([...fs.files].some(([name, content]) => name.includes('/set-aside/') && content === body)).toBe(true);
 });
 
 test('one shared document revision maps once across views, including stale broadcasts and undo', async () => {

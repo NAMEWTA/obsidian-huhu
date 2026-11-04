@@ -163,7 +163,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 恢复草稿与看板冲突 | `.huhu/recovery/drafts/`、`.huhu/recovery/dashboard/conflicts/` | 共享存储、home |
 | 受管内容移动与回收 | `.huhu/content-moves/manifest.json`；恢复材料在 `.huhu/recovery/content-creates/`、`renames/`、`trash/` | host、shared |
 | 缓存 | `.huhu/cache/`（微信读书进度） | home |
-| 档案 | 库内可见目录（设置 `archives.rootFolder`，默认 `huhu/档案`），`huhu/档案/个人档案/<姓名>/基本信息.md`、`huhu/档案/企业档案/<名称>/基本信息.md`（姓名/名称中的空白换成 `-`），由 `app.vault` 读写，不在 `.huhu/` | archives |
+| 档案 | 库内可见目录（设置 `archives.rootFolder`，默认 `huhu/archives`），新库默认 `huhu/archives/`，实体入口为 `<类型目录>/<名称>-<ID>/profile.md`，由 `app.vault` 读写，不在 `.huhu/` | archives |
 | 库本地界面状态 | `.huhu/config/` 下的内部状态；叶子状态由宿主保存，业务工作区布局使用上表专用文件 | 所属模块 / shell |
 | 功能区 id | `src/app/ribbon.ts` 的 `ribbon-<id>`（稳定 id，标签翻译） | app |
 
@@ -175,4 +175,4 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 
 ## 档案定义领域
 
-`archives/core/schema` 定义八类模型、字段规则与修订 DAG，`core/generic` 负责 v2 保真协议、元数据索引、查询和 v1 适配。`services/generic` 统一命令、迁移和恢复；`platform` 提供 Vault 与私有草稿适配；通用界面在 `ui/generic`，按需加载。跨模块通过 `ARCHIVES_CATALOG / ARCHIVES_QUERY / ARCHIVES_COMMANDS / ARCHIVES_WORKBENCH` 消费，Home 使用资源分类排除业务元数据。定义和恢复计划是可见业务协议，不能迁到私有缓存；真实宿主验收边界见[实施方案](../../../../docs/archives-implementation.md)。
+`archives/core/schema` 定义八类模型、字段规则与修订 DAG，`core/generic` 负责 v2 保真协议、元数据索引和查询。`services/generic` 统一命令、升级和恢复；`platform` 提供 Vault 与私有草稿适配；通用界面在 `ui/generic`，按需加载。跨模块通过 `ARCHIVES_CATALOG / ARCHIVES_QUERY / ARCHIVES_COMMANDS / ARCHIVES_WORKBENCH` 消费，Home 使用资源分类排除业务元数据。定义和恢复计划是可见业务协议，不能迁到私有缓存；真实宿主验收边界见[实施方案](../../../../docs/archives-implementation.md)。

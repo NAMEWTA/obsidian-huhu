@@ -2,18 +2,8 @@ import type { BoardOpenStage } from '../../core/board/open-error';
 import { dashboardPath, dashboardFilePath } from '../../../../shared/storage/dashboard-paths';
 import { storageWriteQueue } from '../../../../shared/storage/write-queue';
 import { actionKey } from '../../core/board/quick-actions';
-import { consolidateBoardWidgets, needsWidgetConsolidation } from './widget-migration';
-import type { TileDefaults } from '../../core/board/board-tiles';
 import { withStableSectionIds } from '../../core/board/section-identity';
 import { widgetPresentationKey } from '../../core/board/widget-members';
-import { freezeLegacyWeatherLocations } from '../../core/board/weather-locations';
-import {
-	builtinTileDefaults,
-	convertToGrid,
-	hasRetiredWidgets,
-	needsGridConversion,
-	replaceRetiredWidgets,
-} from '../../core/board/canvas';
 import {
 	GRID_COLUMNS,
 	GRID_VERSION,
@@ -248,7 +238,6 @@ export class SyncEngine {
 	constructor(
 		app: App,
 		settings: DashboardSettings,
-		private readonly widgetDefaults: (member: BoardWidgetMember) => TileDefaults | undefined = builtinTileDefaults,
 	) {
 		this.app = app;
 		this.settings = { ...settings, dashboardFile: dashboardPath(settings.dashboardFile) };
@@ -273,31 +262,6 @@ export class SyncEngine {
 		this.registerFileWatcher();
 		try { await this.load(); }
 		catch (cause) { throw new (await import('../../core/board/open-error')).BoardOpenError('read', dashboardFilePath(this.settings.dashboardFile), cause); }
-	}
-
-	/**
-	 * An old board (immersive tiles, side or stacked layout, with a banner) moves onto the grid once; cards,
-	 * sections and members are kept, the banner is dropped.
-	 */
-	private async convertOldBoard(): Promise<void> {
-		if (!this.data || this.closed || !needsGridConversion(this.data)) return;
-		this.data = withStableSectionIds(
-			replaceRetiredWidgets(
-				convertToGrid(this.data, this.settings.legacyWidgetMembers, this.widgetDefaults, {
-					quickNotes: this.settings.quickNotesEnabled,
-				}),
-			),
-			() => `section-${crypto.randomUUID()}`,
-		);
-		if (this.file) this.data = await consolidateBoardWidgets(this.app, this.file.path, this.data, this.settings);
-		await this.writeToDisk();
-	}
-
-	/** A widget kind that was folded into another (fleeting capture into the inbox) is replaced once, when the board opens. */
-	private async retireWidgets(): Promise<void> {
-		if (!this.data || this.closed || !hasRetiredWidgets(this.data)) return;
-		this.data = withStableSectionIds(replaceRetiredWidgets(this.data), () => `section-${crypto.randomUUID()}`);
-		await this.writeToDisk();
 	}
 
 	destroy(): void {
@@ -1250,7 +1214,6 @@ export class SyncEngine {
 			{ ...this.data, widgets: this.data.widgets ?? [], grid: { v: GRID_VERSION, lg, ...(md ? { md } : {}) } },
 			() => `section-${crypto.randomUUID()}`,
 		);
-		this.data = freezeLegacyWeatherLocations(this.data, this.settings);
 		await this.writeToDisk();
 	}
 
@@ -1270,7 +1233,6 @@ export class SyncEngine {
 			widgets: members.map((member) => ({ ...member })),
 			grid: dropItems(this.data.grid, removed),
 		};
-		this.data = freezeLegacyWeatherLocations(this.data, this.settings);
 		await this.writeToDisk();
 	}
 
@@ -1314,7 +1276,6 @@ export class SyncEngine {
 			{ ...this.data, grid: { ...grid, lg: addItem(grid.lg, id, size, GRID_COLUMNS.lg) } },
 			() => `section-${crypto.randomUUID()}`,
 		);
-		this.data = freezeLegacyWeatherLocations(this.data, this.settings);
 		await this.writeToDisk();
 	}
 
@@ -1325,7 +1286,6 @@ export class SyncEngine {
 
 	async replaceData(newData: DashboardData): Promise<void> {
 		this.assertOpen();
-		this.data = freezeLegacyWeatherLocations(newData, this.settings);
 		await this.writeToDisk();
 	}
 
@@ -1507,18 +1467,6 @@ export class SyncEngine {
 		if (this.data && serialize(newData) === serialize(this.data)) return;
 
 		this.data = newData;
-		// An old board converts once, here, so every way a board file is opened (first open, switching boards,
-		// an old device's sync) ends on the grid before it is shown.
-		if (needsGridConversion(newData)) {
-			await this.convertOldBoard();
-			return;
-		}
-		if (hasRetiredWidgets(newData) || needsWidgetConsolidation(newData)) {
-			this.data = withStableSectionIds(replaceRetiredWidgets(newData), () => `section-${crypto.randomUUID()}`);
-			this.data = await consolidateBoardWidgets(this.app, file.path, this.data, this.settings);
-			await this.writeToDisk();
-			return;
-		}
 		this.notifyCallbacks('external');
 	}
 

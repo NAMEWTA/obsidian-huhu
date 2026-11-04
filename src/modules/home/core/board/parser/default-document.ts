@@ -2,7 +2,7 @@ import { t } from '../../../../../shared/i18n/index';
 import { serialize } from './parse';
 import { defaultCanvas } from '../canvas';
 import { DEFAULT_DASHBOARD_SETTINGS, type DashboardData, type DashboardSettings } from '../types/model';
-import { legacyWeatherLocation } from '../weather-locations';
+import { defaultWeatherLocation } from '../weather-locations';
 
 export function generateDefaultMarkdown(
 	settings: Pick<
@@ -32,7 +32,7 @@ export function generateDefaultMarkdown(
 	};
 	const canvas = defaultCanvas(board);
 	for (const member of canvas.widgets ?? []) {
-		if (member.provider === 'home' && member.kind === 'clock') member.weather = legacyWeatherLocation(settings);
+		if (member.provider === 'home' && member.kind === 'clock') member.weather = defaultWeatherLocation(settings);
 	}
 	return serialize(canvas);
 }

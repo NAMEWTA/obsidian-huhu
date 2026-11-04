@@ -271,34 +271,6 @@ export function addItem(items: readonly GridItem[], id: string, size: GridCell, 
 
 /** Row pitch in px: one row plus the gap below it. */
 export const GRID_ROW_PITCH = GRID_ROW_HEIGHT + GRID_MARGIN[1];
-/** The old board measured in rows of 10px; a cap of `cap` rows covered about `cap * 10` px. */
-const LEGACY_ROW_PX = 10;
-
-export interface LegacyGeometry {
-	id: string;
-	w: number;
-	cap: number;
-	x?: number;
-	y?: number;
-}
-
-/**
- * The one-time conversion of an old tile to the grid: columns are kept (both are 12 wide), the height is the old
- * pixel cap in new rows, and a tile without a saved position gets none (the caller places it).
- */
-export function convertLegacyItem(tile: LegacyGeometry, spec: TileSpec): Partial<GridItem> & GridCell {
-	const w = clamp(Math.round(tile.w), Math.min(spec.minW, GRID_COLUMNS.lg), GRID_COLUMNS.lg);
-	const h = clamp(Math.round((tile.cap * LEGACY_ROW_PX) / GRID_ROW_PITCH), spec.minH, GRID_MAX_ROWS);
-	return tile.x !== undefined && tile.y !== undefined
-		? {
-				w,
-				h,
-				x: clamp(Math.round(tile.x), 0, GRID_COLUMNS.lg - w),
-				y: Math.max(0, Math.round((tile.y * LEGACY_ROW_PX) / GRID_ROW_PITCH)),
-			}
-		: { w, h };
-}
-
 export function sameLayout(a: readonly GridItem[] | undefined, b: readonly GridItem[] | undefined): boolean {
 	if (!a || !b) return a === b;
 	return JSON.stringify(a.map(pick)) === JSON.stringify(b.map(pick));

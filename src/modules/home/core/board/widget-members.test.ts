@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { legacyFlagMembers, readLegacyMembers, widgetPresentationKey } from './widget-members';
+import { widgetPresentationKey } from './widget-members';
 import { WidgetLifetime } from './widget-lifetime';
 import { indexWidgetProviders, widgetProviderKey } from './widget-registry';
 import type { HomeWidgetKind } from '../../api';
@@ -19,27 +19,6 @@ test('clock weather creates independent board instances and retired integrations
 		second = await weather.create!({} as never);
 	expect(first?.id).not.toBe(second?.id);
 	expect(weather.instances()).toEqual([{ id: 'default' }]);
-});
-
-test('old enable flags rebuild the sidebar the user had, in the order they chose', () => {
-	const raw = {
-		widgetOrder: ['calendar', 'album', 'quickActions'],
-		widgetQuickActionsEnabled: true,
-		widgetCalendarEnabled: true,
-		widgetLunarEnabled: false,
-		pomodoroEnabled: false,
-		albums: [{ id: 7 }, { id: 9 }],
-	};
-	const before = JSON.stringify(raw);
-	expect(legacyFlagMembers(raw).map(widgetPresentationKey)).toEqual([
-		'calendar',
-		'album-7',
-		'album-9',
-		'quickActions',
-	]);
-	expect(JSON.stringify(raw)).toBe(before);
-	expect(readLegacyMembers({})).toBeUndefined();
-	expect(readLegacyMembers({ widgetHabitEnabled: true })?.map((m) => m.kind)).toContain('habit');
 });
 
 test('widget resources release once, including late async registration and throwing cleanup', () => {

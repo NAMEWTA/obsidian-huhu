@@ -172,7 +172,6 @@ function PanelBody({ env, documents, container }: PanelProps) {
 		</div>
 		{selectMode && bulkButtons}
 		<div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
-			{store.legacyData && <p role="status" className="text-xs text-status-warning">{t('editor.comments.legacy')}</p>}
 			{store.damagedFiles.length > 0 && <p role="alert" className="text-xs text-destructive">{t('editor.comments.damaged')}</p>}
 			{exportError && <div role="alert" className="text-xs text-destructive">{t('editor.highlights.exportFailed')}</div>}
 			{state.error && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-destructive"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>

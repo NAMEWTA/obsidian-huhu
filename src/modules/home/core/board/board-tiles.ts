@@ -18,12 +18,11 @@ export interface TileDefaults {
 }
 export type WidgetTileDefaults = (member: BoardWidgetMember) => TileDefaults | undefined;
 
-/** Ids the board's saved geometry names: its grid, or (before the one-time conversion) the old tiles. */
-export function savedTileIds(data: Pick<DashboardData, 'grid' | 'legacyTiles'>): Set<string> {
+/** Ids the board's saved geometry names. */
+export function savedTileIds(data: Pick<DashboardData, 'grid'>): Set<string> {
 	return new Set([
 		...(data.grid?.lg.map((item) => item.i) ?? []),
 		...(data.grid?.md?.map((item) => item.i) ?? []),
-		...(data.legacyTiles?.map((tile) => tile.id) ?? []),
 	]);
 }
 
@@ -52,8 +51,7 @@ export function boardTileSources(
 			(card) =>
 				column.sectionType === 'sticky' ||
 				saved.has(`card:${card.id}`) ||
-				saved.has(card.id) ||
-				(data.gridPacked && card.gridCol > 0 && card.gridRow > 0),
+				saved.has(card.id),
 		);
 		const ids = new Set(standalone.map((card) => card.id));
 		const grouped = column.cards.filter((card) => !ids.has(card.id));

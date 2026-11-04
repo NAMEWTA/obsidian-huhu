@@ -43,13 +43,11 @@ Markdown Editor (CodeMirror)       Reading mode (existing view-only)
 
 对编辑器而言，色彩是 decoration，不是正文 `<mark>`；对阅读模式而言，颜色是 postprocessor 画出来的投影。重启、换色、删除卡片不会修改 Markdown 字节，用户已有 Git 同步、重命名、外部编辑、Undo 和主题样式都不用处理人为插入的 HTML 节点。唯一业务真源是 vault sidecar；UI 不能自己另存一份卡片。
 
-### v2 → v3 迁移
+### 存储合同
 
-- 新模型允许 `messages: []` 且必须有范围 `color`，旧行级讨论依然允许完整 messages。
-- 第一次打开旧索引前，先把索引、被索引的 sidecar、pending 和可枚举的旧目录内容复制到 `.huhu/editor/comments-backups/v2-.../`，逐文件回读验证；备份不自动删除。
-- 旧 pending 按旧恢复合同重放，经索引验证后，将每个旧文件转换成 v3：保留 ID、作者、消息顺序/时间、锚点、status；旧 range 标为 `legacy` 颜色，旧 line 保持行形态；再通过现有 pending journal 提交。
-- 重启遇到 v3 pending 先重放，避免半途替换破坏索引；v1 继续只提示不迁移。损坏文件必须保留并提示；不能用空索引掩盖失败。对 v2/v3 并存、同步冲突与校验失败保持故障可观察，不假称具备自动多设备无冲突合并。
-- 风险：目录级备份不是文件系统原子快照；若同时有外部设备修改，会存在冲突，应保留两份数据并人工比对。迁移与并发故障测试、真实库恢复前必须单独备份。
+- 模型允许 `messages: []` 且必须有范围 `color`；行级讨论保留完整 messages。
+- 只读写 v3。版本不符或损坏的索引、pending、sidecar 原样移入 `set-aside/` 并报错，不用空索引掩盖失败。
+- 启动遇到 v3 pending 先重放，避免半途替换破坏索引。同步冲突与校验失败保持故障可观察，不假称具备自动多设备无冲突合并。
 
 ### 锚点、性能与边界
 
@@ -60,7 +58,7 @@ Markdown Editor (CodeMirror)       Reading mode (existing view-only)
 | 阶段 | 改动范围 | 质量门槛 |
 |---|---|---|
 | A. 冻结现状与研究 | 上游源码、HUHU 现有调用方与存储协议、分支已存在决策 | 保留分支既有历史，不重置/清空他人工作 |
-| B. 领域实体与迁移 | `core/model.ts`、`core/store.ts`、`services/comments.ts`、`platform/vault-fs.ts` | 仅高亮、v2 备份迁移、写入失败重试、旧消息完整保留 |
+| B. 领域实体与存储 | `core/model.ts`、`core/store.ts`、`services/comments.ts`、`platform/vault-fs.ts` | 仅高亮、写入失败重试、消息完整保留 |
 | C. 低摩擦编辑 | 选区浮层、四色/自定义色、独立笔记、CodeMirror/阅读 mark、重叠范围与定位 | 不修改正文，光标/IME 不被抢占；已有阅读行为不回退 |
 | D. 卡片管理 | `ThreadCard`、`CommentsPanel`、catalog、settings、export | 搜索/按文件颜色标签分组、排序、置顶归档、批量、Markdown 导出 |
 | E. 稳定性与验收 | `*.test.ts`、`*.dom.test.tsx`、构建产物、双语文案、文档 | 类型检查、定向与回归测试、lint/CSS、bundle、真实 Obsidian 接缝 |
@@ -70,7 +68,7 @@ Markdown Editor (CodeMirror)       Reading mode (existing view-only)
 
 - [ ] 四色按钮无需正文评论即可保存；同范围换色、交叠范围独立卡片；关闭重开不丢卡，Markdown 字节一致。
 - [ ] 卡片换色、笔记、标签、置顶、归档、删除和原文效果双向一致；弹层草稿写盘失败不冒充成功。
-- [ ] 旧作者/首条消息/全部回复及解决/重挂状态能从 v2 恢复；v1 不误迁移；备份前/中/后异常能被感知。
+- [ ] 作者/首条消息/全部回复及解决/重挂状态在重开后保持；版本不符的数据被隔离而非覆盖。
 - [ ] 当前/全库搜索筛选、颜色/文件/标签分组、原文字符位置排序、批量勾选和导出准确。
 - [ ] 深浅色、移动端、不同窗口、CodeMirror/阅读模式、键盘和输入法有实际宿主验证证据。
 - [ ] `pnpm run build:css`、`pnpm run build`、定向 Vitest、`pnpm run lint`、`pnpm run lint:css`、仓库完整 CI 通过，`main.js/styles.css` 与本分支源码相同。

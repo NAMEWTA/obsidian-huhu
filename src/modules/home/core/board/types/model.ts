@@ -11,8 +11,6 @@ export interface DashboardSettings {
 	/** Canonical persisted workspace registry (apex-style indices). */
 	workspaces: { files: string[]; names: string[]; active: number };
 	useThemeFont: boolean;
-	/** Widgets the pre-canvas sidebar showed, captured once from the old enable flags; used to convert old boards. */
-	legacyWidgetMembers?: BoardWidgetMember[];
 	collapsedSections: string[];
 	/** Global theme + Home decor snapshots, independent of board content. */
 	appearancePresets: AppearancePreset[];
@@ -107,11 +105,6 @@ export interface DashboardSettings {
 	    base size; 'small'/'large' scale it (em-based sizes cascade from the
 	    root, so titles/body/widgets grow or shrink together). */
 	fontScale: 'small' | 'medium' | 'large';
-	/**
-	 * Retired as a display switch: Quick notes is a widget the board places like any other. Read once when an old
-	 * board converts to the grid (true adds the widget).
-	 */
-	quickNotesEnabled: boolean;
 	/** Quick-create presets (template + folder + filename). Global (Layer 1). */
 	quickNotePresets: QuickNotePreset[];
 	/** Note path to append captures to. Empty = the day's capture file in the inbox folder (`YYYY-MM-DD-闪念.md`). */
@@ -241,7 +234,6 @@ export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings = {
 	glassBlur: null,
 	radiusScale: null,
 	fontScale: 'medium',
-	quickNotesEnabled: false,
 	quickNotePresets: [] as QuickNotePreset[],
 	quickCaptureTarget: '',
 	quickCaptureTemplate: '',
@@ -791,21 +783,8 @@ export interface BoardWidgetMember {
 	instanceId: string;
 	label?: string;
 	icon?: string;
-	/** Weather locations belong to the board. Absent means legacy global location; null needs a new selection. */
+	/** Weather locations belong to the board. Absent means no location; null needs a new selection. */
 	weather?: WeatherConfig | null;
-}
-
-/**
- * Old `immersive` geometry (x, y in fine rows of 10px, `cap` in the same unit). Read only so that an old board can
- * be converted to a `grid` once; it is never written.
- */
-export interface LegacyTile {
-	id: string;
-	w: number;
-	cap: number;
-	fixed?: boolean;
-	x?: number;
-	y?: number;
 }
 
 /** One declaration shared by widget and contextual skill buttons. */
@@ -823,17 +802,12 @@ export interface SkillShortcut {
 }
 
 export interface DashboardData {
-	widgetMigration?: number;
 	/** Original text and its owned projection; retained through immutable UI updates. */
 	document?: { source: string; baseline: string };
 	widgets?: BoardWidgetMember[];
 	/** Tile geometry of the board grid (see `core/board/grid.ts`). Absent only on a board that has not been converted yet. */
 	grid?: BoardGrid;
 	skills?: SkillShortcut[];
-	/** Read only: the geometry an old board declared (`immersive`), consumed by the one-time conversion. Never serialized. */
-	legacyTiles?: LegacyTile[];
-	/** Read only: an old board whose standalone cards carried `gcol`/`grow` coordinates. Never serialized. */
-	gridPacked?: boolean;
 	quickActions: QuickAction[];
 	quickActionOrder?: string[];
 	hiddenPresets?: string[];

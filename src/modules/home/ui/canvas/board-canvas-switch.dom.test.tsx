@@ -65,7 +65,7 @@ afterEach(() => {
 	delete homeServices.watchWidgets;
 });
 
-/** Two real boards behind a real BoardStore/SyncEngine; writing B is held back so its conversion can be observed mid-way. */
+/** Two real boards behind a real BoardStore/SyncEngine; reading B is held back so the switch can be observed mid-way. */
 async function twoBoards(kinds: HomeWidgetKind[], bText: string) {
 	setLanguage('en');
 	const vault = memoryVault(
@@ -92,18 +92,18 @@ async function twoBoards(kinds: HomeWidgetKind[], bText: string) {
 	let release: () => void = () => {};
 	const blocked = new Promise<void>((resolve) => (release = resolve));
 	let reached = false;
-	const write = vault.adapter.write.bind(vault.adapter);
-	vault.adapter.write = async (path: string, text: string) => {
+	const read = vault.adapter.read.bind(vault.adapter);
+	vault.adapter.read = async (path: string) => {
 		if (path === B + '.md' && !reached) {
 			reached = true;
 			await blocked;
 		}
-		return write(path, text);
+		return read(path);
 	};
 	return { vault, store, release: () => release(), reached: () => reached };
 }
 
-test('a creation started on A cannot land on B while B converts: switching ends it and path+data commit together', async () => {
+test('a creation started on A cannot land on B while B opens: switching ends it and path+data commit together', async () => {
 	let finish: (value: { id: string }) => void = () => {};
 	let signal: AbortSignal | undefined;
 	const maker: HomeWidgetKind = {
@@ -114,7 +114,7 @@ test('a creation started on A cannot land on B while B converts: switching ends 
 			return new Promise((resolve) => (finish = resolve));
 		},
 	};
-	const { vault, store, release, reached } = await twoBoards([maker], '---\nlayout: immersive\nwidgets: []\n---\n');
+	const { vault, store, release, reached } = await twoBoards([maker], '---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n');
 	fireEvent.click(screen.getByRole('button', { name: t('canvas.addWidget') }));
 	fireEvent.click(screen.getByRole('button', { name: t('home.widget.createNamed', { name: t('probe.title') }) }));
 	await waitFor(() => expect(signal).toBeDefined());
@@ -147,7 +147,7 @@ test('a widget only the target board has never mounts with the old board path', 
 	};
 	const { store, release, reached } = await twoBoards(
 		[spy],
-		`---\nlayout: immersive\nwidgets: ${JSON.stringify([member])}\n---\n`,
+		`---\nwidgets: ${JSON.stringify([member])}\ngrid: {"v":2,"lg":[]}\n---\n`,
 	);
 	const switching = store.switch(B);
 	try {
@@ -249,9 +249,9 @@ async function boards(kinds: HomeWidgetKind[], aText: string, bText: string) {
 	return { vault, store };
 }
 const withProbe = `---\nwidgets: ${JSON.stringify([member])}\ngrid: {"v":2,"lg":[{"i":"widget:probe:probe:default","x":0,"y":0,"w":6,"h":2}]}\nquickActions:\n  - name: "A data"\n    icon: "file-text"\n    type: file\n    target: "a.md"\n---\n`;
-/** An old board: no grid yet, so opening it converts it (and drops its banner). */
+/** A second board for switching. */
 const unconverted =
-	'---\nlayout: immersive\nwidgets: []\nbanner:\n  quote: "B"\n  author: "B"\nquickActions:\n  - name: "B data"\n    icon: "file-text"\n    type: file\n    target: "b.md"\n---\n';
+	'---\nwidgets: []\ngrid: {"v":2,"lg":[]}\nquickActions:\n  - name: "B data"\n    icon: "file-text"\n    type: file\n    target: "b.md"\n---\n';
 
 test('while switching, the old page cannot write: its controls do nothing and the engine refuses edits', async () => {
 	const { vault, store } = await boards([probe], withProbe, unconverted);
@@ -265,13 +265,13 @@ test('while switching, the old page cannot write: its controls do nothing and th
 	let release: () => void = () => {};
 	const blocked = new Promise<void>((resolve) => (release = resolve));
 	let reached = false;
-	const write = vault.adapter.write.bind(vault.adapter);
-	vault.adapter.write = async (path: string, text: string) => {
+	const read = vault.adapter.read.bind(vault.adapter);
+	vault.adapter.read = async (path: string) => {
 		if (path === B + '.md' && !reached) {
 			reached = true;
 			await blocked;
 		}
-		return write(path, text);
+		return read(path);
 	};
 	const before = vault.contents.get(A + '.md');
 	const oldView = store.view(0);
@@ -306,13 +306,13 @@ test('while switching, the old page cannot write: its controls do nothing and th
 	}
 });
 
-test('a failed conversion write rolls back to the board being left: A path, A data, A file pointer', async () => {
+test('a failed open of the target board rolls back to the board being left: A path, A data, A file pointer', async () => {
 	const { vault, store } = await boards([probe], withProbe, unconverted);
-	const write = vault.adapter.write.bind(vault.adapter);
+	const read = vault.adapter.read.bind(vault.adapter);
 	let failB = true;
-	vault.adapter.write = async (path: string, text: string) => {
+	vault.adapter.read = async (path: string) => {
 		if (path === B + '.md' && failB) throw new Error('disk full');
-		return write(path, text);
+		return read(path);
 	};
 	const bBefore = vault.contents.get(B + '.md');
 	await expect(store.switch(B)).rejects.toThrow('disk full');
@@ -341,14 +341,10 @@ test('when the way back fails too the page stays read-only with the reason, and 
 		</DesignScope>
 		</TestProviders>,
 	);
-	const write = vault.adapter.write.bind(vault.adapter);
 	const read = vault.adapter.read.bind(vault.adapter);
 	let broken = true;
-	vault.adapter.write = async (path: string, text: string) => {
-		if (path === B + '.md' && broken) throw new Error('disk full');
-		return write(path, text);
-	};
 	vault.adapter.read = async (path: string) => {
+		if (path === B + '.md' && broken) throw new Error('disk full');
 		if (path === A + '.md' && broken) throw new Error('cannot read A');
 		return read(path);
 	};
@@ -367,7 +363,7 @@ test('when the way back fails too the page stays read-only with the reason, and 
 });
 
 const sectionBoard = (body: string, name = 'x') =>
-	`---\nwidgetMigration: 1\nwidgets: []\ngrid: {"v":2,"lg":[]}\nquickActions:\n  - name: ${name}\n    icon: file-text\n    type: file\n    target: x.md\n---\n## Notes\n### Kept\nid: kept\ntype: generic\n${body}\n`;
+	`---\nwidgets: []\ngrid: {"v":2,"lg":[]}\nquickActions:\n  - name: ${name}\n    icon: file-text\n    type: file\n    target: x.md\n---\n## Notes\n### Kept\nid: kept\ntype: generic\n${body}\n`;
 
 test('a delete confirmation opened on A is closed, not hidden, when a switch starts and cannot delete on B', async () => {
 	const { vault, store } = await boards([probe], sectionBoard('A text'), sectionBoard('B text'));

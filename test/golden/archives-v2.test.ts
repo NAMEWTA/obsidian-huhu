@@ -2,7 +2,6 @@ import { expect, test } from 'vitest';
 import { createRevision } from '../../src/modules/archives/core/schema/definitions';
 import type { ArchiveTypeDefinition, EntityRecord } from '../../src/modules/archives/core/schema/model';
 import { decodeEntity, encodeEntity, frontmatter } from '../../src/modules/archives/core/generic/markdown';
-import { parseRecord } from '../../src/modules/archives/core/persist/markdown';
 
 // Rewritten from the deleted v2 envelope golden onto the generic archives codec.
 // The business invariants stay: leading zeros, month precision, explicit false,
@@ -41,7 +40,6 @@ test('generic archive Markdown preserves leading zeros, month precision, false, 
 		path: 'huhu/档案/税务档案/00123-entity-tax-1/基本信息.md',
 		contentHash: '',
 		modified: 0,
-		format: 2,
 	};
 	const raw = encodeEntity(record, type);
 	expect(raw).toMatchInlineSnapshot(`
@@ -71,7 +69,6 @@ test('generic archive Markdown preserves leading zeros, month precision, false, 
 	expect(decodeEntity(raw, record.path, 'hash', 0, schema).values).toEqual(values);
 	expect(frontmatter(raw)['huhu-created-at']).toBeUndefined();
 	expect(frontmatter(raw)['huhu-updated-at']).toBeUndefined();
-	expect(parseRecord(raw, record.path)).toBeNull();
 	expect(() => encodeEntity({ ...record, values: { ...values, period: '2026-03-01' } }, type)).toThrow(
 		'invalid-value',
 	);

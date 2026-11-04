@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { readBoardMembers, readLegacyTiles } from './board-codec';
+import { readBoardMembers } from './board-codec';
 import { serializeGrid } from './grid';
 import { parse, serialize } from './parser/parse';
 import { splitFrontmatter } from './parser/generate-default-markdown';
@@ -11,16 +11,16 @@ import { DEFAULT_DASHBOARD_SETTINGS } from './types/model';
 
 const frontGrid = (text: string) => splitFrontmatter(text).frontmatter.grid as { lg: Record<string, unknown>[]; md?: Record<string, unknown>[] };
 
-test('weather locations and distinct tile geometry survive Markdown edits and reopening without changing the legacy singleton id', () => {
-	const source = '---\ncustom: keep\nwidgets: [{memberId: "home:weather:default", provider: home, kind: weather, instanceId: default, private: retain}]\ngrid: {v: 2, lg: [{i: "widget:weather", x: 0, y: 0, w: 3, h: 2}]}\n---\n\n## Notes\nOriginal note body.\n';
+test('weather locations and distinct tile geometry survive Markdown edits and reopening without changing the default clock id', () => {
+	const source = '---\ncustom: keep\nwidgets: [{memberId: "home:clock:default", provider: home, kind: clock, instanceId: default, weather: {cityName: Shanghai, latitude: 31.23, longitude: 121.47}, private: retain}]\ngrid: {v: 2, lg: [{i: "widget:clock", x: 0, y: 0, w: 3, h: 2}]}\n---\n\n## Notes\nOriginal note body.\n';
 	const board = parse(source);
 	expect(serialize(board)).toBe(source);
 	expect(weatherInstanceLocation(board, DEFAULT_DASHBOARD_SETTINGS)?.cityName).toBe('Shanghai');
 	const first = board.widgets![0]!;
 	first.weather = { cityName: '广州', latitude: 23.13, longitude: 113.26, admin1: '广东省', country: '中国' };
-	board.widgets!.push({ memberId: 'home:weather:shenzhen', provider: 'home', kind: 'weather', instanceId: 'shenzhen', weather: { cityName: '深圳', latitude: 22.54, longitude: 114.06 } });
-	expect(board.widgets!.map(widgetPresentationKey)).toEqual(['weather', 'weather-shenzhen']);
-	board.grid!.lg.push({ i: 'widget:weather-shenzhen', x: 3, y: 0, w: 3, h: 2 });
+	board.widgets!.push({ memberId: 'home:clock:shenzhen', provider: 'home', kind: 'clock', instanceId: 'shenzhen', weather: { cityName: '深圳', latitude: 22.54, longitude: 114.06 } });
+	expect(board.widgets!.map(widgetPresentationKey)).toEqual(['clock', 'clock-shenzhen']);
+	board.grid!.lg.push({ i: 'widget:clock-shenzhen', x: 3, y: 0, w: 3, h: 2 });
 	const written = serialize(board), reopened = parse(written);
 	expect(reopened.widgets).toEqual(board.widgets);
 	expect(reopened.grid).toEqual(board.grid);
@@ -34,7 +34,7 @@ test('weather locations and distinct tile geometry survive Markdown edits and re
 });
 
 test('an invalid explicit weather location remains a request to choose a location, not a fallback city', () => {
-	const widgets = readBoardMembers([{ memberId: 'w', provider: 'home', kind: 'weather', instanceId: 'default', weather: { cityName: 'Bad', latitude: 1000, longitude: 0 } }]);
+	const widgets = readBoardMembers([{ memberId: 'w', provider: 'home', kind: 'clock', instanceId: 'default', weather: { cityName: 'Bad', latitude: 1000, longitude: 0 } }]);
 	expect(widgets?.[0]?.weather).toBeNull();
 	expect(weatherInstanceLocation({ widgets, columns: [], quickActions: [] }, DEFAULT_DASHBOARD_SETTINGS)).toBeNull();
 });
@@ -78,18 +78,6 @@ test('the one-column and six-column layouts are stored only once they exist', ()
 	expect(parse(written).grid!.md).toEqual(data.grid.md);
 });
 
-test('old coarse heights are read once for the conversion, never written', () => {
-	const source =
-		'---\ncustom: keep\nimmersive:\n  - id: unknown-provider\n    w: 14\n    h: 2\n    x: 0\n    y: 7\n    note: keep this\n  - id: fine\n    w: 2\n    cap: 3\n---\n\n<!-- personal body -->\n';
-	const data = parse(source);
-	expect(data.grid).toBeUndefined();
-	expect(data.legacyTiles).toEqual([
-		{ id: 'unknown-provider', w: 12, cap: 20, x: 0, y: 7 },
-		{ id: 'fine', w: 2, cap: 3 },
-	]);
-	expect(readLegacyTiles(undefined)).toBeUndefined();
-});
-
 test('member identity preserves unknown per-instance properties while reordering and retains missing providers', () => {
 	const source =
 		'---\nwidgets:\n  - memberId: first\n    provider: missing\n    kind: custom\n    instanceId: shared\n    private: alpha\n  - memberId: second\n    provider: home\n    kind: calendar\n    instanceId: default\n    private: beta\n---\n';
@@ -102,20 +90,6 @@ test('member identity preserves unknown per-instance properties while reordering
 		['first', 'alpha'],
 	]);
 	expect(readBoardMembers([])).toEqual([]);
-});
-
-test('tile bounds repair partial and non-finite old coordinates without deleting the tile', () => {
-	expect(
-		readLegacyTiles([
-			{ id: 'a', w: Infinity, cap: 0, x: 1 },
-			{ id: 'b', w: 0, cap: 999, x: 2, y: Infinity },
-			{ id: 'c', w: 2, cap: 3, x: 0, y: 0, fixed: true },
-		]),
-	).toEqual([
-		{ id: 'a', w: 3, cap: 3 },
-		{ id: 'b', w: 1, cap: 240 },
-		{ id: 'c', w: 2, cap: 3, x: 0, y: 0, fixed: true },
-	]);
 });
 
 test('layout edits allocate internal section identities without rewriting placement keys', () => {

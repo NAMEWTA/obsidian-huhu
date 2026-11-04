@@ -11,8 +11,6 @@ export const messages = {
 		'home.board.stage.read': 'file reading',
 
 		'quickActions.targetRequired': 'Choose or enter a target.',
-		'home.migration.changed': 'The migrated note was changed. The original card is preserved: {path}',
-		'home.migration.failed': 'Could not verify the migrated note. The original card is preserved: {path}',
 		'shortcuts.invalidUrl': 'Enter an http or https URL.',
 		'quickActions.more': 'Actions for {name}',
 		'quickActions.kind': 'Action type',
@@ -1591,8 +1589,6 @@ export const messages = {
 		'home.board.stage.read': '文件读取',
 
 		'quickActions.targetRequired': '请选择或输入目标。',
-		'home.migration.changed': '迁移笔记已被修改，原卡片保留：{path}',
-		'home.migration.failed': '无法核对迁移笔记，原卡片保留：{path}',
 		'shortcuts.invalidUrl': '请输入 http 或 https 网址。',
 		'quickActions.more': '{name} 的操作',
 		'quickActions.kind': '操作类型',

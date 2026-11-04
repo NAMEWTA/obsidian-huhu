@@ -37,11 +37,10 @@ test('mixed sources render standalone cards once; saved geometry that names noth
 	expect(lg.find((item) => item.i === 'deleted-reference')).toMatchObject({ w: 3, h: 2 });
 });
 
-test('the saved ids come from the grid, both widths, or from the old tiles until the board converts', () => {
+test('the saved ids come from the grid, both widths', () => {
 	const data = board();
 	data.grid!.md = [{ i: 'md-only', x: 0, y: 0, w: 3, h: 2 }];
 	expect([...savedTileIds(data)].sort()).toEqual(['deleted-reference', 'md-only', 'one']);
-	expect([...savedTileIds({ legacyTiles: [{ id: 'old', w: 3, cap: 20 }] })]).toEqual(['old']);
 });
 
 test('every source starts at its kind size and a floor: widgets from the size table, sections 6x2 and up, cards small', () => {

@@ -11,7 +11,7 @@ import { useT } from '../../../../ui/react/hooks';
 import type { HomeHost } from '../../services/home-host';
 import type { DashboardSettings } from '../../core/board/types';
 import { backupBoards, restoreLatestBackup } from '../../services/board-backups';
-import { legacyWeatherLocation } from '../../core/board/weather-locations';
+import { defaultWeatherLocation } from '../../core/board/weather-locations';
 import { CitySearch } from '../widgets/CitySearch';
 import { Choice } from '../board/controls';
 import { DashboardDialog } from '../dialogs/DashboardDialog';
@@ -163,7 +163,7 @@ export function WidgetExtras({ host, settings, update }: Props) {
 					className="flex-col items-stretch"
 					control={
 						<CitySearch
-							current={legacyWeatherLocation(settings)}
+							current={defaultWeatherLocation(settings)}
 							onSelect={(location) =>
 								update((draft) => {
 									draft.widgetWeatherCity = location.cityName;

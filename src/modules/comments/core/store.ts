@@ -9,7 +9,6 @@ const ROOT = '.huhu/editor/comments';
 const INDEX_PATH = `${ROOT}/index.json`;
 const FILES_DIR = `${ROOT}/files`;
 const PENDING_PATH = `${ROOT}/pending.json`;
-const BACKUP_DIR = '.huhu/editor/comments-backups';
 
 interface CommentWrite {
 	index: CommentIndex;
@@ -81,7 +80,7 @@ function normalizeMessage(raw: unknown): CommentMessage | null {
 	return { id: rec['id'], text: rec['text'], createdAt: rec['createdAt'], author: rec['author'], ...(typeof rec['editedAt'] === 'string' ? { editedAt: rec['editedAt'] } : {}) };
 }
 
-function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
+function normalizeThread(raw: unknown): CommentThread | null {
 	const rec = asRecord(raw);
 	if (!rec || typeof rec['id'] !== 'string' || (rec['kind'] !== 'line' && rec['kind'] !== 'range')) return null;
 	const status = rec['status'];
@@ -92,8 +91,8 @@ function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
 	if (anchor['documentHash'] !== undefined && (typeof anchor['documentHash'] !== 'string' || !/^[a-f0-9]{16}$/.test(anchor['documentHash']))) return null;
 	for (const key of ['start', 'end', 'lineHint']) if (typeof anchor[key] !== 'number' || !Number.isInteger(anchor[key]) || anchor[key] < 0) return null;
 	if ((anchor['end'] as number) < (anchor['start'] as number) || (anchor['lineHint'] as number) < 1) return null;
-	if (!Array.isArray(rec['messages']) || (version === 2 && !rec['messages'].length)) return null;
-	if (version === 3 && !rec['messages'].length && rec['kind'] === 'range' && typeof rec['color'] !== 'string') return null;
+	if (!Array.isArray(rec['messages'])) return null;
+	if (!rec['messages'].length && rec['kind'] === 'range' && typeof rec['color'] !== 'string') return null;
 	const messages = rec['messages'].map(normalizeMessage);
 	if (messages.some(message => message === null) || typeof rec['createdAt'] !== 'string' || typeof rec['updatedAt'] !== 'string') return null;
 	const color = rec['color'];
@@ -117,8 +116,8 @@ function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
 
 function normalizeFile(raw: unknown, path: string): CommentThread[] {
 	const rec = asRecord(raw);
-	if (!rec || (rec['version'] !== 2 && rec['version'] !== 3) || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
-	const threads = rec['threads'].map(item => normalizeThread(item, rec['version'] as 2 | 3));
+	if (!rec || rec['version'] !== 3 || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
+	const threads = rec['threads'].map(item => normalizeThread(item));
 	if (threads.some(thread => thread === null)) throw new Error('Invalid comment thread');
 	return threads as CommentThread[];
 }
@@ -127,8 +126,7 @@ function normalizeIndex(raw: unknown): CommentIndex {
 	const out = emptyIndex();
 	const rec = asRecord(raw);
 	const files = rec ? asRecord(rec['files']) : null;
-	if (!files || (rec?.['version'] !== 2 && rec?.['version'] !== 3)) throw new Error('Invalid comment index');
-	if (rec['version'] === 2) (out as { version: 2 | 3 }).version = 2;
+	if (!files || rec?.['version'] !== 3) throw new Error('Invalid comment index');
 	for (const [path, value] of Object.entries(files)) {
 		const entry = asRecord(value);
 		if (!entry || typeof entry['hash'] !== 'string' || !/^[a-f0-9]{16}$/.test(entry['hash']))
@@ -170,9 +168,7 @@ export class CommentStore {
 	private chain: Promise<void> = Promise.resolve();
 	private readonly listeners = new Set<() => void>();
 	private closed = false;
-	legacyData = false;
 	readonly damagedFiles: string[] = [];
-	private readonly legacyPaths = new Set<string>();
 	private readonly damagedPaths = new Set<string>();
 	private closing: Promise<void> | null = null;
 	private readonly documentChanges = new Map<string, { change: DocumentChange; before: AnchorCheckpoint; observed: string; revisions: Map<string, string>; undo?: AnnotationUndo }>();
@@ -236,7 +232,6 @@ export class CommentStore {
 		return this.enqueue(async () => {
 			const threads = await this.readThreads(path);
 			if (this.documentChanges.get(path)?.change.kind === 'remove') throw new DocumentMutationError('changed', path);
-			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
 			const now = nowIso();
 			const thread: CommentThread = {
 				id: nid('c'),
@@ -262,7 +257,6 @@ export class CommentStore {
 		return this.enqueue(async () => {
 			if (input.anchor.kind !== 'range' || !input.anchor.text) throw new Error('A highlight requires selected text');
 			const threads = await this.readThreads(path);
-			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
 			const existing = threads.find(t => t.kind === 'range' && t.status !== 'orphaned'
 				&& t.anchor.start === input.anchor.start && t.anchor.end === input.anchor.end
 				&& t.anchor.text === input.anchor.text);
@@ -674,11 +668,6 @@ export class CommentStore {
 		let raw: unknown;
 		try { raw = JSON.parse(body); }
 		catch (error) { await this.quarantine(path, body); throw error; }
-		if (asRecord(raw)?.['version'] === 1) {
-			this.legacyData = true;
-			this.legacyPaths.add(path);
-			return null;
-		}
 		return raw;
 	}
 
@@ -691,86 +680,25 @@ export class CommentStore {
 		this.emit();
 	}
 
-	/** Copy every known sidecar byte before the v2 -> v3 conversion. Backups live outside the active root. */
-	private async backupV2(indexRaw: unknown): Promise<void> {
-		const snapshot = asRecord(indexRaw);
-		const indexed = asRecord(snapshot?.['files']);
-		const entries = new Set<string>([INDEX_PATH]);
-		if (await this.fs.exists(PENDING_PATH)) entries.add(PENDING_PATH);
-		if (indexed) for (const meta of Object.values(indexed)) {
-			const hash = asRecord(meta)?.['hash'];
-			if (typeof hash === 'string' && /^[a-f0-9]{16}$/.test(hash)) entries.add(filePath(hash));
-		}
-		if (this.fs.list) {
-			const folders = [ROOT];
-			while (folders.length) {
-				const folder = folders.pop()!;
-				const children = await this.fs.list(folder);
-				for (const path of children.files) if (path.startsWith(ROOT + '/')) entries.add(path);
-				for (const path of children.folders) if (path.startsWith(ROOT + '/') && folders.length < 10000) folders.push(path);
-			}
-		}
-		const stamp = nowIso().replace(/[^0-9]/g, '').slice(0, 14);
-		const destination = `${BACKUP_DIR}/v2-${stamp}-${nid('b')}`;
-		const originals = [...entries].sort();
-		for (const source of originals) {
-			if (!await this.fs.exists(source)) throw new Error('Missing v2 sidecar during backup: ' + source);
-			const raw = await this.fs.read(source);
-			const target = `${destination}/${source.slice(ROOT.length + 1)}`;
-			await this.fs.write(target, raw);
-			if (await this.fs.read(target) !== raw) throw new Error('Backup verification failed: ' + source);
-		}
-		await this.fs.write(`${destination}/backup-manifest.json`, JSON.stringify({
-			from: 2, to: 3, source: ROOT, files: originals.map(path => path.slice(ROOT.length + 1)),
-		}, null, 2));
-	}
-	/** v2 persists a compulsory discussion; v3 makes the discussion optional. */
-	private async migrateV2(index: CommentIndex): Promise<CommentIndex> {
-		const files: Record<string, string> = {};
-		for (const [path, entry] of Object.entries(index.files)) {
-			const stored = filePath(entry.hash);
-			const raw = await this.readDocument(stored);
-			const threads = normalizeFile(raw, path).map(thread => ({
-				...thread, ...(thread.kind === 'range' ? { color: thread.color ?? ('legacy' as const) } : {}),
-			}));
-			files[stored] = JSON.stringify({ version: 3, path, threads } satisfies CommentFileDoc, null, 2);
-		}
-		const next: CommentIndex = { version: 3, files: index.files };
-		const write: CommentWrite = { index: next, files, remove: [] };
-		await this.fs.write(PENDING_PATH, JSON.stringify(write));
-		await this.persist(write);
-		return next;
-	}
 	private async readIndex(): Promise<CommentIndex> {
 		if (this.index) return this.index;
-		// A backup is durable before any legacy pending intent can replay.
-		const original = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
 		const pendingContent = await this.fs.exists(PENDING_PATH) ? await this.readDocument(PENDING_PATH) as CommentWrite | null : null;
-		const pendingV2 = asRecord(pendingContent)?.['index'];
-		if (asRecord(original)?.['version'] === 2 || asRecord(pendingV2)?.['version'] === 2)
-			await this.backupV2(original ?? pendingV2);
 		if (pendingContent) {
-			if (asRecord(pendingContent.index)?.['version'] === 1) {
-				this.legacyData = true;
-				this.legacyPaths.add(PENDING_PATH);
-			} else {
-				try {
-					normalizeIndex(pendingContent.index);
-					if (!pendingContent.files || !Array.isArray(pendingContent.remove) ||
-						[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !path.startsWith(FILES_DIR + '/') || !/^[a-f0-9]{16}\.json$/.test(path.slice(FILES_DIR.length + 1))))
-						throw new Error('Invalid pending comment write');
-					for (const body of Object.values(pendingContent.files)) normalizeFile(JSON.parse(body), '');
-				} catch (error) { await this.quarantine(PENDING_PATH); throw error; }
-				await this.persist(pendingContent);
-			}
+			try {
+				normalizeIndex(pendingContent.index);
+				if (!pendingContent.files || !Array.isArray(pendingContent.remove) ||
+					[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !path.startsWith(FILES_DIR + '/') || !/^[a-f0-9]{16}\.json$/.test(path.slice(FILES_DIR.length + 1))))
+					throw new Error('Invalid pending comment write');
+				for (const body of Object.values(pendingContent.files)) normalizeFile(JSON.parse(body), '');
+			} catch (error) { await this.quarantine(PENDING_PATH); throw error; }
+			await this.persist(pendingContent);
 		}
 		if (this.damagedPaths.has(INDEX_PATH)) throw new Error('Comment index was set aside');
 		const raw = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
 		try {
-			const loaded = raw === null ? emptyIndex() : normalizeIndex(raw);
-			this.index = (loaded as { version: 2 | 3 }).version === 2 ? await this.migrateV2(loaded) : loaded;
+			this.index = raw === null ? emptyIndex() : normalizeIndex(raw);
 		} catch (error) {
-			if (raw && (asRecord(raw)?.['version'] !== 2 || !asRecord(asRecord(raw)?.['files'])) && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
+			if (raw && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
 			throw error;
 		}
 		return this.index;
@@ -825,10 +753,6 @@ export class CommentStore {
 						continue;
 					}
 					const hash = await sha16(path);
-					if (await this.fs.exists(filePath(hash)) && !index.files[path]) {
-						const existing = await this.readDocument(filePath(hash));
-						if (existing === null) throw new Error('Legacy comments are read-only');
-					}
 					index.files[path] = {
 						hash,
 						open: threads.filter((t) => t.status !== 'resolved').length,
@@ -844,7 +768,6 @@ export class CommentStore {
 					files,
 					remove: [...removals].filter((path) => !referenced.has(path)),
 				};
-				if (this.legacyPaths.size) throw new Error('Legacy comments are read-only; preserve them outside the active comments folder before creating v2 data');
 				// Save recoverable intent before replacing any existing data.
 				await this.fs.write(PENDING_PATH, JSON.stringify(write));
 				this.transaction = { write, versions, removals: [...removals] };

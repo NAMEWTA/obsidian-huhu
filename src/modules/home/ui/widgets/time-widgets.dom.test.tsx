@@ -29,7 +29,7 @@ function fake(over: Record<string, unknown> = {}, settings: Record<string, unkno
 			quickActions: [],
 			quickActionOrder: [],
 			hiddenPresets: [],
-			widgets: [{ memberId: 'home:weather:default', provider: 'home', kind: 'weather', instanceId: 'default' }],
+			widgets: [{ memberId: 'home:clock:default', provider: 'home', kind: 'clock', instanceId: 'default' }],
 		},
 		files: [],
 		path: 'Board',
@@ -169,10 +169,23 @@ test("weather: the city, the large temperature, the state and today's range; the
 		dailyMax: [24, 19, 22, 26, 21],
 		dailyMin: [15, 13, 14, 16, 14],
 	};
-	const { store, state } = fake(
-		{ weatherByInstance: { default: { locationKey: '31.23,121.47', status: 'ready', data: weather, error: '' } } },
-		{ widgetWeatherCity: 'Shanghai' },
-	);
+	const { store, state } = fake({
+		weatherByInstance: { default: { locationKey: '31.23,121.47', status: 'ready', data: weather, error: '' } },
+		data: {
+			quickActions: [],
+			quickActionOrder: [],
+			hiddenPresets: [],
+			widgets: [
+				{
+					memberId: 'home:clock:default',
+					provider: 'home',
+					kind: 'clock',
+					instanceId: 'default',
+					weather: { cityName: 'Shanghai', latitude: 31.23, longitude: 121.47 },
+				},
+			],
+		},
+	});
 	mount(<ClockWidget store={store} />);
 	const body = document.querySelector('[data-clock-weather]')!;
 	expect(body.textContent).toContain('Shanghai');

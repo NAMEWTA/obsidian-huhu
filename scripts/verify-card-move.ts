@@ -102,9 +102,7 @@ process.stdout.write('verify-card-move: move, conversion, content retention and 
 async function verifySync(): Promise<void> {
 	const previousWindow = globalThis.window;
 	globalThis.window = { setTimeout, clearTimeout } as unknown as Window & typeof globalThis;
-	// Exercise legacy card editing after the one-time widget migration. The
-	// migration itself has a real multi-file vault fixture in widget-migration.test.ts.
-	let disk = serialize({ ...initial, widgetMigration: 1 });
+	let disk = serialize(initial);
 	let writes = 0;
 	const boardPath = '.huhu/dashboards/test-board.md';
 	const { app, contents, adapter } = memoryVault({ [boardPath]: disk });

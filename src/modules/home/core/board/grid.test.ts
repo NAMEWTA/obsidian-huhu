@@ -5,7 +5,6 @@ import {
 	addItem,
 	breakpointOf,
 	compactLayout,
-	convertLegacyItem,
 	dropItems,
 	firstFit,
 	layoutsFor,
@@ -169,14 +168,6 @@ test('removing and renaming tiles touches both layouts', () => {
 	expect(dropItems(undefined, new Set(['a']))).toBeUndefined();
 });
 
-test('an old tile converts by its pixel cap: columns stay, rows are re-measured, position scales with the rows', () => {
-	const calendar = spec('calendar', 6, 4, 3, 3);
-	// cap 50 fine rows (500px) is about five 96px rows; the saved position scales with it
-	expect(convertLegacyItem({ id: 'calendar', w: 4, cap: 50, x: 8, y: 12 }, calendar)).toEqual({ w: 4, h: 5, x: 8, y: 1 });
-	// the cap rounds to the nearest row (24 * 10 / 96 = 2.5)
-	expect(convertLegacyItem({ id: 'calendar', w: 3, cap: 24, x: 0, y: 0 }, calendar)).toMatchObject({ h: 3 });
-	// below the floor the floor wins; wider than the grid is cut to it; without a position none is invented
-	expect(convertLegacyItem({ id: 'calendar', w: 1, cap: 3 }, calendar)).toEqual({ w: 3, h: 3 });
-	expect(convertLegacyItem({ id: 'calendar', w: 99, cap: 4000, x: 5, y: 0 }, calendar)).toMatchObject({ w: 12, x: 0 });
+test('the row pitch is the row height plus the gap', () => {
 	expect(GRID_ROW_PITCH).toBe(96);
 });

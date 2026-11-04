@@ -48,7 +48,7 @@
 | 批注 | 存储与锚点测试、浮窗/面板的 `dom` 交互测试；CodeMirror、多窗口、侧栏生命周期补宿主验证 |
 | 看板解析、小组件、记录 | 对应单元测试及功能匹配的看板 `test:*`；格式变化加黄金样本 |
 | 自动化、通知 | 对应测试套件；执行目标、时间、会话或冲突安全变化加 `pnpm run test:safety-regressions` |
-| 档案 | `src/modules/archives/archives.test.ts`；索引、批量处理或性能变化加 `pnpm run accept:contacts-scale` |
+| 档案 | `src/modules/archives/` 下的服务、核心与 DOM 测试，及 `test/golden/archives-v2.test.ts`、`archive-relation.test.ts`；规模变化加 `scripts/accept-archives-v2-scale.ts` |
 | 保险箱 | `src/modules/safe/` 下的模型、真实 WebCrypto、密文仓库、文件、会话与 DOM 测试；原生文件选择器、剪贴板、多窗口迁移、隐藏锁定和重启恢复补真实桌面宿主验收 |
 | 图标 | `src/modules/icons/iconic-port.test.ts` 中相关 Iconic 对照 |
 | 版本管理 | `src/modules/versioning` 对应测试；Git 流程、历史和恢复暂停用 `test/sync/` 的真实临时仓库；笔记恢复补原生编辑器与多叶宿主验证 |

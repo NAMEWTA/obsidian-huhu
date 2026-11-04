@@ -160,7 +160,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 								const member = draft.widgets?.find(
 									(m) =>
 										m.provider === 'home' &&
-										['clock', 'weather'].includes(m.kind) &&
+										m.kind === 'clock' &&
 										m.instanceId === entryId,
 								);
 								if (!member) throw new Error(t('home.widget.instanceMissing'));

@@ -1,7 +1,6 @@
 // Acceptance: the board is one react-grid-layout grid of fixed-height tiles.
 //  - the default board is symmetric: tiles of one row share top and bottom edges, nothing overflows the page;
 //  - tiles are dragged and resized with no mode to enter, one write per gesture, and the layout survives a restart;
-//  - an old board (banner, immersive tiles, sections and cards) is converted once and keeps all its content;
 //  - one column below 600px writes nothing; the six-column layout is stored separately;
 //  - dragging also works in a popout window (the grid asks the window that owns it).
 // All HOME / CLI homes / XDG dirs point into the fixture (fresh-vault.mjs). Run from the repo root after `pnpm build`:
@@ -15,53 +14,20 @@ import { parse as yaml } from 'yaml';
 import { launchFreshVault } from './fresh-vault.mjs';
 
 const DEFAULT = '.huhu/dashboards/Default';
-const LEGACY = '.huhu/dashboards/Legacy';
 const MANY = '.huhu/dashboards/Many';
 /** Thirty standalone cards: thirty tiles to drag through. */
 const many = `---\nwidgets: []\ngrid: {"v":2,"lg":[]}\ncolumns: [{name: Sticky, type: sticky}]\n---\n\n## Sticky\n\n${Array.from({ length: 30 }, (_, i) => `### Card ${i + 1}\nid: many-${i + 1}\ntype: generic\nBody ${i + 1}\n`).join('\n')}`;
-const legacy = `---
-custom: keep
-layout: immersive
-canvas: 1
-widgets: [{"memberId":"home:banner:default","provider":"home","kind":"banner","instanceId":"default"},{"memberId":"home:calendar:default","provider":"home","kind":"calendar","instanceId":"default"},{"memberId":"home:pomodoro:default","provider":"home","kind":"pomodoro","instanceId":"default"}]
-immersive: [{"id":"widget:banner","w":12,"cap":12,"x":0,"y":0},{"id":"widget:calendar","w":4,"cap":50,"fixed":true,"x":0,"y":12},{"id":"widget:pomodoro","w":3,"cap":24,"fixed":true,"x":4,"y":12},{"id":"section:Notes","w":8,"cap":50,"x":0,"y":62},{"id":"section:Todo","w":4,"cap":50,"x":8,"y":62}]
-banner:
-  quote: "Keep going"
-  author: "Me"
-columns:
-  - name: "Notes"
-    color: "#f59e0b"
-    type: memo
-  - name: "Todo"
-    color: "#6366f1"
-    type: todo
----
-
-## Notes
-
-### Grouped memo
-id: grouped
-type: generic
-Visible grouped body.
-
-## Todo
-
-### Tasks
-id: tasks
-type: task
-- [ ] Keep this task
-`;
 const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_GRID_PORT || 9281),
-	files: { [LEGACY + '.md']: legacy, [MANY + '.md']: many },
+	files: { [MANY + '.md']: many },
 	settings: {
 		version: 1,
 		namespaces: {
 			app: { language: 'en', introSeen: true, modules },
 			theme: { preset: 'pearl' },
-			home: { dashboardFile: DEFAULT, workspaceFiles: [DEFAULT, LEGACY, MANY], workspaceNames: ['', '', ''] },
+			home: { dashboardFile: DEFAULT, workspaceFiles: [DEFAULT, MANY], workspaceNames: ['', ''] },
 		},
 	},
 });
@@ -312,29 +278,7 @@ try {
 	check('thirty-tiles-drag-writes-only-on-drop', duringDrag === 0 && (await writes()) === 1, { duringDrag, afterDrop: await writes() });
 	check('thirty-tiles-drag-stays-within-a-frame-budget', mean < 50 && Math.max(...latencies) < 250, { mean: Math.round(mean), max: Math.max(...latencies) });
 	await shot('08-thirty-tiles-1440');
-	// 9. An old board converts once and keeps all its content.
-	await size(1440);
-	await open(LEGACY);
-	await until(`document.querySelectorAll('[data-tile]').length>=4`, 'legacy tiles');
-	await delay(900);
-	const old = await meta(LEGACY);
-	check('legacy-converted-to-grid', old.grid?.v === 2 && old.grid.lg.length === 4 && !old.text.includes('banner:') && !old.text.includes('immersive:') && !old.text.includes('layout:') && !old.text.includes('canvas:'), old.text.slice(0, 600));
-	check('legacy-widgets-lost-only-the-banner', JSON.stringify(old.widgets.map((w) => w.kind)) === JSON.stringify(['calendar', 'pomodoro']), old.widgets);
-	check('legacy-content-and-unknown-keys-kept', old.text.includes('Visible grouped body.') && old.text.includes('Keep this task') && old.text.includes('custom: keep') && old.front.columns.length === 2, old.text);
-	check('legacy-geometry-converted', item(old.grid, 'widget:calendar').x === 0 && item(old.grid, 'widget:calendar').w === 4 && item(old.grid, 'widget:calendar').h === 5 && item(old.grid, 'widget:pomodoro').x === 4 && item(old.grid, 'section:Notes').w === 8 && item(old.grid, 'section:Todo').w === 4, old.grid);
-	// A memo section lists memo files now, so the old inline card body stays in the board file but is not drawn.
-	check('legacy-todo-card-is-visible', await c.evaluate(`document.body.innerText.includes('Keep this task')`), null);
-	a = await alignment({ rows: false });
-	check('legacy-tiles-sit-on-the-row-grid', a.misaligned.length === 0 && a.outside.length === 0, a);
-	await shot('07-legacy-converted-1440');
-	const legacySaved = await read(LEGACY);
-	await runtime.restart();
-	c = runtime.connection;
-	await c.evaluate('app.workspace.leftSplit.collapse();app.workspace.rightSplit.collapse();true');
-	await size(1440);
-	await open(LEGACY);
-	check('legacy-converts-only-once', (await read(LEGACY)) === legacySaved, null);
-	// 10. A popout window drags too (react-draggable listens on the window that owns the tile).
+	// 9. A popout window drags too (react-draggable listens on the window that owns the tile).
 	await open(DEFAULT);
 	await until(`document.querySelectorAll('[data-tile]').length===9`, 'tiles for popout');
 	const popped = await c.evaluate(`(async()=>{const leaf=app.workspace.getLeavesOfType('huhu-workbench-view').find(l=>l.view?.containerEl?.querySelector('[data-tile]'));if(!leaf)return false;window.popLeaf=leaf;const win=app.workspace.moveLeafToPopout(leaf);await new Promise(r=>setTimeout(r,2500));return !!win&&!!leaf.view.containerEl.ownerDocument.defaultView&&leaf.view.containerEl.ownerDocument!==document})()`);

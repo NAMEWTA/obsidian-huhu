@@ -1,6 +1,6 @@
 import type { DashboardData, DashboardSettings, WeatherConfig } from './types/model';
 
-/** Invalid saved locations are explicit, so they cannot silently display the legacy city. */
+/** Invalid saved locations are explicit, so they cannot silently display another city. */
 export function readWeatherLocation(value: unknown): WeatherConfig | null {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 	const raw = value as Record<string, unknown>;
@@ -28,7 +28,8 @@ export function readWeatherLocation(value: unknown): WeatherConfig | null {
 	return location;
 }
 
-export function legacyWeatherLocation(
+/** The default city from settings, offered to a new clock. */
+export function defaultWeatherLocation(
 	settings: Pick<DashboardSettings, 'widgetWeatherCity' | 'widgetWeatherLat' | 'widgetWeatherLon'>,
 ): WeatherConfig {
 	return {
@@ -38,41 +39,16 @@ export function legacyWeatherLocation(
 	};
 }
 
-/** Commit compatibility defaults only with an explicit member/layout edit, never while reading an old board. */
-export function freezeLegacyWeatherLocations(data: DashboardData, settings: DashboardSettings): DashboardData {
-	if (
-		!data.widgets?.some(
-			(member) => member.provider === 'home' && member.kind === 'weather' && member.weather === undefined,
-		)
-	)
-		return data;
-	const location = readWeatherLocation(legacyWeatherLocation(settings));
-	return {
-		...data,
-		widgets: data.widgets.map((member) =>
-			member.provider === 'home' && member.kind === 'weather' && member.weather === undefined
-				? { ...member, weather: location ? { ...location } : null }
-				: member,
-		),
-	};
-}
-
-/** Compatibility reads inherit the old location until an explicit member/layout edit saves it. */
+/** A clock keeps its own location; absent or invalid means none. */
 export function weatherInstanceLocation(
 	data: DashboardData | null,
-	settings: DashboardSettings,
+	_settings: DashboardSettings,
 	instanceId = 'default',
 ): WeatherConfig | null {
 	const member = data?.widgets?.find(
-		(item) =>
-			item.provider === 'home' && ['clock', 'weather'].includes(item.kind) && item.instanceId === instanceId,
+		(item) => item.provider === 'home' && item.kind === 'clock' && item.instanceId === instanceId,
 	);
-	if (!member) return null;
-	return member.weather === undefined
-		? member.kind === 'weather'
-			? readWeatherLocation(legacyWeatherLocation(settings))
-			: null
-		: member.weather;
+	return member?.weather ?? null;
 }
 
 export const weatherLocationKey = (location: WeatherConfig): string => `${location.latitude},${location.longitude}`;

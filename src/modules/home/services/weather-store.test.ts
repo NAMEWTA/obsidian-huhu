@@ -82,14 +82,14 @@ beforeEach(() => {
 				{
 					memberId: 'a',
 					provider: 'home',
-					kind: 'weather',
+					kind: 'clock',
 					instanceId: 'a',
 					weather: { cityName: '广州', latitude: 23.13, longitude: 113.26 },
 				},
 				{
 					memberId: 'b',
 					provider: 'home',
-					kind: 'weather',
+					kind: 'clock',
 					instanceId: 'b',
 					weather: { cityName: '深圳', latitude: 22.54, longitude: 114.06 },
 				},

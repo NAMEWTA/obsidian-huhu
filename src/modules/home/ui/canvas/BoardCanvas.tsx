@@ -27,7 +27,7 @@ import {
 	type GridItem,
 } from '../../core/board/grid';
 import type { BoardWidgetMember } from '../../core/board/types/model';
-import { legacyWeatherLocation } from '../../core/board/weather-locations';
+import { defaultWeatherLocation } from '../../core/board/weather-locations';
 import { WidgetLifetime } from '../../core/board/widget-lifetime';
 import { widgetProviderKey } from '../../core/board/widget-registry';
 import { exactTier, tierSize } from '../../core/board/widget-catalog';
@@ -315,7 +315,7 @@ function BoardCanvasView({
 			}
 		}
 		const member = memberOf(request.module, request.kind.key, instanceId);
-		if (request.module === 'home' && request.kind.key === 'weather') member.weather = legacyWeatherLocation(store.state.getState().settings);
+		if (request.module === 'home' && request.kind.key === 'weather') member.weather = defaultWeatherLocation(store.state.getState().settings);
 		await observeBoardAction(store.sync.addToCanvas({ member }, size));
 	};
 	return (

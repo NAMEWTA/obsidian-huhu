@@ -20,8 +20,6 @@ import type { ReadingData } from '../../src/modules/home/core/reading/applicatio
 import { automationDocuments, type DefinitionCollection } from '../../src/modules/automations/core/documents';
 import { parse, serialize } from '../../src/modules/home/core/board/parser/parse';
 import { generateDefaultMarkdown } from '../../src/modules/home/core/board/parser/default-document';
-import { createMarkdown, parseRecord } from '../../src/modules/archives/core/persist/markdown';
-import { newRecord, type ArchiveRecord } from '../../src/modules/archives/core/model';
 import { emptyPipeline } from '../../src/modules/home/core/pipeline/model';
 import { patchPipelineFields } from '../../src/modules/home/platform/pipeline/vault';
 import { normalizeDashboardSettings } from '../../src/modules/home/core/board/settings';
@@ -363,29 +361,6 @@ test('dashboard Markdown round-trips byte for byte and keeps its generated form'
 		generated.push(`=== ${name} ===\n${serialize({ ...data, document: undefined })}`);
 	}
 	await expect(generated.join('\n')).toMatchFileSnapshot(snapshot('dashboard.md'));
-});
-
-test('archive records keep their Markdown layout and parse back without errors', async () => {
-	const record = (kind: 'person' | 'company', id: string, name: string, fields: Record<string, string> = {}): ArchiveRecord => {
-		const value = newRecord(kind);
-		value.id = id;
-		Object.assign(value.fields, { name, ...fields });
-		value.folderPath = `档案/${kind === 'person' ? '个人档案' : '企业档案'}/${name}`;
-		value.path = `${value.folderPath}/基本信息.md`;
-		return value;
-	};
-	const records = [record('person', 'person-0000-zhang', '张三', { region: '上海' }), record('company', 'company-0000-acme', 'Acme Ltd')];
-	const files: string[] = [];
-	for (const value of records) {
-		const markdown = createMarkdown(value);
-		const parsed = parseRecord(markdown, value.path);
-		assert.ok(parsed);
-		assert.deepEqual(parsed.errors, []);
-		assert.equal(parsed.id, value.id);
-		assert.deepEqual(parsed.fields, value.fields);
-		files.push(`=== ${value.path} ===\n${markdown}`);
-	}
-	await expect(files.join('\n')).toMatchFileSnapshot(snapshot('archives.md'));
 });
 
 test('Apex P2 RSS, WeRead and TickTick configurations round trip without carrying service credentials', async () => {

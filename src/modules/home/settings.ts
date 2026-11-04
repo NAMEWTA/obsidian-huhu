@@ -1,4 +1,3 @@
-import { readLegacyMembers } from './core/board/widget-members';
 import { DEFAULT_DASHBOARD_FILE } from '../../shared/storage/vault-layout';
 import { domainSettings } from '../../shared/settings/schema';
 import { DEFAULT_DASHBOARD_SETTINGS, type DashboardSettings } from './core/board/types/model';
@@ -8,37 +7,6 @@ import { themeSettings } from '../../theme/settings';
 
 export { seedDashboardSettings } from './core/board/settings';
 export type { DashboardSettings } from './core/board/types/model';
-
-/** Per-widget switches, board themes and layout choices of the pre-canvas board; the board file now owns all of it. */
-const RETIRED_KEYS = [
-	'stylePreset',
-	'customColors',
-	'customThemes',
-	'activeCustomThemeId',
-	'layoutMode',
-	'sidebarPinned',
-	'bannerCollapsed',
-	'habitHeightRatio',
-	'readingHeightRatio',
-	'sidebarWidth',
-	'widgetUnitHeight',
-	'widgetWeatherEnabled',
-	'pomodoroEnabled',
-	'widgetLunarEnabled',
-	'widgetYearProgressEnabled',
-	'widgetCalendarEnabled',
-	'widgetQuickCaptureEnabled',
-	'widgetFileSearchEnabled',
-	'widgetSkillsEnabled',
-	'widgetHabitEnabled',
-	'widgetExpenseEnabled',
-	'widgetAlbumEnabled',
-	'anniversaryEnabled',
-	'widgetQuickActionsEnabled',
-	'widgetOrder',
-	'countdownEnabled',
-	'readingEnabled',
-];
 
 /** Settings namespace `home` (board, widgets and sections). */
 const schema = domainSettings<DashboardSettings>({
@@ -87,8 +55,6 @@ const schema = domainSettings<DashboardSettings>({
 		for (const key of ['ticktickCookie', 'ticktickCsrf', 'ticktickDeviceVersion', 'ticktickTimezone'] as const)
 			settings[key] = typeof raw[key] === 'string' ? raw[key] : DEFAULT_DASHBOARD_SETTINGS[key];
 		settings.useThemeFont = raw.useThemeFont === true;
-		settings.legacyWidgetMembers = readLegacyMembers(raw);
-		for (const key of RETIRED_KEYS) delete (settings as unknown as Record<string, unknown>)[key];
 		settings.collapsedSections = Array.isArray(raw.collapsedSections)
 			? raw.collapsedSections.filter((name): name is string => typeof name === 'string')
 			: [];
