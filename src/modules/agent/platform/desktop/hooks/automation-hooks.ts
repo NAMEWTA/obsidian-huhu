@@ -102,7 +102,10 @@ const dir = process.env.HUHU_HOOK_DIR, token = process.env.HUHU_HOOK_TOKEN;
 if (!dir || !token) process.exit(0);
 ${EVENT_PAYLOAD_SCRIPT}
 ${HOOK_PUBLISHER_SCRIPT}
-let ticket, release, chunks = [], bytes = 0, oversized = false, done = false, retry, waits = 0;
+let ticket, release, chunks = [], bytes = 0, oversized = false, done = false, retry;
+const started = Date.now();
+// Create the stdin stream now (it does not read until a listener attaches) so its setup cost is not paid while a collector is held.
+const stdin = process.stdin;
 try { ticket = hookIngress(); } catch (error) { hookFault(error.message); }
 function finish() { done = true; if (retry) clearTimeout(retry); chunks = []; if (ticket) { try { ticket.release(); } catch (error) { hookFault(error.message); } } }
 const timeout = setTimeout(() => {
@@ -113,19 +116,20 @@ const timeout = setTimeout(() => {
 function collect() {
  if (done) return;
  if (ticket) {
-  // Collectors full: back off exponentially with jitter (5 ms doubling to an 80 ms cap, x0.5-1.5). A fixed 5 ms poll by
-  // every waiting publisher in a cold 32-scope burst flooded Windows with guard/mkdir calls and starved the holders.
-  try { if (!ticket.collect()) { retry = setTimeout(collect, Math.min(80, 5 * 2 ** waits++) * (0.5 + Math.random())); return; } release = true; }
+  // Collectors full. A fixed 5 ms poll by every waiter in a cold 32-scope burst flooded Windows with guard/mkdir calls and
+  // starved the holders; growing back-off let the oldest waiters lose to newcomers until the 3 s deadline. Poll at a
+  // jittered 10-40 ms while young and every 5 ms once past half the deadline, so the waiters closest to it win.
+  try { if (!ticket.collect()) { retry = setTimeout(collect, Date.now() - started > 1500 ? 5 : 10 + Math.random() * 30); return; } release = true; }
   catch (error) { hookFault(error.message); finish(); }
  }
- process.stdin.setEncoding('utf8');
- process.stdin.on('data', data => {
+ stdin.setEncoding('utf8');
+ stdin.on('data', data => {
   if (!release) return;
   bytes += Buffer.byteLength(data, 'utf8');
   if (bytes > ${MAX_HOOK_INPUT_BYTES}) { oversized = true; chunks = []; }
   else if (!oversized) chunks.push(data);
  });
- process.stdin.on('end', () => {
+ stdin.on('end', () => {
   if (release) {
    try {
     if (oversized) hookPublish('HookError', { huhu_answer_error: 'hookInputTooLarge' });
