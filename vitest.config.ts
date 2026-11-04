@@ -46,6 +46,10 @@ const nativeIntegrationTests = ['test/release/documentation-checker.test.ts', 's
 
 export default defineConfig({
 	test: {
+		// Many suites carry real deadlines around process trees, file systems and heavy DOM renders (for example a
+		// 650 ms reap bound). One worker per core left no headroom: with any other load on the machine, a random
+		// handful of them overran on every run. Half the cores keeps every deadline meaningful; none is relaxed.
+		maxWorkers: '50%',
 		projects: [
 			{
 				...shared,
