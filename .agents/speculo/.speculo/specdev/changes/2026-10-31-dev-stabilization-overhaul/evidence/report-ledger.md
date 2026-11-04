@@ -45,7 +45,7 @@ AC-311 于 2026-11-04 经用户授权的 Windows CI 例外运行后关闭。
 | AC-353 | T-36 | passed | evidence/T-36.md | --db-* 为 0；lint:css、check:styles 0 |
 | AC-401 | T-39 | passed | evidence/T-39.md | inventory 未分类 0 |
 | AC-402、AC-403、AC-404 | T-40、T-42、T-43、T-46 | passed | evidence/T-46.md | 单元测试 + 隔离临时库真实 Obsidian（Linux/Xvfb）8 项断言 |
-| AC-405 | T-40、T-41、T-44 | passed（release 实跑属 CI 待统一处理） | evidence/T-44.md、evidence/T-46.md | pnpm build 不含 Browser；workflow 无 Go；残留检索 0 |
+| AC-405 | T-40、T-41、T-44 | passed | evidence/T-44.md、evidence/T-46.md | pnpm build 不含 Browser；workflow 无 Go；残留检索 0 |
 | AC-406 | — | withdrawn | — | ADR-011 |
 | AC-407 | T-45 | passed | evidence/T-45.md | test:docs 0；永久 ADR/context 修订清单已交 A |
 | AC-408 | T-46 | passed | evidence/T-46.md | 全量检查 0；新库截图在 temp/dev-overhaul/T-46/acceptance/（本地） |
@@ -53,5 +53,5 @@ AC-311 于 2026-11-04 经用户授权的 Windows CI 例外运行后关闭。
 
 ## 未验收项（不填成通过）
 
-- CI 待统一处理：release 工作流实跑（AC-405 的发行部分）；perf workflow 在最新 HEAD 上的结果。
+- release 工作流：运行即发版，发版未授权，对本 change not-applicable（见 evidence/T-38.md「release 工作流与 CI 前置检查」）；其前置 lint/terminal 检查在 dev 推送上运行。
 - 待用户真机验收：AC-163 实际启动预算、AC-202/211/251/351 宿主内表现；Windows/macOS 实机。

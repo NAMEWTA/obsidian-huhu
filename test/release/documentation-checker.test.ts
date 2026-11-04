@@ -188,4 +188,4 @@ test('documentation checks use ownership and links, not directory names, and res
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}
-});
+}, 30000); // 26 real CLI processes; a cold Node start costs ~200 ms each on Windows runners.
