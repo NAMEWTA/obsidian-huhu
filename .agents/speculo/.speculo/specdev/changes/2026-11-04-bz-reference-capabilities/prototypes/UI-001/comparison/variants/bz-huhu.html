@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HUHU · bz 参考能力</title><link rel="stylesheet" href="../../final/styles.css"><script defer src="../../final/app.js"></script></head>
+<body class="huhu-ui huhu-design"><a class="skip" href="#content">跳到内容 / Skip to content</a>
+<div class="preview-bar"><strong>HUHU · 离线原型 / Offline prototype</strong><span>虚构数据 · 不写入文件 / Fictional data · No file writes</span><button data-action="language" id="language">English</button><button data-action="theme" id="theme">深色 / Dark</button></div>
+<div class="shell"><nav class="rail" aria-label="功能 / Features"><span class="brand" aria-label="HUHU">虎</span><button data-page="SAFE-WORKSPACE" title="密码本 / Vault">钥</button><button data-page="BELONGINGS" title="归物本 / Belongings">物</button><button data-page="DIARY-READER" title="日记 / Diary">书</button><button data-page="PERSON-READING" title="人物 / People">人</button><button data-page="HEALTH-SCAN" title="体检 / Checkup">检</button></nav>
+<div class="workspace"><header><button id="menu" data-action="menu" aria-label="页面导航 / Page navigation">☰</button><h1 id="page-title">密码本</h1><span class="header-note" id="identity">HUHU</span><button data-action="page-menu" aria-label="页面菜单 / Page menu">···</button></header>
+<main id="content" tabindex="-1"><div id="view"></div></main></div></div>
+<aside class="inspector" aria-label="原型状态工具 / Prototype state tools"><label>页面 / Page <select id="page-picker"></select></label><label>演示状态 / Scenario <select id="state-picker"></select></label><span id="state-id"></span><details><summary>验证说明 / Preview notes</summary><p>这是单一候选的九个任务页面；状态切换只改变演示内存。主界面中的按钮同样可操作。These are nine task pages in one candidate. All actions affect preview memory only.</p></details></aside>
+<dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-head"><h2 id="dialog-title"></h2><button data-action="close-dialog" aria-label="关闭 / Close">×</button></div><div id="dialog-body"></div></dialog>
+</body></html>

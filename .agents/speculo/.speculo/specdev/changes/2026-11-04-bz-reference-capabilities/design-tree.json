@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-11-04-bz-reference-capabilities",
+  "status": "consensus",
+  "round": 2,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "归物本归属",
+      "question": "归物本是另建权威库还是基于通用档案？",
+      "depends_on": [],
+      "recommendation": "archives 物品类型预设＋专属视图/命令，不建 belongings.json 主库。",
+      "status": "answered",
+      "round": 1,
+      "answer": "归物首期归 archives owner：物品类型预设＋专属归物视图＋档案内领域命令；同一物品只有一份档案 Markdown 主记录。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "日记归属与文件身份",
+      "question": "书页日记是否引入新的日记数据模型？",
+      "depends_on": [],
+      "recommendation": "归 navigator，保留一日一周期笔记，书页只读投影。",
+      "status": "answered",
+      "round": 1,
+      "answer": "日记首期归 navigator owner；保留一日一文件与模板；书页是只读投影，写入经现有周期笔记与文档修改契约。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "通知与即时反馈",
+      "question": "是否另建通知中心或统一 notify？",
+      "depends_on": [],
+      "recommendation": "复用 notifications；即时反馈独立于 inbox。",
+      "status": "answered",
+      "round": 1,
+      "answer": "复用现有 notifications 模块承载持久通知；即时反馈（sonner/Notice）可独立于 inbox 工作，不建第二通知中心。",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-004",
+      "title": "人物资料存储",
+      "question": "人物资料与私密材料如何存放？",
+      "depends_on": [],
+      "recommendation": "人物资料继续 Markdown；私密材料加密分域，不整体加密档案。",
+      "status": "answered",
+      "round": 1,
+      "answer": "人物资料继续档案 Markdown；若引入私密材料/画像草稿则加密分域，不整体加密既有档案。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "体检与人物材料的先后",
+      "question": "体检先修复还是先只读；人物先 AI 还是先手工？",
+      "depends_on": [],
+      "recommendation": "先只读体检再安全修复；先手工人物材料再 AI。",
+      "status": "answered",
+      "round": 1,
+      "answer": "先只读体检，再有限安全修复；先手工人物材料，再考虑 AI。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-006",
+      "title": "复用分层",
+      "question": "从 bz 复制什么、重写什么？",
+      "depends_on": [],
+      "recommendation": "复制纯逻辑，重写宿主/UI；安全与持久化不随手迁入。",
+      "status": "answered",
+      "round": 1,
+      "answer": "复制/改编不依赖宿主的纯逻辑；宿主适配与 UI 用虎虎 React/shadcn 重写；safe 密码学、存储与恢复协议不替换。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-007",
+      "title": "huhubot 删除后的范围",
+      "question": "Issue 中依赖 huhubot 的内容如何处理？",
+      "depends_on": [],
+      "recommendation": "移出本 change。",
+      "status": "answered",
+      "round": 1,
+      "answer": "huhubot 已在 #41 删除，Issue 中依赖 huhubot 的 AI 能力申请、Bot SQLite/Runner/HAP 相关约束与验收全部移出本 change，不再评估。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-008",
+      "title": "评估基线",
+      "question": "以哪个版本为现状与参考基线？",
+      "depends_on": [],
+      "recommendation": "虎虎 dev 81e43c4；bz master d76a087。",
+      "status": "answered",
+      "round": 1,
+      "answer": "现状以虎虎当前 dev（81e43c4）为准；参考以 bz 最新 master d76a0870329403247917a00c43019e203a2560a4 为准，Issue 原固定 SHA 只作历史。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-009",
+      "title": "复用优先原则",
+      "question": "有相似实现时如何取舍？",
+      "depends_on": [],
+      "recommendation": "优先仿造复刻并署名。",
+      "status": "answered",
+      "round": 1,
+      "answer": "bz 已有相似实现时优先仿造复刻：交互与布局按 bz 复刻、纯逻辑改编，MIT 署名并登记 docs/third-party；只有与虎虎安全/数据契约冲突处才偏离，并记录原因。",
+      "log_ref": "LOG-009"
+    },
+    {
+      "id": "D-010",
+      "title": "Change 粒度",
+      "question": "全部范围作为一个 change 分阶段推进，还是经 Wayfinder 拆成多个独立 change？",
+      "depends_on": [],
+      "recommendation": "单 change，按功能分阶段拆票与分批 PR（沿用 #41 做法）。",
+      "status": "answered",
+      "round": 2,
+      "answer": "一个 change 承载 #17 重新评估后的全部范围；按功能分阶段拆票与分批 PR。",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-011",
+      "title": "脸谱首期范围",
+      "question": "huhubot 删除后没有进程内模型服务。脸谱首期做到哪一层？",
+      "depends_on": [
+        "D-005",
+        "D-007"
+      ],
+      "recommendation": "只做人物阅读层＋手工纪事（Markdown），AI 画像与私密聊天导入移出本 change。",
+      "status": "answered",
+      "round": 2,
+      "answer": "只做人物阅读层＋手工纪事（档案 Markdown）；AI 画像与私密聊天导入移出本 change。",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-012",
+      "title": "公共能力 A/B 的建设方式",
+      "question": "统一反馈协议与领域事件/文件监听是先作为独立阶段建设，还是随功能按需提炼？",
+      "depends_on": [
+        "D-003",
+        "D-009"
+      ],
+      "recommendation": "按需提炼：出现两个真实消费者才进 shared/host，不设独立 P1/P2 基建阶段。",
+      "status": "answered",
+      "round": 2,
+      "answer": "做统一基建：统一操作反馈协议、领域事件、文件变化适配作为独立阶段先行建设，供后续功能复用。",
+      "log_ref": "LOG-012"
+    },
+    {
+      "id": "D-013",
+      "title": "原型与复刻深度",
+      "question": "UI 是否经 P 原型阶段，候选怎么出？",
+      "depends_on": [
+        "D-006",
+        "D-008",
+        "D-009"
+      ],
+      "recommendation": "每个功能出 1 个候选：直接以 bz 最新 prototypes/ 为蓝本、用虎虎生产组件与语义 token 复刻，用户批准后实现。",
+      "status": "answered",
+      "round": 2,
+      "answer": "每个功能直接以 bz 最新 prototypes/ 为蓝本，用虎虎生产组件与语义 token 复刻，只出 1 个候选；用户预先批准，无需逐个审批。",
+      "log_ref": "LOG-013"
+    },
+    {
+      "id": "D-014",
+      "title": "体检首期范围",
+      "question": "health 模块首期做到哪里？",
+      "depends_on": [
+        "D-005"
+      ],
+      "recommendation": "新增 health 模块，只读扫描 archives/归物/周期日记/safe 元信息；修复（P9）移出本 change。",
+      "status": "answered",
+      "round": 2,
+      "answer": "新增 health 模块：只读扫描＋有限修复（按 #17 §12.3 的有限修复流程，修复回到数据 owner）。",
+      "log_ref": "LOG-014"
+    },
+    {
+      "id": "D-015",
+      "title": "实施优先级",
+      "question": "五个功能的先后顺序？",
+      "depends_on": [],
+      "recommendation": "密码本 UX → 归物本 → 书页日记 → 人物阅读层 → 只读体检。",
+      "status": "answered",
+      "round": 2,
+      "answer": "密码本体验 → 归物本 → 书页日记 → 人物阅读层 → 体检（公共基建先行）。",
+      "log_ref": "LOG-015"
+    },
+    {
+      "id": "D-016",
+      "title": "私密加密集合",
+      "question": "是否在本 change 新建 .huhu/archives/private/ 加密集合？",
+      "depends_on": [
+        "D-011"
+      ],
+      "recommendation": "不新建；随 AI/私密导入一并移出。",
+      "status": "answered",
+      "round": 2,
+      "answer": "不新建私密加密集合。",
+      "log_ref": "LOG-016"
+    },
+    {
+      "id": "D-017",
+      "title": "通知泛化",
+      "question": "notifications 的 target/presentation 是否泛化以接收非自动化结果？",
+      "depends_on": [
+        "D-012",
+        "D-014"
+      ],
+      "recommendation": "仅当体检或长任务确需持久回看时再泛化。",
+      "status": "answered",
+      "round": 2,
+      "answer": "泛化：通知是统一基础设施，target/presentation 与渠道均可扩展，便于后续接入微信、短信、邮件、飞书等外部渠道。",
+      "log_ref": "LOG-017"
+    },
+    {
+      "id": "D-018",
+      "title": "书页翻页引擎",
+      "question": "是否像 bz ADR-0230 那样内嵌 StPageFlip（page-flip，MIT）？",
+      "depends_on": [
+        "D-013"
+      ],
+      "recommendation": "待原型阶段比较后决定。",
+      "status": "answered",
+      "round": 2,
+      "answer": "可内嵌翻页库（StPageFlip / page-flip，MIT），按需加载并具无动画回退。",
+      "log_ref": "LOG-018"
+    },
+    {
+      "id": "D-019",
+      "title": "密码本收藏表达",
+      "question": "收藏用加密条目新字段还是复用标签？",
+      "depends_on": [
+        "D-013"
+      ],
+      "recommendation": "待原型阶段决定。",
+      "status": "answered",
+      "round": 2,
+      "answer": "收藏用现有标签表达，不改加密条目 schema。",
+      "log_ref": "LOG-019"
+    },
+    {
+      "id": "D-020",
+      "title": "通知渠道扩展点",
+      "question": "渠道 ID 当前是 shared/automation 中的封闭联合 'in-app'|'system'，如何支持后续外部渠道？",
+      "depends_on": [
+        "D-017"
+      ],
+      "recommendation": "渠道改为 notifications 拥有的可贡献扩展点；本 change 只迁移现有两个渠道，不实现外部渠道。",
+      "status": "answered",
+      "round": 2,
+      "answer": "渠道由 notifications api 定义为可注册的渠道贡献点（沿用 ContributionPoint 机制），in-app/system 作为首批实现；微信、短信、邮件、飞书等外部渠道留待后续 change。",
+      "log_ref": "LOG-020"
+    }
+  ]
+}
