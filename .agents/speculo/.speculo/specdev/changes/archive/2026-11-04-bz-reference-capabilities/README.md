@@ -19,13 +19,13 @@ Evidence-Basis: AGENTS.md「SpecDev evidence 入库规则」（evidence 只入�
 - [x] G 访谈：D-001–D-020 已回答，用户 2026-11-04 确认共识（LOG-021）
 - [x] S 规格：`<Path>{roots.state}/specdev/changes/{change}/spec.md</Path>`（status ready，ready_for_tickets true）
 - [x] Tickets（20 张；UI 票 8 张待 G-DESIGN）与 Map：`<Path>{roots.state}/specdev/changes/{change}/tickets-map.md</Path>`
-- [x] Goal Plan（plan 模式，未授权实施）：`<Path>{roots.state}/specdev/changes/{change}/goal-plan.md</Path>`
+- [x] Goal Plan（已执行完成）：`<Path>{roots.state}/specdev/changes/{change}/goal-plan.md</Path>`
 - [x] G-DESIGN：P 原型 UI-001（单包九页）ready；change DESIGN revision 2 approved，digest 1e3b5ef5fb4c6ec033ff6a1d9f164a7f3692cc679b71e2d54771c1ea46082c00（批准 approval-r2.md 引用 LOG-013/LOG-022；派遣 sessions/20261104T095541Z/005-design-gate-r2）
 - [x] 实施与 G-FINAL：20 张 Ticket done；整体审查 pass，完成依据 `<Path>{roots.state}/specdev/changes/{change}/evidence/final-review.md</Path>`（逐 AC 映射、门禁命令与退出码、残余风险）
 
 ## 接续
 
-本 change 已完成（2026-11-05，Lead herdr:w3:p1/claude；T-04 规模验收经 plan_revision 15 补证后再次关闭）。完成依据：`<Path>{roots.state}/specdev/changes/{change}/evidence/final-review.md</Path>` 与各票 `<Path>{roots.state}/specdev/changes/{change}/evidence/</Path>`。未提交、未推送、未发版；真实 Obsidian 宿主验收由用户执行。下一步（需用户授权）：提交与/或经 `<Path>{roots.workflows}/specdev/specdev-a-archive-and-consolidate/SKILL.md</Path>` 归档。
+本 change 已完成（2026-11-05，Lead herdr:w3:p1/claude；T-04 规模验收经 plan_revision 15 补证后再次关闭）。完成依据：`<Path>{roots.state}/specdev/changes/{change}/evidence/final-review.md</Path>` 与各票 `<Path>{roots.state}/specdev/changes/{change}/evidence/</Path>`。已于 2026-11-05 提交并推送至 origin/dev（457d63b、529d662；回执 sessions/20261104T095541Z/108-commit-push/REPORT.md），未发版；真实 Obsidian 宿主验收由用户执行。用户随后明确授权归档，按 109-archive/TASK.md 执行 archive-single；归档结果沿下方唯一 Receipt 导航回读。
 
 <a id="execution-context"></a>
 ## Execution Context
@@ -46,3 +46,7 @@ Evidence-Basis: AGENTS.md「SpecDev evidence 入库规则」（evidence 只入�
 ## 实施约束
 
 遵守项目目录与开发规范（AGENTS.md、`.agents/skills/dev/SKILL.md`、`.agents/skills/ui/SKILL.md`）：模块经 `api.ts` 互访、`manifest → module → core/platform/services/ui` 分层、React 19＋Tailwind 4＋shadcn/Radix 设计系统、`t()` 双语文案；优先复用现有组件、服务与 bz 实现（LOG-009、ADR-003）。
+
+## Archive Receipt
+
+Receipt: change:sessions/20261104T095541Z/109-archive/REPORT.md#archive-2026-11-04-bz-reference-capabilities

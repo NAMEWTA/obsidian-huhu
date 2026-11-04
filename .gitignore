@@ -72,3 +72,6 @@ terminal-artifacts/
 !/.agents/speculo/.speculo/specdev/changes/*/evidence/T-[0-9][0-9][0-9].md
 !/.agents/speculo/.speculo/specdev/changes/*/evidence/report*.md
 !/.agents/speculo/.speculo/specdev/changes/*/prototypes/*/evidence/approval-*.md
+
+# Preserve this archived change's already tracked verification conclusions.
+!/.agents/speculo/.speculo/specdev/changes/archive/2026-11-04-bz-reference-capabilities/evidence/T-[0-9][0-9].md

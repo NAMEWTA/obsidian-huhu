@@ -208,11 +208,11 @@ DEC-001：通知协议在 T-05 一票内完成扩展、迁移自动化消费者�
 
 ### Current Status
 
-已完成（2026-11-05）。G-BASE、G-DESIGN、G-FEATURE、G-FINAL 全部关闭：20 张 Ticket done，各票结论 Evidence 在 `<Path>{roots.state}/specdev/changes/{change}/evidence/</Path>`；G-FINAL 独立整体审查（sessions 101→103→105，herdr:rev1）结论 pass，整体结论见 `<Path>{roots.state}/specdev/changes/{change}/evidence/final-review.md</Path>`。未提交、未推送、未发版（not-requested）。
+已完成（2026-11-05）。G-BASE、G-DESIGN、G-FEATURE、G-FINAL 全部关闭：20 张 Ticket done，各票结论 Evidence 在 `<Path>{roots.state}/specdev/changes/{change}/evidence/</Path>`；G-FINAL 独立整体审查（sessions 101→103→105，herdr:rev1）结论 pass，整体结论见 `<Path>{roots.state}/specdev/changes/{change}/evidence/final-review.md</Path>`。2026-11-05 已按后续授权提交并推送（457d63b、529d662；108-commit-push/REPORT.md）；未发版。后续归档授权与执行见 109-archive/TASK.md 和 README Receipt。
 
 ### Pending Decisions and Blockers
 
-- 实施授权：未给出（本次只要求生成文件），因此 `ready_for_execution: true`。
+- 无实施阻塞：本计划已执行完成，`ready_for_execution: false` 表示不再调度；下列计划质量审查及前文授权矩阵为建票时历史快照，后续授权以实际用户请求和 108/109 TASK 为准。
 - 计划质量审查（plan-quality-review，2026-11-04）：背景与边界 pass（Spec IN/REUSE/OUT 与基线复核）；变更影响 pass（各票 expected/read_only 列消费者）；研究与复用 pass（bz 固定 SHA 与具体路径在使用处）；Skill 方法 pass（dev/ui required 绑定含 sha256）；执行计划 pass（DEC-001/002 顺序）；控制图 pass（DAG 无环，写集重叠均有依赖边，shared 归 Lead）；验收与数量 pass（AC 全覆盖，用户未指定数量）；权限 pass（实施未授权）；恢复 pass（固定基线与 Gate 恢复）。UI 票按设计门暂不 Ready，非缺陷。
 
 ### Resume Protocol
