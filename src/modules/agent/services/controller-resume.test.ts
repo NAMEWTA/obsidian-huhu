@@ -13,10 +13,6 @@ vi.mock('../platform/desktop/agents/accounts', async (importOriginal) => ({
 		}),
 	),
 }));
-vi.mock('../platform/desktop/agents/legacy-default', async (importOriginal) => ({
-	...(await importOriginal<typeof import('../platform/desktop/agents/legacy-default')>()),
-	inLegacyDefaultAccount: vi.fn(async () => false),
-}));
 vi.mock('../../../host/obsidian/storage/device-id', () => ({
 	deviceId: () => 'device',
 	vaultIdentity: () => ({ vaultId: 'vault', deviceId: 'device' }),

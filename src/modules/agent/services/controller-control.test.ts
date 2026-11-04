@@ -23,11 +23,6 @@ vi.mock('../platform/desktop/detection/shell-path', () => ({
 	loginShellPath: async () => '',
 }));
 vi.mock('../platform/desktop/detection/probe', () => ({ probeAgents: () => ({}) }));
-vi.mock('../platform/desktop/agents/legacy-default', () => ({
-	legacyDefaultAccountsToAdopt: async () => [],
-	markLegacyDefaultAdopted: async () => {},
-	inLegacyDefaultAccount: async () => false,
-}));
 vi.mock('../platform/desktop/install/exec', async (importOriginal) => ({
 	...(await importOriginal<object>()),
 	fetchNpmLatest: async () => undefined,

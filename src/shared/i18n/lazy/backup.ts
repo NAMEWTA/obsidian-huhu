@@ -67,7 +67,6 @@ export const messages = {
 		'agent.backup.exclusion.yolo-acknowledgement': 'Your YOLO confirmation (asked again on first use)',
 		'agent.backup.exclusion.machine-paths': 'Program, shell and skill folder paths of this machine',
 		'agent.backup.exclusion.directory-grants': 'Folder permissions outside the vault (authorize them again)',
-		'agent.backup.exclusion.legacy-stats': 'The retired statistics file',
 		'agent.backup.exclusion.sources-notes': 'The notes and files that automations point to',
 
 		'agent.backup.note.definition-extra-files': '{count} extra files next to definitions were left out.',
@@ -229,7 +228,6 @@ export const messages = {
 		'agent.backup.exclusion.yolo-acknowledgement': '你的 YOLO 确认（首次使用时重新询问）',
 		'agent.backup.exclusion.machine-paths': '本机的程序、Shell 与技能目录路径',
 		'agent.backup.exclusion.directory-grants': '仓库外目录的授权（需要重新授权）',
-		'agent.backup.exclusion.legacy-stats': '已退役的统计文件',
 		'agent.backup.exclusion.sources-notes': '自动化所指向的笔记与文件',
 
 		'agent.backup.note.definition-extra-files': '定义旁的 {count} 个额外文件未包含。',

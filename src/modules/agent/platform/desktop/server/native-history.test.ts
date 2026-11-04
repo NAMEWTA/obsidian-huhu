@@ -12,7 +12,7 @@ import { normalizeAgentSettings } from '../../../core/launch/defaults.ts';
 import type { HistoryPage } from './agent-data-client.ts';
 import { nativeVaultStorage } from '../../../../../host/desktop/vault-storage';
 import { deviceId } from '../../../../../host/obsidian/storage/device-id';
-import { LEGACY_VAULT_ACCOUNT, accountEnv } from '../agents/accounts';
+import { accountEnv } from '../agents/accounts';
 import { getAgent } from '../../../core/launch/catalog';
 import { t } from '../../../../../shared/i18n';
 

@@ -3,9 +3,11 @@ import type { App } from 'obsidian';
 import { expect, test, vi } from 'vitest';
 import type { AgentSessionRef } from '../../../shared/automation/types';
 import { TerminalAutomationRuntime, type AutomationRuntimeHost } from './agent-runtime';
+import { vaultIdentity } from '../../../host/obsidian/storage/device-id';
 import { initializeTestDevice } from '../../../../test/fixtures/vault-storage';
 
-const file = '.huhu/terminal-agent/00000000-0000-0000-0000-000000000000/automation-sessions.json';
+let file = '';
+let device = '';
 const row = (id: string, at: number): AgentSessionRef => ({
 	agentId: 'codex',
 	sessionId: id,
@@ -31,9 +33,10 @@ async function fixture() {
 	const app = {
 		vault: { adapter },
 		workspace: { containerEl: { win: {} } },
-		loadLocalStorage: () => '00000000-0000-0000-0000-000000000000',
 	} as unknown as App;
 	await initializeTestDevice(app);
+	device = vaultIdentity(app).deviceId;
+	file = `.huhu/terminal-agent/${device}/automation-sessions.json`;
 	const create = () => new TerminalAutomationRuntime({ app } as AutomationRuntimeHost);
 	return { files, adapter, create };
 }
@@ -250,7 +253,7 @@ test('reused automation submits prompt and Enter as one admitted operation and r
 			},
 		};
 		host.remove = () => undefined;
-		const env = await accountEnv(getAgent('codex'), '', root, '00000000-0000-0000-0000-000000000000');
+		const env = await accountEnv(getAgent('codex'), '', root, device);
 		const action = {
 			kind: 'agent' as const,
 			agentId: 'codex',

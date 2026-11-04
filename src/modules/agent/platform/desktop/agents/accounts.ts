@@ -9,12 +9,6 @@ import { checkOwnedDirectory, secureOwnedDirectory } from '../../../../../host/d
 import { t } from '../../../../../shared/i18n/index';
 import { SYSTEM_ACCOUNT_SUFFIX, isSystemAccount } from './system-homes';
 
-/**
- * Name of the managed account that adopts the vault's former default account. Its directory is the old `default`
- * one, so credentials and history stay where they were. The empty name now means the system account.
- */
-export const LEGACY_VAULT_ACCOUNT = 'vault-account-legacy';
-
 function normalizedName(value: string): string {
 	try {
 		return accountName(value);
@@ -45,7 +39,7 @@ export const ISOLATED_CREDENTIAL_ENV: Readonly<Record<string, string>> = Object.
 export function accountConfigDir(kind: AgentId | 'claude', accountId: string, accountRoot: string): string {
 	const name = normalizedName(accountId);
 	const id =
-		name === '' || name === LEGACY_VAULT_ACCOUNT ? 'default' : createHash('sha256').update(name).digest('hex');
+		name === '' ? 'default' : createHash('sha256').update(name).digest('hex');
 	if (!accountRoot) throw new Error(t('agent.accountInvalid'));
 	return path.join(accountRoot, 'accounts', kind === 'claude' ? 'claude-code' : kind, id, 'home');
 }
@@ -157,16 +151,6 @@ export async function resolveAccountEnv(
 		throw new Error(t('agent.accountScopeMismatch'));
 	if (isSystemAccount(saved)) return systemAccountEnv(agent, vault, device);
 	return managedAccountEnv(agent, saved.HUHU_ACCOUNT_NAME, vault, device);
-}
-
-/** History keys for the former default directory stay what they were, so sessions indexed before the change keep their identity. */
-export async function historyAccountEnv(
-	agent: AgentCatalogEntry,
-	env: Record<string, string>,
-	vault: string,
-	device: string,
-): Promise<Record<string, string>> {
-	return env.HUHU_ACCOUNT_NAME === LEGACY_VAULT_ACCOUNT ? managedAccountEnv(agent, '', vault, device) : env;
 }
 
 export async function restoredAccountReference(

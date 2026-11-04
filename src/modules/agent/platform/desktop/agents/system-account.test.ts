@@ -3,8 +3,7 @@ import { mkdtemp, mkdir, readdir, readFile, realpath, rm, stat, symlink, writeFi
 import { tmpdir } from 'node:os';
 import { afterEach, expect, test, vi } from 'vitest';
 import { AGENT_CATALOG, getAgent } from '../../../core/launch/catalog';
-import { LEGACY_VAULT_ACCOUNT, accountEnv, managedAccountEnv } from './accounts';
-import { inLegacyDefaultAccount, legacyDefaultAccountsToAdopt, markLegacyDefaultAdopted } from './legacy-default';
+import { accountEnv, managedAccountEnv } from './accounts';
 import { checkAccountTranscript } from './transcript';
 
 afterEach(() => vi.unstubAllEnvs());
@@ -15,28 +14,6 @@ async function fixture() {
 	vi.stubEnv('HOME', home); vi.stubEnv('USERPROFILE', home); for (const key of homes) vi.stubEnv(key, '');
 	return { root, vault, home };
 }
-
-test('a former default account that holds a login or history is adopted once as a named managed account, with nothing moved', async () => {
-	const { root, vault } = await fixture();
-	try {
-		const codex = getAgent('codex'), claude = getAgent('claude-code');
-		// An empty default directory (created by every old launch) is not worth a list entry.
-		await managedAccountEnv(claude, '', vault, 'fixture-device');
-		const used = await managedAccountEnv(codex, '', vault, 'fixture-device');
-		await writeFile(path.join(used.CODEX_HOME!, 'auth.json'), '{"token":"fixture"}');
-		const sessions = await managedAccountEnv(getAgent('grok'), '', vault, 'fixture-device');
-		await mkdir(path.join(sessions.GROK_HOME!, 'sessions', 'one'), { recursive: true });
-		expect(await legacyDefaultAccountsToAdopt(vault, 'fixture-device')).toEqual(['codex', 'grok']);
-		// Adoption selects the same directory under the reserved name and leaves its files in place.
-		const adopted = await accountEnv(codex, LEGACY_VAULT_ACCOUNT, vault, 'fixture-device');
-		expect(adopted.CODEX_HOME).toBe(used.CODEX_HOME);
-		expect(await readFile(path.join(adopted.CODEX_HOME!, 'auth.json'), 'utf8')).toBe('{"token":"fixture"}');
-		await markLegacyDefaultAdopted(vault, 'fixture-device');
-		expect(await legacyDefaultAccountsToAdopt(vault, 'fixture-device')).toEqual([]);
-		expect(await inLegacyDefaultAccount(vault, 'fixture-device', 'codex', path.join(used.CODEX_HOME!, 'sessions', 'a.jsonl'))).toBe(true);
-		expect(await inLegacyDefaultAccount(vault, 'fixture-device', 'codex', path.join(root, 'elsewhere.jsonl'))).toBe(false);
-	} finally { await rm(root, { recursive: true, force: true }); }
-}, 30000);
 
 test('only a provider session log is a readable system transcript; login and settings files are refused', async () => {
 	const { root, vault, home } = await fixture();

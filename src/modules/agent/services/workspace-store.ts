@@ -1,6 +1,4 @@
-import { createStore } from 'zustand/vanilla';
-import { JsonStore } from '../../../shared/json-store';
-import type { TextStorage } from '../../../shared/storage/ports';
+import { createStore, type StoreApi } from 'zustand/vanilla';
 import { emptyWorkspace, type WorkspaceState } from '../core/workspace/model';
 import { normalizeWorkspace } from '../core/workspace/ops';
 import { materializePaneIdentities, paneLeafCount, assertPaneCapacity, PaneCommandError } from '../core/workspace/pane-identity';
@@ -33,7 +31,11 @@ export interface WorkspaceLayoutEditResult {
 	readonly revision: number;
 	readonly error?: unknown;
 }
-export type WorkspaceStore = ReturnType<typeof createWorkspaceStore> & {
+export type WorkspaceStore = {
+	store: StoreApi<WorkspaceState>;
+	ready: Promise<void>;
+	flush(): Promise<void>;
+	dispose(): Promise<void>;
 	/** Pure snapshot; an uncached Space is never adopted into the draft map. */
 	readLayout?(spaceId?: string): Promise<WorkspaceLayoutSnapshot>;
 	/** Same pure projection after readiness, allowing exact capture before an admission await. */
@@ -51,95 +53,6 @@ export type WorkspaceStore = ReturnType<typeof createWorkspaceStore> & {
 	/** After the Space records were reloaded from disk: drop every cached draft/baseline and re-derive from them. */
 	reloadFromSpaces?(): void;
 };
-/** The v1 `workspace.json` writer was retired by the legacy import; writing it again would fork the layout. */
-export class LegacyWriterRefused extends Error {
-	constructor(readonly marker: string) {
-		super('legacy-writer-refused');
-		this.name = 'LegacyWriterRefused';
-	}
-}
-export function createWorkspaceStore(
-	adapter: TextStorage,
-	device: string,
-	clock: Pick<Window, 'setTimeout' | 'clearTimeout'>,
-	report: (error: unknown) => void,
-) {
-	const store = createStore<WorkspaceState>(() => emptyWorkspace());
-	const disk = new JsonStore<WorkspaceState>(
-		adapter,
-		`.huhu/terminal-agent/${device}/workspace.json`,
-		(v): v is WorkspaceState => !!v && typeof v === 'object' && (v as { version?: unknown }).version === 1,
-	);
-	let timer: number | undefined,
-		disposed = false,
-		loaded = false,
-		dirty = false,
-		refused = false;
-	let baseline = emptyWorkspace(),
-		pending = Promise.resolve();
-	const marker = `.huhu/terminal-agent/${device}/legacy-import.json`;
-	const flush = (): Promise<void> => {
-		if (timer !== undefined) clock.clearTimeout(timer);
-		timer = undefined;
-		pending = pending.then(async () => {
-			if (!loaded || !dirty) return;
-			dirty = false;
-			const snapshot = store.getState();
-			try {
-				// Cutover may happen while this writer is open: re-check before every write, fail visibly, write nothing.
-				if (refused || (await adapter.exists(marker))) {
-					refused = true;
-					throw new LegacyWriterRefused(marker);
-				}
-				const merged = await disk.commit({ base: baseline, value: snapshot });
-				baseline = merged;
-				// Reconcile external changes only when no newer local edit would be lost.
-				if (store.getState() === snapshot && JSON.stringify(merged) !== JSON.stringify(snapshot))
-					store.setState(merged, true);
-			} catch (error) {
-				dirty = true;
-				report(error);
-			}
-		});
-		return pending;
-	};
-	const ready = adapter
-		.exists(marker)
-		.then((cutover) => {
-			if (!cutover) return disk.load(emptyWorkspace());
-			refused = true;
-			throw new LegacyWriterRefused(marker);
-		})
-		.then((value) => {
-			baseline = value;
-			if (disposed) return;
-			store.setState(normalizeWorkspace(value), true);
-			loaded = true;
-		})
-		.catch(report);
-	const unsubscribe = store.subscribe(() => {
-		if (!loaded || disposed) return;
-		dirty = true;
-		if (timer !== undefined) clock.clearTimeout(timer);
-		timer = clock.setTimeout(() => {
-			timer = undefined;
-			void flush();
-		}, 500);
-	});
-	return {
-		store,
-		ready,
-		flush,
-		async dispose() {
-			disposed = true;
-			unsubscribe();
-			await ready;
-			await flush();
-		},
-	};
-}
-
-/** New workbench layouts never flow through the retained v1 writer. */
 export function createSpaceWorkspaceStore(
 	spaces: SpaceService,
 	clock: Pick<Window, 'setTimeout' | 'clearTimeout'>,

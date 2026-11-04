@@ -83,8 +83,6 @@ Ctrl/Cmd+J 打开跳转面板，可搜索近期标签、最近关闭和历史，
 
 从桌面图标启动 Obsidian 时，HUHU 会用 `$SHELL -ilc` 恢复 PATH 和 shell 配置里导出的 CLI 目录变量（有超时；Windows 跳过）。
 
-旧插件账号目录和 helper 必须完成一次 Obsidian 主进程冷重启后才迁移。旧有损目录名可能碰撞时，需明确选择旧目录或新建身份，不猜测归属。来源先复制/校验再切换，恢复副本保留在库内；重启不会把活跃凭据退回复制阶段。登录状态跨设备不保证可移植，允许重新认证。
-
 ## 原生历史
 
 右侧抽屉的标题是“当前 Vault 历史”，只列当前 Vault 的投影，没有账号总历史页面，也没有“全部”开关。投影由两类记录组成：工作目录经真实路径解析后位于当前库内的会话，以及由本 Vault 的 HUHU 会话启动的会话（包含已归档 Space 的会话，其工作目录可以在库外的已授权目录）。其他库的会话和与本库无关的库外会话既不进入索引，也不显示或预览；索引中不再满足这两类条件的行会在下次扫描时清除。库外准入使用 HUHU 会话记录的完整 Provider、账号命名空间、设备、原生会话 ID 和精确来源引用；来源不完整时不扩大读取范围。
@@ -135,20 +133,18 @@ token 来自原生日志。输入包含缓存读写，缓存数字是输入中�
 - 新会话先在所属 Space 提交 Session 记录，再启动进程；保存失败时不启动（`spaceSaveFailed`）。进程使用 Space 的已授权目录：请求的目录为空或为整库根时取 Space 目录，更窄的目录必须位于 Space 内，其余拒绝。
 - 投递到已有会话（`existing`）不带 Space：所属 Space 由会话的稳定 ID 决定，输入不能改变归属；同一 invocationId 携带不同的 Space 按原冲突语义拒绝，旧的回执和请求原样保留，不为补 Space 而改写或重放。
 
-看板“快捷操作”中的智能体项目目前不保存 Space，每次都打开选择器。旧的看板按钮和快捷命令没有 Space 时按“每次询问”处理；旧的自动化定义没有 Space 时仍可读取，但需要先在编辑器选择 Space 才能保存和运行。这些旧数据不会被自动迁移或补值。技能按钮和快捷按钮可在配置中保存所属 Space，默认“按下时询问”；保存的 Space 失效时投递明确失败并要求重新选择，不会改到别的 Space。
+看板“快捷操作”中的智能体项目目前不保存 Space，每次都打开选择器。看板按钮和快捷命令没有 Space 时按“每次询问”处理；自动化定义没有 Space 时仍可读取，但需要先在编辑器选择 Space 才能保存和运行，不会自动补值。技能按钮和快捷按钮可在配置中保存所属 Space，默认“按下时询问”；保存的 Space 失效时投递明确失败并要求重新选择，不会改到别的 Space。
 
-## 旧工作台迁移与恢复协议
+## 恢复协议
 
-首次启动新版时的一次性导入、报告位置和回退步骤见[数据与恢复](data.md)的旧工作台迁移一节；这里只记工程合同。
+恢复事务的用户侧说明见[数据与恢复](data.md)；这里只记工程合同。
 
-- 顺序：`recoverPending`（启动前恢复）→ 读取设置 → 一次性导入 → 模块启动。导入只增不删：来源与被替换文件先写入可回读的恢复副本并核对摘要，再写日志，再替换，再写 `legacy-import.json`。
+- 顺序：`recoverPending`（启动前恢复）→ 读取设置 → 模块启动。替换前，来源与被替换文件先写入可回读的恢复副本并核对摘要，再写日志，再替换。
 - 日志：`journal.a/b.json` 交替写入，序号最高的有效日志为准，撕裂的写入只会退回上一阶段。阶段 `prepared → committing → committed → done`，回退为 `rolling-back → rolled-back`。启动恢复规则：`committed` 向前，其余向后；已确认无改动的目标不会被覆盖。
-- Owner 协议（`RecoveryOwner`，T-16 复用）：`owns(path)` 白名单；`preflight` 列出需用户先停止的工作（返回 BUSY，不代为停止）；`quiesce` 关闭全部入口并使后续写入明确失败；`drain` 严格排空，写入失败必须 reject，不能用吞错的 flush；`adopt` 在文件替换后重建内存、写队列、`JsonStore` 基线和设置 namespace 缓存；`release` 幂等。所有 owner 先全部关门并排空，才取共同快照。
-- 生产调用方是设置页的“备份”标签（见下节业务备份与恢复）；`legacy` 一次性导入仍在启动前运行。下列实时 owner 已注册到应用的 `recovery` 主机（模块上下文的 `recovery` 字段）：设置（仅重载指定 namespace，其余 namespace 原样）、Space 记录与布局（`agent-workbench-records`，由 SharedWorkspaceOwner 注册）、历史标注、自有统计、自动化会话登记，以及只负责列出运行中终端/智能体的 `agent-running-work`（有运行中工作时返回 BUSY，不代为停止）。启动前导入时进程内尚无这些 writer，所以只需要跨窗口 writer 监听。
+- Owner 协议（`RecoveryOwner`）：`owns(path)` 白名单；`preflight` 列出需用户先停止的工作（返回 BUSY，不代为停止）；`quiesce` 关闭全部入口并使后续写入明确失败；`drain` 严格排空，写入失败必须 reject，不能用吞错的 flush；`adopt` 在文件替换后重建内存、写队列、`JsonStore` 基线和设置 namespace 缓存；`release` 幂等。所有 owner 先全部关门并排空，才取共同快照。
+- 生产调用方是设置页的“备份”标签（见下节业务备份与恢复）。下列实时 owner 已注册到应用的 `recovery` 主机（模块上下文的 `recovery` 字段）：设置（仅重载指定 namespace，其余 namespace 原样）、Space 记录与布局（`agent-workbench-records`，由 SharedWorkspaceOwner 注册）、历史标注、自有统计、自动化会话登记，以及只负责列出运行中终端/智能体的 `agent-running-work`（有运行中工作时返回 BUSY，不代为停止）。
 - Space owner 语义：`quiesce` 后所有新写入（SpaceService 的创建/会话/收件箱/布局保存）立即以 `SOURCE_UNAVAILABLE / recovery-busy`（BUSY）失败；界面直接编辑被撤销并报告，已接纳的活动提示只暂存；`drain` 严格保存脏草稿并排空队列，任一失败即 reject 并中止、释放；`adopt` 从磁盘重读记录，丢弃缓存草稿和 JsonStore 基线，之后第一次写入不会带回旧内存状态；`release` 重新开放并继续泵出暂存提示。
 - 共享工作区 owner 在恢复操作进行或恢复失败时不会被创建（`settled()`），以免模块读到半替换的文件。
-- 旧 `createWorkspaceStore`（v1 写入口）在 `legacy-import.json` 存在时拒绝加载与写入，已打开的实例在每次写入前复查。
-- 旧布局里的终端标签保留原有 `sessionIds` 与分屏结构，不创建 Session 记录；它们在导入空间中如何呈现需要真实宿主验收。
 - 提交后（目录已被替换）任何日志写入失败都会保持恢复门并停止启动，不重新开放 owner；下次启动依据日志向前或向后收敛，其间没有新写入被接纳。
 - `workbench-v2.json` 的恢复副本：被替换时旧文件由事务的 `<操作 ID>/old-*.txt` 保存并以摘要核对，不再另写 `.backup`；`JsonStore` 会在下一次提交时自行生成。文件原本不存在则无需副本。
 - 旧的自动化定义和快捷定义保持未绑定，导入不做任何 Space 绑定，已接纳的 invocation/receipt 不改写不重放。

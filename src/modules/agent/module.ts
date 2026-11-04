@@ -34,14 +34,6 @@ registerMessages(commonStrings);
 registerMessages(messages);
 registerMessages(nativeStrings);
 
-export type { LegacyMigrationResult } from './services/migrations/legacy-workbench';
-/** Pre-start desktop legacy import (T-15); see `services/migrations/entry.ts`. */
-export async function runStartupLegacyMigration(
-	app: App,
-	host: { readonly storage: import('../../shared/storage/recovery-contracts').RecoveryStorage; readonly gate: import('../../shared/storage/recovery-transaction').RecoveryGate },
-): Promise<import('./services/migrations/legacy-workbench').LegacyMigrationResult> {
-	return (await import('./services/migrations/entry')).runStartupLegacyMigration(app, host);
-}
 
 /** App-created owner; Agent borrows its exact SpaceService and WorkspaceStore when enabled. */
 export async function createSharedWorkspaceOwner(
@@ -220,7 +212,6 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				settings,
 				context.env.desktop,
 				() => skillManager,
-				async () => (await import('./services/migrations/entry')).loadLegacyImport(context.app),
 				async () => {
 					const recovery = context.recovery;
 					return recovery

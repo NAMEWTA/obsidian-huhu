@@ -38,7 +38,6 @@ export const EXCLUSION_CATEGORIES = [
 	'yolo-acknowledgement',
 	'machine-paths',
 	'directory-grants',
-	'legacy-stats',
 	'sources-notes',
 ] as const;
 export type ExclusionCategory = (typeof EXCLUSION_CATEGORIES)[number];

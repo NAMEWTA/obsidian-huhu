@@ -1,10 +1,11 @@
 import type { App } from 'obsidian';
 import { expect, test } from 'vitest';
+import { vaultIdentity } from '../../../../host/obsidian/storage/device-id';
 import { initializeTestDevice } from '../../../../../test/fixtures/vault-storage';
 import { NativeHistory } from './service';
 
-const device = '00000000-0000-0000-0000-000000000000';
-const file = `.huhu/terminal-agent/${device}/history.json`;
+let device = '';
+let file = '';
 const key = JSON.stringify(['codex', '', 's1']);
 
 async function fixture() {
@@ -26,9 +27,10 @@ async function fixture() {
 	const app = {
 		vault: { adapter },
 		workspace: { containerEl: { win: {} } },
-		loadLocalStorage: () => device,
 	} as unknown as App;
 	await initializeTestDevice(app);
+	device = vaultIdentity(app).deviceId;
+	file = `.huhu/terminal-agent/${device}/history.json`;
 	const history = new NativeHistory(app, {} as never, () => ({}) as never);
 	return {
 		files,

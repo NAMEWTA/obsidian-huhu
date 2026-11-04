@@ -287,7 +287,6 @@ export const messages = {
 		'agent.quick.notReady':
 			'The agent is not ready for input. Finish login or setup, then insert the quick command from the terminal menu.',
 		'agent.manage.defaultAccount': 'System account',
-		'agent.manage.legacyVaultAccount': 'Vault account (legacy)',
 		'agent.manage.systemLocation': 'Existing login · {path}',
 		'agent.manage.enabled': 'Enabled',
 		'agent.manage.disabled': 'Disabled',
@@ -611,9 +610,6 @@ export const messages = {
 			'Use an account name of up to 128 characters without control characters. Whitespace alone is invalid; leave it empty for the system account.',
 		'agent.accountScopeMismatch':
 			'This session does not match an account in the current vault. Refresh history, or migrate the old account before resuming.',
-		'agent.legacyFresh': 'Create a new identity without importing credentials',
-		'agent.legacyUse': 'Import old directory: {name}',
-		'agent.legacySelect': 'Choose credentials for {name}; old directory names may have been shortened',
 		'agent.defaultAccount': 'System account',
 		'agent.skills.heading': 'Skill discovery',
 		'agent.skills.directories': 'Additional skill directories',
@@ -1136,7 +1132,6 @@ export const messages = {
 		'agent.spaces.error.save': '空间数据保存或回读失败，请检查目录权限与剩余空间。',
 		'agent.quick.notReady': '智能体尚未就绪。请完成登录或初始化，再从终端菜单插入快捷命令。',
 		'agent.manage.defaultAccount': '系统账号',
-		'agent.manage.legacyVaultAccount': '库内账号（旧）',
 		'agent.manage.systemLocation': '已有登录 · {path}',
 		'agent.manage.enabled': '启用',
 		'agent.manage.disabled': '停用',
@@ -1454,9 +1449,6 @@ export const messages = {
 
 		'agent.accountInvalid': '账号名最多 128 个字符，不能含控制字符或只有空白；留空表示使用系统账号。',
 		'agent.accountScopeMismatch': '该会话不匹配当前库的账号。请刷新历史记录，或先迁移旧账号再恢复会话。',
-		'agent.legacyFresh': '新建身份，不导入旧凭据',
-		'agent.legacyUse': '导入旧目录：{name}',
-		'agent.legacySelect': '为 {name} 选择凭据；旧目录名可能已被缩减',
 		'agent.defaultAccount': '系统账号',
 		'agent.skills.heading': '技能发现',
 		'agent.skills.directories': '额外技能目录',

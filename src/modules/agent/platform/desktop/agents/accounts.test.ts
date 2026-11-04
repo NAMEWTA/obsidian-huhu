@@ -2,7 +2,7 @@ import path from 'node:path';
 import { realpath, mkdtemp, mkdir, symlink, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { expect, test } from 'vitest';
-import { LEGACY_VAULT_ACCOUNT, accountConfigDir, accountEnv, managedAccountEnv, resolveAccountEnv, restoredAccountReference } from './accounts';
+import { accountConfigDir, accountEnv, managedAccountEnv, resolveAccountEnv, restoredAccountReference } from './accounts';
 import { accountPaths, isSystemAccount, systemAccountPaths } from './system-homes';
 import { accountArgs } from './account-args';
 import { AGENT_CATALOG } from '../../../core/launch/catalog';
@@ -21,7 +21,7 @@ test('Chinese, punctuation and case-sensitive account names retain distinct port
 test('every provider and managed account uses the opened vault for homes, cache and temporary data', async () => {
 	const vault = await realpath(await mkdtemp(path.join(tmpdir(), 'huhu-agent-env-')));
 	try {
-		for (const agent of AGENT_CATALOG) for (const name of [LEGACY_VAULT_ACCOUNT, '测试.!']) {
+		for (const agent of AGENT_CATALOG) for (const name of ['测试.!']) {
 			const env = await accountEnv(agent, name, vault, 'fixture-device');
 			for (const key of ['HOME', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA', 'TMP', 'TEMP', 'TMPDIR', 'XDG_CONFIG_HOME', 'XDG_CACHE_HOME', 'XDG_DATA_HOME', 'XDG_STATE_HOME', 'CLAUDE_CONFIG_DIR', 'CODEX_HOME', 'GROK_HOME', 'GEMINI_CLI_HOME', 'PI_CODING_AGENT_DIR', 'PI_CODING_AGENT_SESSION_DIR', 'OPENCODE_CONFIG_DIR']) {
 				expect(env[key], agent.id + ':' + key).toBeTruthy();
@@ -86,19 +86,3 @@ test('real provider homes follow exported variables and otherwise the user home'
 	expect(accountPaths({ HUHU_ACCOUNT_ID: 'codex/system' }).CODEX_HOME).toBe(systemAccountPaths().CODEX_HOME);
 });
 
-test('the former default directory stays reachable as a named managed account and for sessions saved before the change', async () => {
-	const vault = await realpath(await mkdtemp(path.join(tmpdir(), 'huhu-agent-legacy-default-')));
-	try {
-		const agent = AGENT_CATALOG.find(row => row.id === 'codex')!;
-		const legacy = await accountEnv(agent, LEGACY_VAULT_ACCOUNT, vault, 'fixture-device');
-		const old = await managedAccountEnv(agent, '', vault, 'fixture-device');
-		expect(legacy.CODEX_HOME).toBe(old.CODEX_HOME);
-		expect(path.basename(legacy.HUHU_ACCOUNT_ROOT!)).toBe('default');
-		expect(legacy.HUHU_ACCOUNT_NAME).toBe(LEGACY_VAULT_ACCOUNT);
-		expect(old.HUHU_ACCOUNT_NAME).toBe('');
-		expect(isSystemAccount(old)).toBe(false);
-		expect((await restoredAccountReference(agent, old, vault, 'fixture-device')).env).toEqual(old);
-		expect((await restoredAccountReference(agent, legacy, vault, 'fixture-device')).env).toEqual(legacy);
-		expect(accountArgs('codex', [], legacy).some(arg => arg.includes('cli_auth_credentials_store'))).toBe(true);
-	} finally { await rm(vault, { recursive: true, force: true }); }
-}, 30000);

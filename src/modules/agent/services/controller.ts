@@ -56,13 +56,7 @@ import {
 	accountEnv,
 	absolutePluginDir,
 	restoredAccountReference,
-	LEGACY_VAULT_ACCOUNT,
 } from '../platform/desktop/agents/accounts';
-import {
-	legacyDefaultAccountsToAdopt,
-	markLegacyDefaultAdopted,
-	inLegacyDefaultAccount,
-} from '../platform/desktop/agents/legacy-default';
 import type { SystemHookResult } from '../platform/desktop/hooks/system-hooks';
 import { systemAccountLocation, systemAccountPaths } from '../platform/desktop/agents/system-homes';
 import { loginShellEnvironment } from '../platform/desktop/detection/shell-path';
@@ -529,22 +523,6 @@ export class AgentController {
 		return result;
 	}
 
-	/** The vault's former default account becomes a named managed account; the empty name now selects the system account. */
-	private async adoptLegacyDefaultAccounts(): Promise<void> {
-		const vault = this.vaultPath(),
-			device = deviceId(this.app);
-		if (!vault || !Platform.isDesktop) return;
-		const agents = await legacyDefaultAccountsToAdopt(vault, device);
-		if (agents.length)
-			await this.settings.update((draft) => {
-				for (const id of agents) {
-					draft.accounts[id] = [...new Set([...(draft.accounts[id] ?? []), LEGACY_VAULT_ACCOUNT])];
-					(draft.accountLabels[id] ??= {})[LEGACY_VAULT_ACCOUNT] ??= t('agent.manage.legacyVaultAccount');
-				}
-			});
-		await markLegacyDefaultAdopted(vault, device);
-	}
-
 	agentSettings() {
 		return launchSettings(this.settings.get(), this.agents.store.getState().detected);
 	}
@@ -826,7 +804,6 @@ export class AgentController {
 			if (this.stopped) throw new Error('The terminal module is off');
 			await loginShellEnvironment();
 			if (this.stopped) throw new Error('The terminal module is off');
-			await this.adoptLegacyDefaultAccounts();
 			await this.agents.refresh();
 			// Space lists (choices, `has`) must not be read before the store has loaded, or a valid Space looks missing.
 			await this.spaces.ready.catch(() => undefined);
@@ -1219,7 +1196,7 @@ export class AgentController {
 	}
 
 	async addAccount(id: AgentId, name: string) {
-		if (!name.trim() || name === LEGACY_VAULT_ACCOUNT) throw new Error(t('agent.accountInvalid'));
+		if (!name.trim()) throw new Error(t('agent.accountInvalid'));
 		await accountEnv(getAgent(id), name, this.vaultPath() ?? '', deviceId(this.app));
 		await this.settings.update((d) => {
 			d.accounts[id] = [...new Set([...(d.accounts[id] ?? []), name])];
@@ -1423,14 +1400,7 @@ export class AgentController {
 		if (!info.agentId || !info.nativeSessionId) throw new Error(t('agent.sessionMissing'));
 		const vault = this.vaultPath();
 		if (!vault) throw new Error(t('agent.vaultMissing'));
-		let accountId = info.accountId ?? '';
-		// A session saved while the vault default account existed resumes in that directory.
-		if (
-			accountId === '' &&
-			info.transcriptPath &&
-			(await inLegacyDefaultAccount(vault, deviceId(this.app), info.agentId, info.transcriptPath))
-		)
-			accountId = LEGACY_VAULT_ACCOUNT;
+		const accountId = info.accountId ?? '';
 		const env = await accountEnv(getAgent(info.agentId), accountId, vault, deviceId(this.app), false);
 		let transcriptPath = info.transcriptPath;
 		if (!transcriptPath) {

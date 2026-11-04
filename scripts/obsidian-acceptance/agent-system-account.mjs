@@ -52,9 +52,7 @@ try {
 	const identity = JSON.parse(await fs.readFile(path.join(vault, '.huhu/config/identity.json'), 'utf8')), device = Object.keys(identity.devices)[0];
 	const agents = path.join(vault, '.huhu/agents', device);
 	await runtime.stop();
-	// The first start found nothing to adopt and recorded that; this run plants the old default account afterwards.
-	await fs.rm(path.join(agents, 'default-account-adopted'), { force: true });
-	// The machine already has a Codex login, a Claude settings file with a user hook, a session, and the vault has an old default account.
+	// The machine already has a Codex login, a Claude settings file with a user hook, a session.
 	await fs.mkdir(path.join(home, '.codex/sessions/2026/01/01'), { recursive: true });
 	await fs.mkdir(path.join(home, '.claude'), { recursive: true });
 	await fs.writeFile(path.join(home, '.codex/auth.json'), '{"fixture":"system-login"}');
@@ -62,8 +60,6 @@ try {
 		[JSON.stringify({ type: 'session_meta', payload: { id: 'system-session-1', cwd: vault } }), JSON.stringify({ type: 'response_item', payload: { type: 'message', role: 'user', content: [{ text: 'hello from the system home' }] } })].join('\n') + '\n');
 	const userSettings = { theme: 'keep', hooks: { Stop: [{ hooks: [{ type: 'command', command: 'echo keep-user-hook' }] }] } };
 	await fs.writeFile(path.join(home, '.claude/settings.json'), JSON.stringify(userSettings));
-	await fs.mkdir(path.join(agents, 'accounts/codex/default/home/.codex'), { recursive: true });
-	await fs.writeFile(path.join(agents, 'accounts/codex/default/home/.codex/auth.json'), '{"fixture":"old-vault-login"}');
 	await runtime.restart(); c = runtime.connection; await page();
 	await c.evaluate('ac.agents.refresh(true).then(()=>true)');
 	check('cli-found-through-login-shell-path', (await c.evaluate('ac.agents.store.getState().detected.codex')) === wrapper, await c.evaluate('ac.agents.store.getState().detected'));
@@ -103,19 +99,13 @@ try {
 	check('managed-has-no-system-login', managed.auth === null, managed.auth);
 	check('managed-clears-api-key', managed.env.OPENAI_API_KEY === '', managed.env);
 	check('managed-keeps-storage-override', managed.argv.join(' ').includes('cli_auth_credentials_store'), managed.argv);
-	// 4. Migration: the old default account became a named managed account and kept its files.
-	const accounts = await c.evaluate('ac.settings.get().accounts.codex'), labels = await c.evaluate('ac.settings.get().accountLabels.codex');
-	check('legacy-default-registered', Array.isArray(accounts) && accounts.includes('vault-account-legacy') && labels['vault-account-legacy'] === 'Vault account (legacy)', { accounts, labels });
-	const legacy = await launch('codex', 'vault-account-legacy');
-	check('legacy-default-keeps-login', legacy.auth === '{"fixture":"old-vault-login"}', legacy.auth);
-	check('legacy-default-files-untouched', (await fs.readFile(path.join(agents, 'accounts/codex/default/home/.codex/auth.json'), 'utf8')) === '{"fixture":"old-vault-login"}');
-	// 5. Adding an account creates an empty managed account: it does not inherit the system login (the user signs in inside it).
+	// 4. Adding an account creates an empty managed account: it does not inherit the system login (the user signs in inside it).
 	await c.evaluate(`ac.addAccount('codex','Added').then(()=>true)`);
 	const added = await launch('codex', 'Added');
 	check('added-account-starts-without-login', added.auth === null && added.env.HOME.startsWith(path.join(agents, 'accounts/codex')), added);
 	check('no-import-action-offered', !(await c.evaluate('typeof ac.importSystemAccount')).includes('function'));
 	check('system-login-untouched', (await fs.readFile(path.join(home, '.codex/auth.json'), 'utf8')) === '{"fixture":"system-login"}');
-	// 6. Status hooks: one fixed, vault-independent entry per event in the real Claude settings; user entries kept; nothing removed automatically.
+	// 5. Status hooks: one fixed, vault-independent entry per event in the real Claude settings; user entries kept; nothing removed automatically.
 	await c.evaluate(`ac.settings.update(d=>{d.statusHooks=true});true`);
 	await launch('claude-code', '');
 	const merged = JSON.parse(await fs.readFile(path.join(home, '.claude/settings.json'), 'utf8'));
@@ -150,16 +140,15 @@ try {
 	await launch('claude-code', '');
 	check('blank-provider-json-left-alone', (await fs.readFile(path.join(home, '.claude/settings.json'), 'utf8')) === '  \n');
 	await fs.writeFile(path.join(home, '.claude/settings.json'), JSON.stringify(userSettings));
-	// 7. History reads the real home.
+	// 6. History reads the real home.
 	const history = await c.evaluate(`(async()=>{const h=ac.history();const warnings=await h.scan();const page=await h.query('',0,undefined,'all','account');return {warnings,rows:page.rows.map(r=>({id:r.sessionId,key:r.accountKey,path:r.transcriptPath}))}})().catch(e=>({error:String(e)}))`);
 	const row = history.rows?.find(r => r.id === 'system-session-1');
 	check('history-lists-system-session', !!row && JSON.parse(row.key).HUHU_ACCOUNT_ID === 'codex/system' && row.path.startsWith(home), history);
-	// 8. UI: the default row says "System account" with its real location; no import action is offered.
+	// 7. UI: the default row says "System account" with its real location; no import action is offered.
 	await c.evaluate(`${plugin}.openWorkbench({feature:'settings',section:'terminal',resourceId:'accounts'})`);
 	await until(`document.body.innerText.includes('System account')`);
 	const text = await c.evaluate('document.body.innerText');
 	check('ui-shows-system-account-and-location', text.includes('System account') && text.includes('~/.codex') && !text.includes('Import from system'), text.slice(0, 600));
-	check('ui-lists-legacy-account', text.includes('Vault account (legacy)'));
 	const shot = async name => runtime.shot(name);
 	await shot('accounts-default-light');
 	const minimalDir = process.env.HUHU_SA_MINIMAL_DIR;

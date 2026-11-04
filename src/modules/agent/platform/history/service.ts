@@ -7,7 +7,7 @@ import type { App } from 'obsidian';
 import type { AgentId, AgentSettings } from '../../core/launch/types';
 import { t } from '../../../../shared/i18n/index';
 import { JsonStore } from '../../../../shared/json-store';
-import { accountEnv, historyAccountEnv } from '../desktop/agents/accounts';
+import { accountEnv } from '../desktop/agents/accounts';
 import { accountPaths, historyBase, historySource, isSystemAccount } from '../desktop/agents/system-homes';
 import { AGENT_CATALOG } from '../../core/launch/catalog';
 import { readHistoryDetails } from '../desktop/history/details';
@@ -360,11 +360,10 @@ export class NativeHistory {
 								scope.vault,
 								path.relative(scope.vault, historySource(agent.id, paths)).split(path.sep).join('/'),
 							);
-					const keyEnv = await historyAccountEnv(agent, env, scope.vault, device);
-					roots.push({
+										roots.push({
 						agentId: agent.id,
 						path: source,
-						accountKey: JSON.stringify(keyEnv),
+						accountKey: JSON.stringify(env),
 						accountId: name,
 						...(system ? { systemBase: historyBase(agent.id, paths) } : {}),
 					});
