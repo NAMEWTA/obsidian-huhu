@@ -324,3 +324,10 @@ round 1 收录来源中维护者已作出的决定（来源作者即仓库 OWNER
 - **结果：** T-12、T-13、T-20–T-32、T-34–T-46 完成；全量 build/lint/test/docs/i18n/bundle/notices/native 通过；残留检索 0。未验收项：AC-311 Windows 多轮复核、release 工作流实跑（CI 待统一处理），以及用户真机项。
 - **待 A 网关：** T-45 列出的永久 ADR/context 修订清单（huhu-bot-architecture ADR-027 等失去对象）。
 
+## LOG-028 — 2026-11-04 — AC-311 关闭与 change completed
+
+- **来源：** 用户 2026-11-04 授权为 AC-311 例外运行 Windows CI（AskUserQuestion 选择"现在处理 AC-311"）。
+- **修复：** T-21 压缩器 CRLF 缺陷（6d8e034）、全局数据槽位随机起点（9287af1）、收集器等待按剩余时限提升优先级与 stdin 提前创建（450263d）；文档检查 CLI 用例按项目惯例声明进程级时限（338f26a）。容量与 3 秒时限未改。
+- **验证：** hook-windows run 41752095795 连续两次 20/20；dev 338f26a 全部 CI success；本地全量 pnpm test 4227 例通过。
+- **结论：** Lead 按 change-completion 将 Outcome 改为 completed；release 工作流（发版）未授权，not-applicable；真机项由用户验收（LOG-012）；#41 关闭由用户决定。待 A 网关：T-45 列出的永久 ADR/context 修订。
+

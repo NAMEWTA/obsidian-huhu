@@ -1,6 +1,6 @@
 # #41：dev 稳定化、性能修复、全界面统一与产品线收缩
 
-Outcome: active
+Outcome: completed
 
 ## 目的与导航
 
@@ -28,7 +28,7 @@ Outcome: active
 
 ## 验证现状
 
-**2026-11-04 实施结论：** 46 张票全部 done 或经用户批准 cancelled；G-REMOVAL 与 G-FINAL 本地检查全部通过，统一账本见 `<Path>{roots.state}/specdev/changes/{change}/evidence/report-ledger.md</Path>`（passed 27、宿主部分待用户真机验收 5、withdrawn 7、cancelled 7）。AC-311 已于 2026-11-04 经 Windows CI 连续两次 20/20 关闭。release 工作流实跑留待用户指示的 CI 统一处理，真机项由用户验收；在此之前 Outcome 保持 active。
+**2026-11-04 实施结论：** 46 张票全部 done 或经用户批准 cancelled；G-REMOVAL 与 G-FINAL 本地检查全部通过，统一账本见 `<Path>{roots.state}/specdev/changes/{change}/evidence/report-ledger.md</Path>`（passed 27、宿主部分待用户真机验收 5、withdrawn 7、cancelled 7）。AC-311 已于 2026-11-04 经 Windows CI 连续两次 20/20 关闭；dev 338f26a 上 Node.js build（三平台）、Build terminal helper、Highlights 全部 success。release 工作流运行即发版、未授权，not-applicable（见 `<Path>{roots.state}/specdev/changes/{change}/evidence/T-38.md</Path>`）。完成依据：`<Path>{roots.state}/specdev/changes/{change}/evidence/report-ledger.md</Path>` 与 `<Path>{roots.state}/specdev/changes/{change}/evidence/T-38.md</Path>`。宿主内真机项（AC-163 实际启动预算、AC-202/211/251/351 宿主表现、Windows/macOS 实机）按 LOG-012 由用户验收，不在本计划执行与跟踪范围；关闭 #41 由用户在真机验收后决定。
 
 T-01基线与T-02包体基线已验收，G-BASELINE关闭。44个测试入口42个通过；Vitest、docs与锁定Go全量失败原样保留，详见对应Evidence与docs/e2e/dev-overhaul/baseline。T-14 的 AC161/162 已由真实 Home 装配及竞争回归、Lead 工作台验收通过；T03来源与文档门、T04停止阶段已验收（原入口Go全量0）；T23已由Lead验收，48例矩阵/13交互及样式运行时通过；T06独立审查中，T16审查发现兼容与断言缺陷正在窄修复，T18已由Lead114例与构建/lint验收，T09规模基线和T12发布测量正在实施。最新wave3预算：main超20757B、启动eager超1165B、Agent激活超3478B，保留给T37/T38关闭，阈值未改；批准原型不代替真实实现。
 
