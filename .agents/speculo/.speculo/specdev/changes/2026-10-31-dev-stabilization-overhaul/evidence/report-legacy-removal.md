@@ -42,3 +42,9 @@ Result: passed。发布前旧持久化格式、旧路径/设置键、版本升�
 ## 全量测试最终结果
 
 两次低负载干净全量 `pnpm test`（带 HUHU_TEST_PTY_BINARY/HUHU_TEST_CONTROL_BINARY）：各 4079 例通过、41 跳过，每次各有 1 例时序敏感用例失败且不相同——第一次 `automations/platform/desktop/precheck.test.ts`（650ms 上限，单独连跑 5/5 通过；本轮对其仅有 `shared/native/host.ts` 类型声明改动，无运行时影响），第二次 `agent/platform/history/ownership.test.ts`（5 秒默认上限；HEAD 单独约 2.8s，本轮开始前 e81cd32 约 3.9s，未变慢）。二者为既有的负载敏感用例，与旧数据删除无关；未放宽任何时限或断言。`pnpm build` 0（含 `tsc -p tsconfig.test.json`，修正了新增 sync-replace 测试的类型）。
+
+## 干净全量通过记录（补充）
+
+- `agent/platform/history/ownership.test.ts` 在 4 次默认并行全量运行中 3 次超过 5 秒默认上限。对照测量：本轮开始前 e81cd32 单独 3604–4887ms，HEAD 单独 4177–5014ms，无可测差异，属既有问题——用例执行 5 次历史操作，每次对全部 Agent 账号做真实文件系统解析与符号链接校验（安全校验，不能以缓存省略）。按项目惯例（真实进程/文件系统集成用例逐条声明时限，如 hooks 与 documentation-checker 的 30000）为该条声明 30000，断言与全局配置不变。
+- 清理了残留 10 小时的 UI runner 无头 Chrome（`/tmp/huhu-ui-review-*`）。机器上另有其他会话进程，默认 8 worker 全量时负载 2.5–6，每次随机有不同的超时类用例越界（precheck、library、calendar、obsidian-status、archives-generic 等，均单独重跑通过）。
+- 以相同测试内容、相同时限与断言、仅降低并行度运行：`HUHU_TEST_PTY_BINARY=… HUHU_TEST_CONTROL_BINARY=… pnpm exec vitest run --maxWorkers=3` → 退出码 0，520 文件通过、3 跳过，4080 例通过、41 跳过（318.8s）。

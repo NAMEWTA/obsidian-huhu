@@ -98,4 +98,4 @@ test('the native boundary and Space owner share exact account, source and device
 		vi.unstubAllGlobals();
 		await fs.rm(vault, { recursive: true, force: true });
 	}
-});
+}, 30000); // Five history operations, each resolving every agent account against the real filesystem with symlink checks.
