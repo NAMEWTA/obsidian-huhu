@@ -51,3 +51,8 @@
 - alltasks-scan.ts：“reminder-only task”是当前仍可创建的仅提醒任务，保留逻辑，注释去掉 legacy。
 - 测试/样本：multi-note-templates、home-grid、library.dom、golden user-formats 及 `board-multi-templates.md` 快照、`scripts/verify-library-new-note.ts` 同步改为 `templatePaths`。文档中无 `templatePath` 单值描述，无需改。
 - 验证：`tsc -p tsconfig.test.json` 0 错误；主 tsc 仅剩 agent 区他人在途错误（`agent/services/backup/records.ts`），home 无错误；vitest home+golden 101 文件/470 用例全过；eslint 改动文件 0 警告；`test:dashboard-isolation`、`test:i18n`、`test:docs` 退出码 0。
+
+## 冲突回归修复
+- 根因：第一轮我用 `sed -i '/freezeLegacyWeatherLocations/d'` 删除 `freezeLegacyWeatherLocations` 调用行时，误删了 `SyncEngine.replaceData` 里唯一的 `this.data = freezeLegacyWeatherLocations(newData, …)`（其余三处是对 `this.data` 的自赋值，删除无害）。结果 `replaceData(newData)` 不再采用传入数据，直接把旧 `this.data` 写盘，整板替换（含冲突期间的本地编辑）丢失。与冲突/基线逻辑本身无关。
+- 修复：在 `replaceData` 补回 `this.data = newData;`（生产代码，`platform/board/sync.ts`）；脚本与断言未改动。
+- 验证：`pnpm test:safety-regressions` 全部通过（7/7）；vitest home+golden 101 文件/470 用例通过；`test:dashboard-isolation` 退出码 0；两个 tsc 无 home 相关错误；sync.ts eslint 0 警告。

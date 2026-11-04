@@ -1272,6 +1272,7 @@ export class SyncEngine {
 
 	async replaceData(newData: DashboardData): Promise<void> {
 		this.assertOpen();
+		this.data = newData;
 		await this.writeToDisk();
 	}
 
