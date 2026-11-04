@@ -10,3 +10,5 @@
 | [高亮摘录单一真源](2026-10-31-highlight-first.md) | Accepted；迁移条款已修订 | 2026-10-26-highlight-first |
 | [档案与历史边界（原浏览器历史档案边界）](2026-10-31-unified-browser-versioning-archives.md) | Accepted；ADR-004、006 superseded，ADR-001 v1 条款已修订 | 2026-10-26-unified-browser-versioning-archives |
 | [首页可选恢复时限](2026-10-31-home-cookie-restore-deadline.md) | Superseded（by 2026-11-04-dev-stabilization-overhaul ADR-003） | 2026-10-29-home-cookie-restore-deadline |
+
+| [公共基础设施与档案、日记、体检的权威边界](2026-11-05-bz-reference-capabilities.md) | Accepted（ADR-001–008） | 2026-11-04-bz-reference-capabilities；109-archive |

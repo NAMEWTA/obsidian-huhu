@@ -54,3 +54,14 @@ _Avoid_: 类型点击直接进入某个实例，或把所有实例与类型混�
 
 **类型显示字段**：从该类型字段中勾选列表/卡片显示项，引用同一字段值；所有类型默认显示创建时间、更新时间。显示字段、表单可见字段和筛选记录条件分别承担职责。来源 [SRC-007](../changes/archive/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md)，AC-036。
 _Avoid_: 未勾选显示意味着删除字段值，或显示配置意味着过滤掉记录。
+
+
+## 2026-11-05 补充：bz 参考能力术语
+
+来源：2026-11-04-bz-reference-capabilities / CONTEXT.md，SHA-256 `3d3a4ec3521e664114e4cef5d81c214c541e58060bc168b0c32885a6f0451055`；归档定位 `changes/archive/2026-11-04-bz-reference-capabilities/CONTEXT.md`。关联 [长期决策](../adr/2026-11-05-bz-reference-capabilities.md)。本节经 A 网关由 codex:/root 提升，满足稳定领域概念与接手者必知条件；不替代上文定义，适用范围为当前相应功能。
+
+**归物本**：基于档案物品类型预设的物品生命周期视图，物品记录仍是档案实体。
+_Avoid_: 物品库、belongings 库
+
+**人物阅读层**：档案中人物类型实体的阅读与手工纪事视图，不另建联系人主库。
+_Avoid_: 脸谱库、联系人系统

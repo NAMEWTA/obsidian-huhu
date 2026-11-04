@@ -7,3 +7,10 @@
 | [Bot应用权威与恢复边界术语](2026-10-31-huhu-bot-architecture.md) | domain-terms | 2026-10-25-huhu-bot-architecture；Superseded（整份失去对象） |
 | [高亮摘录单一真源术语](2026-10-31-highlight-first.md) | domain-terms | 2026-10-26-highlight-first；实施边界见正文 |
 | [档案与历史边界术语（原浏览器历史档案边界）](2026-10-31-unified-browser-versioning-archives.md) | domain-terms | 2026-10-26-unified-browser-versioning-archives；迁移术语适用范围已收窄 |
+
+## 2026-11-05 新增术语导航
+
+| 条目 | 类型 | 适用范围与来源 |
+|---|---|---|
+| [归物本、人物阅读层](2026-10-31-unified-browser-versioning-archives.md) | domain-terms | 2026-11-04-bz-reference-capabilities / CONTEXT.md；档案视图与唯一主记录 |
+| [书页日记、数据体检、通知渠道](2026-11-04-dev-stabilization-overhaul.md) | domain-terms | 2026-11-04-bz-reference-capabilities / CONTEXT.md；周期正文、owner 修复与渠道贡献点 |

@@ -32,3 +32,18 @@ _Avoid_: 自动化名称（不区分快照与当前时）
 
 **Hook 发布序号（seq）**：状态 Hook 发布者写入引用的单调时钟序号，是同一 scope 内事件投递顺序的唯一依据；槽位号不承载顺序。
 _Avoid_: 槽位顺序、到达顺序
+
+
+## 2026-11-05 补充：bz 参考能力术语
+
+来源：2026-11-04-bz-reference-capabilities / CONTEXT.md，SHA-256 `3d3a4ec3521e664114e4cef5d81c214c541e58060bc168b0c32885a6f0451055`；归档定位 `changes/archive/2026-11-04-bz-reference-capabilities/CONTEXT.md`。关联 [长期决策](../adr/2026-11-05-bz-reference-capabilities.md)。本节经 A 网关由 codex:/root 提升，满足稳定领域概念与接手者必知条件；不替代上文定义，适用范围为当前相应功能。
+
+**书页日记**：以书页形式阅读与书写周期日记的工作台页面，正文仍是一日一篇的周期笔记。
+_Avoid_: 日记本数据库、回忆墙
+
+**数据体检**：由各数据 owner 贡献检查项的只读扫描与有限修复功能。
+_Avoid_: 自动修复、全库清理
+
+**通知渠道**：通知基础设施中可注册的投递方式，如站内与系统通知。
+_Avoid_: notify
+
