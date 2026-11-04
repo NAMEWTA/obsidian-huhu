@@ -28,7 +28,7 @@ const apple: SafeEntry = {
 };
 
 function setup(status: SafeState['status'] = 'unlocked', entries: SafeEntry[] = [entry], mode: SafeViewMode = 'list') {
-	const store = createStore<SafeState>(() => ({ status, entries: status === 'unlocked' ? entries : [], busy: false, error: null, generation: 1, upgraded: false }));
+	const store = createStore<SafeState>(() => ({ status, entries: status === 'unlocked' ? entries : [], busy: false, error: null, generation: 1 }));
 	let policy = DEFAULT_LOCK_POLICY;
 	const stub = {
 		store,

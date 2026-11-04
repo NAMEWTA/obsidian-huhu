@@ -1,4 +1,4 @@
-// Windows acceptance for vault identity, legacy preferences and Git bookkeeping.
+// Windows acceptance for vault identity, device preferences and Git bookkeeping.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -22,24 +22,22 @@ try {
 	const identityFile = path.join(runtime.vault, '.huhu/config/identity.json');
 	const identities = JSON.parse(await fs.readFile(identityFile, 'utf8'));
 	check('identity-is-vault-owned', identities.vaultId === first.vaultId && identities.devices[first.deviceId]?.fingerprint?.length === 64);
-	check('legacy-identities-are-not-written', await c.evaluate(`app.loadLocalStorage('huhu.device-id')==null`));
-	await c.evaluate(`${plugin}.settingsNamespace('local-ui').update(d=>{d.migrated=false;d.values={}}, {persist:'immediate'})`);
-	await c.evaluate(`app.saveLocalStorage('huhu.dashboard.sidebar-pinned','false'); app.saveLocalStorage('huhu.dashboard.media-thumb-size','large'); true`);
+	await c.evaluate(`${plugin}.settingsNamespace('local-ui').update(d=>{d.values={'huhu.dashboard.sidebar-pinned':'false','huhu.dashboard.media-thumb-size':'large'}}, {persist:'immediate'})`);
 	errors.push(...await c.evaluate('huhuAcceptanceErrors'));
 	await runtime.restart(); c = runtime.connection;
 	check('same-device-survives-restart', JSON.stringify(await c.evaluate(`${plugin}.storageIdentity`)) === JSON.stringify(first));
-	check('legacy-preferences-migrated-and-cleared', await c.evaluate(`(()=>{const p=${plugin}.settingsNamespace('local-ui').get();return p.migrated && p.values['huhu.dashboard.sidebar-pinned']==='false' && p.values['huhu.dashboard.media-thumb-size']==='large' && app.loadLocalStorage('huhu.dashboard.sidebar-pinned')==null && app.loadLocalStorage('huhu.dashboard.media-thumb-size')==null})()`));
+	check('preferences-survive-restart', await c.evaluate(`(()=>{const p=${plugin}.settingsNamespace('local-ui').get();return p.values['huhu.dashboard.sidebar-pinned']==='false' && p.values['huhu.dashboard.media-thumb-size']==='large'})()`));
 	const deviceSettings = JSON.parse(await fs.readFile(path.join(runtime.vault, '.huhu/config/devices', first.deviceId + '.json'), 'utf8'));
 	check('preferences-persist-in-device-file', deviceSettings.namespaces['local-ui'].values['huhu.dashboard.media-thumb-size'] === 'large');
 	execFileSync('git', ['init', '-q'], { cwd: runtime.vault, windowsHide: true });
-	const legacy = path.join(runtime.vault, '.git/huhu-sync.json');
-	await fs.writeFile(legacy, JSON.stringify({ lastCommit: 1, lastPull: 2, lastPush: 3, paused: 'manual', failures: 0 }));
 	await c.evaluate(`${plugin}.setModuleEnabled('sync', true)`);
 	const folder = path.join(runtime.vault, '.huhu/sync', first.deviceId);
 	await until(async () => (await fs.readdir(folder).catch(() => [])).some(name => name.endsWith('.json')));
 	const stateName = (await fs.readdir(folder)).find(name => name.endsWith('.json'));
 	const stateFile = path.join(folder, stateName);
-	check('git-state-migrated', JSON.parse(await fs.readFile(stateFile, 'utf8')).lastPull === 2 && !await fs.stat(legacy).catch(() => null));
+	check('git-state-in-vault', !await fs.stat(path.join(runtime.vault, '.git/huhu-sync.json')).catch(() => null));
+	await c.evaluate(`app.commands.executeCommandById('huhu:sync-pause-toggle')`);
+	await until(async () => JSON.parse(await fs.readFile(stateFile, 'utf8')).paused === 'manual');
 	await c.evaluate(`app.commands.executeCommandById('huhu:sync-pause-toggle')`);
 	await until(async () => JSON.parse(await fs.readFile(stateFile, 'utf8')).paused === '');
 	check('native-command-saves-in-vault', true);

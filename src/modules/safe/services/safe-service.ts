@@ -24,8 +24,6 @@ export interface SafeState {
 	busy: boolean;
 	error: SafeErrorCode | null;
 	generation: number;
-	/** True once this session wrote an older vault back in the current schema (an encrypted copy was kept first). */
-	upgraded: boolean;
 }
 
 /** The lock rules the user chose. Changes apply to a running session at once. */
@@ -67,7 +65,7 @@ interface ClipboardCopy {
 /** One in-memory session for every safe page in this vault. Never persisted or exposed as an API. */
 export class SafeService {
 	readonly store = createStore<SafeState>(() => ({
-		status: 'loading', entries: [], busy: false, error: null, generation: 0, upgraded: false,
+		status: 'loading', entries: [], busy: false, error: null, generation: 0,
 	}));
 	private key?: CryptoKey;
 	private envelope?: SafeEnvelope;
@@ -81,7 +79,6 @@ export class SafeService {
 	private importSequence = 0;
 	private importClear?: () => void;
 	/** The opened vault used an older schema: the next write keeps the original file as its own copy first. */
-	private upgradePending = false;
 	private policyCache?: LockPolicy;
 	private readonly policyListeners = new Set<() => void>();
 	private unsubscribePolicy?: () => void;
@@ -209,14 +206,10 @@ export class SafeService {
 			this.key = opened.key;
 			this.envelope = opened.envelope;
 			this.raw = raw;
-			this.upgradePending = opened.upgradedFrom !== null;
 			this.store.setState({ status: 'unlocked', entries: opened.payload.entries, error: null });
 			this.touch();
 		})).finally(secret.clear);
 		if (!this.isCurrent(generation)) return;
-		// An older vault is shown from its upgraded in-memory form while the file is rewritten; a failure stays visible and
-		// is retried by the next write, which then also keeps the original as its own copy.
-		if (this.upgradePending) await this.mutate(entries => makePayload(entries)).catch(() => {});
 		if (!this.isCurrent(generation)) return;
 		const entries = this.store.getState().entries;
 		if (pruneExpiredTrash(makePayload(entries), this.now()).entries.length !== entries.length) {
@@ -237,13 +230,12 @@ export class SafeService {
 		this.cancelImport();
 		for (const clear of this.sensitiveInputs) clear();
 		this.sensitiveInputs.clear();
-		this.upgradePending = false;
 		this.expiresAt = 0;
 		this.lastActivity = 0;
 		const state = this.store.getState();
 		this.store.setState({
 			status: state.status === 'absent' && !creationAdmitted ? 'absent' : 'locked',
-			entries: [], busy: false, error: null, generation: state.generation + 1, upgraded: false,
+			entries: [], busy: false, error: null, generation: state.generation + 1,
 		});
 		this.clearClipboardTimer();
 		void this.enqueueClipboard(() => this.clearCopiedText()).catch(() => {});
@@ -364,7 +356,7 @@ export class SafeService {
 
 	/**
 	 * Every write goes through here. `keep` names an encrypted copy of the file this change starts from that must stay
-	 * on disk (a merge import); while an older vault is still waiting to be upgraded the copy is always kept. A change
+	 * on disk (a merge import). A change
 	 * that returns nothing writes nothing.
 	 */
 	private async mutate(change: ((entries: SafeEntry[]) => SafePayload | undefined) | undefined, keep?: 'preimport'): Promise<void> {
@@ -382,9 +374,7 @@ export class SafeService {
 				if (!this.pendingPayload) throw new SafeError('canceled');
 				this.raw = prepared.raw;
 				this.envelope = prepared.envelope;
-				const upgraded = this.upgradePending;
-				this.upgradePending = false;
-				this.store.setState({ entries: this.pendingPayload.entries, error: null, upgraded: upgraded || this.store.getState().upgraded });
+				this.store.setState({ entries: this.pendingPayload.entries, error: null });
 			} finally {
 				this.pendingPayload = undefined;
 			}
@@ -392,8 +382,7 @@ export class SafeService {
 	}
 
 	private commitPrepared(raw: string, expectedRaw: string, keep?: 'preimport'): Promise<void> {
-		const kind = this.upgradePending ? 'preupgrade' : keep;
-		return kind ? this.options.repository.commitKeeping(kind, raw, expectedRaw) : this.options.repository.commit(raw, expectedRaw);
+		return keep ? this.options.repository.commitKeeping(keep, raw, expectedRaw) : this.options.repository.commit(raw, expectedRaw);
 	}
 
 	async changePassword(oldPassword: string, newPassword: string): Promise<void> {

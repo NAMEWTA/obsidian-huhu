@@ -125,8 +125,8 @@ export interface GitHost {
 	revisionReader?(runner: GitRunner, cwd: string): RevisionReader;
 	clone(binary: string, target: string, source: string, options: CloneOptions): Promise<CloneResult>;
 	hostname(): string;
-	/** Copy and verify the legacy sidecar before adopting vault-owned device state. */
-	loadDevice(cwd: string, legacyPath: string): Promise<DeviceSyncState>;
+	/** Vault-owned device state of the repository at `cwd` (a missing file reads as the empty state). */
+	loadDevice(cwd: string): Promise<DeviceSyncState>;
 	saveDevice(cwd: string, base: DeviceSyncState, value: DeviceSyncState): Promise<DeviceSyncState>;
 	/** Absolute path of `relative` from `cwd`. */
 	resolve(cwd: string, relative: string): string;

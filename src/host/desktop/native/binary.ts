@@ -224,10 +224,7 @@ async function installAsset(options: InstallOptions, spec: AssetSpec): Promise<V
 		await remember();
 		return ready(digest);
 	}
-	const retained = await absoluteHuhuPath(options.vault, `.huhu/helpers/${options.device}/legacy-plugin/files/${name}`);
-	const retainedBytes = !localBytes && fs.existsSync(retained) && fs.lstatSync(retained).isFile() && fs.statSync(retained).size <= 256 * 1024 * 1024 ? fs.readFileSync(retained) : undefined;
-	// Legacy stamps are not execution proofs. Reuse the retained bytes only after the official digest matches.
-	const bytes = localBytes ?? (retainedBytes && createHash('sha256').update(retainedBytes).digest('hex') === digest ? retainedBytes : await fetch(base, 256 * 1024 * 1024));
+	const bytes = localBytes ?? await fetch(base, 256 * 1024 * 1024);
 	options.progress?.('verifying');
 	if (createHash('sha256').update(bytes).digest('hex') !== digest) throw new BinaryError('checksumMismatch', `The downloaded ${spec.label} does not match its checksum; the previous file was kept`);
 	await absoluteHuhuPath(options.vault, relative + '/' + name);

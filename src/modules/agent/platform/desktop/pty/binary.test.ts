@@ -87,19 +87,6 @@ test('asset names and digest parsing', () => {
 	assert.equal(parseDigest('not-a-digest'), null);
 });
 
-test('retained legacy helpers require official verification once, then work offline without another binary download', async () => {
-	const f = setup(), legacy = path.join(f.pluginDir, '.huhu/helpers/fixture-device/legacy-plugin/files');
-	const options = { vault: f.pluginDir, receipt: f.receipt, device: 'fixture-device', version: '0.0.1-alpha.1', offline: false, platform: 'linux', arch: 'x64', fetch: f.fetch };
-	try {
-		fs.mkdirSync(legacy, { recursive: true }); fs.writeFileSync(path.join(legacy, 'huhu-pty-linux-x64'), f.binary);
-		await assert.rejects(ensureHelper({ ...options, offline: true }), (error) => error instanceof BinaryError && error.code === 'offlineMissing');
-		await ensureHelper(options);
-		assert.equal(f.requests.length, 1, 'fetch only the official digest for the retained candidate');
-		assert.deepEqual(fs.readFileSync(f.file), f.binary);
-		f.requests.length = 0; await ensureHelper({ ...options, offline: true }); assert.deepEqual(f.requests, []);
-	} finally { fs.rmSync(f.pluginDir, { recursive: true, force: true }); }
-});
-
 test('upgrades install inside the vault with a distinct version path and retain the old running binary', async () => {
 	const f = setup();
 	try {

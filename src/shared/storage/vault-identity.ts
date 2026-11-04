@@ -11,7 +11,6 @@ export interface IdentityOptions {
 	/** Read-only host identity; only a vault-salted digest is persisted. */
 	machineIdentity?: string;
 	label: string;
-	legacyDeviceId?: unknown;
 	chooseDevice(devices: readonly VaultDevice[]): Promise<string | { label: string }>;
 }
 export const validIdentityId = (value: unknown): value is string => typeof value === 'string' && /^[a-f\d]{8}(?:-[a-f\d]{4}){3}-[a-f\d]{12}$/i.test(value);
@@ -48,8 +47,7 @@ export function initializeVaultIdentity(storage: TextStorage, options: IdentityO
 			} else {
 				const label = choice.label.trim().normalize('NFC');
 				if (!label || [...label].length > 128 || [...label].some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127)) throw new Error('huhu-storage.invalid-device-name');
-				const legacy = options.legacyDeviceId;
-				const id = validIdentityId(legacy) && !next.devices[legacy] ? legacy : crypto.randomUUID();
+				const id = crypto.randomUUID();
 				device = { id, label, ...(fingerprint ? { fingerprint } : {}) };
 				next.devices[id] = device;
 			}

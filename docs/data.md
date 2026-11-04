@@ -28,7 +28,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 技能副本 | 用户主目录或 vault 中各智能体的 `skills/<名称>/`，副本内有 `.huhu-skill-copy.json` 标记；不在 `.huhu/` 内 |
 | 随插件打包的技能来源 | `.huhu/skills/<技能名>/SKILL.md`（技能名为 `huhu-control`）：技能页刷新时按界面语言写入的 HUHU 自有来源，内容不变不重写；只有用户在技能页对某个智能体启用，才会复制到该智能体的技能目录 |
 | 已记住的技能名称与额外目录 | `.huhu/config/devices/<device-id>.json` 的 `agent` 命名空间，字段为 `knownSkills`、`skillDirectories`；名称按智能体隔离 |
-| 通用档案及其资料文件 | 可见根默认 `huhu/archives/`；实体、档案定义及修订、独立关联记录、迁移计划/原文备份/回执和附件一起保存。旧个人/企业原位适配，v2 按类型策略创建带 ID 的目录；完整布局见[档案](contacts.md) |
+| 通用档案及其资料文件 | 可见根默认 `huhu/archives/`；实体、档案定义及修订、独立关联记录、升级计划/原文备份/回执和附件一起保存；按类型策略创建带 ID 的目录；完整布局见[档案](contacts.md) |
 | 档案恢复草稿 | `.huhu/archives/drafts/<设备>/<根摘要>/`，有界的实体/关系编辑会话，不是正式档案或跨设备业务数据 |
 | 独立的自动化操作 | `.huhu/automation/definitions/<名称>-<短 ID>/操作.md` |
 | 习惯、记账、阅读、番茄钟 | `huhu/habits/habits.json`、`huhu/expenses/expense.json`、`huhu/reading/reading.json`、`huhu/pomodoro/pomodoro.json`，以及同目录下的 Markdown 记录 |
@@ -39,22 +39,22 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 全局设置 | `.huhu/config/settings.json`，按 app、theme、home、comments 等命名空间保存 |
 | 天气实例 | 每份看板 `widgets` 成员的可选 `weather` 保存城市名称、经纬度和可用行政区信息。新增实例取默认地区快照；无效显式值不覆盖其他实例的地区。布局仍在同份看板的 `grid` |
 | 工作台列表 | 全局设置 `home.workspaces` 的 files、names、active |
-| 看板布局 | 看板 Markdown 的 frontmatter：`widgets` 是看板上的小组件（`memberId`、`provider`、`kind`、`instanceId`），`grid` 是单行 JSON `{"v":2,"lg":[…],"md":[…]}`，每项是小组件、分区或独立卡片的 `i`（标识）与 `x`、`y`、`w`、`h`（单位是格：12 列、行高固定）；`md`（6 列）只有在该宽度下排过才有，单列不保存。没有 `grid` 的旧看板（`layout`、`canvas`、`immersive`、`banner`、`banners`）打开时转换一次并移除这些键，横幅数据不再保留。卡片与分区内容在正文和 `columns` 里。 |
+| 看板布局 | 看板 Markdown 的 frontmatter：`widgets` 是看板上的小组件（`memberId`、`provider`、`kind`、`instanceId`），`grid` 是单行 JSON `{"v":2,"lg":[…],"md":[…]}`，每项是小组件、分区或独立卡片的 `i`（标识）与 `x`、`y`、`w`、`h`（单位是格：12 列、行高固定）；`md`（6 列）只有在该宽度下排过才有，单列不保存。没有 `grid` 的看板按默认尺寸在内存里排布，首次调整布局时才写入。卡片与分区内容在正文和 `columns` 里。 |
 | 内部外观预设数据 | 全局设置仍定义 `home.appearancePresets` 与 `home.activeAppearancePresetId`；预设包含全局外观（界面主题、自定义颜色、编辑器配色、字体与排版）和看板背景/表面参数。当前界面没有保存、应用、改名或删除预设的入口，不应把内部字段当作用户功能；可用外观操作见[外观](appearance.md)。 |
 | 设备设置 | `.huhu/config/devices/<device-id>.json` |
 | 图标及其备份 | `.huhu/icons/`；保存图标、规则及轮换备份 |
 | 笔记导航器设置 | 全局设置的 `navigator` 命名空间（显示、排序、置顶、快捷键、快捷方式、隐藏规则、文件夹笔记、按项覆盖的外观，以及日志文件夹、各周期的开关与模板、模板文件夹与引擎、文件夹模板、自定义“创建笔记”命令、库配置档和它们的当前选择）；布局方向、窗格大小、展开状态、选中项、搜索框内容、日历是否展开、最近笔记（含各配置档自己的最近列表）保存在本设备设置。日历创建的周期笔记保存在库内可见的日志目录（默认 `huhu/journal/daily/YYYY/MM/YYYY-MM-DD.md` 等固定结构，见[笔记导航器](navigator.md#固定的日志目录)），模板生成的笔记、合并结果在库里原位置，都不在 `.huhu/`；标签修改的“撤销”内容只在内存里 |
 | 笔记导航器预览缓存 | 浏览器的 IndexedDB 库 `huhu-navigator-<库 id>`，保存每篇笔记的预览文字和缩略图路径。它不在库目录里，可随时用“重建缓存”丢弃，不影响笔记 |
-| 高亮与批注（v3） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；v2 升级备份在 `.huhu/editor/comments-backups/`，损坏副本在 `set-aside/` |
+| 高亮与批注（v3） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；损坏或版本不符的副本在 `set-aside/` |
 | 自动化运行、通知回执 | `.huhu/automation/<device-id>/`、`.huhu/notifications/<device-id>/` |
 | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
 | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |
 | 智能体空间、会话与布局 | `.huhu/terminal-agent/<device-id>/workbench-v2.json`：稳定 Space/Session、目录授权、按空间分开的布局 |
 | 智能体被动邮箱 | 同一 `workbench-v2.json` 的可选 `inbox` 子文档：保存带原 Space/Session 收件人、有限正文、描述性来源、Vault 文件元数据引用、单调序号与一次性 ack 的消息；旧记录缺少该字段时只读为空。发送与 ack 由唯一 SpaceService writer 排队 |
-| 智能体旧布局与统计 | 原 `workspace.json`（及 `.backup`）在首次启动新版时一次性导入；原文件不删除或改写。统计为 `stats.json` / `workspace-stats.json`。导入结果记录在 `legacy-import.json` |
+| 智能体统计 | `stats.json` / `workspace-stats.json` |
 | 备份包与导入报告 | `.huhu/exports/huhu-backup-<时间>.json`；`.huhu/recovery/backup-import/last.json` |
 | 恢复副本与事务日志 | `.huhu/recovery/transaction/`：`journal.a.json` / `journal.b.json` 与 `<操作 ID>/old-*.txt`、`new-*.txt` |
-| 原生历史索引、标注、自动化会话 | 同目录 `workspace-index.sqlite`（当前 Vault 的可重建元数据索引，不含对话正文）、`history.json`、`automation-sessions.json`。旧账号级 `index.sqlite` 不再写入 |
+| 原生历史索引、标注、自动化会话 | 同目录 `workspace-index.sqlite`（当前 Vault 的可重建元数据索引，不含对话正文）、`history.json`、`automation-sessions.json` |
 | 快捷命令 | 本设备设置 `agent.quickCommands`；库级命令可带 `spaceId`，不读取旧 presets |
 | 自动化预检环境 | `.huhu/automation/<device-id>/precheck-home/` |
 | 恢复草稿与看板冲突副本 | `.huhu/recovery/` |
@@ -70,9 +70,9 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 
 新建内容的默认路径使用固定小写英文名称，与界面语言无关；周记和季记文件标记为 `w`、`q`。没有设置文件的库从默认值开始，用户指定的根目录和标题保留原语义（生成文件名仍执行原有安全字符处理）。旧中文目录不会被检测、读取、移动、迁移或删除；隐藏 `.huhu/` 名称及自动化 `操作.md` 不变。
 
-默认周期目录为 `journal/daily`、`weekly`、`monthly`、`quarterly`、`yearly`。档案默认子目录为 `people`、`companies`、`definitions`、`relations`、`migrations`；实体入口为 `profile.md`，集合入口为 `collection.md`，格式说明为 `format-guide.md`。定义分类使用 `types`、`forms`、`templates`、`relation-types`、`views`，当前指针为 `current.md`，不可变修订在 `revisions/`，迁移原文备份在 `originals/`。记录集合使用 `records/`，书籍和习惯入口分别为 `book.md`、`habit.md`，记账分类与番茄钟活动分别为 `categories.md`、`activities.md`。
+默认周期目录为 `journal/daily`、`weekly`、`monthly`、`quarterly`、`yearly`。档案默认子目录为 `people`、`companies`、`definitions`、`relations`、`migrations`；实体入口为 `profile.md`，集合入口为 `collection.md`，格式说明为 `format-guide.md`。定义分类使用 `types`、`forms`、`templates`、`relation-types`、`views`，当前指针为 `current.md`，不可变修订在 `revisions/`，升级原文备份在 `originals/`。记录集合使用 `records/`，书籍和习惯入口分别为 `book.md`、`habit.md`，记账分类与番茄钟活动分别为 `categories.md`、`activities.md`。
 
-新档案内置定义保存稳定英文标签和受限翻译元数据，界面按语言显示；切换语言不修改 revision 或路径。旧定义没有翻译元数据时保留原标签，用户改名会清除对应翻译键。CSV 导出遇到同名文件、目录或并发占用时创建带序号的新文件，不覆盖已有内容。
+新档案内置定义保存稳定英文标签和受限翻译元数据，界面按语言显示；切换语言不修改 revision 或路径。用户改名会清除对应翻译键。CSV 导出遇到同名文件、目录或并发占用时创建带序号的新文件，不覆盖已有内容。
 
 ## 私有文件权限
 
@@ -103,11 +103,10 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 
 v2 记录由当前 TypeScript 进程懒取得一个本机排他监听来保护写入；查询、打开空页面和目录选择不监听，也不启动 helper。监听仅用于合作实例的单 writer 互斥，不提供命令服务：同一物理库和设备使用同一确定端口；端口占用或碰撞明确冲突，不自动换端口、删除旧锁或按 PID/时间抢占。正常关闭先排空已接纳持久写入再释放，进程崩溃由系统释放监听；重新打开后仍占用时应先核对另一实例或本机端口。端口由物理库与设备的确定性散列落在 16384–65535 之间；若本机另一个无关程序恰好占着该端口，这个库的 Space 写入会以 `OWNER_CONFLICT`（原因 `port-in-use`）安全失败，不会换端口。处理办法：先用系统的端口占用查询找到占用者并释放端口；若占用者是另一个 HUHU 窗口则关闭它。重启 Obsidian 只在占用者是短暂程序或残留的旧 HUHU 进程时有效，长期占用的无关程序不会因重启而消失。该机制不防御同账号恶意进程。
 
-旧工作台迁移（仅桌面端，首次启动新版时自动执行一次）：先在任何模块读取这些文件之前完成未竟操作的恢复；然后在同一物理库的独占 writer 监听保护下，保存来源与被替换文件的可回读恢复副本和事务日志，再把旧 `workspace.json` 的标签、分组、分屏和已关闭标签原样放入一个新的“导入空间 · 旧工作台”（目录为库根），最后写入 `legacy-import.json`。已有同目录的 Space 不会被合并或修改，已有记录和当前选择保持不变；`workbench-v2.json` 缺失之外的任何情况（损坏、新版本、属于别的库或设备、仅剩备份）都会拒绝并保留原件，不会用默认空对象覆盖。无法归属账号的历史标注（不是“智能体、账号、会话”三段键）与已退役的账号总索引 `index.sqlite` 原地保留并写入报告，不迁移其内容；凭据与原生日志从不移动。同一来源摘要重复启动不会重复导入，导入后旧文件又被旧版本写入只会提示“来源已变化”而不再导入。另一个 HUHU 窗口持有 writer 时导入推迟到下次启动。
 
-进程中断（崩溃、被强制结束）或磁盘写满后，下一次启动在业务读取前依据事务日志把相关文件整体恢复为旧版本或整体采用新版本，不会出现新旧混合；恢复本身再次中断可重复执行。写入使用普通的就地写入加读回核对，不做 fsync 和原子重命名，所以真正的断电可能让某个文件的数据没有落盘：此时摘要核对会发现不一致，HUHU 保持恢复门、停止启动并提示，不会拿不完整的数据继续写；这种情况需要你用 `.huhu/recovery/transaction/` 里的恢复副本手动恢复。无法确定时同样保持恢复门，不覆盖任何数据。回退：先退出 Obsidian 并备份整个 `.huhu/terminal-agent`（其中已有新空间），再安装旧版本；旧版本不认识新格式，之后在新旧两版之间不做逆向转换。设置页“旧数据导入”页签显示报告；导入被拒绝或失败（库被复制或移动、`workbench-v2.json` 损坏、状态文件不可读、另一个窗口占用）时，页签会说明原因和下一步，而不是显示“没有旧数据”。旧布局文件损坏或来自新版本时，导入只保留原件；修复 `workspace.json` 后若要重新导入，先退出 Obsidian，删除同目录的 `legacy-import.json`，再启动。
+进程中断（崩溃、被强制结束）或磁盘写满后，下一次启动在业务读取前依据事务日志把相关文件整体恢复为旧版本或整体采用新版本，不会出现新旧混合；恢复本身再次中断可重复执行。写入使用普通的就地写入加读回核对，不做 fsync 和原子重命名，所以真正的断电可能让某个文件的数据没有落盘：此时摘要核对会发现不一致，HUHU 保持恢复门、停止启动并提示，不会拿不完整的数据继续写；这种情况需要你用 `.huhu/recovery/transaction/` 里的恢复副本手动恢复。无法确定时同样保持恢复门，不覆盖任何数据。
 
-其他模块要复用同一恢复协议，在应用的 `recovery` 主机注册自己的文件 owner（预检、关闭写入口、严格排空、采用重载、释放），详见[智能体工作台](agent-workbench.md#旧工作台迁移与恢复协议)。
+其他模块要复用同一恢复协议，在应用的 `recovery` 主机注册自己的文件 owner（预检、关闭写入口、严格排空、采用重载、释放），详见[智能体工作台](agent-workbench.md#恢复协议)。
 
 新 v2 不覆盖旧 `workspace.json`；业务入口（看板按钮、技能按钮、快捷命令、一次性运行、自动化智能体/脚本操作）已要求明确的 Space，旧定义保持未绑定并等待你选择。当前模块内缺少明确目标的创建入口会要求选择空间，即使只有一个候选也不会猜测。无空间时网页仍可打开。遇到不支持的新版本或损坏且无有效备份的数据时保留原件，停止写入并显示错误；有效备份的恢复写入也受同一 writer 保护。
 
@@ -168,7 +167,7 @@ v2 记录由当前 TypeScript 进程懒取得一个本机排他监听来保护�
 
 语言设置只影响界面，从不改变文件路径、身份标识、笔记正文或操作参数。
 
-旧看板的备忘与网页卡迁移到收件箱时，使用稳定迁移标记及目标文件名，先写入并读回核对，再移除看板中的旧卡。重试复用同一目标，已被用户改写的目标不会覆盖。快捷操作保存于各看板的 `quickActions`，旧全局快捷命令和快速笔记配置只在该看板首次合并时复制。
+快捷操作保存于各看板的 `quickActions`。
 
 天气缓存位于 `.huhu/cache/weather/`，仅缓存所选坐标的公开预报，不属于可同步的业务内容。工作空间用量索引与历史抽屉共用 `workspace-index.sqlite`，账号级 `index.sqlite` 已停止写入（可安全删除），当前 Vault 投影是唯一的历史索引。
 

@@ -102,7 +102,6 @@ export interface SyncDependencies {
 	now?: () => number;
 }
 
-const STATE_FILE = 'huhu-sync.json';
 
 /**
  * Git sync for one vault: finds git and the repository, keeps their status, and runs every git operation
@@ -233,8 +232,7 @@ export class SyncService {
 		}
 		this.repo = new GitRepo(this.runner, place.scope ?? '.');
 		try {
-			const relative = (await this.repo.git(['rev-parse', '--git-path', STATE_FILE])).stdout.trim();
-			const device = await this.deps.host.loadDevice(place.cwd, this.deps.host.resolve(place.cwd, relative));
+			const device = await this.deps.host.loadDevice(place.cwd);
 			this.deviceCwd = place.cwd;
 			this.snapshot = { ...this.snapshot, phase: 'ready', gitVersion: found.version, place, device };
 		} catch (error) {

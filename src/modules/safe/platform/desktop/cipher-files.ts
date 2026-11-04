@@ -22,7 +22,7 @@ function isMissing(error: unknown): boolean {
 }
 
 function ownedName(name: string): void {
-	if (!/^(?:vault\.enc(?:\.backup)?|(?:conflict-|preserved-|preupgrade-|preimport-|\.tmp-)[0-9a-f-]{36}(?:\.enc)?)$/.test(name)) throw new SafeError('storage');
+	if (!/^(?:vault\.enc(?:\.backup)?|(?:conflict-|preserved-|preimport-|\.tmp-)[0-9a-f-]{36}(?:\.enc)?)$/.test(name)) throw new SafeError('storage');
 }
 
 /** Bound allocation before reading, including files that grow while open. */

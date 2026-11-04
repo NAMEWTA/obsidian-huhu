@@ -129,7 +129,6 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 	const [editing, setEditing] = useState<{ entry?: SafeEntry } | null>(null);
 	const [dialog, setDialog] = useState<'password' | 'import' | 'replace' | 'tags' | null>(null);
 	const [notice, setNotice] = useState<Notice | null>(null);
-	const [upgradeDismissed, setUpgradeDismissed] = useState(false);
 	const action = useSafeAction(service);
 	const entries = searchEntries(state.entries, query, trash, selectedTags);
 	const busy = state.busy || action.busy;
@@ -144,7 +143,6 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 		copy: (value, kind) => { void action.run(() => service.copy(value, win), () => setNotice({ key: kind === 'username' ? 'safe.copiedUsername' : 'safe.copiedPassword' })); },
 		openUrl: url => { void action.run(() => service.openUrl(url, win)); },
 	};
-	const showUpgrade = state.upgraded && !upgradeDismissed;
 	return <section className="flex min-h-0 flex-1 flex-col gap-2 p-3 @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
 		<div className="flex flex-wrap items-center gap-2">
 			{trash && <>
@@ -183,10 +181,6 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 			{selectedTags.length > 0 && <Button size="sm" variant="outline" onClick={() => setSelectedTags([])}>{t('safe.clearTags')}</Button>}
 		</div>
 		{(action.error || state.error) && <div className="flex flex-wrap items-center gap-2" role="status"><SafeErrorMessage error={action.error || safeErrorKey(state.error)} /><Button size="xs" variant="ghost" onClick={() => { action.setError(''); service.clearError(); }}>{t('safe.dismissError')}</Button></div>}
-		{showUpgrade && !trash && <p role="status" className="m-0 flex flex-wrap items-center gap-2 rounded-md bg-muted/50 px-2.5 py-1.5 text-xs text-muted-foreground">
-			<span className="min-w-0 flex-1">{t('safe.upgradeNotice')}</span>
-			<Button size="xs" variant="ghost" onClick={() => setUpgradeDismissed(true)}>{t('safe.dismissError')}</Button>
-		</p>}
 		<div className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek">
 			{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() || selectedTags.length ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() && !selectedTags.length ? t('safe.emptyDescription') : trash && !query.trim() && !selectedTags.length ? t('safe.trashHint') : undefined} />
 				: trash ? <TrashRows entries={entries} busy={busy} onRestore={entry => { void action.run(() => service.restoreEntry(entry)); }} onDelete={entry => service.deleteEntry(entry)} />

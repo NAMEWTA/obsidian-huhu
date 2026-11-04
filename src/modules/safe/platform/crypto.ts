@@ -7,7 +7,6 @@ import {
 	validatePayload,
 	type SafePayload,
 } from '../core/model';
-import { parsePayload } from '../core/migration';
 
 const ITERATIONS = 600000;
 const SALT_BYTES = 16;
@@ -38,8 +37,6 @@ export interface OpenedContainer {
 	payload: SafePayload;
 	key: CryptoKey;
 	envelope: SafeEnvelope;
-	/** Set when the stored plaintext used an older schema; `payload` is the upgraded in-memory form. */
-	upgradedFrom: 1 | 2 | null;
 }
 
 function webCrypto(): Crypto {
@@ -196,8 +193,7 @@ export async function openContainer(raw: string, password: string): Promise<Open
 		} catch {
 			throw new SafeError('invalid-format');
 		}
-		const { payload, upgradedFrom } = parsePayload(parsed, () => crypto.randomUUID());
-		return { payload, key, envelope, upgradedFrom };
+		return { payload: validatePayload(parsed), key, envelope };
 	} catch (error) {
 		if (error instanceof SafeError) throw error;
 		throw new SafeError('unlock-failed');

@@ -25,7 +25,7 @@ export function desktopGitHost(
 		revisionReader: createRevisionReader,
 		clone: (binary, target, source, options) => cloneRepository(binary, vaultRoot, target, source, options),
 		hostname: machineName,
-		loadDevice: (cwd, legacy) => state.load(cwd, legacy),
+		loadDevice: cwd => state.load(cwd),
 		saveDevice: (cwd, base, value) => state.save(cwd, base, value),
 		resolve: (cwd, relative) => path.resolve(cwd, relative),
 		editText,

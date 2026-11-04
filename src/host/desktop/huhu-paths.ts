@@ -26,7 +26,7 @@ export async function absoluteHuhuPath(vaultRoot: string, relative: string): Pro
 	return absoluteVaultPath(vaultRoot, owned);
 }
 
-/** Legacy content must also stay inside the opened vault while being migrated. */
+/** Content outside the HUHU-owned tree must also stay inside the opened vault. */
 export async function absoluteVaultPath(vaultRoot: string, relative: string): Promise<string> {
 	const owned = validateHuhuPath('.huhu/' + relative).slice(6);
 	let current = await realpathOf(vaultRoot);

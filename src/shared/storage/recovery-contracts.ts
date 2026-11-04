@@ -6,8 +6,8 @@ import type { StorageTimers } from './timers';
  *
  * A module publishes a `RecoveryOwner` for the files it really writes; an app-level coordinator runs
  * preflight -> quiesce -> strict drain -> common snapshot -> stage -> recovery copies -> journal ->
- * replace -> adopt -> release. T-15 uses it for the legacy migration; T-16 registers further owners
- * (automations, notifications, settings) without changing this file.
+ * replace -> adopt -> release. Owners (agent, automations, notifications, settings)
+ * register without changing this file.
  */
 
 /** Text storage that can also remove a file. Rollback of a previously missing file needs it. */

@@ -15,7 +15,7 @@ vi.mock('obsidian', async original => ({
 }));
 
 function fixture() {
-	const store = createStore<SafeState>(() => ({ status: 'locked', entries: [], busy: false, error: null, generation: 0, upgraded: false }));
+	const store = createStore<SafeState>(() => ({ status: 'locked', entries: [], busy: false, error: null, generation: 0 }));
 	const lock = vi.fn(() => store.setState(state => ({ status: 'locked', entries: [], generation: state.generation + 1 })));
 	const checkDeadline = vi.fn(() => false);
 	const leave = vi.fn((_reason: string) => lock());

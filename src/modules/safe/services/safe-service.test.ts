@@ -25,7 +25,6 @@ const input: EntryInput = {
 	credentials: [credential(1)],
 };
 const secret = ' private-password-sentinel ';
-const v1 = JSON.parse(readFileSync(new URL('../fixtures/v1-vault.json', import.meta.url), 'utf8')) as { master: string; raw: string; entries: Array<Record<string, unknown>> };
 
 /** A policy the test can change while a session is running. */
 function policySource(initial: LockPolicy = DEFAULT_LOCK_POLICY) {
@@ -514,87 +513,6 @@ describe('accounts inside one entry', () => {
 	});
 });
 
-describe('upgrading a vault using payload schema 1', () => {
-	const kept = (files: MemoryCipherFiles) => [...files.values].filter(([name]) => name.startsWith('preupgrade-')).map(([, raw]) => raw);
-
-	test('shows every record, writes the new schema once and keeps the original ciphertext as its own copy', async () => {
-		const { service, files } = await fixture(v1.raw, true, v1.master);
-		const state = service.store.getState();
-		expect(state).toMatchObject({ status: 'unlocked', upgraded: true, error: null });
-		expect(state.entries).toHaveLength(v1.entries.length);
-		state.entries.forEach((entry, index) => {
-			const old = v1.entries[index]!;
-			expect(entry).toMatchObject({ id: old.id, title: old.title, url: old.url, deletedAt: old.deletedAt, createdAt: old.createdAt, updatedAt: old.updatedAt });
-			expect(entry.credentials).toEqual([expect.objectContaining({ username: old.username, password: old.password, notes: old.notes })]);
-		});
-		expect(kept(files)).toEqual([v1.raw]);
-		expect(files.values.get(BACKUP)).toBe(v1.raw);
-		expect(files.values.get(MAIN)).not.toBe(v1.raw);
-		const reopened = await openContainer(files.values.get(MAIN)!, v1.master);
-		expect(reopened.upgradedFrom).toBeNull();
-		expect(reopened.payload.entries).toEqual(state.entries);
-		expect(parseEnvelope(files.values.get(MAIN)!)).toMatchObject({ format: 'huhu-safe', version: 1 });
-		expect((await openContainer(kept(files)[0]!, v1.master)).upgradedFrom).toBe(1);
-		for (const raw of files.values.values()) for (const marker of ['apple-pass-1', 'octo', 'no-title-user', '苹果账号']) expect(raw).not.toContain(marker);
-		service.lock();
-		await service.unlock(v1.master);
-		expect(kept(files)).toHaveLength(1);
-		expect(service.store.getState()).toMatchObject({ status: 'unlocked', upgraded: false });
-	});
-
-	test('a failed upgrade still opens the records, leaves the old file as it was and retries with a kept copy on the next write', async () => {
-		const { service, files } = await fixture(v1.raw, false, v1.master);
-		files.beforePublish = name => { if (name.startsWith('preupgrade-')) throw new Error('disk full'); };
-		await service.unlock(v1.master);
-		expect(service.store.getState()).toMatchObject({ status: 'unlocked', error: 'storage', upgraded: false });
-		expect(service.store.getState().entries).toHaveLength(v1.entries.length);
-		expect(files.values.get(MAIN)).toBe(v1.raw);
-		expect(kept(files)).toEqual([]);
-		files.beforePublish = undefined;
-		await service.saveEntry(input);
-		expect(kept(files)).toEqual([v1.raw]);
-		expect(service.store.getState()).toMatchObject({ upgraded: true, error: null });
-		const reopened = await openContainer(files.values.get(MAIN)!, v1.master);
-		expect(reopened.upgradedFrom).toBeNull();
-		expect(reopened.payload.entries).toHaveLength(v1.entries.length + 1);
-	});
-
-	test('locking before the upgrade was written changes nothing on disk and the next unlock upgrades', async () => {
-		const { service, files } = await fixture(v1.raw, false, v1.master);
-		files.beforePublish = name => { if (name.startsWith('preupgrade-')) throw new Error('disk full'); };
-		await service.unlock(v1.master);
-		service.lock();
-		expect(files.values.get(MAIN)).toBe(v1.raw);
-		files.beforePublish = undefined;
-		await service.unlock(v1.master);
-		expect(service.store.getState()).toMatchObject({ upgraded: true, error: null });
-		expect(kept(files)).toEqual([v1.raw]);
-	});
-
-	test('does not upgrade over an external change and reports the conflict', async () => {
-		const { service, files } = await fixture(v1.raw, false, v1.master);
-		files.beforeRead = async name => {
-			if (name === MAIN && files.values.get(MAIN) === v1.raw && files.publications.length === 0) return;
-		};
-		await service.unlock(v1.master);
-		files.values.set(MAIN, emptyRaw);
-		await expect(service.saveEntry(input)).rejects.toMatchObject({ code: 'conflict' });
-		expect(files.values.get(MAIN)).toBe(emptyRaw);
-	});
-
-	test('changing the master password of a not yet upgraded vault keeps the original copy under the old password', async () => {
-		const { service, files } = await fixture(v1.raw, false, v1.master);
-		files.beforePublish = name => { if (name.startsWith('preupgrade-')) throw new Error('disk full'); };
-		await service.unlock(v1.master);
-		files.beforePublish = undefined;
-		await service.changePassword(v1.master, backupPassword);
-		expect(kept(files)).toEqual([v1.raw]);
-		await service.unlock(backupPassword);
-		expect(service.store.getState().entries).toHaveLength(v1.entries.length);
-		expect((await openContainer(kept(files)[0]!, v1.master)).payload.entries).toHaveLength(v1.entries.length);
-	});
-});
-
 describe('merge import', () => {
 	const preimport = (files: MemoryCipherFiles) => [...files.values].filter(([name]) => name.startsWith('preimport-')).map(([, raw]) => raw);
 	const apple = { ...input, title: 'Apple', url: 'https://appleid.apple.com', credentials: [credential(1, { username: 'a@x.test', password: 'p1' })] };
@@ -659,14 +577,6 @@ describe('merge import', () => {
 		expect(await service.commitImport(again.token)).toMatchObject({ skippedEntries: 2 });
 		expect(files.publications).toHaveLength(published);
 		expect(preimport(files)).toHaveLength(1);
-	});
-
-	test('merges the records of a schema-1 backup', async () => {
-		const { service } = await fixture();
-		const prepared = await service.prepareImport(v1.raw, v1.master);
-		expect(prepared.summary).toMatchObject({ addedEntries: 3, skippedTrashed: 1 });
-		await service.commitImport(prepared.token);
-		expect(service.store.getState().entries.map(entry => entry.title)).toEqual(['苹果账号', 'github', '']);
 	});
 
 	test('a merge based on a changed file is refused as a conflict and keeps the candidate', async () => {
@@ -785,7 +695,7 @@ describe('lock policy', () => {
 
 
 describe('contact, label, relation and generator boundaries', () => {
-	test('version 2 is authenticated, preserved byte-for-byte, upgraded once, and reopened as version 3', async () => {
+	test('an authenticated version 2 plaintext is refused as an invalid vault and the file is left untouched', async () => {
 		const current = createEntry(input, 'e1111111-1111-4111-8111-111111111111', initialTime);
 		const { tags: _tags, ...entry } = current;
 		const legacy = { version: 2, entries: [{ ...entry, credentials: entry.credentials.map(({ phone: _p, email: _e, relations: _r, ...account }) => account) }] };
@@ -795,13 +705,10 @@ describe('contact, label, relation and generator boundaries', () => {
 			additionalData: new TextEncoder().encode(JSON.stringify(['huhu-safe', 1, 'payload', created.envelope.safeId])),
 		}, created.key, new TextEncoder().encode(JSON.stringify(legacy)));
 		const raw = JSON.stringify({ ...created.envelope, payload: { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) } });
-		const { service, files } = await fixture(raw);
-		expect(service.store.getState()).toMatchObject({ upgraded: true, entries: [current] });
-		expect([...files.values].filter(([name]) => name.startsWith('preupgrade-')).map(([, value]) => value)).toEqual([raw]);
-		expect(await openContainer(files.values.get(MAIN)!, master)).toMatchObject({ upgradedFrom: null, payload: { version: 3, entries: [current] } });
-		const writes = files.publications.length;
-		service.lock(); await service.unlock(master);
-		expect(files.publications).toHaveLength(writes);
+		const { service, files } = await fixture(raw, false);
+		await expect(service.unlock(master)).rejects.toMatchObject({ code: 'invalid-format' });
+		expect(files.values.get(MAIN)).toBe(raw);
+		expect(files.publications).toEqual([]);
 	});
 
 	test('optional contacts, same-entry links and tags persist encrypted; dangling links remain explicit and new missing links are rejected', async () => {

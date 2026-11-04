@@ -151,15 +151,15 @@ describe('ciphertext repository', () => {
 
 	test('keeps the file a bulk change starts from as its own copy, then publishes like an ordinary commit', async () => {
 		const { files, repository } = setup();
-		await repository.commitKeeping('preupgrade', NEXT, OLD);
+		await repository.commitKeeping('preimport', NEXT, OLD);
 		expect(files.values.get(MAIN)).toBe(NEXT);
 		expect(files.values.get(BACKUP)).toBe(OLD);
-		expect([...files.values].filter(([name]) => name.startsWith('preupgrade-')).map(([, raw]) => raw)).toEqual([OLD]);
-		expect(files.published).toEqual(['preupgrade-00000000-0000-4000-8000-000000000001.enc', BACKUP, MAIN]);
+		expect([...files.values].filter(([name]) => name.startsWith('preimport-')).map(([, raw]) => raw)).toEqual([OLD]);
+		expect(files.published).toEqual(['preimport-00000000-0000-4000-8000-000000000001.enc', BACKUP, MAIN]);
 		// A later ordinary save rotates the single backup but the kept copy stays.
 		await repository.commit(FOREIGN, NEXT);
 		expect(files.values.get(BACKUP)).toBe(NEXT);
-		expect([...files.values].filter(([name]) => name.startsWith('preupgrade-')).map(([, raw]) => raw)).toEqual([OLD]);
+		expect([...files.values].filter(([name]) => name.startsWith('preimport-')).map(([, raw]) => raw)).toEqual([OLD]);
 	});
 
 	test('a kept copy that cannot be written stops the change before anything else is touched', async () => {

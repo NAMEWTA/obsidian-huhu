@@ -16,7 +16,7 @@ export const MAX_RELATIONS = 50;
 export const MAX_ENTRY_TAGS = 32;
 /** A custom icon is a small data URL kept inside the encrypted payload, never a separate plaintext file. */
 export const ICON_MAX_CHARS = 32768;
-/** The plaintext schema stored inside the encrypted payload. Versions 1 (single account) and 2 (multiple accounts) are upgraded on unlock. */
+/** The plaintext schema stored inside the encrypted payload. Other versions are rejected as an invalid vault. */
 export const PAYLOAD_VERSION = 3;
 
 export const MAX_PAYLOAD_BYTES = 5 * 1024 * 1024;

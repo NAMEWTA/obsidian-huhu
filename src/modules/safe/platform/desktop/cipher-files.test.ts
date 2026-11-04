@@ -81,10 +81,10 @@ describe('desktop ciphertext files', () => {
 		await expect(readCipherFile(root)).rejects.toMatchObject({ code: 'storage' });
 	});
 
-	test('accepts exactly the names the safe writes, including the kept upgrade and import copies', async () => {
+	test('accepts exactly the names the safe writes, including the kept import copy', async () => {
 		const { files } = await fixture();
 		const id = '00000000-0000-4000-8000-000000000001';
-		for (const name of ['vault.enc', 'vault.enc.backup', `conflict-${id}.enc`, `preserved-${id}.enc`, `preupgrade-${id}.enc`, `preimport-${id}.enc`]) {
+		for (const name of ['vault.enc', 'vault.enc.backup', `conflict-${id}.enc`, `preserved-${id}.enc`, `preimport-${id}.enc`]) {
 			const staged = await files.stage(`cipher for ${name}`);
 			await files.publish(staged, name);
 			expect(await files.read(name)).toBe(`cipher for ${name}`);

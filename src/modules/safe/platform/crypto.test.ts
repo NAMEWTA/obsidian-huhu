@@ -128,51 +128,19 @@ describe('safe Web Crypto format', () => {
 		await expect(openContainer(JSON.stringify(envelope), password)).rejects.toMatchObject({ code: 'invalid-format' });
 	});
 
-	test('opens a vault using payload schema 1, upgrades it in memory and writes it back without touching the key envelope', async () => {
-		const fixture = JSON.parse(readFileSync(new URL('../fixtures/v1-vault.json', import.meta.url), 'utf8')) as { master: string; raw: string; entries: Array<Record<string, unknown>> };
-		const original = parseEnvelope(fixture.raw);
-		expect(original.version).toBe(1);
-		const opened = await openContainer(fixture.raw, fixture.master);
-		expect(opened.upgradedFrom).toBe(1);
-		expect(opened.payload.entries).toHaveLength(fixture.entries.length);
-		opened.payload.entries.forEach((entry, index) => {
-			const old = fixture.entries[index]!;
-			expect(entry).toMatchObject({ id: old.id, title: old.title, url: old.url, deletedAt: old.deletedAt });
-			expect(entry.credentials[0]).toMatchObject({ username: old.username, password: old.password, notes: old.notes });
-		});
-		await expect(openContainer(fixture.raw, 'not the fixture master password')).rejects.toMatchObject({ code: 'unlock-failed' });
-		const derive = vi.spyOn(crypto.subtle, 'deriveKey');
-		let sealed;
-		try {
-			sealed = await sealPayload(opened.payload, opened.key, opened.envelope);
-			expect(derive).not.toHaveBeenCalled();
-		} finally {
-			derive.mockRestore();
-		}
-		// Same container format, salt, iteration count, safe id and wrapped data key: only the payload is new.
-		expect(sealed.envelope).toMatchObject({ format: 'huhu-safe', version: 1, safeId: original.safeId, kdf: original.kdf, key: original.key });
-		expect(sealed.envelope.payload.iv).not.toBe(original.payload.iv);
-		const reopened = await openContainer(sealed.raw, fixture.master);
-		expect(reopened.upgradedFrom).toBeNull();
-		expect(reopened.payload).toEqual(opened.payload);
-		for (const marker of ['apple-pass-1', 'octo', 'no-title-user', 'forum.example.test']) expect(sealed.raw).not.toContain(marker);
-	});
-
-	test('refuses to open a damaged version 1 plaintext rather than guessing what it meant', async () => {
-		const fixture = JSON.parse(readFileSync(new URL('../fixtures/v1-vault.json', import.meta.url), 'utf8')) as { master: string; raw: string };
-		const original = parseEnvelope(fixture.raw);
-		const opened = await openContainer(fixture.raw, fixture.master);
-		const replace = async (plaintext: unknown) => {
+	test('refuses an authenticated plaintext without the current schema version instead of guessing what it meant', async () => {
+		const seal = async (plaintext: unknown) => {
+			const envelope = cloneEnvelope(created.envelope);
 			const iv = crypto.getRandomValues(new Uint8Array(12));
 			const ciphertext = await crypto.subtle.encrypt({
 				name: 'AES-GCM', iv, tagLength: 128,
-				additionalData: new TextEncoder().encode(JSON.stringify(['huhu-safe', 1, 'payload', original.safeId])),
-			}, opened.key, new TextEncoder().encode(JSON.stringify(plaintext)));
-			return JSON.stringify({ ...original, payload: { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) } });
+				additionalData: new TextEncoder().encode(JSON.stringify(['huhu-safe', 1, 'payload', envelope.safeId])),
+			}, created.key, new TextEncoder().encode(JSON.stringify(plaintext)));
+			envelope.payload = { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
+			return JSON.stringify(envelope);
 		};
-		const [first] = (JSON.parse(readFileSync(new URL('../fixtures/v1-vault.json', import.meta.url), 'utf8')) as { entries: Array<Record<string, unknown>> }).entries;
-		await expect(openContainer(await replace({ entries: [{ ...first, password: '' }] }), fixture.master)).rejects.toMatchObject({ code: 'invalid-format' });
-		await expect(openContainer(await replace({ entries: [first], future: true }), fixture.master)).rejects.toMatchObject({ code: 'invalid-format' });
-		await expect(openContainer(await replace({ entries: [first] }), fixture.master)).resolves.toMatchObject({ upgradedFrom: 1 });
+		await expect(openContainer(await seal({ entries: [] }), password)).rejects.toMatchObject({ code: 'invalid-format' });
+		await expect(openContainer(await seal({ version: 2, entries: [] }), password)).rejects.toMatchObject({ code: 'invalid-format' });
+		await expect(openContainer(await seal({ ...makePayload([]), future: true }), password)).rejects.toMatchObject({ code: 'invalid-format' });
 	});
 });

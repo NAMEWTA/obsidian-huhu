@@ -21,12 +21,11 @@ test('same host resumes its vault identity; a synced copy cannot claim another d
 	expect(other.vaultId).not.toBe(first.vaultId);
 	expect([...f.files.keys()].every(path => path.startsWith('.huhu/'))).toBe(true);
 });
-test('migration reuses an unclaimed legacy identity and requires explicit selection without host identity', async () => {
-	const f = fixture(), legacy = '11111111-1111-4111-8111-111111111111';
-	const first = await initializeVaultIdentity(f.storage, { ...options('first'), legacyDeviceId: legacy });
-	expect(first.deviceId).toBe(legacy);
-	const second = await initializeVaultIdentity(f.storage, { ...options('second'), legacyDeviceId: legacy });
-	expect(second.deviceId).not.toBe(legacy);
+test('without host identity the device is chosen explicitly and an unknown choice is refused', async () => {
+	const f = fixture();
+	const first = await initializeVaultIdentity(f.storage, options('first'));
+	const second = await initializeVaultIdentity(f.storage, options('second'));
+	expect(second.deviceId).not.toBe(first.deviceId);
 	const chosen = await initializeVaultIdentity(f.storage, { ...options(), chooseDevice: async devices => { expect(devices.length).toBe(2); return first.deviceId; } });
 	expect(chosen).toEqual(first);
 	await expect(initializeVaultIdentity(f.storage, { ...options(), chooseDevice: async () => 'missing' })).rejects.toThrow('unknown-device');
@@ -46,7 +45,7 @@ test('the first confirmed identity survives primary corruption without minting a
 	expect(await initializeVaultIdentity(f.storage, options('machine'))).toEqual(first);
 });
 
-test('an empty legacy backup never turns a damaged existing identity into a fresh installation', async () => {
+test('an empty backup never turns a damaged existing identity into a fresh installation', async () => {
 	const f = fixture();
 	f.files.set('.huhu/config/identity.json', '{');
 	f.files.set('.huhu/config/identity.json.backup', 'null');

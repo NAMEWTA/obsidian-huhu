@@ -3,10 +3,9 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { loadSettingsRuntime } from './runtime';
 import { defineSettings, f as field } from '../../shared/settings/schema';
 import type { SettingsFile } from '../../shared/settings/store';
-import { initializeDevice } from '../../host/obsidian/storage/device-id';
+import { deviceId, initializeDevice } from '../../host/obsidian/storage/device-id';
 
 const vaultFile = '.huhu/config/settings.json';
-const deviceFile = '.huhu/config/devices/00000000-0000-0000-0000-000000000000.json';
 const schema = defineSettings({ a: field.number({ default: 1 }), b: field.number({ default: 1 }), device: field.number({ default: 1, scope: 'device' }) });
 afterEach(() => vi.unstubAllGlobals());
 
@@ -19,10 +18,11 @@ async function fixture() {
 		write: async (path: string, text: string) => { files.set(path, text); },
 		mkdir: async () => {},
 	};
-	const app = { vault: { adapter }, loadLocalStorage: (key: string) => key === 'huhu.device-id' ? '00000000-0000-0000-0000-000000000000' : null, saveLocalStorage: () => {} } as unknown as App;
+	const app = { vault: { adapter }, } as unknown as App;
 	await initializeDevice(app, { machineIdentity: async () => 'test-machine', label: 'Test', chooseDevice: async () => ({ label: 'Manual' }) });
+	const deviceFile = `.huhu/config/devices/${deviceId(app)}.json`;
 	const runtime = await loadSettingsRuntime(app);
-	return { files, adapter, runtime, handle: runtime.store.bind('sample', schema), disk: () => JSON.parse(files.get(vaultFile)!) as SettingsFile };
+	return { files, deviceFile, adapter, runtime, handle: runtime.store.bind('sample', schema), disk: () => JSON.parse(files.get(vaultFile)!) as SettingsFile };
 }
 
 test('real settings runtime adopts external updates and deletions across successive saves', async () => {
@@ -51,7 +51,7 @@ test('edits queued during a save survive its callback and retain merged external
 	release(); await Promise.all([first, second]);
 	expect(f.handle.get()).toEqual({ a: 3, b: 2, device: 5 });
 	expect(f.disk().namespaces.sample).toEqual({ a: 3, b: 2 });
-	expect(JSON.parse(f.files.get(deviceFile)!).namespaces.sample).toEqual({ device: 5 });
+	expect(JSON.parse(f.files.get(f.deviceFile)!).namespaces.sample).toEqual({ device: 5 });
 	await f.runtime.store.dispose();
 });
 
@@ -60,12 +60,12 @@ test('a device write failure retains edits and does not undo a successful vault 
 	const external = f.disk(); external.namespaces.sample!.b = 2; f.files.set(vaultFile, JSON.stringify(external));
 	const write = f.adapter.write;
 	let fail = true;
-	f.adapter.write = async (path, text) => { if (path === deviceFile && fail) { fail = false; throw new Error('disk full'); } await write(path, text); };
+	f.adapter.write = async (path, text) => { if (path === f.deviceFile && fail) { fail = false; throw new Error('disk full'); } await write(path, text); };
 	await expect(f.handle.update(value => { value.a = 2; value.device = 4; }, { persist: 'immediate' })).rejects.toThrow('disk full');
 	expect(f.handle.get()).toEqual({ a: 2, b: 2, device: 4 });
 	await f.runtime.store.flush();
 	expect(f.disk().namespaces.sample).toEqual({ a: 2, b: 2 });
-	expect(JSON.parse(f.files.get(deviceFile)!).namespaces.sample).toEqual({ device: 4 });
+	expect(JSON.parse(f.files.get(f.deviceFile)!).namespaces.sample).toEqual({ device: 4 });
 	await f.runtime.store.dispose();
 });
 

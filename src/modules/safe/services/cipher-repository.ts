@@ -50,10 +50,10 @@ export class CipherRepository {
 
 	/**
 	 * A commit that first keeps the file it starts from as its own encrypted copy. `vault.enc.backup` is replaced by
-	 * every later save, so changes that rewrite many records at once (the schema upgrade, a merge import) leave a
+	 * every later save, so changes that rewrite many records at once (a merge import) leave a
 	 * copy that stays until the user removes it. Nothing is deleted automatically.
 	 */
-	async commitKeeping(kind: 'preupgrade' | 'preimport', raw: string, expectedRaw: string): Promise<void> {
+	async commitKeeping(kind: 'preimport', raw: string, expectedRaw: string): Promise<void> {
 		await this.checkCurrent(raw, expectedRaw);
 		await this.write(`${kind}-${this.uuid()}.enc`, expectedRaw);
 		await this.commit(raw, expectedRaw);
