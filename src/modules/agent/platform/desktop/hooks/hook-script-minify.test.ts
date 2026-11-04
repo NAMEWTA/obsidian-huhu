@@ -40,6 +40,18 @@ describe('hook script build-time minification', () => {
 		expect(result[3]).toBe(8);
 	});
 
+	it('treats CRLF sources (Windows checkouts) exactly like LF, keeping statement slots as statements', () => {
+		// Shape of HOOK_SCRIPT: an expression statement followed by two statement slots on their own lines.
+		const parts = 'var P1 = "function one(){return 1}", P2 = "function two(){return 2}";';
+		const lf = parts + template('let a = 0;\nglobalThis.x && (a = 9);\n${P1}\n${P2}\nconst out = [a, one(), two()];').replace('export const T =', ' export const T =');
+		const crlf = lf.replace(/\n/g, '\r\n');
+		const fromLf = minifyHookScripts(lf, 'sample');
+		const fromCrlf = minifyHookScripts(crlf, 'sample');
+		expect(fromCrlf).toBe(fromLf);
+		const script = runInNewContext(`${fromCrlf.replace(' export const T =', ' var T =')}; T`) as string;
+		expect(outcome(script)).toEqual([0, 1, 2]);
+	});
+
 	it('rejects a marker that does not precede a template literal', () => {
 		expect(() => minifyHookScripts(`${MARK} const x = 1;`, 'sample')).toThrow(/directly precede/);
 	});

@@ -45,6 +45,10 @@ export function minifyScriptText(text, label) {
 }
 
 export function minifyHookScripts(source, file = '<source>') {
+	// Windows checkouts deliver CRLF. Template literals cook CRLF to LF anyway, and the statement-slot
+	// detection below is line-based: without this, a slot alone on its line was taken for an expression
+	// and esbuild merged it into a comma expression, shipping a syntax error on Windows only.
+	source = source.replace(/\r\n?/g, '\n');
 	let out = '';
 	let cursor = 0;
 	for (let at = source.indexOf(MARKER); at >= 0; at = source.indexOf(MARKER, cursor)) {
