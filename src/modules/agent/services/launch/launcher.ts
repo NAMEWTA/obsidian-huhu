@@ -30,7 +30,7 @@ export interface LaunchHost {
 	interactive?: boolean;
 	managed?: boolean;
 	intent?: ForegroundIntent;
-	/** Supplied only for a committed Space; legacy history keeps the Vault-only check. */
+	/** Supplied only for a committed Space; without it only the Vault-only check applies. */
 	validateCwd?: (cwd: string) => Promise<void>;
 	app: App;
 	getVaultPath: () => string | undefined;

@@ -90,10 +90,10 @@ export async function rebaseRecords(text: string, context: RebaseContext): Promi
 		grants,
 	};
 	if (sourceVault !== target.vaultId) rebaseVaultReferences(next, sourceVault, target.vaultId);
-	if (next.inbox !== undefined && !validateInboxDocument(next.inbox, { vaultId: target.vaultId }))
+	if (!validateInboxDocument(next.inbox, { vaultId: target.vaultId }))
 		throw new InvalidSection('records:inbox-invalid');
 	if (!isWorkbenchRecords(next)) throw new InvalidSection('records:rebased-invalid');
-	const messages = (next.inbox as { messages?: unknown[] } | undefined)?.messages?.length ?? 0;
+	const messages = next.inbox.messages.length;
 	return {
 		text: JSON.stringify(next),
 		spaces: Object.keys(spaces).length,

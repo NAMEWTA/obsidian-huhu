@@ -99,7 +99,7 @@ test('cancelled send is rejected before owner initialization and cannot write la
 	abort.abort();
 	await expect(f.service.sendInbox({ messageId: 'cancelled', recipient: recipient(a.space.id, a.sessionId), source: 'test', body: 'body' }, { signal: abort.signal })).rejects.toMatchObject({ code: 'WAIT_CANCELLED' });
 	expect(f.owners.acquire).toHaveBeenCalledTimes(1); // target setup owns the only permit; cancellation adds no writer
-	expect(JSON.parse(f.files.get(f.path)!).inbox).toBeUndefined();
+	expect(JSON.parse(f.files.get(f.path)!).inbox.messages).toEqual([]);
 	await f.service.dispose();
 });
 

@@ -166,6 +166,7 @@ describe('manifest hygiene (L9, L3)', () => {
 			layouts: {},
 			historyOwners: {},
 			sharedLayout: { version: 1, tabs: {}, groups: [], closedTabs: [] },
+			inbox: { version: 1, messages: [], nextSequence: 1 },
 		};
 		expect(isEmptyDocument('records', JSON.stringify(base))).toBe(true);
 		for (const change of [

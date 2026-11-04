@@ -2,7 +2,7 @@
 export interface ForegroundIntent {
 	valid(): boolean;
 	dispose(): void;
-	/** One synchronous focus inside the original leaf; independent of legacy valid/dispose. */
+	/** One synchronous focus inside the original leaf; independent of valid/dispose. */
 	commitFocus?(element: HTMLElement, focus: () => void): boolean;
 	/** Owned confirmation dialogs may move focus without granting a new foreground target. */
 	allowWithin?(element: HTMLElement): () => void;

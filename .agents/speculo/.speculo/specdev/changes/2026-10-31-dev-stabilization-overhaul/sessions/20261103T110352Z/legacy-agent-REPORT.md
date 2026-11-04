@@ -36,3 +36,10 @@
 - `services/migrations/` 仅剩现行恢复 owner，改名为 `services/recovery/`（module.ts 与测试引用已同步）。
 - 复查 `rg legacy|migrat|v1`：清理 `agent-owners.ts` 注释、`module.ts` 的 `migrationLifetime`（改 `lifetime`）、`agent.accountScopeMismatch` 中“迁移旧账号”提示（en/zh）、space-service 注释。其余命中均为现行逻辑：URL/协议版本（`/v1/`、`resource-v1`、`huhu-*-v1`）、终端 legacy 键盘编码与 `registerLegacy`/`legacySizeAllowed`、`legacy-unattributed/unconfirmed/helper` 证据原因、`legacyManagedResult`/`admitLegacyLaunch`（旧入口 API 名）、`legacyPaneId`（deterministic pane id，前述保留）、hook 旧命令形态清理、Gemini 旧项目哈希目录读取（`history/scan.ts`，提供方现行目录兼容）、Orca 引用、`agent.migration.blocked` 键名。
 - 验证：tsc 两个中 agent/app 无错误（仅他区 dashboard/archives 在途错误）；vitest（spaces、recovery、agent-backup、src/app、src/shared/storage）51 文件 394 例通过；`test:architecture`、`test:i18n`、`test:docs` 通过；改动文件 eslint 零警告。
+
+## 第三轮
+- `WorkbenchRecords.inbox` 改为必需：`emptyRecords` 增加 `inbox: emptyInbox()`（此前并未提供初值）；`isWorkbenchRecords` 缺失或非法 inbox 即无效；`space-service` 读取时缺失 inbox 走 `inbox-invalid` 失败路径（不回退为空、不覆盖文件）；`inboxDocument()` 直接返回 `records.inbox`；`services/backup/records.ts` 去掉 undefined 兜底；`core/backup/transforms.ts` 的“记录为空”判断要求 inbox 存在且无消息。
+- 测试同步：`test/agent-backup/units.test.ts` 夹具加 inbox；`space-service-inbox.test.ts` 改断言 `inbox.messages` 为空。
+- 注释改准：`history-store.ts`（预览状态未设置）、`launcher.ts`（无 validateCwd 时只做 Vault 检查）、`foreground-intent.ts`、`model.ts`（paneId 缺失时按位置确定性派生、不写盘），均不改行为。
+- 说明未改：`admitLegacyLaunch`/`legacyManagedResult`/api.ts 的 legacy 入口是现行交互式（非 managed）启动路径。
+- 验证：两个 tsc agent 相关无错误；`vitest run src/modules/agent test/agent test/agent-backup` 通过；agent eslint 零警告。

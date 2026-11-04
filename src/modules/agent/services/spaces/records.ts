@@ -6,7 +6,7 @@ import { AGENT_CATALOG } from '../../core/launch/catalog';
 import type { DirectoryGrant, PhysicalDirectory, SpaceRecord, VaultBinding } from '../../core/space/model';
 import { SHELL_CHOICES, type ShellChoice } from '../../core/terminal/settings';
 import { emptyWorkspace, type WorkspaceState } from '../../core/workspace/model';
-import { validateInboxDocument, type InboxDocument } from '../../core/inbox/model';
+import { emptyInbox, validateInboxDocument, type InboxDocument } from '../../core/inbox/model';
 
 export interface SessionAttempt {
 	readonly runtimeId: string;
@@ -58,8 +58,7 @@ export interface WorkbenchRecords {
 	/** Durable sourceRef ownership for history rows. Never inferred from cwd or UI selection. */
 	historyOwners?: Record<string, string>;
 	selectedSpaceId?: string;
-	/** Optional so records written before the inbox existed remain readable without migration. */
-	inbox?: InboxDocument;
+	inbox: InboxDocument;
 }
 export function emptyRecords(vault: VaultBinding): WorkbenchRecords {
 	return {
@@ -73,6 +72,7 @@ export function emptyRecords(vault: VaultBinding): WorkbenchRecords {
 		layouts: {},
 		sharedLayout: emptyWorkspace(),
 		historyOwners: {},
+		inbox: emptyInbox(),
 	};
 }
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -208,7 +208,7 @@ export function isWorkbenchRecords(v: unknown): v is WorkbenchRecords {
 		!Object.entries(v.layouts).every(([id, layout]) => Object.hasOwn(spaces, id) && workspace(layout))
 	)
 		return false;
-	if (v.inbox !== undefined && !validateInboxDocument(v.inbox, { vaultId: v.vaultId })) return false;
+	if (!validateInboxDocument(v.inbox, { vaultId: v.vaultId })) return false;
 	if (
 		v.historyOwners !== undefined &&
 		(!object(v.historyOwners) ||

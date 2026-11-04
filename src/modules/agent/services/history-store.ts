@@ -9,7 +9,7 @@ export type HistoryRow = NativeSessionSummary &
 		kind?: 'agent' | 'shell';
 		metadata: HistoryMetadata;
 		inVault: boolean;
-		/** Legacy consumers may construct a row before the first lazy-preview state is assigned. */
+		/** Unset until the first lazy preview is requested. */
 		previewState?: 'idle' | 'loading' | 'ready' | 'unavailable';
 		readError?: string;
 		/** The returned body is an incomplete prefix, so its last turn is not the latest native turn. */

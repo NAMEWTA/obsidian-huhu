@@ -223,9 +223,9 @@ export function isEmptyDocument(
 					value.selectedSpaceId === undefined &&
 					(!isObject(layout) ||
 						(none(layout.tabs) && (!Array.isArray(layout.groups) || layout.groups.length === 0))) &&
-					(!isObject(value.inbox) ||
-						!Array.isArray(value.inbox.messages) ||
-						value.inbox.messages.length === 0)
+					isObject(value.inbox) &&
+					Array.isArray(value.inbox.messages) &&
+					value.inbox.messages.length === 0
 				);
 			}
 		}

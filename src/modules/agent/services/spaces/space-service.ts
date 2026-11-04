@@ -29,7 +29,6 @@ import {
 import {
 	INBOX_LIMITS,
 	inboxCapacityBytes,
-	emptyInbox,
 	validateInboxDocument,
 	validateInboxMessage,
 	validateMessageId,
@@ -181,9 +180,8 @@ export class SpaceService {
 		if (!object(decoded) || decoded.version !== 2)
 			throw new SpaceError('PERSISTENCE_FAILED', 'unsupported-version');
 		this.assertScope(decoded);
-		// An inbox field is an opt-in versioned subdocument. Once present, malformed
-		// inbox data must not silently fall back to an older backup as an empty inbox.
-		if (decoded.inbox !== undefined && !validateInboxDocument(decoded.inbox, { vaultId: this.vault.vaultId }))
+		// Malformed inbox data must not silently fall back to an older backup as an empty inbox.
+		if (!validateInboxDocument(decoded.inbox, { vaultId: this.vault.vaultId }))
 			throw new SpaceError('PERSISTENCE_FAILED', 'inbox-invalid');
 		return isWorkbenchRecords(decoded) ? decoded : undefined;
 	}
@@ -923,9 +921,7 @@ export class SpaceService {
 		}
 	}
 	private inboxDocument(records: WorkbenchRecords): InboxDocument {
-		return records.inbox && validateInboxDocument(records.inbox, { vaultId: this.vault.vaultId })
-			? records.inbox
-			: emptyInbox();
+		return records.inbox;
 	}
 	private inboxTarget(records: WorkbenchRecords, recipient: InboxRecipient, allowArchived = false): SessionRecord {
 		if (!recipient || typeof recipient.spaceId !== 'string' || typeof recipient.sessionId !== 'string')
