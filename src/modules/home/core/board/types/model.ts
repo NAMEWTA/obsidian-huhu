@@ -1,4 +1,4 @@
-import { DEFAULT_TASK_ARCHIVE_PATH, DEFAULT_HIGHLIGHT_IMPORT_PATH, DEFAULT_MEMO_ROOT } from '../default-paths';
+import { DEFAULT_TASK_ARCHIVE_PATH, DEFAULT_MEMO_ROOT } from '../default-paths';
 import { DEFAULT_DASHBOARD_FILE } from '../../../../../shared/storage/vault-layout';
 import type { TaskAutomationMeta } from '../../../../../shared/automation/metadata';
 import type { AutomationDefinition } from '../../../../../shared/automation/types';
@@ -75,16 +75,6 @@ export interface DashboardSettings {
 	/** Optional custom button color for the quick-buttons widget (palette
 	 *  picker; undefined = theme default). */
 	quickButtonsBtnColor?: string;
-	/** Weread (WeChat Read) official API key (wrk-...), shared account-wide. */
-	/** Inert legacy integration settings, retained for compatibility; no service reads them. */
-	wereadApiKey: string;
-	ticktickRegion: 'dida365' | 'ticktick';
-	ticktickCookie: string;
-	ticktickCsrf: string;
-	ticktickDeviceVersion: string;
-	ticktickTimezone: string;
-	/** Folder where weread highlights are imported as notes. */
-	wereadImportPath: string;
 	/** Global dashboard background image (vault path or URL). Empty = none. */
 	bgImage: string;
 	/** Background dimming overlay 0-100 (keeps text readable over busy images). */
@@ -219,13 +209,6 @@ export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings = {
 	albums: [],
 	anniversaries: [],
 	// No default picture: a fresh vault must not fetch a remote image on first open.
-	wereadApiKey: '',
-	ticktickRegion: 'dida365',
-	ticktickCookie: '',
-	ticktickCsrf: '',
-	ticktickDeviceVersion: '',
-	ticktickTimezone: 'Asia/Shanghai',
-	wereadImportPath: DEFAULT_HIGHLIGHT_IMPORT_PATH,
 	bgImage: '',
 	bgDim: 40,
 	bgBlur: 0,
@@ -522,45 +505,6 @@ export interface AnniversaryConfig {
 	background?: WidgetBackground;
 }
 
-// Read/write compatibility for retired sections. These types never enable an integration.
-type WereadReadingState = 'notStarted' | 'reading' | 'finished';
-type WereadContentType = 'book' | 'audio' | 'article';
-type WereadRecency = 'recent7' | 'recent30' | 'older' | 'never';
-type WereadNoteState = 'highlights' | 'ideas' | 'none';
-type WereadGroupBy = 'none' | 'readingState' | 'contentType' | 'recency' | 'notes';
-
-/** Preserved widget configuration inside an old WeRead section. */
-export interface WereadWidget {
-	id: string;
-	view: 'shelf' | 'stats' | 'notes';
-	/** Stats widget: ordered list of visible blocks (order = display order).
-	 *  Absent = all blocks in the default order. Hidden blocks are simply
-	 *  missing from the list. */
-	statsItems?: WereadStatItem[];
-	/** Shelf progress filter (multi-select): 'notStarted' | 'reading' | 'finished'. Empty = all. */
-	progressFilters?: WereadReadingState[];
-	/** Stable shelf item classes: electronic book, audio, or article collection. */
-	contentTypeFilters?: WereadContentType[];
-	/** Disjoint activity buckets based on the latest reading timestamp. */
-	recencyFilters?: WereadRecency[];
-	/** Note/highlight state from the notebooks endpoint. */
-	noteFilters?: WereadNoteState[];
-	/** Optional visual shelf grouping. Defaults to readingState for new widgets. */
-	groupBy?: WereadGroupBy;
-	/** Genre (category) filter. */
-	categoryFilters?: string[];
-	title?: string;
-}
-
-/** Blocks of the weread stats widget. */
-export type WereadStatItem = 'kpi' | 'trend' | 'topRead' | 'preferCategory';
-
-/** Retired WeRead section config, preserved when unrelated board content is edited. */
-export interface WereadConfig {
-	/** Ordered widgets rendered top-to-bottom. */
-	widgets: WereadWidget[];
-}
-
 /** Dataview (DQL) section config. The raw DQL query string is the sole required
  *  field; `title` optionally overrides the column name in the section header.
  *  The display fields (pageSize/density/striped/rowNumbers) are view-layer
@@ -756,10 +700,7 @@ export interface DashboardColumn {
 	cards: DashboardCard[];
 	libraryConfig?: LibraryConfig;
 	pipelineConfig?: PipelineConfig;
-	/** Weread section config (sectionType 'weread'). */
-	wereadConfig?: WereadConfig;
 	rssConfig?: RssConfig;
-	ticktickConfig?: TickTickConfig;
 	/** Dataview section config (sectionType 'dataview'). */
 	dataviewConfig?: DataviewConfig;
 	/** User-set max height in px (drag-resize, desktop only). */
@@ -812,14 +753,6 @@ export interface DashboardData {
 	quickActionOrder?: string[];
 	hiddenPresets?: string[];
 	columns: DashboardColumn[];
-}
-
-export interface TickTickConfig {
-	view: 'today' | 'lists';
-	/** Project IDs hidden in 'lists' view. */
-	hiddenProjects?: string[];
-	/** Per-project card width in 'lists' view (px), persisted on resize. */
-	projectWidths?: Record<string, number>;
 }
 
 export interface RssFeedSource {

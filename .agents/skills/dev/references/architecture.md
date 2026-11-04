@@ -150,7 +150,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 看板记录 | `huhu/习惯/`、`huhu/记账/`、`huhu/番茄钟/`、`huhu/阅读/`（各含 `*.json` 与 Markdown 记录） | home |
 | 收件箱（含闪念） | 条目 `huhu/收件箱/YYYY-MM-DD-HHmm-标题.md`，每天的闪念 `huhu/收件箱/YYYY-MM-DD-闪念.md`（一条一行 `- HH:mm 内容`），平铺（小组件类型 id 仍为 `memo`，设置 `memoSavePath`） | home |
 | 待办归档 | `huhu/待办/已完成.md`（设置 `taskArchivePath`；必须是库里可见的路径，不能以点开头） | home |
-| 项目管理、RSS、微信读书划线、新笔记、导出 | `huhu/项目管理/`、`huhu/RSS/`、`huhu/微信读书/划线/`、`huhu/笔记/`、`huhu/导出/`（默认值见 `src/shared/storage/vault-layout.ts` 与 `home/core/board/default-paths.ts`） | home、agent |
+| 项目管理、RSS、新笔记、导出 | `huhu/项目管理/`、`huhu/RSS/`、`huhu/笔记/`、`huhu/导出/`（默认值见 `src/shared/storage/vault-layout.ts` 与 `home/core/board/default-paths.ts`） | home、agent |
 | HUHU 文件页 | 浏览 `huhu/`（vault API），新建笔记落在 `huhu/笔记/` 或所选文件所在文件夹 | app |
 | 看板技能库 | 不单独存储：经 `agent` 的 `AGENT_SKILL_CATALOG` 只读列出技能管理器发现的技能 | home、agent |
 | 图标与规则 | `.huhu/icons/iconic.json` + `.backupN`（Iconic 模式） | icons |
@@ -162,7 +162,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | Git 同步的排除规则 | 仓库 `.gitignore` 与 `.git/info/exclude` 里带起止标记的 HUHU 托管区块（智能体账号与运行目录、辅助程序、各设备的自动化运行、缓存、恢复、迁移、锁与临时文件；`huhu/`、`.huhu/dashboards/`、`.huhu/automation/definitions/` 不排除）；清单在 `src/modules/versioning/core/excludes.ts` | versioning |
 | 恢复草稿与看板冲突 | `.huhu/recovery/drafts/`、`.huhu/recovery/dashboard/conflicts/` | 共享存储、home |
 | 受管内容移动与回收 | `.huhu/content-moves/manifest.json`；恢复材料在 `.huhu/recovery/content-creates/`、`renames/`、`trash/` | host、shared |
-| 缓存 | `.huhu/cache/`（微信读书进度） | home |
+| 缓存 | `.huhu/cache/`（天气） | home |
 | 档案 | 库内可见目录（设置 `archives.rootFolder`，默认 `huhu/archives`），新库默认 `huhu/archives/`，实体入口为 `<类型目录>/<名称>-<ID>/profile.md`，由 `app.vault` 读写，不在 `.huhu/` | archives |
 | 库本地界面状态 | `.huhu/config/` 下的内部状态；叶子状态由宿主保存，业务工作区布局使用上表专用文件 | 所属模块 / shell |
 | 功能区 id | `src/app/ribbon.ts` 的 `ribbon-<id>`（稳定 id，标签翻译） | app |

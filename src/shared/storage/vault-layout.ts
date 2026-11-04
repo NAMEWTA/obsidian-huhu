@@ -12,7 +12,6 @@ export const VISIBLE_NAMES = {
 	pomodoro: 'pomodoro',
 	reading: 'reading',
 	rss: 'rss',
-	weread: 'weread',
 	highlights: 'highlights',
 	notes: 'notes',
 	exports: 'exports',
@@ -74,7 +73,6 @@ export const HABIT_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.habits}`;
 export const POMODORO_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.pomodoro}`;
 export const READING_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.reading}`;
 export const RSS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.rss}`;
-export const WEREAD_HIGHLIGHTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.weread}/${VISIBLE_NAMES.highlights}`;
 export const NEW_NOTE_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.notes}`;
 export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.exports}`;
 

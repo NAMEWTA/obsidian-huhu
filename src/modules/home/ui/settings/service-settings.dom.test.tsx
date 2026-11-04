@@ -42,8 +42,8 @@ test('React media settings preserve album creation fields', async () => {
 		heightRatio: 'full',
 	});
 });
-test('dashboard settings retire both integrations while preserving the independent local reading preference', async () => {
-	let settings = { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS), wereadApiKey: 'legacy-key', ticktickCookie: 'legacy-token' };
+test('dashboard settings show no third-party integrations and keep the independent local reading preference', async () => {
+	let settings = { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS) };
 	const before = settings.readingSoundEnabled, listeners = new Set<() => void>();
 	const vault = memoryVault({ 'huhu/Books/Highlights.md': 'Imported highlights stay here' });
 	Object.assign(vault.app.vault, { getAllLoadedFiles: () => [...vault.app.vault.getFiles(), { path: 'huhu/Books', children: [] }] });
@@ -65,7 +65,5 @@ test('dashboard settings retire both integrations while preserving the independe
 	const reading = screen.getByRole('switch', { name: t('settings.readingSound') });
 	await userEvent.setup().click(reading);
 	await waitFor(() => expect(settings.readingSoundEnabled).toBe(!before));
-	expect(settings.wereadApiKey).toBe('legacy-key');
-	expect(settings.ticktickCookie).toBe('legacy-token');
 	expect(vault.contents.get('huhu/Books/Highlights.md')).toBe('Imported highlights stay here');
 });

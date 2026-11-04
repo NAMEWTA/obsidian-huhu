@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { cardKind, canReceiveTask } from '../../src/modules/home/core/board/card-kind.ts';
 import { isRecentUserDocument } from '../../src/modules/home/core/board/recent-doc-policy.ts';
-import { DEFAULT_TASK_ARCHIVE_PATH, DEFAULT_HIGHLIGHT_IMPORT_PATH } from '../../src/modules/home/core/board/default-paths.ts';
+import { DEFAULT_TASK_ARCHIVE_PATH } from '../../src/modules/home/core/board/default-paths.ts';
 import { generateDefaultMarkdown } from '../../src/modules/home/core/board/parser/default-document.ts';
 import { parse, serialize } from '../../src/modules/home/core/board/parser/index.ts';
 import { taskDomainFixture } from '../fixtures/task-domain.ts';
@@ -20,7 +20,7 @@ for (const p of ['huhu/habits/a/habit.md','huhu/pomodoro/activities.md','huhu/ex
 for (const p of ['HUHU/技术笔记/note.md','HUHU-笔记/习惯.md','Notes/活动.md','Notes/dashboard.md','Notes/2026-10-04.md','People/people/A/notes.md','People/people/A/sub/profile.md']) test('keep user material ' + p,()=>assert.equal(isRecentUserDocument(p,scope),true));
 test('custom roots and workspace preferences are evaluated, not cached globally',()=>{assert.equal(isRecentUserDocument('People/people/A/profile.md',{contacts:{rootFolder:'Elsewhere'}}),true); assert.equal(isRecentUserDocument('Boards/Current.md',{}),true);});
 test('new defaults are language neutral and React recent documents use their host scope',()=>{
-  assert.equal(DEFAULT_TASK_ARCHIVE_PATH,'huhu/todos/completed.md');assert.equal(DEFAULT_HIGHLIGHT_IMPORT_PATH,'huhu/weread/highlights');
+  assert.equal(DEFAULT_TASK_ARCHIVE_PATH,'huhu/todos/completed.md');
   assert.ok(fs.readFileSync('src/modules/home/ui/canvas/RecentWidget.tsx','utf8').includes('store.isRecentDocument(file.path)'));
   assert.ok(fs.readFileSync('src/modules/home/services/board-store.ts','utf8').includes('isRecentUserDocument(path,'));
 });

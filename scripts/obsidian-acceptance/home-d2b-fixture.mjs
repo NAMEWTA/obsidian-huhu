@@ -141,8 +141,6 @@ export function sections() {
 		{ name: 'RSS', type: 'rss', extra: { rss: { feeds: [{ name: 'Example feed', url: 'https://example.invalid/feed.xml', group: 'News' }], downloadFolder: 'Notes', groupBy: 'group' } } },
 		{ name: 'RSS empty', type: 'rss' },
 		{ name: 'Images', type: 'images', extra: { library: { viewMode: 'grid', sortBy: 'modified', sortDesc: true, includeFolders: ['Media'], filters: [] } } },
-		{ name: 'Weread', type: 'weread', extra: { weread: { widgets: [{ id: 'w1', view: 'shelf' }, { id: 'w2', view: 'stats' }] } } },
-		{ name: 'TickTick', type: 'ticktick', extra: { ticktick: { view: 'today' } } },
 	];
 	const body = defs.map((d) => `## ${d.name}\n\n${d.cards ?? ''}`).join('\n');
 	return { defs, yaml: yaml(defs), body };
@@ -194,8 +192,6 @@ export const SECTION_TIERS = {
 	RSS: ['L', 'XL'],
 	'RSS empty': ['L', 'XL'],
 	Images: ['L', 'XL'],
-	Weread: ['L', 'XL'],
-	TickTick: ['L', 'XL'],
 };
 
 const widgetMember = (kind, id = 'default') => ({ memberId: `home:${kind}:${id}`, provider: 'home', kind, instanceId: id });

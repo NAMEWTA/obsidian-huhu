@@ -8,7 +8,6 @@ import { SkillsSection } from '../skills/SkillsSection';
 import { useState } from 'react';
 import { Archive, Plus, Settings } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
-import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { useT } from '../../../../ui/react/hooks';
 import type { DashboardColumn } from '../../core/board/types/model';
 import type { BoardStore } from '../../services/board-store';
@@ -34,14 +33,13 @@ export function Section({ store, column }: { store: BoardStore; column: Dashboar
 		[archiving, setArchiving] = useState(false),
 		[archiveError, setArchiveError] = useState('');
 	const type = column.sectionType ?? column.name.toLowerCase(),
-		retired = type === 'ticktick' || type === 'weread',
 		library = type === 'library' || type === 'folder',
 		p1 = P1_SECTIONS.includes(type),
 		p2 = P2_SECTIONS.includes(type),
 		memo = type === 'memo',
 		todo = type === 'todo' || type === 'alltasks',
 		project = type === 'projects' || type === 'notes',
-		generic = !retired && !library && !p1 && !p2 && !memo && !todo;
+		generic = !library && !p1 && !p2 && !memo && !todo;
 	// Sections that draw their own controls portal them into the card's title bar; the plain card sections get these.
 	useWidgetMenu(
 		generic
@@ -77,14 +75,7 @@ export function Section({ store, column }: { store: BoardStore; column: Dashboar
 					</IconButton>
 				</WidgetActions>
 			)}
-			{retired ? (
-				<EmptyState
-					size="sm"
-					className="h-full"
-					title={t('home.integrationRetired', { name: t(`home.dashboard.section.${type}`) })}
-					description={t('home.integrationRetiredHint')}
-				/>
-			) : type === 'rss' ? (
+			{type === 'rss' ? (
 				<RssSection store={store} column={column} actions={actions} />
 			) : type === 'pm' ? (
 				<ProjectSection store={store} column={column} actions={actions} />

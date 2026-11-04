@@ -30,3 +30,17 @@
 - vitest comments+icons+navigator+golden：通过（2 个性能/时序用例在高负载下偶发失败，单独重跑通过）；home：449 通过，`library.dom.test` 的 “grouped library reveals fifty…” 25s 超时（性能用例，与本改动无关，改动前同样失败）。
 - `test:dashboard-isolation`、`test:weather-mapping`、`test:i18n`、`test:docs`：退出码 0。
 - 未运行 build、real-Obsidian 验收。
+
+## 第二轮
+- 删除退役集成 ticktick/weread：`DashboardSettings` 的 `ticktick*`/`wereadApiKey`/`wereadImportPath` 及 settings.ts 的归一化与设备凭据 pick 逻辑；`TickTickConfig`/`WereadConfig`/`WereadWidget` 类型、`parseTickTickConfig`/`parseWereadConfig`、parse.ts 序列化、syntax.ts 分区类型、generate-default-markdown.ts 字段、`SyncEngine.updateWereadConfig`、Section.tsx“集成已停用”占位、card-kind 的 `weread`；i18n 286 个键（`ticktick.*`、`weread.*`、`settings.ticktick*/weread*`、`home.integrationRetired*`、`home.dashboard.section.ticktick/weread`，en/zh 同删）。
+- `WEREAD_HIGHLIGHTS_ROOT`、`VISIBLE_NAMES.weread`、`DEFAULT_HIGHLIGHT_IMPORT_PATH` 仅被已删的 `wereadImportPath` 使用（评论高亮导出用的是 `VISIBLE_NAMES.highlights`，保留），一并删除；`scripts/regressions/issue-content-targets.mjs` 同步。
+- 行为：看板里的 `type: weread/ticktick` 分区及其配置文本不再解析，按未知配置走现有 preserve-document 路径——未编辑时字节不变，其他编辑后配置文本仍保留（已用临时用例验证，用例已删除）。
+- 测试/黄金样本：改写 p2.test、user-formats.test 及 `board-p2.md` 快照（只留 RSS）、section-bodies、service-settings、widget-members、appearance-presets（用 `memoSavePath` 代替旧凭据字段做“不复制”断言）；删除退役分区用例。
+- 脚本：`home-d2b-fixture.mjs` 删 Weread/TickTick 夹具；`home-grid.mjs` 默认成员改为 `calendar, clock, pomodoro, usage, quick-actions, tasks`，原 `widget:weather` 的拖拽目标/尺寸菜单改为 `widget:quickActions` / `widget:clock`（未在真实 Obsidian 运行）。
+- NOTICE 删除 `board-codec.ts: coarse-height conversion` 行；apex-dashboard.md 删 weread/ticktick 映射行；dashboard.md 删“已停用的第三方集成”节与设置描述；sync.md、dev 技能 architecture.md 去掉微信读书/滴答旧凭据与路径描述。
+- 验证：两个 tsc 0 错误；改动源文件 eslint 0 警告；vitest home+golden 468 通过，仅 `library.dom.test` 的性能超时用例失败（同前，与本改动无关）；`test:dashboard-isolation`、`test:weather-mapping`、`test:i18n`（5292 键）、`test:docs`、`check:notices` 均退出码 0。
+- 注意：设备配置文件里可能残留旧凭据字段，已无代码读取；是否需要主动清理由 Lead 决定（不属于兼容逻辑，故未新写）。
+
+## Lead 补充（第二轮后）
+
+审查发现 `normalizeDashboardSettings` 以 `...raw` 保留全部未知字段，而 `domainSettings.pick` 保存整个值：旧设置文件中残留的 `ticktickCookie`/`wereadApiKey` 等凭据会被写回库内设置（随 Git 同步）。修复：只保留当前字段（defaults 键 + 无默认值的可选键）。新增 `core/board/settings.test.ts`（修复前红：仍含 ticktickCookie），home 97 文件 448 例通过。这是当前格式的字段收窄，不是兼容逻辑。

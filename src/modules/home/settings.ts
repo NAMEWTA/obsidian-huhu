@@ -51,9 +51,6 @@ const schema = domainSettings<DashboardSettings>({
 			typeof raw.rssReadRetentionDays === 'number' && Number.isFinite(raw.rssReadRetentionDays)
 				? Math.max(0, Math.min(365, Math.round(raw.rssReadRetentionDays)))
 				: 30;
-		settings.ticktickRegion = raw.ticktickRegion === 'ticktick' ? 'ticktick' : 'dida365';
-		for (const key of ['ticktickCookie', 'ticktickCsrf', 'ticktickDeviceVersion', 'ticktickTimezone'] as const)
-			settings[key] = typeof raw[key] === 'string' ? raw[key] : DEFAULT_DASHBOARD_SETTINGS[key];
 		settings.useThemeFont = raw.useThemeFont === true;
 		settings.collapsedSections = Array.isArray(raw.collapsedSections)
 			? raw.collapsedSections.filter((name): name is string => typeof name === 'string')
@@ -77,10 +74,6 @@ export const homeSettings = {
 	...schema,
 	pick(value: DashboardSettings, scope: 'vault' | 'device'): Partial<DashboardSettings> {
 		const picked = { ...schema.pick(value, scope) };
-		for (const key of ['ticktickCookie', 'ticktickCsrf', 'wereadApiKey'] as const) {
-			if (scope === 'device') picked[key] = value[key];
-			else delete picked[key];
-		}
 		delete picked.workspaceFiles;
 		delete picked.workspaceNames;
 		delete picked.dashboardFile;

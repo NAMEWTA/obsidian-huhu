@@ -8,9 +8,26 @@ import { readShortcutButtons } from './shortcut-buttons';
 const isRecord = (value: unknown): value is Record<string, unknown> =>
 	!!value && typeof value === 'object' && !Array.isArray(value);
 
-/** Defaults merged with stored values; lists and the workspace registry are validated. */
+/** Optional settings fields that have no default value. */
+const OPTIONAL_KEYS = [
+	'activeAppearancePresetId',
+	'workspaceNames',
+	'backupLastRun',
+	'quickActionsBackground',
+	'pomodoroBackground',
+	'habitBackground',
+	'yearProgressBackground',
+	'quickButtonsBgColor',
+	'quickButtonsBtnColor',
+	'bgFocal',
+	'mediaTags',
+] as const satisfies readonly (keyof DashboardSettings)[];
+const CURRENT_KEYS = new Set<string>([...Object.keys(DEFAULT_DASHBOARD_SETTINGS), ...OPTIONAL_KEYS]);
+
+/** Defaults merged with stored values; lists and the workspace registry are validated. Only current fields are kept,
+ *  so a field the plugin no longer has (for example an old integration credential) is never written back. */
 export function normalizeDashboardSettings(input: unknown): DashboardSettings {
-	const raw = isRecord(input) ? input : {};
+	const raw = isRecord(input) ? Object.fromEntries(Object.entries(input).filter(([key]) => CURRENT_KEYS.has(key))) : {};
 	const workspace = normalizeWorkspaces(raw);
 	return {
 		...structuredClone(DEFAULT_DASHBOARD_SETTINGS),

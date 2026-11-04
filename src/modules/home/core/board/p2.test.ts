@@ -3,21 +3,17 @@ import { parse, serialize } from './parser/parse';
 import { parseFeedXml } from '../rss/rss-xml';
 import { htmlToMarkdown } from '../rss/html-md';
 import { buildOpml, parseOpml } from '../rss/rss-opml';
-import { homeSettings } from '../../settings';
 test('Apex P2 frontmatter survives edits and preserves author text', () => {
 	const raw =
-		'---\ncustom: keep # author\ncolumns:\n - name: Feeds\n   type: rss\n   rss: {feeds: [{name: News, url: "https://example.com/rss", group: Tech}], downloadFolder: News, groups: [Tech], groupBy: feed, pageSize: 50}\n - name: Tasks\n   type: ticktick\n   ticktick: {view: lists, hiddenProjects: [secret], projectWidths: {inbox: 320}}\n - name: Books\n   type: weread\n   weread: {widgets: [{id: w1, view: shelf, groupBy: notes}]}\n---\n## Feeds\nAuthor prose.\n## Tasks\n## Books\n';
+		'---\ncustom: keep # author\ncolumns:\n - name: Feeds\n   type: rss\n   rss: {feeds: [{name: News, url: "https://example.com/rss", group: Tech}], downloadFolder: News, groups: [Tech], groupBy: feed, pageSize: 50}\n---\n## Feeds\nAuthor prose.\n';
 	const data = parse(raw);
 	expect(data.columns[0]!.rssConfig?.feeds).toHaveLength(1);
-	expect(data.columns[1]!.ticktickConfig?.projectWidths).toEqual({ inbox: 320 });
 	data.columns[0]!.rssConfig!.pageSize = 10;
-	data.columns[1]!.ticktickConfig!.view = 'today';
 	const next = serialize(data);
 	expect(next).toContain('custom: keep # author');
 	expect(next).toContain('Author prose.');
 	const round = parse(next);
 	expect(round.columns[0]!.rssConfig?.pageSize).toBe(10);
-	expect(round.columns[1]!.ticktickConfig?.view).toBe('today');
 	expect(serialize(round)).toBe(next);
 });
 test('RSS and Atom retain identity, dates, HTML, author and escaped titles', () => {
@@ -59,14 +55,4 @@ test('article HTML removes executable content and resolves relative links', () =
 	expect(md).toContain('**world**');
 	expect(md).toContain('https://example.com/note');
 	expect(md).not.toContain('alert(1)');
-});
-test('service credentials persist only in device settings', () => {
-	const s = homeSettings.normalize({ ticktickCookie: 'token', ticktickCsrf: 'csrf', wereadApiKey: 'key' });
-	expect(homeSettings.pick(s, 'vault')).not.toHaveProperty('ticktickCookie');
-	expect(homeSettings.pick(s, 'vault')).not.toHaveProperty('wereadApiKey');
-	expect(homeSettings.pick(s, 'device')).toMatchObject({
-		ticktickCookie: 'token',
-		ticktickCsrf: 'csrf',
-		wereadApiKey: 'key',
-	});
 });

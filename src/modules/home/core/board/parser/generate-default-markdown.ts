@@ -1,5 +1,5 @@
-import { parseRssConfig, parseTickTickConfig } from '../p2-config';
-import type { RssConfig, TickTickConfig } from '../types';
+import { parseRssConfig } from '../p2-config';
+import type { RssConfig } from '../types';
 import { readPmConfig, readSkillsConfig } from '../p1-config';
 import { readMarkdownDocument, readYaml } from '../../../../../shared/storage/markdown-document';
 import { normalizeColumnPairs } from '../column-pairs';
@@ -12,13 +12,11 @@ import type {
 	PmConfig,
 	SkillsSectionConfig,
 	QuickAction,
-	WereadConfig,
 } from '../types/model';
 import {
 	parseCards,
 	parseDataviewConfig,
 	parseLibraryConfig,
-	parseWereadConfig,
 	resolveSectionType,
 	splitByH2,
 } from './extract-card-parts';
@@ -75,9 +73,7 @@ export function parseColumnDefs(fm: Record<string, unknown>): Array<{
 	pipelineConfig?: PipelineConfig;
 	pmConfig?: PmConfig;
 	skillsConfig?: SkillsSectionConfig;
-	wereadConfig?: WereadConfig;
 	rssConfig?: RssConfig;
-	ticktickConfig?: TickTickConfig;
 	dataviewConfig?: DataviewConfig;
 	height?: number;
 	half?: boolean;
@@ -97,8 +93,6 @@ export function parseColumnDefs(fm: Record<string, unknown>): Array<{
 		skillsConfig: readSkillsConfig(item.skills),
 		pipelineConfig: item.pipeline ? readPipelineConfig(item.pipeline) : undefined,
 		rssConfig: item.rss ? parseRssConfig(item.rss as Record<string, unknown>) : undefined,
-		ticktickConfig: item.ticktick ? parseTickTickConfig(item.ticktick as Record<string, unknown>) : undefined,
-		wereadConfig: item.weread ? parseWereadConfig(item.weread as Record<string, unknown>) : undefined,
 		dataviewConfig: item.dataview ? parseDataviewConfig(item.dataview as Record<string, unknown>) : undefined,
 		height: typeof item.height === 'number' ? item.height : undefined,
 		half: item.half === true ? true : undefined,
@@ -118,10 +112,8 @@ export function parseColumns(
 		pipelineConfig?: PipelineConfig;
 		pmConfig?: PmConfig;
 		skillsConfig?: SkillsSectionConfig;
-		wereadConfig?: WereadConfig;
-		rssConfig?: RssConfig;
-		ticktickConfig?: TickTickConfig;
-		dataviewConfig?: DataviewConfig;
+			rssConfig?: RssConfig;
+			dataviewConfig?: DataviewConfig;
 			height?: number;
 		half?: boolean;
 		width?: number;
@@ -154,9 +146,7 @@ export function parseColumns(
 			pipelineConfig: def?.pipelineConfig,
 			pmConfig: def?.pmConfig,
 			skillsConfig: def?.skillsConfig,
-			wereadConfig: def?.wereadConfig,
 			rssConfig: def?.rssConfig,
-			ticktickConfig: def?.ticktickConfig,
 			dataviewConfig: def?.dataviewConfig,
 			height: def?.height,
 			half: def?.half,

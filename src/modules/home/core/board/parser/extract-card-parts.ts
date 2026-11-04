@@ -11,7 +11,6 @@ import type {
 	TaskItem,
 	TrackerConfig,
 	WeatherConfig,
-	WereadConfig,
 } from '../types/model';
 import {
 	COLLAPSED_REGEX,
@@ -122,48 +121,6 @@ export function parseLibraryConfig(raw: Record<string, unknown>): LibraryConfig 
 					}
 				: undefined,
 	};
-}
-export function parseWereadConfig(raw: Record<string, unknown>): WereadConfig {
-	const validView = (v: unknown): WereadConfig['widgets'][number]['view'] =>
-		['shelf', 'stats', 'notes'].includes(str(v ?? ''))
-			? (str(v) as WereadConfig['widgets'][number]['view'])
-			: 'shelf';
-	const validList = <T extends string>(value: unknown, allowed: readonly T[]): T[] | undefined => {
-		if (!Array.isArray(value)) return undefined;
-		const accepted = value.map((item) => str(item)).filter((item): item is T => allowed.includes(item as T));
-		return accepted.length > 0 ? [...new Set(accepted)] : undefined;
-	};
-	const validGroupBy = (value: unknown): WereadConfig['widgets'][number]['groupBy'] => {
-		const groupBy = str(value ?? 'readingState');
-		return ['none', 'readingState', 'contentType', 'recency', 'notes'].includes(groupBy)
-			? (groupBy as WereadConfig['widgets'][number]['groupBy'])
-			: 'readingState';
-	};
-
-	if (Array.isArray(raw.widgets)) {
-		const widgets = (raw.widgets as Array<Record<string, unknown>>)
-			.filter((w) => w && typeof w === 'object')
-			.map((w, i) => ({
-				id: String((w.id ?? `w${i + 1}`) as string | number | boolean),
-				view: validView(w.view),
-				progressFilters: validList(w.progressFilters, ['notStarted', 'reading', 'finished'] as const),
-				contentTypeFilters: validList(w.contentTypeFilters, ['book', 'audio', 'article'] as const),
-				recencyFilters: validList(w.recencyFilters, ['recent7', 'recent30', 'older', 'never'] as const),
-				noteFilters: validList(w.noteFilters, ['highlights', 'ideas', 'none'] as const),
-				// Conditional spread: absent statsItems stays an absent key, so
-				// the round trip is stable.
-				...(validList(w.statsItems, ['kpi', 'trend', 'topRead', 'preferCategory'] as const)
-					? { statsItems: validList(w.statsItems, ['kpi', 'trend', 'topRead', 'preferCategory'] as const) }
-					: {}),
-				groupBy: validGroupBy(w.groupBy),
-				categoryFilters: Array.isArray(w.categoryFilters)
-					? (w.categoryFilters as Array<unknown>).map((c) => String(c as string | number | boolean))
-					: undefined,
-				title: w.title ? String(w.title as string | number | boolean) : undefined,
-			}));
-		if (widgets.length > 0) return { widgets };
-	}
-	return { widgets: [{ id: 'w1', view: 'shelf' }] };
 }
 export function parseDataviewConfig(raw: Record<string, unknown>): DataviewConfig {
 	const query = str(raw.query ?? '');

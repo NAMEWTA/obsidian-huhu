@@ -1,5 +1,5 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/parser.ts
-import type { RssConfig, RssFeedSource, TickTickConfig } from './types';
+import type { RssConfig, RssFeedSource } from './types';
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 export function parseRssConfig(raw: Record<string, unknown>): RssConfig {
 	const feeds: RssFeedSource[] = [];
@@ -35,25 +35,5 @@ export function parseRssConfig(raw: Record<string, unknown>): RssConfig {
 		...(groups.length > 0 ? { groups } : {}),
 		...(groupBy ? { groupBy } : {}),
 		...(pageSize ? { pageSize } : {}),
-	};
-}
-
-export function parseTickTickConfig(raw: Record<string, unknown>): TickTickConfig {
-	const view: TickTickConfig['view'] = raw['view'] === 'lists' ? 'lists' : 'today';
-	const hiddenProjects = Array.isArray(raw['hiddenProjects'])
-		? (raw['hiddenProjects'] as Array<unknown>)
-				.map((v) => String(v as string | number | boolean))
-				.filter((v) => v.length > 0)
-		: undefined;
-	const widths = raw.projectWidths && typeof raw.projectWidths === 'object' ? raw.projectWidths : {};
-	const projectWidths = Object.fromEntries(
-		Object.entries(widths)
-			.filter((e): e is [string, number] => typeof e[1] === 'number' && Number.isFinite(e[1]))
-			.map(([id, width]) => [id, Math.max(200, Math.min(500, width))]),
-	);
-	return {
-		view,
-		hiddenProjects: hiddenProjects?.length ? hiddenProjects : undefined,
-		...(Object.keys(projectWidths).length ? { projectWidths } : {}),
 	};
 }

@@ -21,7 +21,6 @@ RSS, service integrations and backup behavior are adapted from commit
 ac4d2c745d950b9c4d53d3fd33388204b0769841 (v3.8.4), in home/ui, home/core
 and home/services. The following historical references retain commit
 db9d2892032c27f5f8899a72c0dca61d72572a9a (v3.7.5):
-- home/core/board/board-codec.ts: coarse-height conversion;
 - home/core/board/focal-point.ts: focal-point format and crop semantics;
 - home/core/board/immersive-grid.ts: placement behavior reference.
 Source and behavior mappings: docs/third-party/apex-dashboard.md.

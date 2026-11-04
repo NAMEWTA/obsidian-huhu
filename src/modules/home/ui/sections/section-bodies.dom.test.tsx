@@ -26,7 +26,7 @@ function boardStore() {
 	Object.assign(vault.app.metadataCache, { on: () => ({}), offref: () => {} });
 	const store = {
 		state: createStore(() => ({
-			settings: { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS), ticktickCookie: 'retired-cookie', wereadApiKey: 'retired-key' },
+			settings: { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS) },
 			path: 'Board',
 		})),
 		host: { app: vault.app, updateSettings: vi.fn(), subscribeSettings: () => () => {} },
@@ -76,19 +76,6 @@ test('an unconfigured pipeline is an empty state, and its stage columns share th
 	);
 	expect(emptyState(container)?.textContent).toContain(t('pipeline.emptyTitle'));
 	expect(container.querySelector('section')?.className).toContain('flex-col');
-});
-test.each(['ticktick', 'weread'])('a retired %s section explains removal and never reads the configured service', (kind) => {
-	const { store } = boardStore();
-	const request = vi.spyOn(obsidian, 'requestUrl');
-	const { container } = render(
-		<TestProviders>
-			<Section store={store} column={column(kind, { ticktickConfig: { view: 'today' }, wereadConfig: { widgets: [{ id: 'old', view: 'shelf' }] } })} />
-		</TestProviders>,
-	);
-	expect(emptyState(container)?.textContent).toContain(t('home.integrationRetiredHint'));
-	expect(screen.queryByRole('button')).toBeNull();
-	expect(request).not.toHaveBeenCalled();
-	expect(store.edit).not.toHaveBeenCalled();
 });
 test('the media toolbar is one wrapping row of 36px controls over a scrolling area and a footer', () => {
 	const { store } = boardStore();

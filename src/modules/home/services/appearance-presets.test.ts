@@ -30,7 +30,7 @@ test('named snapshots whitelist all theme/decor fields and apply both namespaces
 	const f = await fixture();
 	await Promise.all([
 		f.theme.update(d => Object.assign(d, { preset: 'eye-care', editor: 'claude-code', headings: 'accented', emphasis: 'highlight', fontText: 'serif', fontSize: 18, lineHeight: 1.8 })),
-		f.home.update(d => Object.assign(d, { bgImage: 'Images/bg.png', bgFocal: { x: 12, y: 78 }, bgDim: 32, bgBlur: 4, bgSize: 'contain', surfaceOpacity: 72, glassBlur: 6, radiusScale: 19, fontScale: 'large', workspaces: {files:['.huhu/dashboards/Keep'],names:[''],active:0}, wereadApiKey: 'must-not-copy' })),
+		f.home.update(d => Object.assign(d, { bgImage: 'Images/bg.png', bgFocal: { x: 12, y: 78 }, bgDim: 32, bgBlur: 4, bgSize: 'contain', surfaceOpacity: 72, glassBlur: 6, radiusScale: 19, fontScale: 'large', workspaces: {files:['.huhu/dashboards/Keep'],names:[''],active:0}, memoSavePath: 'must-not-copy' })),
 	]);
 	const expectedTheme = structuredClone(f.theme.get()), expectedHome = homeDecor(f.home.get());
 	await f.service.save('  Evening  ');
@@ -46,7 +46,7 @@ test('named snapshots whitelist all theme/decor fields and apply both namespaces
 	assert.deepEqual(f.theme.get(), expectedTheme);
 	assert.deepEqual(homeDecor(f.home.get()), expectedHome);
 	assert.equal(f.home.get().dashboardFile, '.huhu/dashboards/Keep');
-	assert.equal(f.home.get().wereadApiKey, 'must-not-copy');
+	assert.equal(f.home.get().memoSavePath, 'must-not-copy');
 	assert.equal(f.writes.length, 1);
 	assert.deepEqual(f.writes[0]!.namespaces.theme, expectedTheme);
 	assert.deepEqual(homeDecor(f.writes[0]!.namespaces.home), expectedHome);
@@ -89,7 +89,7 @@ test('asynchronous persistence failures reject apply and remain retryable throug
 });
 
 test('normalization uses the owner theme schema and removes malformed, duplicate and unrelated snapshot data', () => {
-	const item = { id: 'one', name: ' A ', theme: { preset: 'missing', headings: 'sans', editor: 'dracula', lineHeight: 100, credential: 'no' }, home: { bgBlur: -4, bgFocal: { x: 180, y: -2 }, fontScale: 'wrong', workspaceFiles: ['no'], wereadApiKey: 'no' } };
+	const item = { id: 'one', name: ' A ', theme: { preset: 'missing', headings: 'sans', editor: 'dracula', lineHeight: 100, credential: 'no' }, home: { bgBlur: -4, bgFocal: { x: 180, y: -2 }, fontScale: 'wrong', workspaceFiles: ['no'], memoSavePath: 'no' } };
 	const settings = homeSettings.normalize({ appearancePresets: [null, item, { ...item, id: 'two', name: 'a' }], activeAppearancePresetId: 'absent' });
 	assert.equal(settings.appearancePresets.length, 1);
 	assert.deepEqual(settings.appearancePresets[0]!.theme, { ...themeSettings.defaults(), editor: 'dracula', lineHeight: 2.2 });

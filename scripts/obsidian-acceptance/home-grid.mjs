@@ -122,7 +122,7 @@ try {
 	await until(`document.querySelectorAll('[data-tile]').length===9`, 'nine default tiles');
 	let m = await meta();
 	const kinds = m.widgets.map((w) => w.kind);
-	check('default-board-members', JSON.stringify(kinds) === JSON.stringify(['calendar', 'clock', 'pomodoro', 'usage', 'weather', 'quick-notes']), kinds);
+	check('default-board-members', JSON.stringify(kinds) === JSON.stringify(['calendar', 'clock', 'pomodoro', 'usage', 'quick-actions', 'tasks']), kinds);
 	check('default-board-has-no-banner-or-edit-mode', !m.text.includes('banner') && !(m.text.includes('immersive')) && (await c.evaluate(`!document.querySelector('.dashboard-banner')&&![...document.querySelectorAll('button')].some(b=>/^(Edit board|Done)$/.test(b.textContent.trim()))`)), m.text.slice(0, 200));
 	check('default-grid-is-v2-single-line-json', /^grid: \{"v":2,"lg":\[/m.test(m.text) && m.grid.v === 2 && m.grid.lg.length === 9, m.grid);
 	let a = await alignment();
@@ -157,7 +157,7 @@ try {
 	await hookWrites(DEFAULT);
 	const before = m.grid;
 	let from = await handlePoint('widget:clock');
-	let to = await handlePoint('widget:weather');
+	let to = await handlePoint('widget:quickActions');
 	await drag(from, { x: to.x + 40, y: to.y });
 	m = await meta();
 	check('drag-writes-once', (await writes()) === 1, await writes());
@@ -194,12 +194,12 @@ try {
 	check('after-resize-no-overlap-and-inside', a.outside.length === 0 && !a.pageOverflow, a);
 	// 4. The size menu: one write at the tier cells.
 	await hookWrites(DEFAULT);
-	await c.evaluate(`document.querySelector('[data-tile="widget:weather"] [aria-label^="More actions"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0,pointerType:'mouse'}));true`);
+	await c.evaluate(`document.querySelector('[data-tile="widget:clock"] [aria-label^="More actions"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0,pointerType:'mouse'}));true`);
 	await until(`!!document.querySelector('[role="menuitemcheckbox"]')`, 'size menu');
 	await shot('03-tile-menu-1440');
 	await c.evaluate(`[...document.querySelectorAll('[role="menuitemcheckbox"]')].find(e=>/Large/.test(e.getAttribute('aria-label')||e.textContent)).click();true`);
 	await delay(700);
-	after = item((await meta()).grid, 'widget:weather');
+	after = item((await meta()).grid, 'widget:clock');
 	check('tier-menu-writes-once-at-tier-cells', (await writes()) === 1 && after.w === 6 && after.h === 4, { after, writes: await writes() });
 	// 5. Remove with undo.
 	await hookWrites(DEFAULT);
@@ -252,7 +252,7 @@ try {
 	check('560px-inside-page', a.outside.length === 0 && !a.pageOverflow, a);
 	await shot('06-default-560-light');
 	from = await handlePoint('widget:clock');
-	to = await handlePoint('widget:weather');
+	to = await handlePoint('widget:quickActions');
 	await drag(from, { x: to.x, y: to.y + 40 });
 	check('560px-reorder-never-writes', (await writes()) === 0 && (await read(DEFAULT)) === stackedBytes, await writes());
 	// 8b. Thirty tiles drag smoothly: every pointer move is handled well inside a frame budget and nothing is written until the drop.
@@ -292,7 +292,7 @@ try {
 		});
 		const ptiles = await c.evaluate(`Array.from(popDoc.querySelectorAll('[data-tile]'),e=>e.getBoundingClientRect().width)`);
 		check('popout-renders-the-grid-with-a-measured-width', ptiles.length === 9 && ptiles.every((w) => w > 50), ptiles);
-		const result = await c.evaluate(`(async()=>{const doc=popDoc,win=popWin;const fire=(el,type,x,y)=>el.dispatchEvent(new win.MouseEvent(type,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0,buttons:type==='mouseup'?0:1,view:win}));const tile=doc.querySelector('[data-tile="widget:clock"]');const handle=tile.querySelector('.huhu-widget-handle');const r=handle.getBoundingClientRect();const target=doc.querySelector('[data-tile="widget:weather"]').getBoundingClientRect();const x=r.x+r.width/2,y=r.y+r.height/2;fire(handle,'mousedown',x,y);for(let i=1;i<=8;i++){fire(doc,'mousemove',x+((target.x+40-x)*i)/8,y+((target.y-y)*i)/8);await new Promise(r=>setTimeout(r,30))}await new Promise(r=>setTimeout(r,200));fire(doc,'mouseup',target.x+40,target.y);await new Promise(r=>setTimeout(r,800));return true})()`);
+		const result = await c.evaluate(`(async()=>{const doc=popDoc,win=popWin;const fire=(el,type,x,y)=>el.dispatchEvent(new win.MouseEvent(type,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0,buttons:type==='mouseup'?0:1,view:win}));const tile=doc.querySelector('[data-tile="widget:clock"]');const handle=tile.querySelector('.huhu-widget-handle');const r=handle.getBoundingClientRect();const target=doc.querySelector('[data-tile="widget:quickActions"]').getBoundingClientRect();const x=r.x+r.width/2,y=r.y+r.height/2;fire(handle,'mousedown',x,y);for(let i=1;i<=8;i++){fire(doc,'mousemove',x+((target.x+40-x)*i)/8,y+((target.y-y)*i)/8);await new Promise(r=>setTimeout(r,30))}await new Promise(r=>setTimeout(r,200));fire(doc,'mouseup',target.x+40,target.y);await new Promise(r=>setTimeout(r,800));return true})()`);
 		check('popout-drag-writes-once', result === true && (await writes()) === 1, await writes());
 	}
 	const errors = await c.evaluate('window.huhuAcceptanceErrors');

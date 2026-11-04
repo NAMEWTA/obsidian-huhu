@@ -813,20 +813,6 @@ export class SyncEngine {
 		await this.writeToDisk();
 	}
 
-	async updateWereadConfig(
-		columnName: string,
-		config: import('../../core/board/types/index').WereadConfig,
-	): Promise<void> {
-		this.assertOpen();
-		if (!this.data) return;
-
-		this.data = {
-			...this.data,
-			columns: this.data.columns.map((col) => (col.name === columnName ? { ...col, wereadConfig: config } : col)),
-		};
-		await this.writeToDisk();
-	}
-
 	async updateDataviewConfig(
 		columnName: string,
 		config: import('../../core/board/types/index').DataviewConfig,

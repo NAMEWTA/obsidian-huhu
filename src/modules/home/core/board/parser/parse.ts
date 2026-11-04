@@ -139,7 +139,6 @@ function serializeManaged(data: DashboardData): string {
 		if (col.showCover === false) lines.push('    showCover: false');
 		if (col.pmConfig) lines.push(`    pm: ${JSON.stringify(col.pmConfig)}`);
 		if (col.rssConfig) lines.push(`    rss: ${JSON.stringify(col.rssConfig)}`);
-		if (col.ticktickConfig) lines.push(`    ticktick: ${JSON.stringify(col.ticktickConfig)}`);
 		if (col.skillsConfig) lines.push(`    skills: ${JSON.stringify(col.skillsConfig)}`);
 		if (col.pipelineConfig) lines.push(`    pipeline: ${JSON.stringify(col.pipelineConfig)}`);
 		if (col.libraryConfig) {
@@ -256,41 +255,6 @@ function serializeManaged(data: DashboardData): string {
 		}
 		if (col.half) {
 			lines.push('    half: true');
-		}
-		if (col.wereadConfig) {
-			const wc = col.wereadConfig;
-			lines.push('    weread:');
-			lines.push('      widgets:');
-			for (const w of wc.widgets) {
-				lines.push(`        - id: "${escapeYamlString(w.id)}"`);
-				lines.push(`          view: ${w.view}`);
-				if (w.progressFilters?.length) {
-					lines.push('          progressFilters:');
-					for (const p of w.progressFilters) lines.push(`            - ${p}`);
-				}
-				if (w.contentTypeFilters?.length) {
-					lines.push('          contentTypeFilters:');
-					for (const type of w.contentTypeFilters) lines.push(`            - ${type}`);
-				}
-				if (w.recencyFilters?.length) {
-					lines.push('          recencyFilters:');
-					for (const recency of w.recencyFilters) lines.push(`            - ${recency}`);
-				}
-				if (w.noteFilters?.length) {
-					lines.push('          noteFilters:');
-					for (const note of w.noteFilters) lines.push(`            - ${note}`);
-				}
-				if (w.statsItems?.length) {
-					lines.push('          statsItems:');
-					for (const item of w.statsItems) lines.push(`            - ${item}`);
-				}
-				if (w.groupBy && w.groupBy !== 'readingState') lines.push(`          groupBy: ${w.groupBy}`);
-				if (w.categoryFilters?.length) {
-					lines.push('          categoryFilters:');
-					for (const c of w.categoryFilters) lines.push(`            - "${escapeYamlString(c)}"`);
-				}
-				if (w.title) lines.push(`          title: "${escapeYamlString(w.title)}"`);
-			}
 		}
 		if (col.dataviewConfig) {
 			const dc = col.dataviewConfig;

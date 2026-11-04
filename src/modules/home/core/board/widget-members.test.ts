@@ -6,12 +6,11 @@ import type { HomeWidgetKind } from '../../api';
 import { builtinHomeWidgets } from '../../contrib/widgets';
 import { DEFAULT_DASHBOARD_SETTINGS } from './types/model';
 
-test('clock weather creates independent board instances and retired integrations are absent from the add catalog', async () => {
+test('clock weather creates independent board instances and no standalone weather kind is offered', async () => {
 	const kinds = builtinHomeWidgets(
 		() => DEFAULT_DASHBOARD_SETTINGS,
 		() => undefined,
 	).kinds;
-	expect(kinds.some((kind) => kind.section === 'ticktick' || kind.section === 'weread')).toBe(false);
 	expect(kinds.some((kind) => kind.key === 'weather')).toBe(false);
 	const weather = kinds.find((kind) => kind.key === 'clock')!;
 	expect(weather.multiple).toBe(true);

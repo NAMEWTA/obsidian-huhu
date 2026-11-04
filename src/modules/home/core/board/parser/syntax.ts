@@ -39,9 +39,7 @@ export const SECTION_TYPES = new Set([
 	'alltasks',
 	'calendar',
 	'dataview',
-	'weread',
 	'rss',
-	'ticktick',
 	'sticky',
 ]);
 

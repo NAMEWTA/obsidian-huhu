@@ -70,8 +70,6 @@ P1 分区、沉浸样式声明（网格本身已改用 react-grid-layout，横�
 | 上游入口 | HUHU | 范围 |
 |---|---|---|
 | `rss-section.ts`、`rss-service.ts`、`rss-store.ts`、`rss-note.ts` 及配置/阅读弹窗 | `core/rss/`、`platform/rss/`、`ui/rss/` | RSS/Atom、正文提取、OPML、分组、阅读与文章保存 |
-| `weread-section.ts`、`weread-config-modal.ts` | `ui/weread/` | 书架、筛选与统计；复用 HUHU 服务与设备凭据 |
-| `ticktick-section.ts`、`ticktick-service.ts`、`ticktick-login-modal.ts`、`ticktick-task-edit-modal.ts`、`ticktick-tz.ts` | `core/ticktick/`、`platform/ticktick/`、`ui/ticktick/` | 清单/卡片、任务编辑、时区与账号授权；设备数据隔离 |
 | `album-widget.ts`、`album-settings-modal.ts` | `ui/widgets/` 及对应面板 | 相册多实例；所属窗口弹层与可见性清理 |
 | `backup-service.ts` | `services/board-backups.ts` | 分组备份看板和记录，来源/完整性清单、同工作台恢复与覆盖前副本 |
 
