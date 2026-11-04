@@ -22,7 +22,7 @@ writable_paths: ["<Path>README.md</Path>","<Path>README.ZH.md</Path>","<Path>doc
 read_only_paths: ["<Path>NOTICE</Path>","<Path>THIRD-PARTY-NOTICES.md</Path>","<Path>scripts/third-party-notices.mjs</Path>","<Path>.agents/skills/dev/references/licensing.md</Path>","<Path>.agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/execution-boundaries.md</Path>","<Path>src/modules/browser/**</Path>","<Path>native/browser-runtime/**</Path>"]
 shared_paths: ["<Path>docs/references.md</Path>"]
 shared_path_owners: ["<Path>docs/references.md</Path> => Lead"]
-skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "5c60d84fe28cfc8b8653e8813127a870f0483b40cae8e823d8e8e48bc83c1d0f", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
+skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "d217057f068f3fe9e59205fa372896c298dcd9afda5da1c46f7e441d5018283e", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
 ---
 
 # Ticket T-03: 行为参考与采用材料的来源记录收口

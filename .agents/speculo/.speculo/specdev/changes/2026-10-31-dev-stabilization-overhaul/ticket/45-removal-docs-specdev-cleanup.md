@@ -22,7 +22,7 @@ writable_paths: ["<Path>README.md</Path>", "<Path>README.ZH.md</Path>", "<Path>A
 read_only_paths: ["<Path>.agents/speculo/.speculo/specdev/adr/**</Path>", "<Path>.agents/speculo/.speculo/specdev/context/**</Path>", "<Path>.agents/speculo/.speculo/specdev/design/**</Path>", "<Path>.agents/speculo/.speculo/specdev/changes/archive/**</Path>"]
 shared_paths: ["<Path>docs/references.md</Path>"]
 shared_path_owners: ["<Path>docs/references.md</Path> => Lead"]
-skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "5c60d84fe28cfc8b8653e8813127a870f0483b40cae8e823d8e8e48bc83c1d0f", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
+skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "d217057f068f3fe9e59205fa372896c298dcd9afda5da1c46f7e441d5018283e", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
 ---
 # Ticket T-45: 清理文档、开发规则与 specdev 历史中的悬挂引用
 

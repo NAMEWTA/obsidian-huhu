@@ -15,14 +15,14 @@ planning_depth_reason: "删除主线需真实宿主证据，旧数据/旧库夹�
 ready: false
 risk: high
 blocked_by: ["T-45"]
-contract_ids: ["AC-402", "AC-403", "AC-404", "AC-408"]
+contract_ids: ["AC-402", "AC-403", "AC-404", "AC-408", "AC-406"]
 owner: unassigned
 expected_changes: ["<Path>docs/e2e/dev-overhaul/removal/acceptance/</Path>"]
 writable_paths: ["<Path>docs/e2e/dev-overhaul/removal/acceptance/**</Path>", "<Path>scripts/obsidian-acceptance/removal-contraction.mjs</Path>"]
 read_only_paths: ["<Path>src/**</Path>", "<Path>native/**</Path>", "<Path>scripts/obsidian-acceptance/fresh-vault.mjs</Path>", "<Path>scripts/obsidian-acceptance/cdp.mjs</Path>"]
 shared_paths: ["<Path>main.js</Path>", "<Path>styles.css</Path>", "<Path>build/**</Path>", "<Path>src/ui/styles/fonts.generated.css</Path>"]
 shared_path_owners: ["<Path>main.js</Path> => Lead", "<Path>styles.css</Path> => Lead", "<Path>build/**</Path> => Lead", "<Path>src/ui/styles/fonts.generated.css</Path> => Lead"]
-skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "5c60d84fe28cfc8b8653e8813127a870f0483b40cae8e823d8e8e48bc83c1d0f", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
+skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "d217057f068f3fe9e59205fa372896c298dcd9afda5da1c46f7e441d5018283e", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
 ---
 # Ticket T-46: 删除主线验收：构建、测试与真实 Obsidian 端到端（截图）
 
@@ -51,7 +51,7 @@ OUT：Windows/macOS 实机与远程 CI（未获授权时标为未验收，不填
 
 ## 验收标准
 
-- [ ] `AC-402`、`AC-403`、`AC-404`：当前格式新库真实 Obsidian 截图与 `result.json` 断言齐全；AC-406 已撤回。
+- [ ] `AC-402`、`AC-403`、`AC-404`：当前格式新库真实 Obsidian 截图与 `result.json` 断言齐全；`AC-406`：已撤回（ADR-011），不执行。
 - [ ] `AC-408`：适用命令全部通过或与 dev 基线相比无新增失败；当前格式新库截图齐全，未执行项如实标注；无需旧库 E2E。
 
 ## 验证方法

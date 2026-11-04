@@ -338,3 +338,11 @@ round 1 收录来源中维护者已作出的决定（来源作者即仓库 OWNER
 - **结果：** 旧格式读取与升级链、旧路径/设置键、旧导入界面、退役集成（含凭据字段）、旧 helper 能力降级、旧字段双写/回退全部删除；遇旧数据走当前无效/损坏路径且不改写文件；设置归一化只保留当前字段。删除误伤 `SyncEngine.replaceData` 一处已修复并补单元回归。
 - **证据：** `<Path>{roots.state}/specdev/changes/{change}/evidence/report-legacy-removal.md</Path>`。
 
+## LOG-030 — 2026-11-04 — 归档：证据模式、知识沉淀与封存
+
+- **来源：** 用户 2026-11-04 要求按 A（归档与整合）归档本 change；`archive-ready` 初测 359 条错误，全部源于校验器要求过程材料（9 固定章节、执行记录、冻结评审 JSON、Skill 执行记录、原型浏览器 JSON），与仓库"evidence 只入库结论报告"规则（AGENTS.md、LOG-026）冲突。用户决定：现有 evidence 符合要求，冲突时改造规则；同时做 ADR/context 修订沉淀并完成归档移动。
+- **规则改造（936526a）：** 校验器新增显式声明的 `Evidence-Mode: conclusion-report` 模式（README 声明 Evidence-Basis，可选 History-Rewrite 说明不可达 base_sha）；该模式改为校验结论报告而不要求过程材料，真实性检查（依赖、状态、Outcome 门、设计批准摘要、delivery/publish 门）保留；未声明的 change 行为不变；校验器测试 83 通过。
+- **change 修正：** 12 份早期 evidence 补 `## 结论`/`## 验证`；T-12/T-13/T-20/T-42/T-44/T-46 的 partial 按后续补齐的事实改为 passed 并保留原因；T-40/T-42/T-43 补 Design Conformance；T-46 登记 AC-406 撤回；新增 `evidence/final-review.md`。`archive-ready` 0 错误。
+- **知识沉淀（379048a）：** 新增 ADR 与 context，旧 huhu-bot、home-cookie-restore-deadline 标 Superseded，Browser 与 agent-workbench 相关条款按取代关系修订；dev Skill 持久化条目改为只支持当前格式。明细见 `archive-plan.md`。
+- **未处理：** DESIGN（revision 3 删除 UI-BOT 等范围）未走 DESIGN 网关；release 工作流未运行（发版未授权）；真机项由用户验收。
+

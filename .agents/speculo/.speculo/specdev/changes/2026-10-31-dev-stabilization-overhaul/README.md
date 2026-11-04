@@ -2,6 +2,10 @@
 
 Outcome: completed
 
+Evidence-Mode: conclusion-report
+Evidence-Basis: AGENTS.md「SpecDev evidence 入库规则」；LOG-026
+History-Rewrite: 仓库历史已重写，base_sha 86c500556db1d64865c4cc7f1aff1dd83de071fa 不再是 Git 对象
+
 ## 目的与导航
 
 > **2026-11-02 `docs/e2e` 已删除（用户决定，LOG-025）：** 原 `docs/e2e/`（含 `dev-overhaul/ledger.md` 统一账本、baseline、hook、ui 等结果与截图，以及 T-39 的 `removal/residual-scan.mjs`）已从仓库删除，内容只在 git 历史（提交 `ffac3a0d` 及之前）。本 change 各票、会话与归档文档里出现的 `docs/e2e/...` 路径均为历史记录；Hook 测量与启动采样脚本的输出已改到被忽略的 `temp/dev-overhaul/`。后续统一账本与票级结果的新位置待用户决定，在决定前不要重新创建 `docs/e2e/`。
