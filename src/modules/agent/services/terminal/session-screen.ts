@@ -1063,7 +1063,7 @@ export class SessionScreen {
 	requestSize(
 		lease: ScreenViewLease,
 		grid: ScreenGrid,
-		native: () => 'requested' | 'unsupported' | 'unknown',
+		native: () => 'requested' | 'unknown',
 	): Promise<ScreenGeometryResult> {
 		const target = { ...grid },
 			revision = this.view(lease)?.revision;

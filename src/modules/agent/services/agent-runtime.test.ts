@@ -5,6 +5,7 @@ import type { AgentSessionRef } from '../../../shared/automation/types';
 import { TerminalAutomationRuntime, type AutomationRuntimeHost } from './agent-runtime';
 import { vaultIdentity } from '../../../host/obsidian/storage/device-id';
 import { initializeTestDevice } from '../../../../test/fixtures/vault-storage';
+import { CURRENT_NATIVE } from '../../../../test/fixtures/native/current';
 
 let file = '';
 let device = '';
@@ -201,7 +202,7 @@ test('reused automation submits prompt and Enter as one admitted operation and r
 	const writes: Array<string | Uint8Array> = [];
 	let accept = false;
 	terminal.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			inputAdmission: 1,
 			inputLimits: NATIVE_INPUT_LIMITS,
 			input: () => {

@@ -2,12 +2,13 @@ import { expect, test, vi } from 'vitest';
 import { NativeHost } from '../../../../host/desktop/native/host';
 import { normalizeTerminalSettings } from '../../core/terminal/settings';
 import { TerminalSessions } from './sessions';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 for (const managed of [false, true]) for (const boundary of (managed ? ['hooks', 'beforeSpawn'] : ['hooks', 'beforeSpawn', 'legacy-script']) as readonly ('hooks' | 'beforeSpawn' | 'legacy-script')[]) test(`quiesce fences the final spawn gate after ${boundary} (${managed ? 'managed' : 'legacy'})`, async () => {
 	let entered!: () => void, release!: () => void;
 	const waiting = new Promise<void>(resolve => { entered = resolve; }), gate = new Promise<void>(resolve => { release = resolve; });
 	const close = vi.fn(), spawn = vi.fn(async () => 42);
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end(sid) { events.exit(sid, 0, null); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end(sid) { settledExit(events, sid, 0, null); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }), agentHooks: async () => { entered(); await gate; return { env: {}, close }; } });
 	try {
 		const runtime = managed ? sessions.reserveManaged({ id: 'stable-before', spaceId: 'space', kind: 'agent', title: 'before', createdAt: 0, lastAttempt: { runtimeId: 'before-runtime', acceptedAt: 0, state: 'unconfirmed' } }) : undefined;
@@ -25,8 +26,8 @@ for (const managed of [false, true]) test(`quiesce cleans a late spawn reply wit
 	let entered!: () => void, release!: (pid: number) => void;
 	const waiting = new Promise<void>(resolve => { entered = resolve; }), reply = new Promise<number>(resolve => { release = resolve; });
 	const end = vi.fn();
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture', terminalTermination: 1, requestStop() {}, spawnSession: async () => { entered(); return reply; }, input() {}, resize() {}, acknowledge() {},
-		end(sid) { end(sid); events.termination?.(sid, { version: 1, sequence: 1, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); events.exit(sid, 0, null); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture', terminalTermination: 1, requestStop() {}, spawnSession: async () => { entered(); return reply; }, input() {}, resize() {}, acknowledge() {},
+		end(sid) { end(sid); events.termination?.(sid, { version: 1, sequence: 1, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); settledExit(events, sid, 0, null); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	try {
 		const runtime = managed ? sessions.reserveManaged({ id: 'stable-late', spaceId: 'space', kind: 'shell', title: 'late', createdAt: 0, lastAttempt: { runtimeId: 'late-runtime', acceptedAt: 0, state: 'unconfirmed' } }) : undefined;
@@ -42,7 +43,7 @@ test('final Space check runs after hooks and preserves a failed record without s
 	const waiting = new Promise<void>(resolve => { entered = resolve; });
 	const hooks = new Promise<void>(resolve => { release = resolve; });
 	const spawn = vi.fn(async () => 42), close = vi.fn();
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }), agentHooks: async () => { entered(); await hooks; return { env: {}, close }; } });
 	const beforeSpawn = vi.fn(async () => { if (!valid) throw new Error('DIRECTORY_NOT_AUTHORIZED:directory-changed'); });
 	const creating = sessions.create({ kind: 'agent', title: 'bound', file: 'agent', args: [], cwd: '/vault', agentId: 'claude-code', hooks: true, beforeSpawn });
@@ -63,7 +64,7 @@ test('final Space check runs after hooks and preserves a failed record without s
 test('cancellation while final validation waits cannot spawn afterwards', async () => {
 	const abort = new AbortController();
 	const spawn = vi.fn(async () => 42);
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	const session = await sessions.create({ signal: abort.signal, kind: 'shell', title: 'cancelled', file: 'sh', args: [], cwd: '/vault', beforeSpawn: async () => { abort.abort(); } });
 	expect(spawn).not.toHaveBeenCalled();
@@ -75,7 +76,7 @@ test('old helper events cannot mutate a new runtime when native sid numbers are 
 	const events: import('../../../../shared/native/host').NativeEvents[] = [];
 	const native = new NativeHost(async callbacks => {
 		events.push(callbacks);
-		return { alive: true, version: 'fixture', terminalTermination: 1, requestStop: (sid: number, options: { requestId: string }) => { callbacks.termination?.(sid, { version: 1, sequence: 1, requestId: options.requestId, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); callbacks.exit(sid, 0, null); }, spawnSession: async () => 42, input() {}, resize() {}, acknowledge() {}, end(sid) { queueMicrotask(() => callbacks.exit(sid, 0, null)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} };
+		return { ...CURRENT_NATIVE, alive: true, version: 'fixture', terminalTermination: 1, requestStop: (sid: number, options: { requestId: string }) => { callbacks.termination?.(sid, { version: 1, sequence: 1, requestId: options.requestId, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); settledExit(callbacks, sid, 0, null); }, spawnSession: async () => 42, input() {}, resize() {}, acknowledge() {}, end(sid) { queueMicrotask(() => settledExit(callbacks, sid, 0, null)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} };
 	});
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	try {
@@ -94,9 +95,9 @@ test('old helper events cannot mutate a new runtime when native sid numbers are 
 
 test('an exit received before the spawned reply keeps its outcome and parse acknowledgement', async () => {
 	const ack = vi.fn();
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture',
-		spawnSession: async sid => { events.output(sid, new TextEncoder().encode('early-output')); events.exit(sid, 7, null); return 42; },
-		input() {}, resize() {}, acknowledge: ack, end(sid) { queueMicrotask(() => events.exit(sid, 0, null)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture',
+		spawnSession: async sid => { events.output(sid, new TextEncoder().encode('early-output')); settledExit(events, sid, 7, null); return 42; },
+		input() {}, resize() {}, acknowledge: ack, end(sid) { queueMicrotask(() => settledExit(events, sid, 0, null)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	try {
 		const session = await sessions.create({ kind: 'shell', title: 'early exit', file: 'sh', args: [], cwd: '/vault' });
@@ -114,7 +115,7 @@ test('an exit received before the spawned reply keeps its outcome and parse ackn
 
 test('an unconfirmed native exit is disconnected evidence and never an exit-code-zero success event', async () => {
 	const observed: import('./session').SessionEvent[] = [];
-	const native = new NativeHost(async events => ({ alive: true, version: 'fixture', spawnSession: async sid => { events.exit(sid, null, null); return 42; }, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
+	const native = new NativeHost(async events => ({ ...CURRENT_NATIVE, alive: true, version: 'fixture', spawnSession: async sid => { settledExit(events, sid, null, null); return 42; }, input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }));
 	const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	try {
 		const session = await sessions.create({ kind: 'shell', title: 'unknown exit', file: 'sh', args: [], cwd: '/vault', prepare: current => current.observe(event => observed.push(event)) });
@@ -129,8 +130,8 @@ test('a managed spawn with a lost reply stays uncertain while a confirmed early 
 	for (const earlyExit of [false, true]) {
 		const lost = new Error('spawn reply lost');
 		let closed!: () => void;
-		const native = new NativeHost(async events => { closed = () => events.closed('lost transport'); return { alive: true, version: 'fixture',
-			spawnSession: async sid => { if (earlyExit) events.exit(sid, 7, null); throw lost; },
+		const native = new NativeHost(async events => { closed = () => events.closed('lost transport'); return { ...CURRENT_NATIVE, alive: true, version: 'fixture',
+			spawnSession: async sid => { if (earlyExit) settledExit(events, sid, 7, null); throw lost; },
 			input() {}, resize() {}, acknowledge() {}, end() {}, history: async <T>() => [] as T, request: async <T>() => ({}) as T,
 			dispose: async () => { events.closed('closed'); } }; });
 		const sessions = new TerminalSessions({ native, environment: async () => ({}), settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });

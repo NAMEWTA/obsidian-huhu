@@ -1,4 +1,5 @@
 import { setTimeout as scheduleNativeTimeout, clearTimeout as cancelNativeTimeout } from 'node:timers';
+import { NATIVE_INPUT_LIMITS } from '../../../shared/native/input';
 import type { NativeInputOptions, NativeInputSubmission, NativeResizeSubmission, NativeEditorBinding, NativeEditorSubmission } from '../../../shared/native/input';
 import { NativeControlError, NativeReleaseError, NativeReplyError, NativeSpawnError, NativeShutdownError } from '../../../shared/native/host';
 import { NativeEditorError } from '../../../shared/native/input';
@@ -148,8 +149,6 @@ export class NativeHost implements NativeHostAccess {
 			await Promise.race([generation.starting, cancelled]);
 			this.active(generation, owner);
 			checkCaptured();
-			if (capability === 'control' && generation.helper?.localControl !== 1)
-				throw new NativeControlError('CAPABILITY_UNAVAILABLE', 'The helper does not support local control');
 			const lease: NativeLease = {
 				value: this.connection(generation, owner),
 				allocateSessionId: () => {
@@ -193,13 +192,12 @@ export class NativeHost implements NativeHostAccess {
 					replySettled: (sid) => {
 						for (const owner of generation.owners) {
 							const running = owner.running.get(sid);
-							if (running?.spawning && generation.helper?.replySettlement === 1) {
+							if (running?.spawning) {
 								running.spawnSettled = running.numericExit ? 'after-exit' : 'before-exit';
 								continue;
 							}
 							if (
 								!running ||
-								generation.helper?.replySettlement !== 1 ||
 								(!running.numericExit && !running.failedNone) ||
 								running.replySettled
 							)
@@ -594,10 +592,10 @@ export class NativeHost implements NativeHostAccess {
 			}
 		};
 		return {
-			get editorTransactions() { return owner.capability === 'pty' ? generation.helper?.editorTransactions : undefined; },
+			editorTransactions: 1 as const,
 			editorBinding: sid => {
 				const helper = pty(sid), running = owner.running.get(sid);
-				if (!running?.editorLaunch || helper.editorTransactions !== 1 || !helper.editorBinding) return;
+				if (!running?.editorLaunch) return;
 				if (running.editor) return running.editor;
 				const native = helper.editorBinding(sid);
 				if (!native || native.sid !== sid || native.identity.runtimeId !== running.editorLaunch.identity.runtimeId) return;
@@ -627,31 +625,21 @@ export class NativeHost implements NativeHostAccess {
 			get version() {
 				return generation.helper?.version ?? '';
 			},
-			get outputAbandon() {
-				return generation.helper?.outputAbandon;
+			outputAbandon: 1 as const,
+			abandonOutput: (sid: number) => {
+				const helper = drain(sid);
+				helper.abandonOutput(sid);
+				const running = owner.running.get(sid);
+				if (running) {
+					running.outputBytes = 0;
+					this.finishDrain(generation, owner, sid, running);
+				}
 			},
-			...(generation.helper?.outputAbandon === 1 && generation.helper.abandonOutput
-				? {
-						abandonOutput: (sid: number) => {
-							const helper = drain(sid);
-							helper.abandonOutput!(sid);
-							const running = owner.running.get(sid);
-							if (running) {
-								running.outputBytes = 0;
-								this.finishDrain(generation, owner, sid, running);
-							}
-						},
-					}
-				: {}),
-			get inputAdmission() {
-				return generation.helper?.inputAdmission;
-			},
+			inputAdmission: 1 as const,
 			get inputLimits() {
-				return generation.helper?.inputLimits;
+				return generation.helper?.inputLimits ?? NATIVE_INPUT_LIMITS;
 			},
-			get replySettlement() {
-				return generation.helper?.replySettlement;
-			},
+			replySettlement: 1 as const,
 			get terminalTermination() {
 				return generation.helper?.terminalTermination;
 			},
@@ -713,9 +701,7 @@ export class NativeHost implements NativeHostAccess {
 				options?: NativeInputOptions,
 			): NativeInputSubmission => {
 				const helper = pty(sid);
-				if (helper.submitInput) return helper.submitInput(sid, data, options);
-				const result = { op: 0, state: 'none' as const, reason: 'unsupported' as const };
-				return { op: 0, queued: Promise.resolve(result), finished: Promise.resolve(result), cancel() {} };
+				return helper.submitInput(sid, data, options);
 			},
 			submitResize: (
 				sid: number,
@@ -724,9 +710,7 @@ export class NativeHost implements NativeHostAccess {
 				options?: NativeInputOptions,
 			): NativeResizeSubmission => {
 				const helper = pty(sid);
-				if (helper.submitResize) return helper.submitResize(sid, cols, rows, options);
-				const result = { op: 0, state: 'none' as const, reason: 'unsupported' as const };
-				return { op: 0, queued: Promise.resolve(result), finished: Promise.resolve(result), cancel() {} };
+				return helper.submitResize(sid, cols, rows, options);
 			},
 			input: (sid, data) => pty(sid).input(sid, data),
 			resize: (sid, cols, rows) => pty(sid).resize(sid, cols, rows),
@@ -736,7 +720,7 @@ export class NativeHost implements NativeHostAccess {
 				if (owner.failure || generation.failure || !generation.helper?.alive)
 					throw new NativeReplyError({ state: 'none', reason: 'closed' });
 				const helper = drain(sid);
-				(helper.reply ?? helper.input).call(helper, sid, data);
+				helper.reply(sid, data);
 			},
 			acknowledge: (sid, bytes) => {
 				if (!Number.isSafeInteger(bytes) || bytes <= 0) return;
@@ -846,8 +830,7 @@ export class NativeHost implements NativeHostAccess {
 
 	private ioDrained(generation: Generation, running: Running): boolean {
 		return (
-			(generation.helper?.inputAdmission !== 1 || running.outputBytes === 0) &&
-			(generation.helper?.replySettlement !== 1 || running.replySettled === true)
+			running.outputBytes === 0 && running.replySettled === true
 		);
 	}
 	private finishSpawn(generation: Generation, owner: Owner, sid: number, running: Running, failedNone = false): void {
@@ -870,8 +853,8 @@ export class NativeHost implements NativeHostAccess {
 			owner.sessions.delete(sid);
 		} else if (
 			running.numericExit &&
-			running.notice &&
-			running.notice.evidence.cleanup.state !== 'pending' &&
+			(generation.helper?.terminalTermination !== 1 ||
+				(running.notice && running.notice.evidence.cleanup.state !== 'pending')) &&
 			this.ioDrained(generation, running)
 		)
 			running.exit();
@@ -880,20 +863,19 @@ export class NativeHost implements NativeHostAccess {
 
 	/** Failed observation does not relinquish a live captured scope or its late drain routes. */
 	private retire(generation: Generation, owner: Owner): void {
-		if (generation.helper?.replySettlement === 1) {
-			for (const [sid, running] of owner.running) {
-				if (
-					running.numericExit &&
-					running.notice &&
-					terminationConfirmed(running.notice.evidence) &&
-					this.ioDrained(generation, running)
-				) {
-					running.exit();
-					owner.running.delete(sid);
-					owner.sessions.delete(sid);
-				}
+		for (const [sid, running] of owner.running) {
+			if (
+				running.numericExit &&
+				running.notice &&
+				terminationConfirmed(running.notice.evidence) &&
+				this.ioDrained(generation, running)
+			) {
+				running.exit();
+				owner.running.delete(sid);
+				owner.sessions.delete(sid);
 			}
 		}
+
 		if (!owner.released) return;
 		if (generation.control?.owner === owner && generation.control.phase !== 'closed') return;
 		if (

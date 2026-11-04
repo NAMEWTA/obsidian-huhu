@@ -278,6 +278,7 @@ test.each(['timeout', 'cancel', 'source-lost'] as const)(
 );
 
 import { NATIVE_INPUT_LIMITS, type NativeInputFinishedResult } from '../../../../shared/native/input';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 test('queued raw cancellation reports none only after the original input owner proves no write', async () => {
 	const session = fixture(),
 		controller = new AbortController();
@@ -288,7 +289,7 @@ test('queued raw cancellation reports none only after the original input owner p
 		finish = resolve;
 	});
 	const cancel = () => finish({ op: 11, state: 'none', reason: 'cancelled' });
-	session.bindPort({
+	session.bindPort({ ...CURRENT_NATIVE,
 		inputAdmission: 1,
 		inputLimits: NATIVE_INPUT_LIMITS,
 		input: legacy,
@@ -336,7 +337,7 @@ test('queued raw cancellation reports none only after the original input owner p
 test('the complete CLI body envelope is limited before any input, and invalid named keys never enter the writer', async () => {
 	const session = fixture(),
 		input = vi.fn();
-	session.bindPort({
+	session.bindPort({ ...CURRENT_NATIVE,
 		inputAdmission: 1,
 		inputLimits: NATIVE_INPUT_LIMITS,
 		input() {},

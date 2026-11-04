@@ -23,6 +23,7 @@ beforeAll(async () => {
 import { NativeHost } from './src/host/desktop/native/host.ts';
 import { TerminalSessions } from './src/modules/agent/services/terminal/sessions.ts';
 import { normalizeTerminalSettings } from './src/modules/agent/core/terminal/settings.ts';
+import { CURRENT_NATIVE, settledExit } from './test/fixtures/native/current.ts';
 async function readHistory(host, payload) {
  const abort = new AbortController();
  const lease = await host.acquire('history', undefined, abort.signal);
@@ -38,7 +39,7 @@ let spawningFinished = false;
 const host = new NativeHost(async events => {
  const state = { alive: true, events, reply: deferred(), read: deferred(), lateEnds: 0 };
  generations.push(state);
- return {
+ return { ...CURRENT_NATIVE,
   get alive() { return state.alive; }, version: 'fixture', terminalTermination: 1, requestStop() {},
   spawnSession: () => { entered.resolve(); return spawned.promise; },
   input() {}, resize() {}, acknowledge() {},
@@ -84,7 +85,7 @@ await creating;
 await new Promise(resolve => setImmediate(resolve));
 const cleanupPendingBeforeExit = !closed;
 generations[0].events.termination?.(1, { version: 1, sequence: 1, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } });
-generations[0].events.exit(1, 0, null);
+settledExit(generations[0].events, 1, 0, null);
 const cleanup = await closing;
 const current = generations.at(-1);
 const secondConnected = current.alive;

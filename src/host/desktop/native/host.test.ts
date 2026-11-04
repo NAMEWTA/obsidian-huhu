@@ -2,6 +2,7 @@ import { expect, test, vi } from 'vitest';
 import type { NativeEvents, NativeLease, NativeTransport } from '../../../shared/native/host';
 import { NativeReplyError, NativeSpawnError, NativeShutdownError, NativeReleaseError, type NativeHelperTermination } from '../../../shared/native/host';
 import { NativeHost } from './host';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 
 const helperOutcome = (state: NativeHelperTermination['state']): Readonly<NativeHelperTermination> => Object.freeze({ state, code: state === 'exited' ? 1 : null, signal: null, forced: false, stdioClosed: state !== 'unconfirmed', diagnostic: 'controlled cleanup failure' });
 
@@ -70,7 +71,7 @@ test('Host dispose after an already retired failed last release retains that ori
 
 function transport(events: NativeEvents) {
 	let alive = true;
-	return {
+	return { ...CURRENT_NATIVE,
 		get alive() {
 			return alive;
 		},
@@ -128,7 +129,7 @@ test('reply faults keep the captured SID owner through release drain and cannot 
 				output: 'drained',
 			},
 		});
-		callbacks[0]!.exit(sid, 0, null);
+		settledExit(callbacks[0]!, sid, 0, null);
 	};
 	const errors: unknown[] = [];
 	try {
@@ -409,7 +410,7 @@ test('releasing a PTY lease waits for its own exit while Secondary keeps the hel
 		expect(released).toBe(false);
 		expect(secondary.value.alive).toBe(true);
 	} finally {
-		complete(events, sid);
+		complete(events, sid); events.replySettled?.(sid);
 		await stopping;
 		await secondary.release();
 		await host.dispose();
@@ -448,7 +449,7 @@ test('a spawn completing after release is ended before the PTY owner finishes cl
 		expect(secondary.value.alive).toBe(true);
 	} finally {
 		spawn.resolve(42);
-		complete(events, sid);
+		complete(events, sid); events.replySettled?.(sid);
 		await spawning;
 		await closing;
 		await secondary.release();
@@ -659,7 +660,7 @@ test('a root exit cannot release a negotiated PTY scope before separate cleanup 
 	});
 	try {
 		await endRequested.promise;
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(released).toBe(false);
 		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
@@ -701,7 +702,7 @@ test('legacy numeric exit rejects scope release and leaves the Secondary sibling
 	const closing = agent.release().catch((error: unknown) => error);
 	try {
 		await requested.promise;
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'cleanup-incomplete' }] });
 		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} finally {
@@ -735,7 +736,7 @@ test('released owners retain captured ACK and parser-reply routes through incomp
 		agent.value.acknowledge(sid, 4);
 		agent.value.reply?.(sid, 'device-reply');
 		expect(traffic).toEqual(['ack:4', 'device-reply']);
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 		events.termination?.(sid, {
 			version: 1,
 			sequence: 1,
@@ -770,7 +771,7 @@ test('released owners retain captured ACK and parser-reply routes through incomp
 		expect(() => agent.value.acknowledge(sid, 1)).toThrow();
 		await expect(secondary.value.request('history', 'query', {})).resolves.toHaveProperty('rows');
 	} finally {
-		complete(events, sid);
+		complete(events, sid); events.replySettled?.(sid);
 		await closing;
 		await secondary.release();
 		await host.dispose();
@@ -805,7 +806,7 @@ test('confirmed scope without the post-drain numeric exit remains an incomplete 
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'timeout' }] });
 		expect(secondary.value.alive).toBe(true);
 	} finally {
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 		await closing;
 		await secondary.release();
 		await host.dispose();
@@ -841,7 +842,7 @@ test('release reuses the first captured stop observation deadline after a force 
 		expect(await closing).toMatchObject({ outcomes: [{ sid, reason: 'timeout' }] });
 		expect(secondary.value.alive).toBe(true);
 	} finally {
-		complete(events, sid);
+		complete(events, sid); events.replySettled?.(sid);
 		await closing;
 		clock.mockRestore();
 		await secondary.release();
@@ -870,7 +871,7 @@ test('negotiated output ownership survives confirmed numeric exit until late par
 	const stopping = agent.release().then(() => {
 		released = true;
 	});
-	complete(events, sid);
+	complete(events, sid); events.replySettled?.(sid);
 	try {
 		await new Promise<void>((resolve) => setImmediate(resolve));
 		expect(released).toBe(false);

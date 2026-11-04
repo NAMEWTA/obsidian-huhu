@@ -42,9 +42,9 @@ test('the manual checklist names every CI row, its runner, target and both asset
 
 test('the manual checklist covers every required end-to-end scenario with step and expectation cells', () => {
 	const rows = checklist.split('\n').filter(line => /^\| M-\d\d \|/.test(line));
-	expect(rows.map(line => line.split('|')[1]!.trim())).toEqual(Array.from({ length: 16 }, (_, index) => `M-${String(index + 1).padStart(2, '0')}`));
+	expect(rows.map(line => line.split('|')[1]!.trim())).toEqual(Array.from({ length: 15 }, (_, index) => `M-${String(index + 1).padStart(2, '0')}`));
 	for (const row of rows) expect(row.split('|').filter(cell => cell.trim()).length, row).toBe(4);
-	const required = ['两个 Space', '后台 A/B', '跨 Space', '人工审批', '重新附加', '历史继续与冲突', '退出恢复', 'Codex 与 Claude', '六个入口', '输入法', '多行', '目录与权限', '迁移', '备份与恢复'];
+	const required = ['两个 Space', '后台 A/B', '跨 Space', '人工审批', '重新附加', '历史继续与冲突', '退出恢复', 'Codex 与 Claude', '六个入口', '输入法', '多行', '目录与权限', '备份与恢复'];
 	for (const topic of required) expect(rows.some(row => row.includes(topic)), topic).toBe(true);
 });
 

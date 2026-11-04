@@ -3,6 +3,7 @@ import { NativeHost } from '../../../../host/desktop/native/host';
 import { NativeReleaseError, type NativeEvents, type NativeTransport } from '../../../../shared/native/host';
 import { normalizeTerminalSettings } from '../../core/terminal/settings';
 import { TerminalSessions } from './sessions';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 /** History reads share the PTY helper. Terminal cleanup must not drop an admitted read or open a second helper. */
 /** A history request that owns its lease through release, like the production readers. */
@@ -43,9 +44,9 @@ async function fixture(protocol: 'confirmed' | 'legacy') {
 						output: 'drained',
 					},
 				});
-			events.exit(sid, 0, null);
+			settledExit(events, sid, 0, null);
 		};
-		return {
+		return { ...CURRENT_NATIVE,
 			...(protocol === 'confirmed'
 				? { terminalTermination: 1 as const, requestStop: (sid: number) => end(sid) }
 				: {}),

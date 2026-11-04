@@ -14,6 +14,7 @@ import { TerminalSessions } from './terminal/sessions';
 import { WorkspaceService } from './workspace-service';
 import { createSpaceWorkspaceStore } from './workspace-store';
 import { freeWriterPorts } from '../platform/desktop/spaces/free-writer-port.fixture';
+import { CURRENT_NATIVE } from '../../../../test/fixtures/native/current';
 
 const requestedBinary = process.env.HUHU_TEST_PTY_BINARY;
 if (requestedBinary !== undefined && !existsSync(requestedBinary)) throw new Error(`HUHU_TEST_PTY_BINARY does not exist: ${requestedBinary}`);
@@ -42,7 +43,7 @@ for (const lostReply of [false, true]) test.skipIf(process.platform !== 'linux')
 		helper = await PtyHelper.start(binary, lostReply ? { ...events, exit() {} } : events, globalThis as unknown as Window, { HOME: root, USERPROFILE: root });
 		if (!lostReply) return helper;
 		const active = helper;
-		return {
+		return { ...CURRENT_NATIVE,
 			get alive() { return active.alive; }, get version() { return active.version; },
 			spawnSession: async (sid, options) => {
 				// The helper really starts a process; only its last-mile reply/exit evidence is lost.

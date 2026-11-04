@@ -8,6 +8,7 @@ import {
 	type ScreenState,
 } from '../../core/terminal/frames-screen';
 import { XtermScreenTarget } from './terminal-screen-xterm';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 const bootstrap = vi.hoisted(() => ({ constructed: 0, failOpen: false }));
 vi.mock('@xterm/xterm', async (importOriginal) => {
@@ -151,7 +152,7 @@ test('a late production projection joins incomplete parser state and receives on
 		colors: () => ({ foreground: '#cccccc', background: '#111111', cursor: '#ffffff' }),
 	});
 	const replies: string[] = [];
-	session.attach({ input: (_, data) => replies.push(String(data)), resize() {}, acknowledge() {}, end() {} }, 1);
+	session.attach({ ...CURRENT_NATIVE, input: (_, data) => replies.push(String(data)), resize() {}, acknowledge() {}, end() {} }, 1);
 	const terminals = [
 		new Terminal({ cols: 20, rows: 4, allowProposedApi: true }),
 		new Terminal({ cols: 20, rows: 4, allowProposedApi: true }),
@@ -378,7 +379,7 @@ test.each([
 		platform: 'linux',
 		colors: () => ({ foreground: '#cccccc', background: '#111111', cursor: '#ffffff' }),
 	});
-	session.attach({ input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
+	session.attach({ ...CURRENT_NATIVE, input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
 	const terminals = [0, 1].map(() => new Terminal({ cols: 20, rows: 4, allowProposedApi: true }));
 	const containers = terminals.map(() => document.body.appendChild(document.createElement('div')));
 	terminals.forEach((terminal, index) => terminal.open(containers[index]!));
@@ -450,7 +451,7 @@ test.each(['throw', 'none', 'unknown'] as const)(
 		let applied:
 			((value: import('../../../../shared/native/input').NativeResizeFinishedResult) => void) | undefined;
 		session.attach(
-			{
+			{ ...CURRENT_NATIVE,
 				input() {},
 				resize() {},
 				acknowledge() {},
@@ -550,7 +551,7 @@ test('running input, resize and sticky reply diagnostics keep their own visible 
 	const replies: Array<string | Uint8Array> = [],
 		stops: string[] = [];
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			input() {},
 			reply: (_, data) => replies.push(data),
 			resize() {},
@@ -617,7 +618,7 @@ async function activityViewFixture(starting = false) {
 		platform: 'linux',
 		colors: () => ({ foreground: '#ccc', background: '#111', cursor: '#fff' }),
 	});
-	if (!starting) session.attach({ input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
+	if (!starting) session.attach({ ...CURRENT_NATIVE, submitResize: () => ({ op: 1, queued: new Promise<never>(() => {}), finished: new Promise<never>(() => {}), cancel() {} }), input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
 	const before = ['win', 'toggleClass'].map(
 		(name) => [name, Object.getOwnPropertyDescriptor(HTMLElement.prototype, name)] as const,
 	);
@@ -1101,7 +1102,7 @@ test.each(['quota', 'pending'] as const)(
 			for (const lease of held) f.session.unregisterView(lease);
 			held.length = 0;
 			if (boundary === 'pending') {
-				f.session.attach({ input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
+				f.session.attach({ ...CURRENT_NATIVE, input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
 				ui.rerender(content(true)); // Same Session/active/focused/doc/navigation generation.
 			} else {
 				ui.rerender(content(false));

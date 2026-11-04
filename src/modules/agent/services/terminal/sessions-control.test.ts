@@ -29,11 +29,11 @@ test('committed rename before deferred model creation survives adoption; stale c
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			terminalTermination: 1,
 			version: 'fixture',
@@ -116,11 +116,11 @@ test('captured PTY control route precedes hooks and is synchronously revalidated
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,
@@ -216,6 +216,7 @@ import { join } from 'node:path';
 import { onTestFinished } from 'vitest';
 import { snapshotSpawnEnvironment } from '../../../../shared/native/input';
 import { PI_EXTENSION } from '../../platform/desktop/hooks/native-extensions';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 const officialArtifacts = process.env.HUHU_PI_ARTIFACT_TEST_ROOT;
 test
@@ -225,7 +226,6 @@ test
 		'loader-environment',
 		'missing-extension',
 		'fullscreen',
-		'capability-absent',
 		'cancelled',
 		'space-revoked',
 	] as const)(
@@ -258,12 +258,12 @@ test
 						output: 'drained',
 					},
 				});
-				events.exit(sid, 0, null);
+				settledExit(events, sid, 0, null);
 			};
-			return {
+			return { ...CURRENT_NATIVE,
 				alive: true,
 				version: 'fixture',
-				editorTransactions: scenario === 'capability-absent' ? undefined : 1,
+				editorTransactions: 1,
 				terminalTermination: 1,
 				requestStop: exit,
 				spawnEnvironment: (overrides) => {

@@ -52,3 +52,12 @@
 - 保留：`host.ts`、`shared/native/host.ts`、agent 终端端口里的可选能力字段与 `=== 1` 判断。它们是 NativeHost/端口抽象，大量 agent 测试用不带这些能力的模拟 helper，真实 `PtyHelper` 已恒满足；清理它们需重写这些模拟，收益小，未动。
 - Rust：`main.rs` 握手按插件请求回显能力的逻辑未改。`huhu` 控制客户端等其他对端仍可能只请求部分能力，裁剪对其有意义；当前插件请求全部能力，因此行为不变。Rust 无仅为旧插件存在的分支，`cargo test` 全部通过。
 - 验证：`cargo test` 通过；`vitest run src/shared/native src/host src/modules/agent`（带二进制）1647 通过，1 例失败 `agent/platform/history/ownership.test.ts` 为 5s 超时（单独运行 4.4s 通过，与真实 helper 启动负载相关，非本次逻辑）；`check:native` 通过；两个 tsc 本区域无错误；`helper.ts` eslint 零警告；`test:architecture` 通过。
+
+## 第四轮：宿主与 Agent 会话层的"能力缺失"分支
+
+- 类型：`shared/native/host.ts` 的 `NativeConnection`/`NativeTransport` 中 `editorTransactions`、`replySettlement`、`outputAbandon`、`inputAdmission`、`localControl` 改为必需的 `1`，`inputLimits`、`abandonOutput`、`editorBinding`、`submitInput`、`submitResize`、`reply`、`prepareControl` 改为必需；`SessionPort`（`agent/services/terminal/session.ts`）同样。`terminalTermination`、`requestStop` 仍可选（平台差异，保留）。
+- `host/desktop/native/host.ts`：删除 `localControl`/`replySettlement`/`editorTransactions` 的 `=== 1` 判断与缺能力分支，连接对象直接声明全部能力；`submitInput`/`submitResize`/`reply` 直接转发给 helper，不再有 `unsupported` 结果与 `reply ?? input` 回退；`ioDrained`、`retire` 恒要求输出已确认与回复栅栏。`finishDrain` 在无终止能力（平台不一致）时不再要求终止通知，与 `exit` 处理一致。
+- `agent/services/terminal/session.ts`、`sessions.ts`：删除 `input()` 的无准入旧写入分支及 `legacy-unconfirmed` 诊断类型、`submitInput` 的 `none('unsupported')`、`submitResize` 缺能力分支及 `'unsupported'` 结果（`ScreenGeometryResult.native` 与 `requestSize` 的联合类型同步收窄）、`outputAbandon`/`editorTransactions` 的条件判断、`reply ?? input` 回退。`NativeInputNoneReason` 的 `'unsupported'` 是 helper 线上协议值，保留。
+- 测试：新增 `test/fixtures/native/current.ts`（`CURRENT_NATIVE` 当前能力模拟，`settledExit` 在退出后补回复栅栏），约 30 个测试文件的模拟 helper/端口展开 `CURRENT_NATIVE` 并在退出处用 `settledExit`；删除 `sessions-control.test.ts` 的 `capability-absent` 场景（只验证能力缺失）；少数用例补回复栅栏或让 `submitResize` 保持挂起以保持原断言。
+- 复查：`rg "inputAdmission|outputAbandon|replySettlement|localControl|editorTransactions" src --glob '!**/*.test.*'` 仅剩类型声明、握手请求/校验和 `PtyHelper`/`NativeHost` 的恒定声明。
+- 验证：两个 tsc 在这些目录无错误；带二进制的 `vitest run src/shared/native src/host src/modules/agent test/agent test/agent-backup` 1744 通过，1 例失败仍是 `ownership.test.ts` 的 5s 超时（单独约 4.4s 通过）；`check:native`、`test:architecture` 通过；改动源文件 eslint 零警告。未再改 Rust。

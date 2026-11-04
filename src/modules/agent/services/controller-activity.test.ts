@@ -16,6 +16,7 @@ import { agentSettings } from '../settings';
 import { AgentController } from './controller';
 import { accountEnv } from '../platform/desktop/agents/accounts';
 import { terminalEnvironment } from '../platform/desktop/pty/runtime-environment';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 
 // These adapters would read the real user's shell, CLI install registry or account files.
 vi.mock('../platform/desktop/detection/shell-path', () => ({
@@ -108,7 +109,7 @@ async function fixture(prepare?: () => Promise<void>) {
 		ack = vi.fn();
 	const native = new NativeHost(async (events) => {
 		nativeEvents = events;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,
@@ -164,14 +165,14 @@ async function fixture(prepare?: () => Promise<void>) {
 						output: 'drained',
 					},
 				});
-				events.exit(sid, 0, null);
+				settledExit(events, sid, 0, null);
 			},
 			spawnSession: spawn,
 			input,
 			resize() {},
 			acknowledge: ack,
 			end: (sid) => {
-				queueMicrotask(() => events.exit(sid, 0, null));
+				queueMicrotask(() => settledExit(events, sid, 0, null));
 			},
 			history: async <T>() => [] as T,
 			request: async <T>() => ({}) as T,
@@ -321,7 +322,7 @@ test('T06 production Controller delegates one managed Shell scope and root exit 
 				output: 'drained',
 			},
 		});
-		f.events().exit(session.sid, 0, null);
+		settledExit(f.events(), session.sid, 0, null);
 		await session.whenParsed();
 		expect(session.getActivitySnapshot().completion).toBeUndefined();
 	} finally {

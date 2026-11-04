@@ -60,7 +60,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const requestStop = vi.fn((sid: number) => {
 		if (!options.deferStop) exit(sid);
@@ -68,7 +68,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 	const acknowledge = vi.fn();
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,
@@ -758,6 +758,7 @@ test('a synchronously captured Pane cannot follow replacement across scope admis
 
 import { ControlProtocolError } from '../../../../shared/native/control-wire';
 import type { HistoryCommands } from './history';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 test('a history/resume ControlProtocolError message reaches the response with its stable code and no side effect', async () => {
 	const f = await fixture();

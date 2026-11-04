@@ -72,17 +72,17 @@ export type SessionKind = 'shell' | 'agent' | 'preset' | 'automation' | 'script'
 export type SessionEvent = { kind: 'data'; text: string } | { kind: 'exit'; code: number } | { kind: 'disconnected' };
 
 export interface SessionPort {
-	readonly inputAdmission?: 1;
-	readonly outputAbandon?: 1;
-	abandonOutput?(sid: number): void;
-	readonly inputLimits?: Readonly<NativeInputLimits>;
+	readonly inputAdmission: 1;
+	readonly outputAbandon: 1;
+	abandonOutput(sid: number): void;
+	readonly inputLimits: Readonly<NativeInputLimits>;
 	input(sid: number, data: string | Uint8Array): void;
-	reply?(sid: number, data: string | Uint8Array): void;
+	reply(sid: number, data: string | Uint8Array): void;
 	resize(sid: number, cols: number, rows: number): void;
 	acknowledge(sid: number, bytes: number): void;
 	end(sid: number, force: boolean): void;
-	submitInput?(sid: number, data: string | Uint8Array, options?: NativeInputOptions): NativeInputSubmission;
-	submitResize?(sid: number, cols: number, rows: number, options?: NativeInputOptions): NativeResizeSubmission;
+	submitInput(sid: number, data: string | Uint8Array, options?: NativeInputOptions): NativeInputSubmission;
+	submitResize(sid: number, cols: number, rows: number, options?: NativeInputOptions): NativeResizeSubmission;
 	resourceLimit?(reason: string): void;
 	outputEvidence?(): 'drained' | 'truncated' | 'unknown';
 }
@@ -91,7 +91,7 @@ export interface SessionInputSubmission extends NativeInputSubmission {
 	readonly runtimeId: string;
 }
 export type SessionInputDiagnostic = Readonly<
-	(NativeInputFailure | { op: number; state: 'unknown'; reason: 'legacy-unconfirmed' }) & {
+	NativeInputFailure & {
 		runtimeId: string;
 		message: string;
 	}
@@ -970,11 +970,11 @@ export class TerminalSession {
 					this.error = t('agent.screen.resourceLimit');
 					const port = this.port,
 						sid = this.sid;
-					if (port?.outputAbandon === 1 && port.abandonOutput)
+					if (port)
 						this.screen.barrier(() => {
 							this.screen.abandon();
 							try {
-								port.abandonOutput!(sid);
+								port.abandonOutput(sid);
 							} catch {
 								/* Truncated local display does not prove native receipt. */
 							}
@@ -1088,7 +1088,7 @@ export class TerminalSession {
 		const port = this.port,
 			sid = this.sid;
 		try {
-			(port.reply ?? port.input).call(port, sid, data);
+			port.reply(sid, data);
 		} catch (error) {
 			this.replyFailure(
 				error instanceof NativeReplyError ? error.failure : { state: 'unknown', reason: 'transport-lost' },
@@ -1297,7 +1297,7 @@ export class TerminalSession {
 				this.error = message;
 				this.changed();
 			};
-			const unconfirmed = (reason: 'closed' | 'unsupported' | 'transport-lost') => {
+			const unconfirmed = (reason: 'closed' | 'transport-lost') => {
 				this.screen.observeNativeGeometry(0)({ op: 0, state: 'unknown', reason });
 				failed({ state: 'unknown', reason });
 			};
@@ -1307,15 +1307,9 @@ export class TerminalSession {
 			}
 			const port = this.port,
 				sid = this.sid;
-			if (!port?.submitResize) {
-				try {
-					port?.resize(sid, target.cols, target.rows);
-					unconfirmed('unsupported');
-					return 'unsupported';
-				} catch {
-					unconfirmed('transport-lost');
-					return 'unknown';
-				}
+			if (!port) {
+				unconfirmed('closed');
+				return 'unknown';
 			}
 			let result: NativeResizeSubmission;
 			try {
@@ -1436,28 +1430,7 @@ export class TerminalSession {
 
 	input(data: string | Uint8Array): void {
 		if (!data.length) return;
-		if (this.port?.inputAdmission === 1) {
-			this.submitInput(data);
-			return;
-		}
-		if (this.disposed || this.userInputClosed || this.connection !== 'connected') {
-			this.inputFailure({ op: 0, state: 'none', reason: 'closed' });
-			return;
-		}
-		if (
-			data.length > this.screen.profile.maxLocalInputBytes ||
-			(typeof data === 'string' ? new TextEncoder().encode(data).length : data.length) >
-				this.screen.profile.maxLocalInputBytes
-		) {
-			this.inputFailure({ op: 0, state: 'none', reason: 'invalid' });
-			return;
-		}
-		try {
-			this.port?.input(this.sid, data);
-			this.inputFailure({ op: 0, state: 'unknown', reason: 'legacy-unconfirmed' });
-		} catch {
-			this.inputFailure({ op: 0, state: 'unknown', reason: 'transport-lost' });
-		}
+		this.submitInput(data);
 	}
 	/** A whole input operation. Only the captured native receipt can prove queued/written. */
 	submitInput(data: string | Uint8Array, options?: NativeInputOptions): SessionInputSubmission {
@@ -1475,7 +1448,7 @@ export class TerminalSession {
 		if (this.disposed || this.userInputClosed || this.connection !== 'connected') return none('closed');
 		if (options?.signal?.aborted) return none('cancelled');
 		const port = this.port;
-		if (port?.inputAdmission !== 1 || !port.inputLimits || !port.submitInput) return none('unsupported');
+		if (!port) return none('closed');
 		const limit = Math.min(this.screen.profile.maxLocalInputBytes, port.inputLimits.operationBytes);
 		if (
 			!data.length ||
@@ -1525,7 +1498,7 @@ export class TerminalSession {
 		);
 	}
 	/** @internal Captured native void-entry diagnostics retain their actual operation effect. */
-	inputFailure(value: NativeInputFailure | { op: number; state: 'unknown'; reason: 'legacy-unconfirmed' }): void {
+	inputFailure(value: NativeInputFailure): void {
 		if (this.inputDiagnostic?.state === value.state && this.inputDiagnostic.reason === value.reason) return;
 		const message =
 			value.state === 'unknown'

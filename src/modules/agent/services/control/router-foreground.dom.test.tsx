@@ -68,7 +68,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const requestStop = vi.fn((sid: number) => {
 		if (!options.deferStop) exit(sid);
@@ -76,7 +76,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 	const acknowledge = vi.fn();
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,
@@ -164,6 +164,7 @@ import { ControlCommands } from './commands';
 import { ControlRouter } from './router';
 import type { ControlRequest, ControlResponse } from '../../../../shared/native/control-wire';
 import type { NativeControlCall, NativeControlRegistration } from '../../../../shared/native/host';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 function registration() {
 	const responses: ControlResponse[] = [];

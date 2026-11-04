@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import { TerminalSession } from './session';
 import { sessionState } from './status';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 test('T06 native loss/stop wins over old activity; Agent exit zero is not turn completion', async () => {
 	const s = new TerminalSession({
@@ -17,7 +18,7 @@ test('T06 native loss/stop wins over old activity; Agent exit zero is not turn c
 		colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }),
 	});
 	try {
-		s.attach({ input() {}, resize() {}, acknowledge() {}, end() {} }, 42);
+		s.attach({ ...CURRENT_NATIVE, input() {}, resize() {}, acknowledge() {}, end() {} }, 42);
 		const source = s
 			.bindActivityRuntime()
 			.bindSource({

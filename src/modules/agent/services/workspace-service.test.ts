@@ -6,6 +6,7 @@ import { TerminalSession } from './terminal/session';
 import type { TerminalSessions } from './terminal/sessions';
 import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
 import { sessionState } from './terminal/status';
+import { CURRENT_NATIVE } from '../../../../test/fixtures/native/current';
 function fixture() {
 	const map = new Map<string, TerminalSession>(),
 		listeners = new Set<() => void>();
@@ -24,7 +25,7 @@ function fixture() {
 			platform: 'linux',
 			colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }),
 		});
-		session.attach({ input: () => {}, resize: () => {}, acknowledge: () => {}, end: () => {} }, 1);
+		session.attach({ ...CURRENT_NATIVE, input: () => {}, resize: () => {}, acknowledge: () => {}, end: () => {} }, 1);
 		map.set(session.id, session);
 		session.onChange(() => listeners.forEach((fn) => fn()));
 		return session;

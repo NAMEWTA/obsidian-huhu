@@ -8,6 +8,7 @@ import type { NativeEvents } from '../../../shared/native/host';
 import { normalizeTerminalSettings } from '../core/terminal/settings';
 import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
 import type { TextStorage } from '../../../shared/storage/ports';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 
 async function fixture(options: { deferStop?: boolean; selectSpace?: () => Promise<string | undefined> } = {}) {
 	const files = new Map<string, string>();
@@ -61,7 +62,7 @@ async function fixture(options: { deferStop?: boolean; selectSpace?: () => Promi
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const requestStop = vi.fn((sid: number) => {
 		if (!options.deferStop) exit(sid);
@@ -69,7 +70,7 @@ async function fixture(options: { deferStop?: boolean; selectSpace?: () => Promi
 	const acknowledge = vi.fn();
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,

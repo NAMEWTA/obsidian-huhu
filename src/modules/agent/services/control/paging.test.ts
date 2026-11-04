@@ -2,6 +2,7 @@ import { expect, test } from 'vitest';
 import { TerminalSession } from '../terminal/session';
 import { ControlPaging, type ResponseEnvelope } from './paging';
 import { controlJsonBytes } from '../../../../shared/native/control-wire';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 const envelope: ResponseEnvelope = {
 	protocolVersion: 1,
 	requestId: 'r',
@@ -27,7 +28,7 @@ test('whole response budget clamps model rows and UTF8 bytes; cursor retries pre
 		platform: 'linux',
 		colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }),
 	});
-	session.attach({ input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
+	session.attach({ ...CURRENT_NATIVE, input() {}, resize() {}, acknowledge() {}, end() {} }, 1);
 	try {
 		const text = 'a😀b\\\u0001'.repeat(30);
 		session.receive(new TextEncoder().encode(text));

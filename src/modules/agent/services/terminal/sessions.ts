@@ -21,7 +21,7 @@ import type {
 	TerminationEvidence,
 } from '../../../../shared/native/host';
 import type { NativeEditorLaunch } from '../../../../shared/native/input';
-import { NATIVE_TERMINATION_OBSERVE_MS, NativeSpawnError, NativeReplyError } from '../../../../shared/native/host';
+import { NATIVE_TERMINATION_OBSERVE_MS, NativeSpawnError } from '../../../../shared/native/host';
 import { terminationConfirmed } from '../../../../shared/native/termination';
 import { TerminalSession, type Activity, type SessionColors, type SessionKind } from './session';
 import { SessionScreenBudget } from './session-screen';
@@ -484,39 +484,16 @@ export class TerminalSessions {
 		this.runtimeRoutes.set(session.id, route);
 		session.onChange(() => this.changed());
 		session.bindPort({
-			...(helper.outputAbandon === 1 && helper.abandonOutput
-				? { outputAbandon: 1 as const, abandonOutput: (id: number) => helper.abandonOutput!(id) }
-				: {}),
-			...(helper.inputAdmission === 1 && helper.inputLimits
-				? { inputAdmission: 1 as const, inputLimits: helper.inputLimits }
-				: {}),
-			...(helper.submitInput
-				? {
-						submitInput: (
-							id: number,
-							data: string | Uint8Array,
-							options?: import('../../../../shared/native/input').NativeInputOptions,
-						) => helper.submitInput!(id, data, options),
-					}
-				: {}),
-			...(helper.submitResize
-				? {
-						submitResize: (
-							id: number,
-							cols: number,
-							rows: number,
-							options?: import('../../../../shared/native/input').NativeInputOptions,
-						) => helper.submitResize!(id, cols, rows, options),
-					}
-				: {}),
+			outputAbandon: 1,
+			abandonOutput: (id: number) => helper.abandonOutput(id),
+			inputAdmission: 1,
+			inputLimits: helper.inputLimits,
+			submitInput: (id, data, options) => helper.submitInput(id, data, options),
+			submitResize: (id, cols, rows, options) => helper.submitResize(id, cols, rows, options),
 			input: (id, data) => {
 				if (helper.alive) helper.input(id, data);
 			},
-			reply: (id, data) => {
-				if (helper.reply) helper.reply(id, data);
-				else if (helper.alive) helper.input(id, data);
-				else throw new NativeReplyError({ state: 'none', reason: 'closed' });
-			},
+			reply: (id, data) => helper.reply(id, data),
 			resize: (id, cols, rows) => {
 				if (helper.alive) helper.resize(id, cols, rows);
 			},
@@ -589,9 +566,7 @@ export class TerminalSessions {
 			if (
 				request.runtime &&
 				request.agentId === 'pi' &&
-				helper.editorTransactions === 1 &&
-				helper.spawnEnvironment &&
-				helper.editorBinding
+				helper.spawnEnvironment
 			) {
 				try {
 					const snapshot = helper.spawnEnvironment(env);

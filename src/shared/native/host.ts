@@ -175,24 +175,24 @@ export class NativeReplyError extends Error {
 export interface NativeConnection {
 	/** Bounded pure profile read of this captured generation; never starts a helper or consults later process.env. */
 	spawnEnvironment?(overrides: Readonly<Record<string, string>>): NativeSpawnEnvironment;
-	readonly editorTransactions?: 1;
+	readonly editorTransactions: 1;
 	/** Original lease/generation/SID handle only. No capability means no fallback paste/Enter. */
-	editorBinding?(sid: number): NativeEditorBinding | undefined;
+	editorBinding(sid: number): NativeEditorBinding | undefined;
 	readonly alive: boolean;
 	readonly version: string;
 	readonly terminalTermination?: 1;
-	readonly replySettlement?: 1;
+	readonly replySettlement: 1;
 	/** Explicitly abandons display; never an ACK, native delivery or cleanup confirmation. */
-	readonly outputAbandon?: 1;
-	abandonOutput?(sid: number): void;
-	readonly inputAdmission?: 1;
-	readonly inputLimits?: Readonly<NativeInputLimits>;
-	submitInput?(sid: number, data: string | Uint8Array, options?: NativeInputOptions): NativeInputSubmission;
-	submitResize?(sid: number, cols: number, rows: number, options?: NativeInputOptions): NativeResizeSubmission;
+	readonly outputAbandon: 1;
+	abandonOutput(sid: number): void;
+	readonly inputAdmission: 1;
+	readonly inputLimits: Readonly<NativeInputLimits>;
+	submitInput(sid: number, data: string | Uint8Array, options?: NativeInputOptions): NativeInputSubmission;
+	submitResize(sid: number, cols: number, rows: number, options?: NativeInputOptions): NativeResizeSubmission;
 	requestStop?(sid: number, options: Readonly<{ requestId: string; force: boolean }>): void;
 	spawnSession(sid: number, options: NativeSpawnOptions): Promise<number | null>;
 	/** Device/parser reply for an already-owned stream; may finish its bounded drain after release. */
-	reply?(sid: number, data: string | Uint8Array): void;
+	reply(sid: number, data: string | Uint8Array): void;
 	input(sid: number, data: string | Uint8Array): void;
 	resize(sid: number, cols: number, rows: number): void;
 	acknowledge(sid: number, bytes: number): void;
@@ -208,9 +208,9 @@ export interface NativeConnection {
 
 /** Process adapter owned solely by the host. Disposal waits for process termination. */
 export interface NativeTransport extends NativeConnection {
-	readonly localControl?: 1;
+	readonly localControl: 1;
 	/** Reserves its independent lane before codec snapshots/encoding; does not enqueue until send(). */
-	prepareControl?(message: ControlMessage, valid?: () => boolean): NativeControlFrame;
+	prepareControl(message: ControlMessage, valid?: () => boolean): NativeControlFrame;
 	dispose(): void | Promise<void>;
 }
 

@@ -5,6 +5,7 @@ import { oscColor, TerminalSession, type SessionEvent } from './session';
 import { hookActivity } from './sessions';
 import { hookActivityConsumer } from '../../platform/desktop/hooks/automation-hooks';
 import { NativeReplyError } from '../../../../shared/native/host';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 const ESC = '\x1b';
 const encoder = new TextEncoder();
@@ -34,7 +35,7 @@ function fixture(over: Partial<ConstructorParameters<typeof TerminalSession>[0]>
 		...over,
 	});
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			input: (_sid, data) => sent.push(typeof data === 'string' ? data : new TextDecoder().decode(data)),
 			resize: () => {},
 			acknowledge: (_sid, bytes) => acks.push(bytes),
@@ -163,7 +164,7 @@ test('a typed parser reply fault is sticky, closes user input and retains parse 
 		stops = 0,
 		acked = 0,
 		user = 0;
-	session.bindPort({
+	session.bindPort({ ...CURRENT_NATIVE,
 		input() {
 			user++;
 		},
@@ -224,7 +225,7 @@ test('remote reply failures route to the captured Session only and late generati
 				routes.push(events ?? {});
 				let sid = 0;
 				return {
-					value: {
+					value: { ...CURRENT_NATIVE,
 						alive: true,
 						version: 'fixture',
 						spawnSession: async () => 123,
@@ -297,7 +298,7 @@ test('remote reply failures route to the captured Session only and late generati
 test('reply failure after accepted exit records its fact without another stop or parser failure', async () => {
 	const { session } = fixture();
 	let stop = 0;
-	session.bindPort({
+	session.bindPort({ ...CURRENT_NATIVE,
 		input() {},
 		resize() {},
 		acknowledge() {},

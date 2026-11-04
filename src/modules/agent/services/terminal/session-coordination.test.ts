@@ -7,6 +7,7 @@ import type {
 	NativeEditorInputOptions,
 } from '../../../../shared/native/input';
 import { NATIVE_INPUT_LIMITS } from '../../../../shared/native/input';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 function fixture() {
 	const session = new TerminalSession({
@@ -296,7 +297,7 @@ test('raw named keys are one original Session input operation using the live ter
 	const { session } = fixture();
 	const writes: Array<string | Uint8Array> = [];
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			inputAdmission: 1,
 			inputLimits: NATIVE_INPUT_LIMITS,
 			input() {

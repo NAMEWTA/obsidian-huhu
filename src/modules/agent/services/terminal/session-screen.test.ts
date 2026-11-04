@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test, vi } from 'vitest';
 import { TerminalSession, type SessionPort } from './session';
 import { DEFAULT_SCREEN_PROFILE, screenGridAllowed, type ScreenFrame } from '../../core/terminal/frames-screen';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 function fixture(over: Partial<ConstructorParameters<typeof TerminalSession>[0]> = {}) {
 	let parsed: () => void = () => undefined;
@@ -19,7 +20,7 @@ function fixture(over: Partial<ConstructorParameters<typeof TerminalSession>[0]>
 		...over,
 	});
 	session.attach(
-		{ input: () => undefined, resize: () => undefined, acknowledge: () => parsed(), end: () => undefined },
+		{ ...CURRENT_NATIVE, input: () => undefined, resize: () => undefined, acknowledge: () => parsed(), end: () => undefined },
 		1234,
 	);
 	return {
@@ -325,7 +326,7 @@ test('a resource fault abandons only unparsed display bytes, never acknowledges 
 	});
 	const events: string[] = [];
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			outputAbandon: 1,
 			abandonOutput: (sid) => {
 				assert.equal(sid, 11);
@@ -487,7 +488,7 @@ test('native geometry receipts retain the latest operation while old late receip
 	}> = [];
 	const frames: ScreenFrame[] = [];
 	let stream: ReturnType<TerminalSession['openScreen']> | undefined;
-	f.session.bindPort({
+	f.session.bindPort({ ...CURRENT_NATIVE,
 		input: () => undefined,
 		resize: () => assert.fail('legacy resize'),
 		acknowledge: () => undefined,

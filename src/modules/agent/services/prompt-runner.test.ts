@@ -6,6 +6,7 @@ import type { AgentExecution } from './agent-runtime';
 import { PromptRunner, submitInteractivePrompt } from './prompt-runner';
 import { TerminalSession } from './terminal/session';
 import { NATIVE_INPUT_LIMITS } from '../../../shared/native/input';
+import { CURRENT_NATIVE } from '../../../../test/fixtures/native/current';
 
 const deferred = <T>() => {
 	let resolve!: (value: T) => void;
@@ -36,7 +37,7 @@ test('an interactive prompt rejected as a whole never sends a separate carriage 
 		colors: () => ({ foreground: '#cccccc', background: '#111111', cursor: '#ffffff' }),
 	});
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			inputAdmission: 1,
 			inputLimits: NATIVE_INPUT_LIMITS,
 			input: () => assert.fail('legacy write'),

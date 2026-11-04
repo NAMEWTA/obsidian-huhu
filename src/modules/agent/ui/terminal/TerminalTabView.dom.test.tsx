@@ -13,6 +13,7 @@ import { normalizeTerminalSettings } from '../../core/terminal/settings';
 import type { ManagedSnapshot } from '../../core/workspace/managed-runtime';
 const terminalSettings = normalizeTerminalSettings(undefined);
 import { getLanguage, setLanguage, t } from '../../../../shared/i18n';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 const emptyManaged: ManagedSnapshot = { revision: 0, sessions: [] };
 const ordinaryFocus = Object.freeze({ navigationGeneration: 0 });
 const projection = {
@@ -845,9 +846,9 @@ async function focusHostFixture() {
 					output: 'drained',
 				},
 			});
-			events.exit(sid, 0, null);
+			settledExit(events, sid, 0, null);
 		};
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'controlled-host',
 			terminalTermination: 1,

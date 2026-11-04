@@ -8,6 +8,7 @@ import { SpaceService } from './spaces/space-service';
 import { TerminalSessions } from './terminal/sessions';
 import { createSpaceWorkspaceStore } from './workspace-store';
 import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 const confirmed = (code = 0): TerminationEvidence => ({ root: { state: 'exited', code, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' });
 const deferred = () => { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; };
 async function fixture() {
@@ -19,8 +20,8 @@ async function fixture() {
 	const report = vi.fn(), spaces = new SpaceService({ storage, directories, owners: { acquire: async () => lease }, instanceId: 'fixture', report });
 	let events!: NativeEvents, autoStop = false, sequence = 0;
 	const emit = (sid: number, evidence: TerminationEvidence, requestId?: string) => events.termination?.(sid, { version: 1, sequence: ++sequence, evidence, requestId });
-	const spawn = vi.fn(async () => 42), input = vi.fn(), ack = vi.fn(), requested = vi.fn((sid: number, options: { requestId: string; force: boolean }) => { if (autoStop) { emit(sid, confirmed(), options.requestId); events.exit?.(sid, 0, null); } });
-	const native = new NativeHost(async e => { events = e; return { alive: true, version: 'fixture', terminalTermination: 1, spawnSession: spawn, input, acknowledge: ack, resize() {}, end(sid) { emit(sid, confirmed()); events.exit?.(sid, 0, null); }, requestStop: requested, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} }; });
+	const spawn = vi.fn(async () => 42), input = vi.fn(), ack = vi.fn(), requested = vi.fn((sid: number, options: { requestId: string; force: boolean }) => { if (autoStop) { emit(sid, confirmed(), options.requestId); settledExit(events, sid, 0, null); } });
+	const native = new NativeHost(async e => { events = e; return { ...CURRENT_NATIVE, alive: true, version: 'fixture', terminalTermination: 1, spawnSession: spawn, input, acknowledge: ack, resize() {}, end(sid) { emit(sid, confirmed()); settledExit(events, sid, 0, null); }, requestStop: requested, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => {} }; });
 	const environment = vi.fn(async () => ({}));
 	const sessions = new TerminalSessions({ native, environment, platform: 'linux', settings: () => normalizeTerminalSettings({}), colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	const launchPort: WorkspaceLaunchPort = { shell: options => sessions.create({ ...options, kind: 'shell', title: 'shell', file: 'sh', args: [], cwd: options.cwd! }), agent: async () => undefined, resume: async () => undefined, account: () => '', report };
@@ -29,7 +30,7 @@ async function fixture() {
 	const space = await spaces.create({ name: 'A' });
 	async function launch() { const result = await workspace.createManaged({ kind: 'shell', spaceId: space.id }); if (result.status !== 'created') throw new Error(JSON.stringify(result)); return { spaceId: space.id, sessionId: result.session.sessionId, runtimeId: result.session.runtime.runtimeId }; }
 	return { files, storage, directories, report, lease, spaces, native, sessions, workspace, space, spawn, input, ack, environment, requested, emit, launchPort, events: () => events, launch,
-		async cleanup() { autoStop = true; for (const s of sessions.list()) { emit(s.sid, confirmed()); events.exit?.(s.sid, 0, null); } await workspace.dispose(); await sessions.dispose(); await native.dispose(); } };
+		async cleanup() { autoStop = true; for (const s of sessions.list()) { emit(s.sid, confirmed()); settledExit(events, s.sid, 0, null); } await workspace.dispose(); await sessions.dispose(); await native.dispose(); } };
 }
 
 for (const cancel of ['abort', 'timeout'] as const) test(`archive observes ${cancel} before a stalled final flush completes`, async () => {
@@ -37,7 +38,7 @@ for (const cancel of ['abort', 'timeout'] as const) test(`archive observes ${can
 	let operation: ReturnType<WorkspaceService['archiveManaged']> | undefined;
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!;
-		f.emit(session.sid, confirmed()); f.events().exit(session.sid, 0, null); await f.workspace.waitManagedStop(ref);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null); await f.workspace.waitManagedStop(ref);
 		const plan = await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id });
 		const flush = f.workspace.persistence.flush.bind(f.workspace.persistence);
 		f.workspace.persistence.flush = async () => { entered.resolve(); await blocked.promise; await flush(); };
@@ -58,7 +59,7 @@ test('shutdown observer expires while its real checkpoint and writer stay owned'
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!, write = f.storage.write;
 		f.storage.write = async (p, text) => { entered.resolve(); await blocked.promise; await write(p, text); };
-		f.emit(session.sid, confirmed()); f.events().exit(session.sid, 0, null); await entered.promise;
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null); await entered.promise;
 		vi.useFakeTimers(); let settled = false;
 		draining = f.workspace.drainManaged(); void draining.then(() => { settled = true; }, () => { settled = true; });
 		await vi.advanceTimersByTimeAsync(60000);
@@ -81,7 +82,7 @@ for (const failure of [false, true]) test(`an already admitted archive primary r
 	let operation: ReturnType<WorkspaceService['archiveManaged']> | undefined;
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!;
-		f.emit(session.sid, confirmed()); f.events().exit(session.sid, 0, null); await f.workspace.waitManagedStop(ref); await f.spaces.flush();
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null); await f.workspace.waitManagedStop(ref); await f.spaces.flush();
 		const plan = await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id }), write = f.storage.write;
 		const primary = vi.fn();
 		f.storage.write = async (path, text) => {
@@ -142,7 +143,7 @@ test('a settled partial scope accepts force without renewing its request or obse
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!;
 		const partial: TerminationEvidence = { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'partial', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 1, reason: 'deadline' }, output: 'truncated' };
-		f.emit(session.sid, partial); f.events().exit(session.sid, 0, null);
+		f.emit(session.sid, partial); settledExit(f.events(), session.sid, 0, null);
 		f.sessions.requestManagedStop(ref); const first = f.sessions.managedSummary(ref)!.stop!, deadline = f.sessions.stopObservation(ref).deadline;
 		expect(f.requested).toHaveBeenCalledOnce(); expect(f.sessions.stopObservation(ref).settled).toBe(false);
 		f.emit(session.sid, partial); expect(f.sessions.managedSummary(ref)!.stop!.phase).toBe('settled');
@@ -170,14 +171,14 @@ test('archive cancellation returns completed and pending member effects without 
 	const f = await fixture(), abort = new AbortController(); let operation: ReturnType<WorkspaceService['archiveManaged']> | undefined;
 	try {
 		const first = await f.launch(), second = await f.launch(), a = f.sessions.get(first.runtimeId)!, b = f.sessions.get(second.runtimeId)!;
-		f.emit(a.sid, confirmed()); f.events().exit(a.sid, 0, null); await f.workspace.waitManagedStop(first);
+		f.emit(a.sid, confirmed()); settledExit(f.events(), a.sid, 0, null); await f.workspace.waitManagedStop(first);
 		operation = f.workspace.archiveManaged(await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id }), { signal: abort.signal });
 		await vi.waitFor(() => expect(f.requested).toHaveBeenCalledOnce()); await f.spaces.flush(); await Promise.resolve(); abort.abort();
 		const result = await operation;
 		expect(result).toMatchObject({ status: 'incomplete', effect: 'partial' });
 		expect(result.rows.find(row => row.target.sessionId === first.sessionId)).toMatchObject({ status: 'stopped', persisted: true, effect: 'completed' });
 		expect(result.rows.find(row => row.target.sessionId === second.sessionId)).toMatchObject({ status: 'incomplete', persisted: false, effect: 'unknown' });
-		const before = JSON.stringify(result); f.emit(b.sid, confirmed()); f.events().exit(b.sid, 0, null); await f.spaces.flush(); await Promise.resolve();
+		const before = JSON.stringify(result); f.emit(b.sid, confirmed()); settledExit(f.events(), b.sid, 0, null); await f.spaces.flush(); await Promise.resolve();
 		expect(JSON.stringify(result)).toBe(before); expect(f.spaces.store.getState().records.spaces[f.space.id]?.archived).toBe(false);
 	} finally { abort.abort(); await operation; await f.cleanup(); }
 });
@@ -200,7 +201,7 @@ test('short stop observers do not settle global deadline or block on checkpoint 
 		expect(session.snapshot()).toContain('descendant-output');
 		await vi.waitFor(() => expect(f.input).toHaveBeenCalled()); // parser reply remains allowed
 		blocked.resolve();
-		f.emit(session.sid, confirmed(7)); f.events().exit?.(session.sid, 7, null);
+		f.emit(session.sid, confirmed(7)); settledExit(f.events(), session.sid, 7, null);
 		expect(await f.workspace.waitManagedStop(ref)).toMatchObject({ status: 'stopped', persisted: true });
 		expect(f.requested).toHaveBeenCalledTimes(1);
 	} finally { blocked.resolve(); await f.cleanup(); }
@@ -213,7 +214,7 @@ test('Space archive only archives the parent and a changed preview has zero stop
 		await f.launch();
 		expect(await f.workspace.archiveManaged(plan)).toMatchObject({ status: 'failed', effect: 'none', error: { code: 'STALE_RUNTIME' } });
 		expect(f.requested).not.toHaveBeenCalled();
-		for (const s of f.sessions.list()) { f.emit(s.sid, confirmed()); f.events().exit?.(s.sid, 0, null); }
+		for (const s of f.sessions.list()) { f.emit(s.sid, confirmed()); settledExit(f.events(), s.sid, 0, null); }
 		const current = await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id });
 		expect(await f.workspace.archiveManaged(current)).toMatchObject({ status: 'archived', rows: [{ persisted: true }, { persisted: true }] });
 		expect(f.spaces.store.getState().records.spaces[f.space.id]?.archived).toBe(true);
@@ -231,7 +232,7 @@ test('an aborted observer leaves an independent observer and the same stop effec
 		abort.abort();
 		expect(await first).toMatchObject({ status: 'pending', persisted: false, error: { code: 'WAIT_CANCELLED' } });
 		expect(f.workspace.getManaged(ref)?.runtime?.stop?.phase).toBe('stop-requested');
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		expect(await second).toMatchObject({ status: 'stopped', persisted: true });
 		expect(f.requested).toHaveBeenCalledTimes(1);
 	} finally { await f.cleanup(); }
@@ -275,7 +276,7 @@ test('shutdown holds the writer until verified cleanup checkpoint drains and rej
 		const original = f.storage.write;
 		f.storage.write = async (p, text) => { entered.resolve(); await blocked.promise; await original(p, text); };
 		f.workspace.quiesce();
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		draining = f.workspace.drainManaged();
 		await entered.promise;
 		expect(f.lease.close).not.toHaveBeenCalled();
@@ -291,7 +292,7 @@ test('a final save failure preserves the pre-spawn unknown marker and prevents a
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!, original = f.storage.write;
 		f.storage.write = async () => { throw new Error('fixture final save failure'); };
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		expect(await f.workspace.stopManaged(ref)).toMatchObject({ status: 'failed', persisted: false, error: { code: 'PERSISTENCE_FAILED' } });
 		expect(JSON.parse(f.files.get(f.spaces.path)!).sessions[ref.sessionId].lastAttempt.state).toBe('unconfirmed');
 		expect(await f.workspace.archiveManaged(await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id }))).toMatchObject({ status: 'incomplete' });
@@ -312,9 +313,9 @@ test('captured parser replies and ACK survive lease release while new user input
 		f.events().output?.(session.sid, new TextEncoder().encode('release-output\x1b[5n'));
 		await vi.waitFor(() => { expect(f.ack).toHaveBeenCalled(); expect(f.input).toHaveBeenCalled(); });
 		expect(session.snapshot()).toContain('release-output');
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		await closing;
-	} finally { if (closing) { for (const s of f.sessions.list()) { f.emit(s.sid, confirmed()); f.events().exit?.(s.sid, 0, null); } await closing; } await f.cleanup(); }
+	} finally { if (closing) { for (const s of f.sessions.list()) { f.emit(s.sid, confirmed()); settledExit(f.events(), s.sid, 0, null); } await closing; } await f.cleanup(); }
 });
 
 test('a stopped pending launch may be explicitly retried while its late provider completion cannot alter the new runtime', async () => {
@@ -341,7 +342,7 @@ test('a background record without a Pane opens after reload with zero native wor
 		const result = await f.workspace.createManaged({ kind: 'shell', shell: 'bash', spaceId: f.space.id });
 		if (result.status !== 'created') throw new Error('missing fixture runtime');
 		const ref = { spaceId: f.space.id, sessionId: result.session.sessionId, runtimeId: result.session.runtime.runtimeId }, session = f.sessions.get(ref.runtimeId)!;
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		await f.workspace.stopManaged(ref);
 		expect(Object.keys(f.workspace.store.getState().tabs)).toHaveLength(0);
 		await f.workspace.dispose(); await f.sessions.dispose();
@@ -363,7 +364,7 @@ test('a background record without a Pane opens after reload with zero native wor
 		expect(f.spawn.mock.calls).toHaveLength(before + 1);
 		expect(reopened.getManaged(ref)?.runtime?.runtimeId).not.toBe(ref.runtimeId);
 		expect(Object.keys(spaces.store.getState().records.sessions)).toEqual([ref.sessionId]);
-	} finally { if (sessions) for (const s of sessions.list()) { f.emit(s.sid, confirmed()); f.events().exit?.(s.sid, 0, null); } await reopened?.dispose(); await sessions?.dispose(); await f.cleanup(); }
+	} finally { if (sessions) for (const s of sessions.list()) { f.emit(s.sid, confirmed()); settledExit(f.events(), s.sid, 0, null); } await reopened?.dispose(); await sessions?.dispose(); await f.cleanup(); }
 });
 
 test('opening an unknown record is zero spawn and neither unknown nor missing Agent resume source can continue', async () => {
@@ -390,7 +391,7 @@ test('termination checkpoints capture existing native resume provenance and fenc
 		const admission = await f.spaces.prepareSession(f.space.id, { kind: 'agent', title: 'Pi', agentId: 'pi', accountId: '' }), ref = f.sessions.reserveManaged(admission.record);
 		const session = await f.sessions.create({ runtime: ref, kind: 'agent', agentId: 'pi', title: 'Pi', file: 'pi', args: [], cwd: admission.cwd, beforeSpawn: admission.beforeSpawn });
 		session.setActivity('done', { session_id: 'original-native', transcript_path: '/fixture/pi-original.jsonl' });
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		expect(await f.workspace.waitManagedStop(ref)).toMatchObject({ status: 'stopped', persisted: true });
 		expect(f.spaces.store.getState().records.sessions[ref.sessionId]).toMatchObject({ nativeSessionId: 'original-native', transcriptPath: '/fixture/pi-original.jsonl' });
 		const next = await f.spaces.prepareSession(f.space.id, admission.record, ref.sessionId);
@@ -418,7 +419,7 @@ for (const queued of [false, true]) test(`archive observer cancellation ${queued
 		const commit = vi.spyOn(f.spaces, 'commitArchive');
 		archiving = f.workspace.archiveManaged(await f.workspace.previewArchive({ kind: 'space', spaceId: f.space.id }), { signal: abort.signal });
 		await vi.waitFor(() => expect(f.requested).toHaveBeenCalledOnce());
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		await entered.promise;
 		if (queued) await vi.waitFor(() => expect(commit).toHaveBeenCalledOnce());
 		abort.abort(); release.resolve();
@@ -437,14 +438,14 @@ test('fresh Agent restart clears prior attempt native provenance and cannot cont
 		if (created.status !== 'created') throw new Error('missing fixture agent');
 		const ref = { spaceId: f.space.id, sessionId: created.session.sessionId, runtimeId: created.session.runtime.runtimeId }, first = f.sessions.get(ref.runtimeId)!;
 		first.setActivity('done', { session_id: 'N1', transcript_path: '/fixture/N1.jsonl' });
-		f.emit(first.sid, confirmed()); f.events().exit?.(first.sid, 0, null);
+		f.emit(first.sid, confirmed()); settledExit(f.events(), first.sid, 0, null);
 		await f.workspace.waitManagedStop(ref);
 		const opened = await f.workspace.openManagedRecord(ref); if (opened.status !== 'opened') throw new Error('missing record view');
 		await f.workspace.restore(opened.tabId, undefined, true);
 		const record = f.spaces.store.getState().records.sessions[ref.sessionId]!;
 		expect(record.nativeSessionId).toBeUndefined(); expect(record.transcriptPath).toBeUndefined();
 		const second = f.sessions.get(record.lastAttempt!.runtimeId)!;
-		f.emit(second.sid, confirmed()); f.events().exit?.(second.sid, 0, null);
+		f.emit(second.sid, confirmed()); settledExit(f.events(), second.sid, 0, null);
 		await f.workspace.waitManagedStop({ ...ref, runtimeId: second.id });
 		await expect(f.workspace.restore(opened.tabId, undefined, false)).rejects.toMatchObject({ code: 'SOURCE_UNAVAILABLE', reason: 'resume-source-unavailable' });
 		expect(f.spawn).toHaveBeenCalledTimes(2);
@@ -460,7 +461,7 @@ test('explicit Agent resume retains the exact accepted native source without a n
 		if (created.status !== 'created') throw new Error('missing agent');
 		const target = { spaceId: f.space.id, sessionId: created.session.sessionId }, first = f.sessions.get(created.session.runtime.runtimeId)!;
 		first.setActivity('done', { session_id: 'N1', transcript_path: '/fixture/N1.jsonl' });
-		f.emit(first.sid, confirmed()); f.events().exit?.(first.sid, 0, null);
+		f.emit(first.sid, confirmed()); settledExit(f.events(), first.sid, 0, null);
 		await f.workspace.waitManagedStop({ ...target, runtimeId: first.id });
 		const opened = await f.workspace.openManagedRecord(target); if (opened.status !== 'opened') throw new Error('missing record view');
 		const resume = vi.fn((info: Parameters<WorkspaceLaunchPort['resume']>[0], title: string, beforeSpawn?: () => Promise<void>, context?: Parameters<WorkspaceLaunchPort['resume']>[3]) => f.sessions.create({ ...context, beforeSpawn, kind: 'agent', agentId: info.agentId, title, file: 'codex', args: ['resume', info.nativeSessionId!], cwd: info.cwd }));
@@ -470,7 +471,7 @@ test('explicit Agent resume retains the exact accepted native source without a n
 		const record = f.spaces.store.getState().records.sessions[target.sessionId]!;
 		expect(record).toMatchObject({ nativeSessionId: 'N1', transcriptPath: '/fixture/N1.jsonl' });
 		const second = f.sessions.get(record.lastAttempt!.runtimeId)!;
-		f.emit(second.sid, confirmed()); f.events().exit?.(second.sid, 0, null);
+		f.emit(second.sid, confirmed()); settledExit(f.events(), second.sid, 0, null);
 		await f.workspace.waitManagedStop({ ...target, runtimeId: second.id });
 		expect(f.spaces.store.getState().records.sessions[target.sessionId]?.nativeSessionId).toBe('N1');
 		expect(f.spawn).toHaveBeenCalledTimes(2);
@@ -481,7 +482,7 @@ test('the archive observation deadline is rechecked after final layout drain', a
 	const f = await fixture();
 	try {
 		const ref = await f.launch(), session = f.sessions.get(ref.runtimeId)!;
-		f.emit(session.sid, confirmed()); f.events().exit?.(session.sid, 0, null);
+		f.emit(session.sid, confirmed()); settledExit(f.events(), session.sid, 0, null);
 		await f.workspace.waitManagedStop(ref);
 		const now = Date.now(); vi.useFakeTimers({ toFake: ['Date'], now });
 		const flush = f.workspace.persistence.flush.bind(f.workspace.persistence);

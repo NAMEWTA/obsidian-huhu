@@ -60,7 +60,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 				output: 'drained',
 			},
 		});
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const requestStop = vi.fn((sid: number) => {
 		if (!options.deferStop) exit(sid);
@@ -68,7 +68,7 @@ async function fixture(options: { deferStop?: boolean } = {}) {
 	const acknowledge = vi.fn();
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			terminalTermination: 1,
@@ -723,6 +723,7 @@ import * as nodeOs from 'node:os';
 import * as nodePath from 'node:path';
 import { NativeResumeService } from '../launch/native-resume';
 import { NativeOccupancy } from '../../platform/desktop/native-reference/occupancy';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 test('history import/resume/open chain: preview creates nothing, import is explicit and exact, resume attaches or conflicts, nothing forks', async () => {
 	const f = await fixture();

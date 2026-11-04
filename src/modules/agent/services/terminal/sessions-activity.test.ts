@@ -4,6 +4,7 @@ import type { NativeEvents } from '../../../../shared/native/host';
 import { TerminalSessions } from './sessions';
 import { normalizeTerminalSettings } from '../../core/terminal/settings';
 import type { RuntimeActivityBinding, RuntimeHooksRequest } from '../../core/workspace/managed-runtime';
+import { CURRENT_NATIVE, settledExit } from '../../../../../test/fixtures/native/current';
 
 const record = {
 	id: 'persistent',
@@ -20,7 +21,7 @@ test.each(['reserved', 'preparing'] as const)(
 		let release!: (env: Record<string, string>) => void;
 		const gate = new Promise<Record<string, string>>((resolve) => (release = resolve));
 		const spawn = vi.fn(async () => 42);
-		const start = vi.fn(async (events: NativeEvents) => ({
+		const start = vi.fn(async (events: NativeEvents) => ({ ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			spawnSession: spawn,
@@ -88,12 +89,12 @@ test.each(['null-exit', 'lost-reply'] as const)(
 			sid = id;
 			await gate;
 			if (failure === 'lost-reply') throw new Error('The spawned reply was lost');
-			events.exit(id, null, null);
+			settledExit(events, id, null, null);
 			return 42;
 		});
 		const native = new NativeHost(async (e) => {
 			events = e;
-			return {
+			return { ...CURRENT_NATIVE,
 				alive: true,
 				version: 'fixture',
 				terminalTermination: 1,
@@ -158,7 +159,7 @@ test('T06 managed Shell owns one hook scope; stop revokes before deferred prepar
 		close = vi.fn(async () => {});
 	const native = new NativeHost(async (e) => {
 		events = e;
-		return {
+		return { ...CURRENT_NATIVE,
 			alive: true,
 			version: 'fixture',
 			spawnSession: spawn,
@@ -166,7 +167,7 @@ test('T06 managed Shell owns one hook scope; stop revokes before deferred prepar
 			resize() {},
 			acknowledge() {},
 			end(sid) {
-				e.exit(sid, 0, null);
+				settledExit(e, sid, 0, null);
 			},
 			history: async <T>() => [] as T,
 			request: async <T>() => ({}) as T,
@@ -243,11 +244,11 @@ test.each(['stop', 'root-notice', 'numeric-exit', 'transport-lost'] as const)(
 					output: 'drained',
 				},
 			});
-			events.exit(id, 0, null);
+			settledExit(events, id, 0, null);
 		};
 		const native = new NativeHost(async (e) => {
 			events = e;
-			return {
+			return { ...CURRENT_NATIVE,
 				alive: true,
 				version: 'fixture',
 				terminalTermination: 1,

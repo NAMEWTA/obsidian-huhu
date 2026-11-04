@@ -10,6 +10,7 @@ import { SpaceService } from './spaces/space-service';
 import { TerminalSessions } from './terminal/sessions';
 import { createSpaceWorkspaceStore } from './workspace-store';
 import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 
 async function fixture() {
 	const files = new Map<string, string>();
@@ -21,12 +22,12 @@ async function fixture() {
 	let events!: NativeEvents, sequence = 0;
 	const exit = (sid: number) => {
 		events.termination?.(sid, { version: 1, sequence: ++sequence, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } });
-		events.exit(sid, 0, null);
+		settledExit(events, sid, 0, null);
 	};
 	const spawn = vi.fn(async () => 42), stop = vi.fn(exit), input = vi.fn();
 	const native = new NativeHost(async e => {
 		events = e;
-		return { alive: true, version: 'fixture', terminalTermination: 1, spawnSession: spawn, requestStop: stop, input, resize() {}, acknowledge() {}, end: exit, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { e.closed('closed'); } };
+		return { ...CURRENT_NATIVE, alive: true, version: 'fixture', terminalTermination: 1, spawnSession: spawn, requestStop: stop, input, resize() {}, acknowledge() {}, end: exit, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { e.closed('closed'); } };
 	});
 	const environment = vi.fn(async () => ({}));
 	const sessions = new TerminalSessions({ native, environment, settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });

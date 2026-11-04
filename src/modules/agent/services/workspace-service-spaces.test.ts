@@ -19,6 +19,7 @@ import { SpaceService } from './spaces/space-service';
 import { createSpaceWorkspaceStore } from './workspace-store';
 import { TerminalSessions } from './terminal/sessions';
 import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
+import { CURRENT_NATIVE, settledExit } from '../../../../test/fixtures/native/current';
 
 const clock = { setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms) as unknown as number, clearTimeout: (id: number) => clearTimeout(id) } as Pick<Window, 'setTimeout' | 'clearTimeout'>;
 async function fixture() {
@@ -30,8 +31,8 @@ async function fixture() {
 	const spaces = new SpaceService({ ...ports, storage: adapter, instanceId: 'integration', selectSpace: chooser, report: vi.fn() });
 	const spawn = vi.fn(async (_sid: number, _request: { cwd?: string }) => 42), acquired = vi.fn();
 	let nativeEvents!: NativeEvents, sequence = 0;
-	const exit = (sid: number, code = 0) => { nativeEvents.termination?.(sid, { version: 1, sequence: ++sequence, evidence: { root: { state: 'exited', code, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); nativeEvents.exit(sid, code, null); };
-	const native = new NativeHost(async events => { nativeEvents = events; acquired(); return { alive: true, terminalTermination: 1, requestStop: (sid: number) => exit(sid), version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end(sid) { queueMicrotask(() => exit(sid)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }; });
+	const exit = (sid: number, code = 0) => { nativeEvents.termination?.(sid, { version: 1, sequence: ++sequence, evidence: { root: { state: 'exited', code, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } }); settledExit(nativeEvents, sid, code, null); };
+	const native = new NativeHost(async events => { nativeEvents = events; acquired(); return { ...CURRENT_NATIVE, alive: true, terminalTermination: 1, requestStop: (sid: number) => exit(sid), version: 'fixture', spawnSession: spawn, input() {}, resize() {}, acknowledge() {}, end(sid) { queueMicrotask(() => exit(sid)); }, history: async <T>() => [] as T, request: async <T>() => ({}) as T, dispose: async () => { events.closed('closed'); } }; });
 	const environment = vi.fn(async () => ({}));
 	const sessions = new TerminalSessions({ native, environment, settings: () => normalizeTerminalSettings({}), platform: 'linux', colors: () => ({ foreground: '#fff', background: '#000', cursor: '#fff' }) });
 	const launch: WorkspaceLaunchPort = {

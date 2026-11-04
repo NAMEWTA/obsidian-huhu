@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import type { Terminal as Model } from '@xterm/headless';
 import { test } from 'vitest';
 import { TerminalSession } from './session';
+import { CURRENT_NATIVE } from '../../../../../test/fixtures/native/current';
 
 function sessionFixture(scrollback = 100) {
 	const encoder = new TextEncoder();
@@ -28,7 +29,7 @@ function sessionFixture(scrollback = 100) {
 		colors: () => ({ foreground: '#cccccc', background: '#111111', cursor: '#ffffff' }),
 	});
 	session.attach(
-		{
+		{ ...CURRENT_NATIVE,
 			input: (_sid, data) => writes.push(typeof data === 'string' ? data : new TextDecoder().decode(data)),
 			resize: (_sid, cols, rows) => {
 				sizes.push({ cols, rows });
@@ -228,7 +229,7 @@ function resizeSubmissionFixture() {
 	type Queued = import('../../../../shared/native/input').NativeResizeQueuedResult;
 	const operations: Array<{ op: number; queued(value: Queued): void; finished(value: Result): void }> = [];
 	let throwing = false;
-	f.session.bindPort({
+	f.session.bindPort({ ...CURRENT_NATIVE,
 		input() {},
 		resize() {},
 		acknowledge() {},

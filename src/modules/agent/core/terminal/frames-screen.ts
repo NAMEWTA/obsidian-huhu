@@ -161,7 +161,7 @@ export interface ScreenViewLease {
 	readonly leaseId: string;
 }
 export type ScreenGeometryResult = Readonly<
-	| { status: 'accepted'; at: ScreenMark; geometry: ScreenGrid; native: 'requested' | 'unsupported' | 'unknown' }
+	| { status: 'accepted'; at: ScreenMark; geometry: ScreenGrid; native: 'requested' | 'unknown' }
 	| { status: 'rejected'; reason: 'not-owner' | 'invalid-grid' | 'resource-limit' | 'disposed' }
 >;
 export interface ScreenReadRequest {
