@@ -307,6 +307,96 @@ describe('recoverable schema upgrades', () => {
 	});
 });
 
+describe('archive resources', () => {
+	const bytes = (text: string) => new TextEncoder().encode(text).buffer as ArrayBuffer;
+	const folderOf = (path: string) => path.slice(0, path.lastIndexOf('/'));
+	test('import writes beside the entry, never overwrites, and keeps earlier items when a later one fails', async () => {
+		const { files, entities, person } = await createPair();
+		const folder = folderOf(person.path);
+		files.external(`${folder}/exists.txt`, 'original');
+		const results = await entities.importResources(person.id, [
+			{ name: 'a b.txt', read: () => Promise.resolve(bytes('first')) },
+			{ name: 'exists.txt', read: () => Promise.resolve(bytes('replacement')) },
+			{ name: 'broken.txt', read: () => Promise.reject(new Error('read-failed')) },
+			{ name: 'wrong.txt', read: () => Promise.resolve('text' as unknown as ArrayBuffer) },
+			{ name: 'last.txt', read: () => Promise.resolve(bytes('last')) },
+		]);
+		expect(results.map((item) => item.error)).toEqual([
+			undefined,
+			'path-exists',
+			'read-failed',
+			'invalid-attachment',
+			undefined,
+		]);
+		expect(files.text.get(`${folder}/a-b.txt`)).toBe('first');
+		expect(files.text.get(`${folder}/last.txt`)).toBe('last');
+		expect(files.text.get(`${folder}/exists.txt`)).toBe('original');
+		expect(files.text.has(`${folder}/broken.txt`)).toBe(false);
+		expect(
+			entities
+				.resources(person.id)
+				.map((item) => item.relativePath)
+				.sort(),
+		).toEqual(['a-b.txt', 'exists.txt', 'last.txt']);
+	});
+	test('imported names cannot leave the entity folder', async () => {
+		const { files, entities, person } = await createPair();
+		const folder = folderOf(person.path);
+		const [result] = await entities.importResources(person.id, [
+			{ name: '../../escape.txt', read: () => Promise.resolve(bytes('x')) },
+		]);
+		expect(result?.path?.startsWith(folder + '/')).toBe(true);
+		expect(result?.path?.slice(folder.length + 1)).not.toContain('/');
+		expect(
+			[...files.text.keys()].some((path) => path.endsWith('escape.txt') && !path.startsWith(folder + '/')),
+		).toBe(false);
+		const [invalid] = await entities.importResources(person.id, [
+			{ name: '...', read: () => Promise.resolve(bytes('x')) },
+		]);
+		expect(invalid?.error).toBe('invalidName');
+	});
+	test('an entity renamed while reading is reported and nothing is written', async () => {
+		const { files, entities, person } = await createPair();
+		const writes = files.writes.length;
+		const [result] = await entities.importResources(person.id, [
+			{
+				name: 'late.txt',
+				read: async () => {
+					files.rename(person.path, person.path.replace('profile.md', 'moved.md'));
+					await Promise.resolve();
+					return bytes('x');
+				},
+			},
+		]);
+		expect(result?.error).toBe('file-moved');
+		expect(files.writes.length).toBe(writes);
+	});
+	test('an unknown entity rejects the whole import', async () => {
+		const { entities } = await createPair();
+		await expect(
+			entities.importResources('missing', [{ name: 'a.txt', read: () => Promise.resolve(bytes('x')) }]),
+		).rejects.toThrow();
+	});
+	test('notes are idempotent per operation and a reused id with other content conflicts', async () => {
+		const { files, entities, person } = await createPair();
+		const receipt = await entities.createNote({
+			operationId: 'note-1',
+			id: person.id,
+			name: 'Meeting.md',
+			body: 'hello',
+		});
+		expect(files.text.get(receipt.path)).toBe('hello');
+		expect(receipt.path.startsWith(folderOf(person.path) + '/')).toBe(true);
+		const writes = files.writes.length;
+		await entities.createNote({ operationId: 'note-1', id: person.id, name: 'Meeting.md', body: 'hello' });
+		expect(files.writes.length).toBe(writes);
+		await expect(
+			entities.createNote({ operationId: 'note-1', id: person.id, name: 'Meeting.md', body: 'other' }),
+		).rejects.toThrow('command-id-conflict');
+		expect(files.text.get(receipt.path)).toBe('hello');
+	});
+});
+
 describe('generic archives additional safety boundaries', () => {
 	test('a relation schema upgrade has an exact backup and preserves both projections on rollback', async () => {
 		const { runtime, files, relations, definitions, recovery, person, company } = await createPair();

@@ -3,9 +3,6 @@ import type { NavigationItem, PanelModel } from '../../../../app/contracts/workb
 import type { ArchivesWorkbench } from '../../api';
 import { t } from '../../../../shared/i18n';
 import type { ArchivesApplication } from './application';
-export function archiveSection(section: string | undefined): string | undefined {
-	return section === 'person' ? 'type-person' : section === 'company' ? 'type-company' : section;
-}
 export function genericArchivesWorkbench(source: () => ArchivesApplication | undefined): ArchivesWorkbench {
 	return {
 		subscribe: (listener) => source()?.runtime.subscribe(listener) ?? (() => {}),
@@ -47,7 +44,7 @@ export function genericArchivesWorkbench(source: () => ArchivesApplication | und
 		},
 		title(target): string {
 			const application = source(),
-				section = archiveSection(target.section);
+				section = target.section;
 			if (section === 'archive-designer') return t('archives.designer');
 			if (section === 'archive-recovery') return t('archives.recovery');
 			if (target.resourceId) {
@@ -67,7 +64,7 @@ export function genericArchivesWorkbench(source: () => ArchivesApplication | und
 			const index = application.runtime.index,
 				catalog = index.catalog(),
 				selected = target.resourceId ? index.get(target.resourceId) : undefined,
-				section = archiveSection(target.section);
+				section = target.section;
 			return {
 				searchable: true,
 				sections: [

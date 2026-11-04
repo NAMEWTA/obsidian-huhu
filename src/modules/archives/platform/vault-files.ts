@@ -69,20 +69,6 @@ export function vaultContactsFiles(app: App): ContactsFiles {
 			return vault.createBinary(path, bytes);
 		},
 		listFolder: (path) => walk(folderAt(path), []),
-		// Trash goes through the user's "deleted files" preference (system trash, .trash or permanent delete).
-		trashFolder: async (path) => app.fileManager.trashFile(folderAt(path)),
-		// Vault.process serializes disk transforms, but does not authorize overwriting an unsaved editor buffer.
-		checkFolderEditors: async (path) => {
-			for (const leaf of app.workspace.getLeavesOfType('markdown')) {
-				const view = leaf.view;
-				if (!(view instanceof MarkdownView) || !view.file || !view.file.path.startsWith(path + '/')) continue;
-				const file = view.file,
-					sourcePath = file.path,
-					disk = await vault.read(file);
-				if (view.file !== file || file.path !== sourcePath) throw new ContactsError('conflict');
-				checkEditor(file, disk);
-			}
-		},
 		createFolder: async (path) => {
 			await mkdir(parentOf(path));
 			await vault.createFolder(path);

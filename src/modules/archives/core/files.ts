@@ -16,8 +16,6 @@ export interface ContactsFiles {
 	create(path: string, content: string): Promise<ContactsFile>;
 	createBinary(path: string, content: ArrayBuffer): Promise<ContactsFile>;
 	listFolder(path: string): ArchiveFolderEntry[];
-	trashFolder(path: string): Promise<void>;
-	checkFolderEditors(path: string): Promise<void>;
 	createFolder(path: string): Promise<void>;
 	mkdir(path: string): Promise<void>;
 	checkEditor(file: ContactsFile, disk: string): void;

@@ -6,7 +6,6 @@ import { DesignScope } from '../../../../ui/react/design-scope';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { t } from '../../../../shared/i18n';
 import type { GenericArchivesHost } from '../../services/generic/page-host';
-import { archiveSection } from '../../services/generic/workbench';
 import { ArchivePage } from './ArchivePage';
 import { DefinitionStudio } from './DefinitionStudio';
 import { RecoveryPanel } from './RecoveryPanel';
@@ -65,7 +64,7 @@ export class GenericArchivesSurface extends ReactSurface {
 	) {
 		super(context);
 		this.state = restoreArchivePageState(state);
-		if (target?.section) this.state.section = archiveSection(target.section);
+		if (target?.section) this.state.section = target.section;
 		if (target?.resourceId) this.state.selectedId = target.resourceId;
 	}
 	getViewType(): string {
@@ -110,7 +109,7 @@ export class GenericArchivesSurface extends ReactSurface {
 		const generation = ++this.navigation;
 		if (this.closed || signal?.aborted || (this.leave && !(await this.leave()))) return;
 		if (generation !== this.navigation || signal?.aborted || this.closed) return;
-		let section = archiveSection(target.section);
+		let section = target.section;
 		if (target.resourceId && this.app.workspace.layoutReady) {
 			const record = await this.host.application.query.entity(target.resourceId);
 			if (generation !== this.navigation || signal?.aborted || this.closed) return;

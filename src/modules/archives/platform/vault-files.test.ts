@@ -27,18 +27,4 @@ describe('archive production editor guard adapter', () => {
 		other.editor.getValue = () => 'unsaved in another window';
 		expect(() => files.checkEditor(file, 'disk')).toThrow('unsavedEditor');
 	});
-	test('folder checks reject dirty descendants without matching sibling prefixes', async () => {
-		const { other, files } = fixture();
-		other.editor.getValue = () => 'unsaved';
-		await expect(files.checkFolderEditors('archives/A')).rejects.toThrow('unsavedEditor');
-		await expect(files.checkFolderEditors('archives/AB')).resolves.toBeUndefined();
-	});
-	test('folder checks reject a rename that finishes during disk read', async () => {
-		const { file, app, files } = fixture();
-		app.vault.read = () => {
-			file.path = 'archives/B/info.md';
-			return Promise.resolve('disk');
-		};
-		await expect(files.checkFolderEditors('archives/A')).rejects.toThrow('conflict');
-	});
 });

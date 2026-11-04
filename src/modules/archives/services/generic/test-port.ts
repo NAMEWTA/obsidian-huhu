@@ -103,15 +103,6 @@ export class MemoryArchiveFiles implements ContactsFiles {
 			.filter((file) => file.path.startsWith(path + '/'))
 			.map((file) => ({ path: file.path, folder: false, size: file.stat.size, modified: file.stat.mtime }));
 	}
-	trashFolder(path: string): Promise<void> {
-		for (const file of [...this.files.keys()]) if (file.startsWith(path + '/')) this.delete(file);
-		return Promise.resolve();
-	}
-	checkFolderEditors(path: string): Promise<void> {
-		return [...this.unsaved].some((file) => file.startsWith(path + '/'))
-			? Promise.reject(new Error('unsavedEditor'))
-			: Promise.resolve();
-	}
 	createFolder(): Promise<void> {
 		return Promise.resolve();
 	}

@@ -1,7 +1,6 @@
 import type { EntityQuery, EntityState, Filter } from '../../core/schema/model';
-import { identifier, object } from '../../core/schema/value';
+import { identifier } from '../../core/schema/value';
 import { validateQuery } from '../../core/generic/query';
-import { archiveSection } from '../../services/generic/workbench';
 export interface ArchivePageState {
 	section?: string;
 	selectedId?: string;
@@ -14,18 +13,10 @@ export interface ArchivePageState {
 	scroll: number;
 }
 export function restoreArchivePageState(raw: Record<string, unknown>): ArchivePageState {
-	const old = object(raw.query) ? raw.query : {},
-		section = archiveSection(
-			typeof raw.section === 'string' ? raw.section : typeof old.kind === 'string' ? old.kind : undefined,
-		);
+	const section = typeof raw.section === 'string' ? raw.section : undefined;
 	const state: ArchivePageState = {
 		section: identifier(section) ? section : undefined,
-		selectedId:
-			typeof raw.selectedId === 'string' && raw.selectedId.length <= 4096
-				? raw.selectedId
-				: typeof raw.selectedPath === 'string' && raw.selectedPath.length <= 4096
-					? raw.selectedPath
-					: undefined,
+		selectedId: typeof raw.selectedId === 'string' && raw.selectedId.length <= 4096 ? raw.selectedId : undefined,
 		search: typeof raw.search === 'string' ? raw.search.slice(0, 2048) : '',
 		offset:
 			typeof raw.offset === 'number' &&

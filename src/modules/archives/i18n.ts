@@ -256,11 +256,6 @@ export const messages = {
 		'contacts.invalidName': 'Enter a valid file or folder name.',
 		'contacts.wrongCategory':
 			'The archive type does not match its category folder. Move it to the matching category.',
-		'contacts.deleteChanged':
-			'The folder contents or location changed. Deletion stopped. Review the scope and confirm again.',
-		'contacts.deleteFolderPrompt':
-			'Delete the entire archive folder for “{name}”?\nFolder: {folder}\nIncludes basic information and {resources} related files. Affected relationships: {count}.\nUses Obsidian’s deletion setting. Other archives and historical relationships remain.',
-		'contacts.revealFolder': 'Reveal archive folder',
 		'contacts.identityInfo': 'Identity',
 		'contacts.companyInfo': 'Company information',
 		'contacts.contactInfo': 'Contact information',
@@ -678,10 +673,6 @@ export const messages = {
 		'contacts.importFailed': '添加失败，请检查文件后重试。',
 		'contacts.invalidName': '请输入有效的文件或文件夹名称。',
 		'contacts.wrongCategory': '档案类型与分类目录不一致，请移动到对应的分类目录。',
-		'contacts.deleteChanged': '目录内容或位置已变化，删除已停止。请重新查看后再确认。',
-		'contacts.deleteFolderPrompt':
-			'删除“{name}”的整个档案目录？\n目录：{folder}\n包含基本信息与 {resources} 项相关资料。受影响关联：{count}。\n按 Obsidian 删除设置处理，其他档案及其历史关系保留。',
-		'contacts.revealFolder': '定位档案目录',
 		'contacts.identityInfo': '身份信息',
 		'contacts.companyInfo': '企业信息',
 		'contacts.contactInfo': '联系方式',

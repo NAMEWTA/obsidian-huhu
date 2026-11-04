@@ -50,3 +50,32 @@
 - `docs/archives-implementation.md` 第 7 行的 2026-10-28 PR 核查是历史记录，原文保留。
 - 未运行 `pnpm build`，产物 `main.js` 待 Lead 统一生成。
 - v1 并行实现带走了资源导入/删除的旧测试，当前实现中同类覆盖未补。
+
+## 第二轮
+
+### 资源（附件）功能核对
+- 当前 generic 实现提供：`EntityCommands.resources`（列出实体目录内的附件）、`importResources`（逐项导入，单项失败不回滚已导入项）、`createNote`；界面入口在 `ArchivePage.tsx` 的导入按钮和新建笔记。
+- 不提供整目录删除：没有命令、API 或界面入口，影响预览只统计，实体仅归档/恢复。此前文档已如此描述。
+- 清理了此前遗留的无调用方 v1 删除相关代码：`core/resources.ts` 的 `archiveCategories`/`archiveLocation`/`ArchiveDeletion`/`folderFingerprint`/`queryResources`/`normalizeValues`；文件端口的 `trashFolder`、`checkFolderEditors`（含 vault-files 实现、内存端口及其 2 个只测它的用例）；词典键 `contacts.deleteChanged`、`deleteFolderPrompt`、`revealFolder`（en/zh 同删）。
+
+### 新增测试（`services/generic/application.test.ts`，新增 5 项）
+- 导入写在实体目录；已存在文件不覆盖（`path-exists`）；读取失败、类型非法的单项只报错，其余项仍导入；`resources` 列表排除入口文件。
+- 文件名不能逃出实体目录（`../../escape.txt` 被规整），非法名返回 `invalidName`。
+- 读取期间实体被改名则 `file-moved` 且不写盘；未知实体整体拒绝。
+- `createNote` 同操作 id 幂等，内容不同则 `command-id-conflict` 且原文件不变。
+- 变异验证：分别去掉 `path-exists`、`file-moved`、`invalid-attachment`、`safeArchiveName` 后，对应测试均失败（1/1/1/2 项），已恢复实现。
+
+### 复查 `rg "legacy|v1|migrat|person|company"`（非测试、非词典）
+- 剩余命中均为当前功能：升级恢复的 `migrationPath`/`pending-migration`/`MIGRATION_TAG`/`ResourceClass 'migration'`/`ARCHIVE_PATHS.migrations`；预设类型 `type-person`/`type-company` 及标签键；`index.ts:443` 注释。
+- 拿不准、未删：`services/generic/workbench.ts` 的 `archiveSection` 把导航 section `person`/`company` 映射为 `type-person`/`type-company`。`src/shell/navigation-state.ts` 仍用这两个名字（他区），需 shell 区一并决定。
+
+### 验证
+- 两个 tsc：无错误。
+- `pnpm exec vitest run src/modules/archives test/golden`：10 个文件、71 项通过。
+- eslint（`src/modules/archives`，零警告）、prettier（改动文件）、`pnpm test:i18n`：通过。
+
+## Lead 补充（第二轮后）
+
+- 删除 `archiveSection`（旧导航 section `person`/`company` → `type-*` 映射）及其 4 处调用；`navigation-state` 中 contacts 实际走正则校验，`sections.contacts: ['person','company']` 为死代码，删除。
+- `page-state.ts` 删除旧 `query.kind` 与 `selectedPath` 回退；`compose-workbench` 档案 `stateKeys` 收窄为当前 `ArchivePageState` 字段（删 `query`/`page`/`selectedPath`/`anchors`/`typeId`/`viewId`）。
+- 验证：tsc 0；`vitest run src/app src/modules/archives src/shell` 44 文件 222 例通过。
