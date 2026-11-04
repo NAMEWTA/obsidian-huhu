@@ -102,7 +102,7 @@ const dir = process.env.HUHU_HOOK_DIR, token = process.env.HUHU_HOOK_TOKEN;
 if (!dir || !token) process.exit(0);
 ${EVENT_PAYLOAD_SCRIPT}
 ${HOOK_PUBLISHER_SCRIPT}
-let ticket, release, chunks = [], bytes = 0, oversized = false, done = false, retry;
+let ticket, release, chunks = [], bytes = 0, oversized = false, done = false, retry, waits = 0;
 try { ticket = hookIngress(); } catch (error) { hookFault(error.message); }
 function finish() { done = true; if (retry) clearTimeout(retry); chunks = []; if (ticket) { try { ticket.release(); } catch (error) { hookFault(error.message); } } }
 const timeout = setTimeout(() => {
@@ -113,7 +113,9 @@ const timeout = setTimeout(() => {
 function collect() {
  if (done) return;
  if (ticket) {
-  try { if (!ticket.collect()) { retry = setTimeout(collect, 5); return; } release = true; }
+  // Collectors full: back off exponentially with jitter (5 ms doubling to an 80 ms cap, x0.5-1.5). A fixed 5 ms poll by
+  // every waiting publisher in a cold 32-scope burst flooded Windows with guard/mkdir calls and starved the holders.
+  try { if (!ticket.collect()) { retry = setTimeout(collect, Math.min(80, 5 * 2 ** waits++) * (0.5 + Math.random())); return; } release = true; }
   catch (error) { hookFault(error.message); finish(); }
  }
  process.stdin.setEncoding('utf8');
