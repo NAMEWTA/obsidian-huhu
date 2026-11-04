@@ -1,6 +1,6 @@
 import { useStorageTimers, type StorageTimers } from './timers';
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
-import { FaultStorage } from '../../../test/agent-migrations/fault-storage';
+import { FaultStorage } from '../../../test/fixtures/fault-storage';
 import { RecoveryError, isRecoveryJournal, type RecoveryOwner } from './recovery-contracts';
 import { RecoveryGate, readJournal, recoverPending, runRecoveryTransaction } from './recovery-transaction';
 

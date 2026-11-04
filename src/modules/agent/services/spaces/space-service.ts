@@ -1304,7 +1304,7 @@ export class SpaceService {
 					throw new SpaceError('STALE_RUNTIME', 'archive-scope-changed');
 				for (const member of held.plan.members) {
 					const record = records.sessions[member.sessionId]!;
-					// A pre-marker legacy record has no proof of the old process outcome.
+					// A record without a lastAttempt has no proof of the old process outcome.
 					if (record.lastAttempt ? !record.lastAttempt.termination || !terminationConfirmed(record.lastAttempt.termination) : !isNeverStartedImport(record))
 						throw new SpaceError('EFFECT_UNKNOWN', 'attempt-unconfirmed');
 				}

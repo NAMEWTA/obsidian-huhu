@@ -30,3 +30,9 @@
 - `agent-runtime.test.ts` 7 例失败的原因：不是旧默认账号/旧会话回落/`historyAccountEnv` 的删除，而是他区在途改动（`src/host/obsidian/storage/device-id.ts` 去掉了 `legacyDeviceId`/`loadLocalStorage('huhu.device-id')`）。测试夹具靠 `loadLocalStorage` 返回固定设备 id `0000…`，现在设备 id 改为新生成，固定路径对不上 registry 文件。生产代码无回归。
 - 修复（仅测试）：`agent-runtime.test.ts` 与 `platform/history/service.test.ts` 改为初始化后用 `vaultIdentity(app).deviceId` 推导文件路径，去掉 `loadLocalStorage`。两文件全部通过。
 - 其余 agent 全量复跑的失败：`workspace-service-panes.test.ts`（4095/4096/4097）与 `ownership.test.ts` 为负载下 5 秒超时（单独或放宽超时均通过，ownership 约 4 秒，机器负载 6-8）；`pty/binary.test.ts` 的 "retained legacy helpers" 失败来自他区对 `src/host/desktop/native/binary.ts` 的在途改动，未处理。
+
+## 第二轮
+- `test/agent-migrations/fault-storage.ts` 移至 `test/fixtures/fault-storage.ts`，更新 `src/app/recovery.test.ts`、`src/shared/storage/recovery-transaction.test.ts`、`space-service-recovery-owner.test.ts`、`test/agent-backup/world.ts` 的引用；删除空目录 `test/agent-migrations/`。vitest/tsconfig/scripts/docs/skills 中无该路径配置。
+- `services/migrations/` 仅剩现行恢复 owner，改名为 `services/recovery/`（module.ts 与测试引用已同步）。
+- 复查 `rg legacy|migrat|v1`：清理 `agent-owners.ts` 注释、`module.ts` 的 `migrationLifetime`（改 `lifetime`）、`agent.accountScopeMismatch` 中“迁移旧账号”提示（en/zh）、space-service 注释。其余命中均为现行逻辑：URL/协议版本（`/v1/`、`resource-v1`、`huhu-*-v1`）、终端 legacy 键盘编码与 `registerLegacy`/`legacySizeAllowed`、`legacy-unattributed/unconfirmed/helper` 证据原因、`legacyManagedResult`/`admitLegacyLaunch`（旧入口 API 名）、`legacyPaneId`（deterministic pane id，前述保留）、hook 旧命令形态清理、Gemini 旧项目哈希目录读取（`history/scan.ts`，提供方现行目录兼容）、Orca 引用、`agent.migration.blocked` 键名。
+- 验证：tsc 两个中 agent/app 无错误（仅他区 dashboard/archives 在途错误）；vitest（spaces、recovery、agent-backup、src/app、src/shared/storage）51 文件 394 例通过；`test:architecture`、`test:i18n`、`test:docs` 通过；改动文件 eslint 零警告。

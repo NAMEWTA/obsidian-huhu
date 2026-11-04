@@ -20,11 +20,11 @@ import { notificationInboxPath } from '../../src/modules/notifications/api';
 import type { NotificationDelivery } from '../../src/modules/notifications/core/ports';
 import type { DirectoryPort } from '../../src/modules/agent/core/space/ports';
 import type { PhysicalDirectory, VaultBinding } from '../../src/modules/agent/core/space/model';
-import { createFileOwner } from '../../src/modules/agent/services/migrations/agent-owners';
+import { createFileOwner } from '../../src/modules/agent/services/recovery/agent-owners';
 import { SpaceService } from '../../src/modules/agent/services/spaces/space-service';
 import { createSpaceWorkspaceStore } from '../../src/modules/agent/services/workspace-store';
-import { spaceWorkspaceOwner } from '../../src/modules/agent/services/migrations/agent-owners';
-import { FaultStorage } from '../agent-migrations/fault-storage';
+import { spaceWorkspaceOwner } from '../../src/modules/agent/services/recovery/agent-owners';
+import { FaultStorage } from '../fixtures/fault-storage';
 import { agentWorkbenchPath } from '../../src/shared/storage/vault-layout';
 
 /** Fault-injecting in-memory vault that can also list directories (a real adapter's `list`). */

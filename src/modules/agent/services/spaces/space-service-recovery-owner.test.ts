@@ -1,13 +1,13 @@
 import { useStorageTimers, type StorageTimers } from '../../../../shared/storage/timers';
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
-import { FaultStorage } from '../../../../../test/agent-migrations/fault-storage';
+import { FaultStorage } from '../../../../../test/fixtures/fault-storage';
 import { RecoveryHost } from '../../../../app/recovery';
 import { recoverPending } from '../../../../shared/storage/recovery-transaction';
 import { agentWorkbenchPath } from '../../../../shared/storage/vault-layout';
 import type { VaultBinding } from '../../core/space/model';
 import { openTab } from '../../core/workspace/ops';
 import type { TerminalTabData } from '../../core/workspace/model';
-import { spaceWorkspaceOwner } from '../migrations/agent-owners';
+import { spaceWorkspaceOwner } from '../recovery/agent-owners';
 import { createSpaceWorkspaceStore } from '../workspace-store';
 import { emptyRecords, isWorkbenchRecords, type WorkbenchRecords } from './records';
 import { SpaceService } from './space-service';

@@ -73,7 +73,7 @@ export async function createSharedWorkspaceOwner(
 	const workspaceStore = createSpaceWorkspaceStore(spaces, win, report);
 	// Agent writes through this one SpaceService/store, so one owner gates it.
 	const registered = recovery
-		? await (await import('./services/migrations/entry')).registerSpaceOwner(recovery, identity.deviceId, spaces, workspaceStore)
+		? await (await import('./services/recovery/entry')).registerSpaceOwner(recovery, identity.deviceId, spaces, workspaceStore)
 		: undefined;
 	const recoveryOwner = registered?.owner;
 	const unregister = registered?.unregister;
@@ -124,7 +124,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 	const skillCatalog = createSkillCatalog(ensureSkillManager, async (dir) =>
 		(await import('./platform/desktop/skills/skill-fs')).readSkillDoc(dir),
 	);
-	const migrationLifetime = new AbortController();
+	const lifetime = new AbortController();
 	return {
 		/** Read after `activate()`. */
 		get services() {
@@ -232,12 +232,12 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 				settings,
 				{
 					confirm: async (app, message) =>
-						(await import('./ui/terminal/confirm')).confirmAction(app, message, migrationLifetime.signal),
+						(await import('./ui/terminal/confirm')).confirmAction(app, message, lifetime.signal),
 					selectSpace: async (request) =>
 						(await import('./ui/create/SpacePicker')).pickSpace(
 							context.app,
 							request,
-							migrationLifetime.signal,
+							lifetime.signal,
 							(controller?.spaces ?? sharedWorkspace?.spaces) as SpaceService | undefined,
 						),
 				},
@@ -247,7 +247,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 			await controller.workspace.persistence.ready.catch(() => {});
 			if (context.recovery)
 				unregisterRecovery = await (
-					await import('./services/migrations/entry')
+					await import('./services/recovery/entry')
 				).registerLiveOwners(context.recovery, context.app, controller);
 			controller.registerCommands();
 			const current = controller;
@@ -263,7 +263,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 			});
 		},
 		async dispose() {
-			migrationLifetime.abort();
+			lifetime.abort();
 			skills?.dispose();
 			skills = undefined;
 			closed = true;

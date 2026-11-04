@@ -609,7 +609,7 @@ export const messages = {
 		'agent.accountInvalid':
 			'Use an account name of up to 128 characters without control characters. Whitespace alone is invalid; leave it empty for the system account.',
 		'agent.accountScopeMismatch':
-			'This session does not match an account in the current vault. Refresh history, or migrate the old account before resuming.',
+			'This session does not match an account in the current vault. Refresh history before resuming.',
 		'agent.defaultAccount': 'System account',
 		'agent.skills.heading': 'Skill discovery',
 		'agent.skills.directories': 'Additional skill directories',
@@ -1448,7 +1448,7 @@ export const messages = {
 		'agent.activity.interrupted': '已中断',
 
 		'agent.accountInvalid': '账号名最多 128 个字符，不能含控制字符或只有空白；留空表示使用系统账号。',
-		'agent.accountScopeMismatch': '该会话不匹配当前库的账号。请刷新历史记录，或先迁移旧账号再恢复会话。',
+		'agent.accountScopeMismatch': '该会话不匹配当前库的账号。请刷新历史记录后再恢复会话。',
 		'agent.defaultAccount': '系统账号',
 		'agent.skills.heading': '技能发现',
 		'agent.skills.directories': '额外技能目录',

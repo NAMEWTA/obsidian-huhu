@@ -1,6 +1,6 @@
 import { useStorageTimers, type StorageTimers } from '../shared/storage/timers';
 import { beforeEach, afterEach, describe, expect, test } from 'vitest';
-import { FaultStorage } from '../../test/agent-migrations/fault-storage';
+import { FaultStorage } from '../../test/fixtures/fault-storage';
 import { JsonStore } from '../shared/json-store';
 import { defineSettings, f } from '../shared/settings/schema';
 import { SettingsStore, type SettingsFile } from '../shared/settings/store';

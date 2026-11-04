@@ -9,8 +9,7 @@ import type { WorkspaceStore } from '../workspace-store';
 /**
  * Live agent writers expressed as recovery owners. Each wraps the strict methods the real writer exposes
  * (`quiesce*`, `drain*`, `reload*`, `resume*`); none of them uses the reported-only flush paths.
- * T-16 and any runtime import register these on the app recovery host; the pre-start legacy import needs none
- * because no writer exists yet in that process.
+ * They are registered on the app recovery host.
  */
 export interface FileWriter {
 	/** Running work that blocks the operation (listed to the user, never stopped here). */
