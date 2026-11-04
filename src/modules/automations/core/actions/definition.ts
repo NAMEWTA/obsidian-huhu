@@ -8,8 +8,8 @@ import type {
 	AutomationMessage,
 	AutomationTaskDelivery,
 	AutomationSourcePort,
-	NotificationChannelId,
 } from '../../../../shared/automation/types';
+import type { NotificationChannelId } from '../../../notifications/api';
 
 /** The id of an action (`AutomationAction['kind']`); it is also what the definition document stores as `action`. */
 export type ActionKind = AutomationAction['kind'];

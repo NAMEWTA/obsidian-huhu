@@ -11,7 +11,7 @@ HUHU 是 Obsidian 插件，界面入口为 `src/app/main.ts`，esbuild 生成 Co
 | `ui` / `theme` | React 组件、所属窗口 Portal、令牌、主题及 Markdown 外观 |
 | `host` | 共用 Obsidian 和桌面适配 |
 | `shared` | 纯工具、设置、路径、存储和国际化契约 |
-| `modules` | home、task、agent、archives、automations、notifications、icons、comments、navigator、versioning、safe |
+| `modules` | home、task、agent、archives、automations、notifications、icons、comments、navigator、versioning、safe、health |
 
 模块通过彼此的 `api.ts` 访问服务和贡献点，不能导入别的模块内部实现。core 不依赖宿主；Node/Electron 仅存在于 desktop 边界。模块、页面与设置页按需加载，React/Radix 不进入启动闭包；架构和包体检查强制这些约束。
 
@@ -40,9 +40,25 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 - agent 管理 CLI/PTY、Space、账号、技能、标签及工作空间用量。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
-- archives 在一个领域内管理类型/字段、表单、模板、实体、关系与视图；公开 catalog/query/commands 和工作台契约。v2 定义修订和恢复计划随可见资料保存；详见[档案实施方案](archives-implementation.md)。
+- archives 在一个领域内管理类型/字段、表单、模板、实体、关系与视图，以及物品生命周期/年度统计和人物纪事；公开 catalog/query/commands 和工作台契约。v2 定义修订和恢复计划随可见资料保存；详见[档案实施方案](archives-implementation.md)。
 - versioning 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。HistoryQueryService 负责纯读取；NoteReviewService 固定来源 buffer 与比较会话；RestoreService 通过共享写入队列、检查点与正文适配器恢复，SyncService 保留同步调度。
 - app/editor-panel 提供同窗口 EditorContextAccess 和批注/历史宿主；revision-review 复用工作台贡献，不新增 Obsidian 原生视图类型。comments 的写入参与者只映射锚点，不回滚评论消息。
+
+## 统一反馈与领域事件
+
+`shared/feedback` 提供纯反馈策略，`host/obsidian/feedback.ts` 的 FeedbackHost 按插件实例、所属窗口和来源装配展示。操作 ID 让进度原位收束为结果，同键反馈合并，停留时间按文本长度有界计算；成功必须携带已提交回执，失败、部分完成、取消和锁定保持独立语义。工作台的 sonner/宿主适配由 owner window 承接，关闭窗口或实例后忽略迟到结果。反馈不依赖通知模块是否开启，不把临时反馈冒充持久通知；参数经过脱敏，不传密码或正文。
+
+`shared/events/domain-events.ts` 声明类型化领域事件端口，由 app 为每个插件实例创建，模块通过 `ModuleContext.events` 的 on/emit 使用。领域常量在所属 `api.ts` 声明，载荷只带身份、版本、哈希、操作 ID、原因等必要元数据；不传密码、正文或账号明文。订阅可绑定 AbortSignal/lifetime，退订幂等，监听器同步异常与异步拒绝隔离。事件用于使读模型失效，不授予写入权限，不代替事务或 owner 命令。
+
+`host/obsidian/file-changes.ts` 把 Vault 创建/修改/删除/重命名与 metadata 就绪变化合并为 FILE_CHANGES 批次，保留文件夹及重命名前后身份；有界缓冲溢出时退化为 rescan。路径是失效提示，不保证正文或缓存已就绪。档案消费者重建索引时保留视图草稿并限制不安全写入；监听与计时器随实例释放。私有密文仓库提交通过领域事件发出失效通知，不向总线泄露密文或解密内容。
+
+## 通知贡献点与体检
+
+notifications 公开 NOTIFICATION_INBOX、NOTIFICATION_CHANNELS 与 NOTIFICATION_OPENERS：渠道提供可用性与发送，来源按种类贡献打开/描述行为，模块撤销贡献时释放注册。缺失渠道记录为不可用，不悄悄回退到其他发送端；发送回执与可见收件箱保留相互区分，避免重放旧投递。自动化来源继续使用原身份，health 使用独立来源/报告 ID，不伪装成自动化运行。
+
+health 是默认开启的模块，提供惰性的 HEALTH_SCANNER/HEALTH_REPAIRS，通过 HEALTH_PROVIDERS/HEALTH_REPAIR_OWNERS 汇集各域已注册贡献；发现不触发其他模块激活。扫描按需租用 owner 的只读能力，分片、限并发、限预算、可取消；锁定/不可用不当成通过。实现上不建立集中式跨域文件读写器，保险箱检查没有解密能力。
+
+修复只接受有限种类并回到领域 owner：当前为档案派生索引重建与归物投影修正。预览和确认绑定计划，提交比较预期哈希，持久备份/回读/恢复由档案事务负责；部分提交或提交待确认不能标为整体成功。扫描与预览不写业务文件。health 完整报告、计划及修复结果只在内存中，通知可持久保存脱敏摘要与报告引用；两者的寿命不同，详见[数据体检](health.md)。
 
 ## 验证与产物
 

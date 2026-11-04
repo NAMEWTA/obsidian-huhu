@@ -13,6 +13,8 @@ export const WORKBENCH_FEATURES = [
 	'versioning',
 	'revision-review',
 	'safe',
+	'navigator',
+	'health',
 	'content',
 	'settings',
 ] as const;
@@ -30,6 +32,8 @@ export const FEATURE_MODULES: Readonly<Record<WorkbenchFeature, ModuleId | 'app'
 	versioning: 'versioning',
 	'revision-review': 'versioning',
 	safe: 'safe',
+	navigator: 'navigator',
+	health: 'health',
 	settings: 'app',
 	content: 'app',
 };

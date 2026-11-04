@@ -93,3 +93,18 @@ test('details resolve the current name by stable id, mark deleted targets, copy 
 	await user.click(screen.getByRole('button', { name: t('notification.dismissError') }));
 	expect(dismiss).toHaveBeenCalledOnce();
 });
+
+test('health details show the report target and unavailable contributed channel without automation IDs', async () => {
+	const record: NotificationRecord = {
+		id: 'health-report', title: 'Health report', body: 'One warning', createdAt: 1, read: false,
+		source: { kind: 'health', id: 'scan-one' }, target: { kind: 'health', reportId: 'scan-one' },
+		channels: ['test-channel'], deliveries: { 'test-channel': 'unavailable' },
+	};
+	render(<TestProviders><DesignScope><InboxPanel records={[record]} filter="all" markRead={() => {}} clearRead={() => {}} open={() => {}} openable={new Set()} /></DesignScope></TestProviders>);
+	expect(screen.getByText(`test-channel${t('automation.colon')}${t('notification.deliveryUnavailable')}`)).toBeTruthy();
+	await userEvent.setup().click(screen.getByRole('button', { name: t('notification.details') }));
+	expect(screen.getByText('scan-one')).toBeTruthy();
+	expect(screen.getByText(t('notification.reportId'))).toBeTruthy();
+	expect(screen.queryByText(t('notification.automationId'))).toBeNull();
+	expect(screen.queryByText(t('notification.runId'))).toBeNull();
+});

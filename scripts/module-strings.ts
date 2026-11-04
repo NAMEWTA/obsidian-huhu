@@ -8,6 +8,7 @@ import { messages as archives } from '../src/modules/archives/i18n';
 import { messages as automations } from '../src/modules/automations/i18n';
 import { messages as comments } from '../src/modules/comments/i18n';
 import { messages as home } from '../src/modules/home/i18n';
+import { messages as health } from '../src/modules/health/i18n';
 import { messages as icons } from '../src/modules/icons/i18n';
 import { messages as navigator } from '../src/modules/navigator/i18n';
 import { messages as notifications } from '../src/modules/notifications/i18n';
@@ -30,6 +31,7 @@ for (const messages of [
 	automations,
 	comments,
 	home,
+	health,
 	icons,
 	navigator,
 	notifications,

@@ -1,3 +1,4 @@
+import type { DomainEvents } from '../../shared/events/domain-events';
 import type { NativeHostAccess } from '../../shared/native/host';
 import type { ComponentType } from 'react';
 import type { App, Command, Component, MarkdownPostProcessor, PluginManifest } from 'obsidian';
@@ -17,6 +18,7 @@ export type ModuleId =
 	| 'archives'
 	| 'automations'
 	| 'notifications'
+	| 'health'
 	| 'icons'
 	| 'comments'
 	| 'navigator'
@@ -29,6 +31,7 @@ export const MODULE_IDS: readonly ModuleId[] = [
 	'archives',
 	'automations',
 	'notifications',
+	'health',
 	'icons',
 	'comments',
 	'navigator',
@@ -142,6 +145,8 @@ export interface ModuleContext {
 	readonly env: ModuleEnvironment;
 	/** Unloaded when the module is disposed. */
 	readonly lifetime: Component;
+	/** Instance-scoped invalidation events; bind subscriptions to this module's lifetime. Only the plugin disposes the port. */
+	readonly events: Pick<DomainEvents, 'on' | 'emit'>;
 	readonly settings: SettingsStore;
 	readonly services: ServiceAccess;
 	/** Existing owner when a harness provides one; production obtains it lazily through ensureSharedWorkspace. */

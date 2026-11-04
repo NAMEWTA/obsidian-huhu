@@ -1,6 +1,10 @@
 /** Strings of the notifications module, registered when the module loads. */
 export const messages = {
 	en: {
+		'notification.operationFailed': 'The notification action could not be completed. Please try again.',
+		'notification.deliveryUnavailable': 'Unavailable',
+		'notification.reportId': 'Report ID',
+		'notification.targetNameGeneric': 'Current target',
 		"workbench.noUnread": "No unread notifications",
 		"notification.details": "Details",
 		"notification.hideDetails": "Hide details",
@@ -15,6 +19,10 @@ export const messages = {
 		"notification.actionFailed": "The action did not complete: {message}",
 	},
 	zh: {
+		'notification.operationFailed': '通知操作未能完成，请重试。',
+		'notification.deliveryUnavailable': '不可用',
+		'notification.reportId': '报告 ID',
+		'notification.targetNameGeneric': '当前目标',
 		"workbench.noUnread": "没有未读通知",
 		"notification.details": "详情",
 		"notification.hideDetails": "收起详情",

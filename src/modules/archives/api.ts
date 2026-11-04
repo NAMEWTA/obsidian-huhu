@@ -1,3 +1,4 @@
+import { domainEventKey } from '../../shared/events/domain-events';
 import { serviceKey } from '../../app/contracts/module';
 import type { NavigationItem, PanelModel, WorkbenchTarget } from '../../app/contracts/workbench';
 
@@ -79,6 +80,7 @@ export interface ArchivesCatalog {
 	subscribe(listener: () => void): () => void;
 }
 export interface ArchivesQuery {
+	belongings(options?: { asOf?: string; year?: number }): Promise<BelongingsQueryResult>;
 	entities(query: EntityQuery): Promise<QueryResult>;
 	entity(idOrPath: string): Promise<EntitySummary | undefined>;
 	relations(entityId: string): Promise<RelationResult>;
@@ -89,6 +91,7 @@ export interface ArchivesQuery {
 	subscribe(listener: () => void): () => void;
 }
 export interface ArchivesCommands {
+	readonly belongings: BelongingsCommands;
 	initialize(signal?: AbortSignal): Promise<string>;
 	create(input: CreateEntity, signal?: AbortSignal): Promise<CommandReceipt>;
 	beginEdit(idOrPath: string): Promise<FormSession>;
@@ -132,3 +135,27 @@ export interface ArchiveResources {
 }
 export const ARCHIVE_RESOURCES = serviceKey<ArchiveResources>('archives', 'resources');
 
+
+export type { Belonging, BelongingEvent, BelongingMoney, BelongingStatus, TransitionBelonging, BelongingMetrics, BelongingStatistics, UndoBelonging } from './core/belongings/model';
+import type { Belonging, BelongingStatistics, TransitionBelonging, UndoBelonging } from './core/belongings/model';
+export const BELONGING_TYPE_ID = 'type-belonging';
+export const BELONGINGS_CHANGED = domainEventKey<{ readonly id: string; readonly contentHash: string }>('archives:belongings-changed');
+export interface BelongingsCommands {
+	/** Publish missing preset definitions only; existing user revisions are preserved. */
+	install(signal?: AbortSignal): Promise<{ installed: boolean; preserved: boolean }>;
+	transition(input: TransitionBelonging, signal?: AbortSignal): Promise<CommandReceipt>;
+	/** Same active owner, five-minute window; stale post-transition hashes conflict. Appends compensation, never deletes history. */
+	undo(input: UndoBelonging, signal?: AbortSignal): Promise<CommandReceipt>;
+}
+export type { BelongingAnnualReport } from './core/belongings/statistics';
+import type { BelongingAnnualReport } from './core/belongings/statistics';
+export interface BelongingsQueryResult {
+	/** Present when year is requested; read-only annual flows and card-equivalent cutoff metrics. */
+	report?: BelongingAnnualReport;
+	items: Belonging[];
+	statistics: BelongingStatistics;
+	monthly?: BelongingStatistics[];
+}
+
+/** Dedicated, finite health repair owner; generic save/upgrade remain protected. */
+export const ARCHIVES_REPAIRS = serviceKey<import('../health/api').HealthRepairOwner>('archives', 'repairs');

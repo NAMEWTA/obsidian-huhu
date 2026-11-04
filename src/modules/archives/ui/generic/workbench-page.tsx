@@ -1,3 +1,7 @@
+import { useCallback, useRef, useState, type CSSProperties } from 'react';
+import { BELONGING_TYPE_ID } from '../../api';
+import { BelongingsPage, bt } from '../belongings/BelongingsPage';
+import { Button } from '../../../../ui/components/button';
 import type { App, ViewStateResult } from 'obsidian';
 import type { PageCreate } from '../../../../app/contracts/workbench-host';
 import type { WorkbenchTarget } from '../../../../app/contracts/workbench';
@@ -30,13 +34,24 @@ export function ArchivesContent({
 	guard(this: void, callback: (() => Promise<boolean>) | undefined): void;
 }) {
 	const props = { application: host.application, app, owner };
+	const target = `${state.section ?? ''}:${state.selectedId ?? ''}`;
+	const [genericTarget, setGenericTarget] = useState<string>();
+	const generic = genericTarget === target;
+	const genericLeave = useRef<(() => Promise<boolean>) | undefined>(undefined);
+	const genericGuard = useCallback((callback: (() => Promise<boolean>) | undefined) => { guard(callback); genericLeave.current = callback; }, [guard]);
+	const belonging = state.section === BELONGING_TYPE_ID;
 	return (
-		<DesignScope className="mx-auto w-full min-w-0 max-w-6xl space-y-4 p-4 md:p-6 [&_button]:h-auto [&_button]:max-w-full [&_button]:whitespace-normal">
+		<DesignScope style={belonging ? { '--nd-hit-size': '44px' } as CSSProperties : undefined} className={`mx-auto w-full min-w-0 max-w-6xl space-y-4 ${belonging && !generic ? 'py-4' : 'p-4 md:p-6'} [&_button]:h-auto [&_button]:max-w-full [&_button]:whitespace-normal`}>
 			{state.section === 'archive-designer' ? (
 				<DefinitionStudio {...props} guard={guard} />
 			) : state.section === 'archive-recovery' ? (
 				<RecoveryPanel {...props} />
+			) : belonging && !generic ? (
+				<BelongingsPage key={target} application={host.application} owner={owner} selectedId={state.selectedId} search={state.search}
+					setSearch={search => updateState({ search, offset: 0 })} select={id => { void open(undefined, id); }} edit={() => setGenericTarget(target)} />
 			) : (
+				<>
+				{belonging && <Button variant="outline" className="min-h-11" onClick={() => { void (async () => { if (genericLeave.current && !await genericLeave.current()) return; guard(undefined); setGenericTarget(undefined); })(); }}>{bt('backSpecial')}</Button>}
 				<ArchivePage
 					host={host}
 					app={app}
@@ -44,8 +59,9 @@ export function ArchivesContent({
 					state={state}
 					updateState={updateState}
 					navigate={open}
-					guard={guard}
+					guard={genericGuard}
 				/>
+				</>
 			)}
 		</DesignScope>
 	);
@@ -141,6 +157,12 @@ export class GenericArchivesSurface extends ReactSurface {
 	override async onOpen(): Promise<void> {
 		this.closed = false;
 		this.contentEl.addClass('overflow-y-auto');
+		const generation = ++this.navigation;
+		if (this.state.selectedId && this.app.workspace.layoutReady) {
+			const record = await this.host.application.query.entity(this.state.selectedId);
+			if (this.closed || generation !== this.navigation) return;
+			if (record?.typeId === BELONGING_TYPE_ID && !this.state.section) this.state.section = BELONGING_TYPE_ID;
+		}
 		await super.onOpen();
 	}
 	override async onClose(): Promise<void> {

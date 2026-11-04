@@ -1,4 +1,4 @@
-import { TFile, TFolder } from 'obsidian';
+import { bindArchiveFileChanges, draftStoreWithInvalidation } from './services/generic/file-changes';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { AUTOMATION_COMPOSER, AUTOMATION_SOURCES, type AutomationSource } from '../automations/api';
 import { genericRemindersSource } from './contrib/generic-reminders-source';
@@ -12,6 +12,7 @@ import {
 	ARCHIVES_CATALOG,
 	ARCHIVES_QUERY,
 	ARCHIVES_COMMANDS,
+	ARCHIVES_REPAIRS,
 	ARCHIVE_RESOURCES,
 	type ArchiveResource,
 	type ArchiveResources,
@@ -22,12 +23,19 @@ import { genericArchivesWorkbench } from './services/generic/workbench';
 import { storageWriteQueue } from '../../shared/storage/write-queue';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
+import { HEALTH_PROVIDERS, HEALTH_INVALIDATED, HEALTH_REPAIR_OWNERS } from '../health/api';
+import { ARCHIVES_HEALTH, BELONGINGS_HEALTH, ARCHIVES_HEALTH_PROVIDERS, createArchivesHealth } from './contrib/health';
+
+import { ArchiveRepairService } from './services/generic/repair';
 
 registerMessages(messages);
 /** The generic archive service owns the one metadata index. */
 export default function createArchivesModule(context: ModuleContext): ModuleInstance {
 	const settings = context.settings.bind('archives', archivesSettings);
 	let application: ArchivesApplication | undefined, reminders: AutomationSource | undefined;
+	let repairs: ArchiveRepairService | undefined;
+	let healthGeneration = 0;
+	let health: ReturnType<typeof createArchivesHealth> | undefined;
 	const workbench = genericArchivesWorkbench(() => application);
 	const host = (): GenericArchivesHost => {
 		if (!application) throw new Error('Archives are not loaded');
@@ -84,11 +92,13 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 						[ARCHIVES_CATALOG, application.catalog],
 						[ARCHIVES_QUERY, application.query],
 						[ARCHIVES_COMMANDS, application.commands],
+						...(repairs ? [[ARCHIVES_REPAIRS, repairs]] as const : []),
+						...(health ? [[ARCHIVES_HEALTH, health.archives], [BELONGINGS_HEALTH, health.belongings]] as const : []),
 					] as const)
 				: shared;
 		},
 		get contributions() {
-			return reminders ? [[AUTOMATION_SOURCES, reminders] as const] : [];
+			return [...(reminders ? [[AUTOMATION_SOURCES, reminders] as const] : []), ...(health ? [[HEALTH_PROVIDERS, ARCHIVES_HEALTH_PROVIDERS] as const, [HEALTH_REPAIR_OWNERS, [{ providerId: 'archives.integrity', service: ARCHIVES_REPAIRS }, { providerId: 'archives.belongings', service: ARCHIVES_REPAIRS }]] as const] : [])];
 		},
 		pages: { archives: async () => (await import('./ui/generic/workbench-page')).createGenericArchivesPage(host) },
 		settingsPage: async () => {
@@ -117,38 +127,24 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 				vaultContactsFiles(context.app),
 				() => settings.get().rootFolder,
 				storageWriteQueue(context.app.vault),
-				archiveDraftStore(context.app),
+				draftStoreWithInvalidation(archiveDraftStore(context.app), context.events, signal),
 			);
 			if (signal.aborted) {
 				runtime.dispose();
 				return;
 			}
 			application = new ArchivesApplication(runtime);
+			health = createArchivesHealth({ catalog: application.catalog, query: application.query, available: () => !!application && !runtime.loading, generation: () => healthGeneration });
+			repairs = new ArchiveRepairService(runtime, reference => health?.resolve(reference), () => healthGeneration);
+			context.lifetime.register(runtime.subscribe(() => { healthGeneration++; context.events.emit(HEALTH_INVALIDATED, { providerIds: ['archives.integrity', 'archives.belongings'] }); }));
 			reminders = genericRemindersSource(application.entities, context.shell);
-			const vault = context.app.vault;
-			context.lifetime.registerEvent(
-				vault.on('create', (file) => {
-					if (file instanceof TFile) runtime.fileChanged(file);
-				}),
-			);
-			context.lifetime.registerEvent(
-				vault.on('modify', (file) => {
-					if (file instanceof TFile) runtime.fileChanged(file);
-				}),
-			);
-			context.lifetime.registerEvent(
-				vault.on('delete', (file) => runtime.fileDeleted(file.path, file instanceof TFolder)),
-			);
-			context.lifetime.registerEvent(
-				vault.on('rename', (file, oldPath) =>
-					runtime.fileRenamed(file instanceof TFile ? file : null, oldPath, file.path),
-				),
-			);
+			bindArchiveFileChanges(runtime, context.events, context.lifetime);
 			context.lifetime.register(runtime.subscribe(() => context.shell.refresh()));
 			// Startup activation must not wait for layout-ready; the read-only loader has its own epoch guard.
 			void runtime.ensureLoaded().catch((error) => console.error('[HUHU archives]', error));
 		},
 		async dispose() {
+			health?.dispose(); health = undefined; repairs?.dispose(); repairs = undefined;
 			const runtime = application?.runtime;
 			runtime?.dispose(); // Revoke first: queued writes must not start during unload.
 			if (runtime) await runtime.queue.settled();

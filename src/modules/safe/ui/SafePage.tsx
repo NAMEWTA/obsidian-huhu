@@ -1,4 +1,7 @@
-import { useEffect, useId, useState, useSyncExternalStore } from 'react';
+// Layout adapted from yeshimei/bz d76a0870329403247917a00c43019e203a2560a4 (MIT): src/password-vault/render.ts (deskHTML), ui.ts.
+// Copyright (c) 2026 叫我包仔
+// Changes: HUHU container-responsive scope/list/detail composition, existing tag favorites and encrypted service lifecycle.
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { useStore } from 'zustand';
 import { ArrowLeft, Download, FileInput, KeyRound, LayoutGrid, List, LockKeyhole, MoreHorizontal, Plus, Search, Trash2, Vault } from 'lucide-react';
 import { Button } from '../../../ui/components/button';
@@ -22,6 +25,8 @@ import { EntryDialog } from './EntryDialog';
 import { EntryCards, EntryRows, TrashRows, type EntryActions } from './EntryList';
 import { ChangePasswordDialog, SafeErrorMessage, SecretInput, safeErrorKey, useSafeAction } from './SafeDialogs';
 import { lockRuleLines } from './lock-rules';
+import { AccountDetail } from './AccountDetail';
+import { cn } from '../../../ui/lib/utils';
 
 function useLockPolicy(service: SafeService): LockPolicy {
 	return useSyncExternalStore(listener => service.subscribePolicy(listener), () => service.lockPolicy());
@@ -52,7 +57,7 @@ export function SafePage({ service, preferences }: { service: SafeService; prefe
 	}, [service, win]);
 	// Discard forms and decrypted DOM on a page switch without treating it as a page close.
 	if (!visible) return null;
-	return <DesignScope className="flex h-full min-h-0 flex-col">
+	return <DesignScope className="flex h-full min-h-0 min-w-0 flex-col">
 		{state.status === 'unlocked'
 			? <UnlockedSafe key={state.generation} service={service} state={state} preferences={preferences} />
 			: <LockedSafe key={state.generation} service={service} state={state} />}
@@ -125,25 +130,41 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 	const mode = useSyncExternalStore(listener => preferences.subscribe(listener), () => preferences.viewMode());
 	const [query, setQuery] = useState('');
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+	const [selection, setSelection] = useState<{ entryId: string; credentialId: string } | null>(null);
+	const trigger = useRef<HTMLElement | null>(null);
 	const [trash, setTrash] = useState(false);
 	const [editing, setEditing] = useState<{ entry?: SafeEntry } | null>(null);
 	const [dialog, setDialog] = useState<'password' | 'import' | 'replace' | 'tags' | null>(null);
 	const [notice, setNotice] = useState<Notice | null>(null);
 	const action = useSafeAction(service);
 	const entries = searchEntries(state.entries, query, trash, selectedTags);
+	const selectedEntry = entries.find(entry => entry.id === selection?.entryId);
+	const selectedAccount = selectedEntry?.credentials.find(account => account.id === selection?.credentialId);
+	const hasDetail = !!selectedEntry && !!selectedAccount;
+	const navigate = (entryId: string, credentialId: string) => {
+		if (!service.checkDeadline()) return;
+		const target = service.store.getState().entries.find(entry => entry.id === entryId && entry.deletedAt === null);
+		if (!target?.credentials.some(account => account.id === credentialId)) return;
+		const focused = win.document.activeElement as HTMLElement | null;
+		if (focused?.closest('[data-safe-entries]')) trigger.current = focused;
+		setTrash(false);
+		if (!entries.some(entry => entry.id === entryId)) { setQuery(''); setSelectedTags([]); }
+		setSelection({ entryId, credentialId });
+	};
 	const busy = state.busy || action.busy;
 	const openEntry = (entry?: SafeEntry) => {
 		if (!service.checkDeadline()) return;
 		setEditing({ entry });
 	};
-	const toggleTrash = () => { setTrash(value => !value); setQuery(''); setNotice(null); };
+	const toggleTrash = () => { setTrash(value => !value); setSelection(null); setQuery(''); setNotice(null); };
 	const actions: EntryActions = {
 		busy,
-		open: openEntry,
+		open: entry => navigate(entry.id, entry.credentials[0]!.id),
+		inspectAccount: (entry, account) => navigate(entry.id, account.id),
 		copy: (value, kind) => { void action.run(() => service.copy(value, win), () => setNotice({ key: kind === 'username' ? 'safe.copiedUsername' : 'safe.copiedPassword' })); },
 		openUrl: url => { void action.run(() => service.openUrl(url, win)); },
 	};
-	return <section className="flex min-h-0 flex-1 flex-col gap-2 p-3 @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
+	return <section className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto p-3 scrollbar-sleek @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
 		<div className="flex flex-wrap items-center gap-2">
 			{trash && <>
 				<Button size="sm" variant="outline" onClick={toggleTrash}><ArrowLeft />{t('safe.backToRecords')}</Button>
@@ -151,7 +172,7 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 			</>}
 			<div className="relative min-w-[min(100%,10rem)] flex-1">
 				<Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-				<Input id={`${id}-search`} type="search" aria-label={t('safe.search')} title={t(trash ? 'safe.trashHint' : 'safe.searchHint')} className="h-8 pl-8 text-[13px] md:text-[13px]" value={query} onChange={event => { if (service.checkDeadline()) setQuery(event.currentTarget.value); }} placeholder={t('safe.searchPlaceholder')} autoComplete="off" spellCheck={false} />
+				<Input id={`${id}-search`} type="search" aria-label={t('safe.search')} title={t(trash ? 'safe.trashHint' : 'safe.searchHint')} className="h-8 pl-8 text-[13px] md:text-[13px]" value={query} onChange={event => { if (service.checkDeadline()) { setSelection(null); setQuery(event.currentTarget.value); } }} placeholder={t('safe.searchPlaceholder')} autoComplete="off" spellCheck={false} />
 			</div>
 			{!trash && <SegmentedControl<'list' | 'cards'> size="sm" ariaLabel={t('safe.view')} value={mode} onChange={value => preferences.setViewMode(value)} options={[
 				{ value: 'list', label: <List className="size-3.5" />, ariaLabel: t('safe.viewList'), tooltip: t('safe.viewList') },
@@ -176,15 +197,27 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>
-		<div className="flex max-h-28 shrink-0 flex-wrap gap-1 overflow-y-auto scrollbar-sleek" role="group" aria-label={t('safe.filterTags')}>
-			{collectTags(state.entries).map(tag => <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes(tag)} onClick={() => setSelectedTags(current => current.includes(tag) ? current.filter(item => item !== tag) : [...current, tag])}>{tag}</Button>)}
-			{selectedTags.length > 0 && <Button size="sm" variant="outline" onClick={() => setSelectedTags([])}>{t('safe.clearTags')}</Button>}
-		</div>
+
 		{(action.error || state.error) && <div className="flex flex-wrap items-center gap-2" role="status"><SafeErrorMessage error={action.error || safeErrorKey(state.error)} /><Button size="xs" variant="ghost" onClick={() => { action.setError(''); service.clearError(); }}>{t('safe.dismissError')}</Button></div>}
-		<div className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek">
-			{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() || selectedTags.length ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() && !selectedTags.length ? t('safe.emptyDescription') : trash && !query.trim() && !selectedTags.length ? t('safe.trashHint') : undefined} />
-				: trash ? <TrashRows entries={entries} busy={busy} onRestore={entry => { void action.run(() => service.restoreEntry(entry)); }} onDelete={entry => service.deleteEntry(entry)} />
-				: mode === 'cards' ? <EntryCards entries={entries} actions={actions} /> : <EntryRows entries={entries} actions={actions} />}
+		<div data-safe-workspace className={cn("grid min-h-64 min-w-0 flex-1 shrink-0 grid-cols-1 gap-3 @4xl:grid-cols-[10rem_minmax(0,1fr)_minmax(0,1.2fr)] @4xl:grid-rows-1", hasDetail ? "grid-rows-1" : "grid-rows-[auto_minmax(0,1fr)]")}>
+			<aside aria-label={t('safe.workspace.scope')} className={cn("max-h-40 min-h-0 min-w-0 flex-col gap-2 overflow-y-auto scrollbar-sleek @4xl:max-h-none", hasDetail ? "hidden @4xl:flex" : "flex")}>
+				<div className="flex flex-wrap gap-1 @4xl:flex-col">
+					<Button data-safe-scope="all" variant={selectedTags.length === 0 && !trash ? 'secondary' : 'ghost'} onClick={() => { setTrash(false); setSelectedTags([]); setSelection(null); }}>{t('safe.workspace.all')}</Button>
+					<Button data-safe-scope="favorites" variant={selectedTags.includes('favorite') ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes('favorite')} onClick={() => { setTrash(false); setSelectedTags(['favorite']); setSelection(null); }}>{t('safe.workspace.favorites')}</Button>
+					<Button data-safe-scope="trash" variant={trash ? 'secondary' : 'ghost'} onClick={toggleTrash}>{t('safe.trash')}</Button>
+				</div>
+				<div className="flex min-w-0 shrink-0 flex-wrap gap-1 overflow-y-auto scrollbar-sleek" role="group" aria-label={t('safe.filterTags')}>
+					{collectTags(state.entries).map(tag => <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes(tag)} onClick={() => { setSelection(null); setSelectedTags(current => current.includes(tag) ? current.filter(item => item !== tag) : [...current, tag]); }}>{tag}</Button>)}
+					{selectedTags.length > 0 && <Button size="sm" variant="outline" onClick={() => setSelectedTags([])}>{t('safe.clearTags')}</Button>}
+				</div>
+			</aside>
+			<div data-safe-entries className={cn("min-h-0 min-w-0 flex-1 flex-col overflow-y-auto scrollbar-sleek", hasDetail ? "hidden @4xl:flex" : "flex")}>
+				{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() || selectedTags.length ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() && !selectedTags.length ? t('safe.emptyDescription') : trash && !query.trim() && !selectedTags.length ? t('safe.trashHint') : undefined} />
+					: trash ? <TrashRows entries={entries} busy={busy} onRestore={entry => { void action.run(() => service.restoreEntry(entry)); }} onDelete={entry => service.deleteEntry(entry)} />
+					: mode === 'cards' ? <EntryCards entries={entries} actions={actions} /> : <EntryRows entries={entries} actions={actions} />}
+			</div>
+			{hasDetail ? <AccountDetail key={`${selectedEntry.id}/${selectedAccount.id}`} entry={selectedEntry} account={selectedAccount} entries={state.entries} actions={actions} onNavigate={navigate} onEdit={() => openEntry(selectedEntry)} onBack={() => { setSelection(null); win.requestAnimationFrame(() => trigger.current?.focus()); }} />
+				: <div className="hidden min-w-0 items-center justify-center rounded-lg border border-border p-3 text-sm text-muted-foreground @4xl:flex">{t('safe.workspace.select')}</div>}
 		</div>
 		<div className="flex flex-wrap justify-between gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
 			<span role={notice ? 'status' : undefined}>{notice ? t(notice.key, notice.params) : t('safe.recordCount', { count: entries.length })}</span>

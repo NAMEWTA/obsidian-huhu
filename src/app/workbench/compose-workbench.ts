@@ -215,6 +215,22 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			create: modulePage('archives', 'archives'),
 		},
 		{
+			id: 'health',
+			rail: { slot: 'top' },
+			navigation: { id: 'health', labelKey: 'health.title', icon: 'heart-pulse', target: { feature: 'health', section: 'scan' } },
+			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('health') }),
+			stateKeys: [],
+			create: modulePage('health', 'health'),
+		},
+		{
+			id: 'navigator',
+			rail: { slot: 'top' },
+			navigation: { id: 'navigator', labelKey: 'navigator.diary.title', icon: 'book-open', target: { feature: 'navigator', section: 'diary' } },
+			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('navigator') }),
+			stateKeys: ['date'],
+			create: modulePage('navigator', 'diary'),
+		},
+		{
 			id: 'safe',
 			rail: { slot: 'top' },
 			navigation: { id: 'safe', labelKey: 'workbench.safe', icon: 'vault', target: { feature: 'safe' } },
@@ -491,6 +507,8 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 				versioning: 'versioning',
 				'revision-review': 'versioning',
 				safe: 'general',
+				navigator: 'navigator',
+				health: 'general',
 				content: 'general',
 				settings: 'general',
 			} as const;

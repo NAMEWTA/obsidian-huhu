@@ -7,7 +7,6 @@ export interface AgentUsage {
 	known: boolean;
 	partial?: boolean;
 }
-export type NotificationChannelId = 'in-app' | 'system';
 export type ScheduleSpec =
 	| { kind: 'manual' }
 	| { kind: 'once'; at: number }
@@ -83,7 +82,7 @@ export interface AutomationDefinition {
 	revision: number;
 	schedule: ScheduleSpec;
 	action: AutomationAction;
-	channels: NotificationChannelId[];
+	channels: string[];
 	notifyOn: 'always' | 'failure' | 'never';
 	graceMinutes: number;
 	precheck?: { command: string; shell: 'powershell' | 'bash' };

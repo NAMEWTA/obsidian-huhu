@@ -64,6 +64,11 @@ function setup(status: SafeState['status'] = 'unlocked', entries: SafeEntry[] = 
 	return { ...stub, service, prefs, setVisible: (visible: boolean) => view.rerender(page(visible)), setPolicy: (next: typeof policy) => { policy = next; } };
 }
 
+async function openEditor(name: RegExp) {
+	await userEvent.click(screen.getByRole('button', { name }));
+	await userEvent.click(within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', { name: 'Edit entry' }));
+}
+
 beforeEach(() => { registerMessages(messages); setLanguage('en'); });
 
 test('search matches notes and account fields, excludes passwords, and never renders a secret in the list', async () => {
@@ -105,7 +110,7 @@ test('the card view lists accounts with copy buttons and the choice is remembere
 
 test('the editor masks secrets, preserves exact input and removes every sensitive subtree when the session locks', async () => {
 	const service = setup();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	const password = screen.getByLabelText('Password 1') as HTMLInputElement;
 	expect(password.type).toBe('password');
 	expect(password.value).toBe(entry.credentials[0]!.password);
@@ -122,7 +127,7 @@ test('the editor masks secrets, preserves exact input and removes every sensitiv
 		credentials: [{ id: entry.credentials[0]!.id, username: 'person@example.test', password: exact, notes: '仅在内存中检索', phone: '', email: '', relations: [] }],
 	}, entry);
 	await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	const removedInput = screen.getByLabelText('Password 1') as HTMLInputElement;
 	await act(async () => service.lock());
 	expect(screen.queryByRole('dialog')).toBeNull();
@@ -134,7 +139,7 @@ test('the editor masks secrets, preserves exact input and removes every sensitiv
 
 test('hiding discards the editor and decrypted DOM while keeping a session allowed by the switch policy', async () => {
 	const f = setup();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	const input = screen.getByLabelText('Password 1') as HTMLInputElement;
 	fireEvent.change(input, { target: { value: 'unsaved secret' } });
 	f.setVisible(false);
@@ -153,7 +158,7 @@ test('hiding discards the editor and decrypted DOM while keeping a session allow
 
 test('accounts can be added, reordered and removed in the editor, and the last one cannot be removed', async () => {
 	const service = setup('unlocked', [apple]);
-	await userEvent.click(screen.getByRole('button', { name: /^Apple/ }));
+	await openEditor(/^Apple/);
 	expect(screen.getAllByRole('group', { name: /^Account \d$/ })).toHaveLength(2);
 	await userEvent.click(screen.getByRole('button', { name: 'Add account' }));
 	const third = screen.getByLabelText('Username 3');
@@ -170,7 +175,7 @@ test('accounts can be added, reordered and removed in the editor, and the last o
 
 test('an entry keeps at least one account and accepts an entirely blank planned account', async () => {
 	const service = setup();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	expect((screen.getByRole('button', { name: 'Remove account 1' }) as HTMLButtonElement).disabled).toBe(true);
 	await userEvent.click(screen.getByRole('button', { name: 'Add account' }));
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
@@ -181,7 +186,7 @@ test('an entry keeps at least one account and accepts an entirely blank planned 
 test('IME Enter does not save, and failed saving keeps the draft without showing raw errors', async () => {
 	const service = setup();
 	service.saveEntry.mockRejectedValue(new Error('secret-file-path-and-password'));
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	const notes = screen.getByLabelText('Notes 1');
 	fireEvent.change(notes, { target: { value: '未保存草稿' } });
 	fireEvent.compositionStart(notes);
@@ -200,7 +205,7 @@ test('IME Enter does not save, and failed saving keeps the draft without showing
 
 test('a chosen picture becomes the entry icon through the decoder, and an unusable one shows a fixed message', async () => {
 	setup();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	const input = screen.getByLabelText('Upload icon…', { selector: 'input' }) as HTMLInputElement;
 	fireEvent.change(input, { target: { files: [new File(['x'], 'doc.txt', { type: 'text/plain' })] } });
 	await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/could not be used as an icon/));
@@ -315,7 +320,7 @@ test('a single-account record uses the same disclosure and shows contacts withou
 
 test('phone/email are optional exact values; the generator confirms replacement and does not save or copy', async () => {
 	const service = setup();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	fireEvent.change(screen.getByLabelText('Phone 1'), { target: { value: ' +886 001 ' } });
 	fireEvent.change(screen.getByLabelText('Email 1'), { target: { value: ' contact@example.test ' } });
 	await userEvent.click(screen.getByRole('button', { name: 'Generate 12-character password 1' }));
@@ -354,13 +359,13 @@ test('empty planned passwords generate immediately; same-draft account relations
 
 test('cross-entry account relation selection never contains passwords and locking clears contacts and relation editor', async () => {
 	const service = setup('unlocked', [entry, apple]);
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	await userEvent.click(screen.getByRole('button', { name: 'Add account relation' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Apple · second@icloud.test' }));
 	expect(document.body.innerHTML).not.toContain('apple-secret-two');
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	expect(service.saveEntry.mock.calls[0]![0].credentials[0]!.relations).toEqual([{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'related' }]);
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	fireEvent.change(screen.getByLabelText('Phone 1'), { target: { value: 'private-phone-draft' } });
 	act(() => service.lock());
 	expect(screen.queryByLabelText('Phone 1')).toBeNull();
@@ -374,7 +379,7 @@ test('custom tags support multi-select, immediate intersection filtering and glo
 	await userEvent.click(filters.getByRole('button', { name: 'AI' }));
 	await userEvent.click(filters.getByRole('button', { name: 'Company' }));
 	expect(screen.queryByRole('button', { name: /^Apple/ })).toBeNull();
-	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await openEditor(/^Private mailbox/);
 	fireEvent.change(screen.getByLabelText('New tag'), { target: { value: ' Finance ' } });
 	await userEvent.click(screen.getByRole('button', { name: 'Add tag' }));
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
@@ -392,4 +397,81 @@ test.each(['locked', 'unlocked'] as const)('the %s vault page is one design scop
 	expect(document.querySelectorAll('.huhu-ui.huhu-design:not(.huhu-portal-root)')).toHaveLength(1);
 	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
 	expect(document.querySelector('.huhu-design section[aria-label]')).toBeTruthy();
+});
+
+test('workspace selection shows full account details and clears a revealed secret on back and lock', async () => {
+	const record = { ...apple, notes: 'Platform note\n'.repeat(100), credentials: [{ ...apple.credentials[0]!, phone: '+886 exact', email: 'contact@example.test', notes: 'Account note\n'.repeat(200) }, apple.credentials[1]!] };
+	const f = setup('unlocked', [record]);
+	await userEvent.click(screen.getByRole('button', { name: /^Apple/ }));
+	const detail = within(screen.getByRole('region', { name: 'Account details' }));
+	expect(detail.getByText(record.credentials[0]!.id)).toBeTruthy();
+	expect(detail.getByText('+886 exact')).toBeTruthy();
+	expect(detail.getByText('contact@example.test')).toBeTruthy();
+	expect(detail.getByText(/Platform note/).textContent).toBe(record.notes);
+	expect(detail.getByText(/Account note/).textContent).toBe(record.credentials[0]!.notes);
+	const secret = detail.getByLabelText('Password') as HTMLInputElement;
+	expect(secret.hasAttribute('value')).toBe(false);
+	await userEvent.click(detail.getByRole('button', { name: 'Show password' }));
+	expect(secret.type).toBe('text');
+	await userEvent.click(detail.getByRole('button', { name: 'Back to accounts' }));
+	expect(secret.value).toBe('');
+	await userEvent.click(screen.getByRole('button', { name: /^Apple/ }));
+	await act(async () => f.lock());
+	expect(screen.queryByRole('region', { name: 'Account details' })).toBeNull();
+	expect(document.body.textContent).not.toContain('+886 exact');
+});
+
+test('workspace links and backlinks navigate by both stable IDs, while missing targets remain diagnostic', async () => {
+	const source = { ...entry, credentials: [{ ...entry.credentials[0]!, relations: [{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'login' as const }, { entryId: 'missing', credentialId: 'missing-account', kind: 'related' as const }] }] };
+	setup('unlocked', [source, apple, { ...apple, id: 'duplicate-title', credentials: [cred(9, 'second@icloud.test', 'different-secret')] }]);
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	let detail = within(screen.getByRole('region', { name: 'Account details' }));
+	expect(detail.getByText('Target account unavailable (deleted or not imported)')).toBeTruthy();
+	await userEvent.click(detail.getByRole('button', { name: 'Apple · second@icloud.test' }));
+	detail = within(screen.getByRole('region', { name: 'Account details' }));
+	expect(detail.getByText(apple.credentials[1]!.id)).toBeTruthy();
+	await userEvent.click(detail.getByRole('button', { name: 'Private mailbox · person@example.test' }));
+	expect(within(screen.getByRole('region', { name: 'Account details' })).getByText(source.credentials[0]!.id)).toBeTruthy();
+});
+
+test('favorites filter is an existing tag and relation navigation escapes filters without writing entries', async () => {
+	const source = { ...entry, tags: ['favorite'], credentials: [{ ...entry.credentials[0]!, relations: [{ entryId: apple.id, credentialId: apple.credentials[0]!.id, kind: 'related' as const }] }] };
+	const f = setup('unlocked', [source, apple]);
+	await userEvent.click(screen.getByRole('button', { name: 'Favorites · favorite' }));
+	expect(screen.queryByRole('button', { name: /^Apple/ })).toBeNull();
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await userEvent.click(within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', { name: 'Apple · first@icloud.test' }));
+	expect(within(screen.getByRole('region', { name: 'Account details' })).getByText(apple.credentials[0]!.id)).toBeTruthy();
+	expect(f.saveEntry).not.toHaveBeenCalled();
+	expect(f.store.getState().entries).toEqual([source, apple]);
+});
+
+test('choosing another account and reordering entries preserves the stable selection; deletion clears it', async () => {
+	const f = setup('unlocked', [entry, apple]);
+	await userEvent.click(screen.getByRole('button', { name: 'Show accounts of Apple' }));
+	await userEvent.click(screen.getByRole('button', { name: 'second@icloud.test' }));
+	const details = () => within(screen.getByRole('region', { name: 'Account details' }));
+	expect(details().getByText(apple.credentials[1]!.id)).toBeTruthy();
+	act(() => f.store.setState({ entries: [{ ...apple, credentials: [...apple.credentials].reverse() }, entry] }));
+	expect(details().getByText(apple.credentials[1]!.id)).toBeTruthy();
+	act(() => f.store.setState({ entries: [{ ...apple, deletedAt: apple.updatedAt }, entry] }));
+	expect(screen.queryByRole('region', { name: 'Account details' })).toBeNull();
+	expect(f.copy).not.toHaveBeenCalled();
+});
+
+test('card more accounts expands the remaining accounts and opens the fourth stable ID', async () => {
+	const fourth = cred(5, 'fourth@icloud.test', 'fourth-private-secret');
+	const record = { ...apple, credentials: [...apple.credentials, cred(4, 'third@icloud.test', 'third-private-secret'), fourth] };
+	setup('unlocked', [record], 'cards');
+	expect(screen.queryByRole('button', { name: fourth.username })).toBeNull();
+	const more = screen.getByRole('button', { name: '1 more accounts' });
+	more.focus();
+	await userEvent.keyboard('{Enter}');
+	expect(screen.queryByRole('region', { name: 'Account details' })).toBeNull();
+	expect(document.activeElement).toBe(screen.getByRole('button', { name: fourth.username }));
+	await userEvent.keyboard('{Enter}');
+	const detail = within(screen.getByRole('region', { name: 'Account details' }));
+	expect(detail.getByText(fourth.id)).toBeTruthy();
+	expect((detail.getByLabelText('Password') as HTMLInputElement).value).toBe(fourth.password);
+	expect(document.body.innerHTML).not.toContain(fourth.password);
 });

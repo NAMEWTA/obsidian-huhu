@@ -1,3 +1,4 @@
+import { healthRepairProof, isRepairRegistrationPath } from './repair';
 import { WriteQueue } from '../../../../shared/storage/write-queue';
 import type { ContactsFile, ContactsFiles } from '../../core/files';
 import { ArchiveIndex, type IndexedArchive } from '../../core/generic/index';
@@ -42,6 +43,8 @@ export class ArchiveRuntime {
 	private readonly versions = new Map<string, number>();
 	private observedCollection = false;
 	private readonly listeners = new Set<() => void>();
+	private readonly commitListeners = new Set<{ notify?: (path: string, raw: string) => void; attempt?: (path: string, raw: string) => void }>();
+	private readonly repairProofs = new WeakMap<ArchiveWriteContext, Map<string, { before: string; after: string }>>();
 	private readonly schemaDependents = new Map<string, Set<string>>();
 	private readonly fileDependents = new Map<string, Set<string>>();
 	private readonly referencesByPath = new Map<string, { schema?: string; files: string[] }>();
@@ -75,6 +78,35 @@ export class ArchiveRuntime {
 		this.listeners.add(listener);
 		return () => this.listeners.delete(listener);
 	}
+	/** Confirmed readbacks notify consumers; optional attempts distinguish rejected CAS from uncertain I/O. */
+	subscribeCommitted(notify: (path: string, raw: string) => void, attempt?: (path: string, raw: string) => void): () => void {
+		const entry: { notify?: (path: string, raw: string) => void; attempt?: (path: string, raw: string) => void } = { notify, attempt };
+		if (this.active) this.commitListeners.add(entry);
+		else { entry.notify = undefined; entry.attempt = undefined; }
+		return () => { entry.notify = undefined; entry.attempt = undefined; this.commitListeners.delete(entry); };
+	}
+	async rescan(): Promise<void> {
+		if (this.active) await this.reload();
+	}
+	/** Derived-only repair: retain the previous index for recovery on a failed rebuild.
+	 * Source files and unfinished transactions are never edited or discarded.
+	 */
+	async rebuildDerivedIndex(signal?: AbortSignal): Promise<void> {
+		const previous = this.index;
+		this.assert(this.context(signal), true);
+		try {
+			await this.reload();
+			this.assert(this.context(signal), true);
+		} catch (error) {
+			if (this.active && this.getRoot() === previous.root) {
+				this.index = previous;
+				this.loaded = true;
+				this.emit();
+			}
+			throw error;
+		}
+	}
+
 	private emit(): void {
 		if (this.active) for (const listener of [...this.listeners]) listener();
 	}
@@ -169,6 +201,8 @@ export class ArchiveRuntime {
 		this.epoch++;
 		this.dirty.clear();
 		this.listeners.clear();
+		for (const entry of this.commitListeners) { entry.notify = undefined; entry.attempt = undefined; }
+		this.commitListeners.clear();
 	}
 	fileChanged(file: ContactsFile): void {
 		if (!this.active) return;
@@ -213,10 +247,12 @@ export class ArchiveRuntime {
 		this.dirty.set(path, this.bump(path));
 	}
 	private scheduleEvents(): void {
-		if (this.loaded && !this.eventPromise && this.dirty.size)
+		if (this.loaded && !this.eventPromise && this.dirty.size) {
+			const epoch = this.epoch;
 			void this.flushEvents().catch((error) => {
-				if (this.active) console.error('[HUHU archives]', error);
+				if (this.active && epoch === this.epoch) console.error('[HUHU archives]', error);
 			});
+		}
 	}
 	async flushEvents(): Promise<void> {
 		if (!this.loaded || !this.active) return;
@@ -375,6 +411,14 @@ export class ArchiveRuntime {
 		this.assert(context);
 		if (file.path !== path) throw new ArchiveError('file-moved');
 		if (guardEditor) this.files.checkEditor(file, raw);
+		const prefix = `${context.root}/${ARCHIVE_PATHS.migrations}/`;
+		if (path.startsWith(prefix) && !path.slice(prefix.length).includes('/')) {
+			const proof = await healthRepairProof(this, raw, context, path);
+			if (proof) {
+				const proofs = this.repairProofs.get(context) ?? new Map<string, { before: string; after: string }>();
+				proofs.set(proof.path, { before: proof.before, after: proof.after }); this.repairProofs.set(context, proofs);
+			}
+		}
 		return raw;
 	}
 	async refresh(path: string, context = this.context()): Promise<void> {
@@ -417,12 +461,16 @@ export class ArchiveRuntime {
 		if (!underRoot(this.root, path)) throw new ArchiveError('outside-root');
 		const file = this.files.getFileByPath(path);
 		if (!file) throw new ArchiveError('missing-file', path);
+		if (isRepairRegistrationPath(context.root, path)) throw new ArchiveError('immutable-repair-registration');
 		let committed = '';
 		const raw = await this.files.process(file, (latest) => {
 			this.assert(context, true);
 			if (file.path !== path) throw new ArchiveError('file-moved');
 			this.files.checkEditor(file, latest);
 			committed = update(latest);
+			const proof = this.repairProofs.get(context)?.get(path);
+			if (proof && committed !== proof.before && committed !== proof.after) throw new ArchiveError('invalid-repair');
+			for (const listener of this.commitListeners) listener.attempt?.(path, committed);
 			return committed;
 		});
 		if (raw !== committed) throw new ArchiveError('write-verification-failed', path);
@@ -446,6 +494,7 @@ export class ArchiveRuntime {
 				context,
 			);
 		if (this.files.getAbstractFileByPath(path)) throw new ArchiveError('path-exists', path);
+		for (const listener of this.commitListeners) listener.attempt?.(path, after);
 		const file = await this.files.create(path, after);
 		if (file.path !== path) throw new ArchiveError('file-moved');
 		return this.finishWrite(path, after, context);
@@ -464,6 +513,7 @@ export class ArchiveRuntime {
 			if (this.active && context.epoch === this.epoch) {
 				this.apply(entry);
 				this.emit();
+				for (const listener of this.commitListeners) listener.notify?.(path, raw);
 			}
 		}
 		return { raw, hash };

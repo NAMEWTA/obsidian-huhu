@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { TextStorage } from '../../../shared/storage/ports';
-import type { NotificationChannelId, NotificationRecord } from '../api';
+import { notificationInboxPath, type NotificationChannelId, type NotificationRecord } from '../api';
 import type { NotificationDelivery } from './ports';
 import { NotificationService, notificationsRecoveryOwner } from './service';
 
@@ -27,6 +27,27 @@ const delivery = (system = false) => {
 	return { adapter, sent };
 };
 const request = (id = 'run') => ({ id, title: 'Title', body: 'Body', channels: ['in-app', 'system'] as NotificationChannelId[] });
+
+it('appends a health record to an existing inbox without changing legacy data or replaying receipts', async () => {
+	const disk = new MemoryStorage();
+	const path = notificationInboxPath('device');
+	const old = { id: 'legacy', title: 'Original name', body: 'Original body', target: { automationId: 'old-automation', runId: 'old-run' }, channels: ['in-app'], deliveries: { 'in-app': 'sent' }, createdAt: 7, read: true };
+	disk.files.set(path, JSON.stringify({ records: [old], receipts: { legacy: old.deliveries } }));
+	const { adapter, sent } = delivery();
+	const inbox = new NotificationService(disk, path, async () => {}, adapter);
+	await inbox.load();
+	expect(inbox.records).toEqual([old]);
+	const health = { id: 'health:one', title: 'Scan finished', body: 'Warning', source: { kind: 'health' as const, id: 'report-one' }, target: { kind: 'health' as const, reportId: 'report-one' }, channels: ['in-app'] };
+	await inbox.send(health); await inbox.send(health); await inbox.send(request('legacy'));
+	expect(sent).toEqual([['in-app', 'health:one']]);
+	expect(inbox.records[0]).toEqual(old);
+	expect(inbox.unread).toBe(1);
+	const stored = JSON.parse(disk.files.get(path)!) as { records: NotificationRecord[]; receipts: Record<string, unknown> };
+	expect(stored.records[0]).toEqual(old);
+	expect(stored.records[1]?.target).toEqual({ kind: 'health', reportId: 'report-one' });
+	expect(stored.receipts.legacy).toEqual({ 'in-app': 'sent' });
+	await inbox.shutdown();
+});
 
 describe('NotificationService', () => {
 	it('opener capability supports automations records without an automation target and changes with the sender', async () => {

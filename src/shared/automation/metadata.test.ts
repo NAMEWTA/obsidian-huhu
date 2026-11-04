@@ -23,9 +23,26 @@ describe('automation definitions', () => {
 		expect(value.channels).toEqual(['in-app', 'system']);
 	});
 
-	it('reject unknown channels', () => {
-		expect(isDefinition(definition(['in-app', 'pager']))).toBe(false);
-		expect(isDefinition(definition(['email']))).toBe(false);
+	it.each(['pager', 'email', 'team.v2_channel-1'])('accepts a syntactically valid unregistered channel %s', channel => {
+		const value = definition(['in-app', channel]);
+		expect(isDefinition(value)).toBe(true);
+		expect(value.channels).toEqual(['in-app', channel]);
+	});
+
+	it.each([
+		{ channel: '' },
+		{ channel: 'Pager' },
+		{ channel: 'test channel' },
+		{ channel: 'test/channel' },
+		{ channel: '1pager' },
+		{ channel: 42 },
+		{ channel: null },
+		{ channel: undefined },
+		{ channel: {} },
+		{ channel: ['in-app'] },
+	])('rejects an invalid channel ID $channel', ({ channel }) => {
+		expect(isDefinition(definition([channel]))).toBe(false);
+		expect(isDefinition(definition(['in-app', channel]))).toBe(false);
 	});
 	it('accepts only task-domain actions and rejects removed destination fields and invalid times', () => {
 		const accepts = (action: unknown) => isDefinition({ ...definition(['in-app']), action });

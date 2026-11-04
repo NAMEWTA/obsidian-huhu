@@ -73,3 +73,33 @@ test('generic archive Markdown preserves leading zeros, month precision, false, 
 		'invalid-value',
 	);
 });
+
+test('belonging money and lifecycle table have a stable portable Markdown representation', async () => {
+	const { BELONGING } = await import('../../src/modules/archives/core/belongings/preset');
+	const { parseBelonging } = await import('../../src/modules/archives/core/belongings/lifecycle');
+	const values = {
+		name: 'Golden item', category: 'Devices', purchaseDate: '2026-01', purchase: { amount: '12345678901234567890.0100', currency: 'CNY' },
+		status: 'sold', exitDate: '2026-02-01', sale: { amount: '0.00', currency: 'CNY' },
+		events: [{ rowId: 'golden-sale', values: { status: 'sold', date: '2026-02-01', exitDate: '2026-02-01', sale: { amount: '0.00', currency: 'CNY' }, commandHash: 'a'.repeat(64) } }],
+	};
+	const record: EntityRecord = { id: 'golden-item', typeId: BELONGING.id, schemaRevisionId: 'golden-belonging-v1', lifecycle: 'active', values, path: 'huhu/archives/belongings/golden/profile.md', contentHash: '', modified: 0 };
+	const raw = encodeEntity(record, BELONGING);
+	expect(raw).toMatchSnapshot('belonging lifecycle table and exact money');
+	const decoded = decodeEntity(raw, record.path, 'hash', 0, await createRevision(BELONGING, [], 1, record.schemaRevisionId));
+	expect(decoded.values).toEqual(values);
+	expect(parseBelonging(decoded).events[0]?.rowId).toBe('golden-sale');
+});
+
+test('person journal rows keep IDs, related entity IDs and multiline text in portable archive Markdown', async () => {
+	const { PERSON_WITH_JOURNAL } = await import('../../src/modules/archives/core/person-journal/preset');
+	const values = {
+		name: '同名人物', notes: '**保留资料**\n第二行',
+		journal: [{ rowId: 'journal-row-001', values: { date: '2026-11-05', title: '手工纪事', content: '**Markdown 内容**\n第二段\n', relatedEntityIds: ['person-002', 'company-001'] } }],
+	};
+	const record: EntityRecord = { id: 'person-001', typeId: PERSON_WITH_JOURNAL.id, schemaRevisionId: 'golden-person-journal-v3', lifecycle: 'active', values, path: 'huhu/archives/people/person-001/profile.md', contentHash: '', modified: 0 };
+	const raw = encodeEntity(record, PERSON_WITH_JOURNAL);
+	expect(raw).toMatchSnapshot('person journal table and preserved Markdown');
+	const decoded = decodeEntity(raw, record.path, 'hash', 0, await createRevision(PERSON_WITH_JOURNAL, [], 1, record.schemaRevisionId));
+	expect(decoded.values).toEqual(values);
+	expect(frontmatter(raw)['person-journal']).toEqual(values.journal);
+});

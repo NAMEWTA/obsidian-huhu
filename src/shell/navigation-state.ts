@@ -23,6 +23,8 @@ export const PANEL_MAX = 500;
 export const PANEL_DEFAULT = 280;
 
 const sections: Partial<Record<WorkbenchFeature, readonly string[]>> = {
+	navigator: ['diary'],
+	health: ['scan', 'repair'],
 	terminal: ['running', 'history', 'usage', 'board', 'jump'],
 	automations: ['tasks', 'runs'],
 	notifications: ['unread', 'all'],

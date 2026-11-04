@@ -13,7 +13,7 @@ import { JsonStore } from '../../../shared/json-store';
 import type { TextStorage } from '../../../shared/storage/ports';
 import type { NotificationDelivery } from './ports';
 
-export function notificationBody(record: NotificationRequest): string {
+export function notificationBody(record: Pick<NotificationRequest, 'body' | 'presentation'>): string {
 	const value = record.presentation;
 	if (!value || value.kind !== 'automation-run' ||
 		!['pending', 'running', 'unknown', 'succeeded', 'failed', 'cancelled', 'interrupted', 'skipped'].includes(value.status))
@@ -71,7 +71,7 @@ export class NotificationService implements NotificationInbox {
 		const state = await this.store.load({ records: [], receipts: {} });
 		this.saved = structuredClone(state);
 		for (const deliveries of Object.values(state.receipts))
-			for (const channel of Object.keys(deliveries) as NotificationChannelId[])
+			for (const channel of Object.keys(deliveries))
 				if (deliveries[channel] === 'pending') deliveries[channel] = 'unknown';
 		for (const row of state.records) row.deliveries = { ...state.receipts[row.id] };
 		this.state = state;
@@ -133,18 +133,21 @@ export class NotificationService implements NotificationInbox {
 			state.receipts[row.id] = { ...row.deliveries };
 		});
 		for (const channel of row.channels) {
-			let status: 'sent' | 'failed' | 'unknown' = 'unknown';
+			let status: 'sent' | 'failed' | 'unknown' | 'unavailable' = 'unknown';
 			if (!this.stopped) {
 				try {
-					if (!this.available(channel)) throw new Error(t('automation.channelUnavailable'));
-					await this.deliveryAdapter.send(channel, row, {
-						open: () => this.open(row),
-						failed: () => {
-							if (this.held) this.deferred.push({ id: row.id, channel });
-							else void this.enqueue(() => this.delivery(row.id, channel, 'failed')).catch(console.error);
-						},
-					});
-					status = 'sent';
+					if (this.deliveryAdapter.registered?.(channel) === false) status = 'unavailable';
+					else {
+						if (!this.available(channel)) throw new Error(t('automation.channelUnavailable'));
+						await this.deliveryAdapter.send(channel, row, {
+							open: () => this.open(row),
+							failed: () => {
+								if (this.held) this.deferred.push({ id: row.id, channel });
+								else void this.enqueue(() => this.delivery(row.id, channel, 'failed')).catch(console.error);
+							},
+						});
+						status = 'sent';
+					}
 				} catch {
 					status = 'failed';
 				}
@@ -152,7 +155,7 @@ export class NotificationService implements NotificationInbox {
 			await this.delivery(row.id, channel, status);
 		}
 	}
-	private delivery(id: string, channel: NotificationChannelId, status: 'sent' | 'failed' | 'unknown'): Promise<void> {
+	private delivery(id: string, channel: NotificationChannelId, status: 'sent' | 'failed' | 'unknown' | 'unavailable'): Promise<void> {
 		return this.commit((state) => {
 			state.receipts[id] = { ...state.receipts[id], [channel]: status };
 			const row = state.records.find((r) => r.id === id);

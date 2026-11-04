@@ -1,7 +1,5 @@
-import type { AutomationDefinition, NotificationChannelId } from './types';
+import type { AutomationDefinition } from './types';
 import type { TaskDraft, TaskRecurrence } from './task';
-
-const CHANNELS: readonly string[] = ['in-app', 'system'] satisfies NotificationChannelId[];
 
 export function isDefinition(value: unknown): value is AutomationDefinition {
 	if (!value || typeof value !== 'object') return false;
@@ -18,7 +16,7 @@ export function isDefinition(value: unknown): value is AutomationDefinition {
 		!!d.schedule &&
 		!!d.action &&
 		Array.isArray(d.channels) &&
-		d.channels.every((c) => CHANNELS.includes(c)) &&
+		d.channels.every((c) => typeof c === 'string' && /^[a-z][a-z0-9._-]*$/.test(c)) &&
 		['always', 'failure', 'never'].includes(d.notifyOn ?? '') &&
 		Number.isFinite(d.createdAt) &&
 		Number.isFinite(d.updatedAt)

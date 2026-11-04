@@ -102,16 +102,20 @@ export async function createAutomationRuntime(
 			app.workspace.getMostRecentLeaf()?.view.containerEl.win,
 		);
 	const opener: NotificationOpener = {
-		canOpen: (record) => !!record.source || !!record.target,
+		kind: 'automation-run',
+		canOpen: (record) => record.source?.kind !== 'health' && record.target?.kind !== 'health' && (!!record.target || (!!record.source && record.source.kind !== 'automation-run')),
 		open: async (record) => {
-			if (record.source) return sources.open(record.source);
-			if (!record.target) return;
+			if (record.source?.kind === 'health' || record.target?.kind === 'health') throw new AutomationError('sourceMissing');
+			if (record.source && record.source.kind !== 'automation-run') return sources.open(record.source);
+			if (!record.target) throw new AutomationError('sourceMissing');
+			if (record.target.source) return sources.open(record.target.source);
+			const target = record.target;
 			// A reminder made from a note opens that note; anything else opens the run.
 			const owner =
-				service.state.runs.find((row) => row.id === record.target?.runId)?.definition ??
-				service.definitions.find((row) => row.id === record.target?.automationId);
+				service.state.runs.find((row) => row.id === target.runId)?.definition ??
+				service.definitions.find((row) => row.id === target.automationId);
 			if (owner?.link) await openNote(app, owner.link.path, owner.link.line);
-			else await openRuns(record.target.runId);
+			else await openRuns(target.runId);
 		},
 	};
 	const service = new AutomationService(
@@ -145,8 +149,8 @@ export async function createAutomationRuntime(
 				body: plainNotice
 					? `${t(`automation.${run.status}`)}${t('automation.colon')}${notice}`
 					: t(`automation.${run.status}`),
-				source: snapshot.source,
-				target: { runId: run.id, automationId: run.automationId, terminalId: run.terminalId },
+				source: { kind: 'automation-run', id: run.id },
+				target: { kind: 'automation-run', runId: run.id, automationId: run.automationId, terminalId: run.terminalId, source: snapshot.source },
 				channels: snapshot.channels,
 			});
 		},

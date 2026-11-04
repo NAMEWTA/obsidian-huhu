@@ -14,6 +14,7 @@ export interface EntryActions {
 	open(entry: SafeEntry): void;
 	copy(value: string, kind: 'username' | 'password'): void;
 	openUrl(url: string): void;
+	inspectAccount?(entry: SafeEntry, credential: SafeCredential): void;
 }
 
 /** A website as shown in a row: no scheme, no `www.`, no trailing slash. */
@@ -31,11 +32,11 @@ function CopyButtons({ credential, actions, className }: { credential: SafeCrede
 	</div>;
 }
 
-function AccountRow({ credential, actions }: { credential: SafeCredential; actions: EntryActions }) {
+function AccountRow({ entry, credential, actions }: { entry: SafeEntry; credential: SafeCredential; actions: EntryActions }) {
 	const t = useT();
 	return <li className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 border-t border-border/50 py-1.5">
 		<div className="grid min-w-0 gap-x-3 gap-y-0.5 @lg:grid-cols-2">
-			<span className="min-w-0 break-words text-[13px]">{credentialLabel(credential) || t('safe.unnamedAccount')}</span>
+			{actions.inspectAccount ? <Button data-safe-account={credential.id} variant="ghost" className="h-auto min-h-11 min-w-0 justify-start whitespace-normal text-left [overflow-wrap:anywhere]" onClick={() => actions.inspectAccount?.(entry, credential)}>{credentialLabel(credential) || t('safe.unnamedAccount')}</Button> : <span className="min-w-0 break-words text-[13px]">{credentialLabel(credential) || t('safe.unnamedAccount')}</span>}
 			<span className="min-w-0 break-words text-xs text-muted-foreground">{[credential.phone, credential.email].filter(Boolean).join(' · ')}</span>
 			{credential.notes && <p className="m-0 whitespace-pre-wrap break-words text-xs text-muted-foreground @lg:col-span-2">{credential.notes}</p>}
 			{credential.relations.length > 0 && <span className="text-xs text-muted-foreground">{t('safe.relationCount', { count: credential.relations.length })}</span>}
@@ -63,7 +64,7 @@ function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions 
 	const label = entryLabel(entry) || t('safe.unnamedEntry');
 	return <li className="min-w-0 rounded-md border-b border-border/50 hover:bg-accent/50 focus-within:bg-accent/50">
 		<div className="group flex min-w-0 flex-wrap items-center gap-1 pr-1">
-			<button type="button" className="grid min-w-[min(100%,10rem)] flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-1 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 @lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]" onClick={() => actions.open(entry)} disabled={actions.busy}>
+			<button type="button" data-safe-entry={entry.id} className="grid min-w-[min(100%,10rem)] flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-1 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 @lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]" onClick={() => actions.open(entry)} disabled={actions.busy}>
 				<EntryIcon entry={entry} size="sm" />
 				<span className="min-w-0">
 					<span className="block truncate text-[13px] leading-tight font-medium" title={label}>{label}</span>
@@ -80,7 +81,7 @@ function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions 
 			<span className={cn('flex w-8 shrink-0', hoverActions)}><OpenUrlButton entry={entry} actions={actions} /></span>
 		</div>
 		{expanded && <ul id={accountsId} className="m-0 mb-1 grid list-none gap-0 py-0 pr-2 pl-4 @md:pl-11">
-			{entry.credentials.map(credential => <AccountRow key={credential.id} credential={credential} actions={actions} />)}
+			{entry.credentials.map(credential => <AccountRow key={credential.id} entry={entry} credential={credential} actions={actions} />)}
 		</ul>}
 	</li>;
 }
@@ -89,11 +90,12 @@ function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions 
 function EntryCard({ entry, actions }: { entry: SafeEntry; actions: EntryActions }) {
 	const t = useT();
 	const label = entryLabel(entry) || t('safe.unnamedEntry');
-	const shown = entry.credentials.slice(0, 3);
+	const [expanded, setExpanded] = useState(false);
+	const shown = expanded ? entry.credentials : entry.credentials.slice(0, 3);
 	const more = entry.credentials.length - shown.length;
 	return <li className="group/card flex min-w-0 flex-col gap-1.5 rounded-lg border border-border bg-card p-2.5 text-card-foreground hover:border-muted-foreground/40">
 		<div className="group flex items-center gap-1">
-			<button type="button" className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" onClick={() => actions.open(entry)} disabled={actions.busy}>
+			<button type="button" data-safe-entry={entry.id} className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" onClick={() => actions.open(entry)} disabled={actions.busy}>
 				<EntryIcon entry={entry} size="md" />
 				<span className="min-w-0 flex-1">
 					<span className="block truncate text-[13px] leading-tight font-medium" title={label}>{label}</span>
@@ -104,12 +106,12 @@ function EntryCard({ entry, actions }: { entry: SafeEntry; actions: EntryActions
 		</div>
 		{entry.tags.length > 0 && <p className="m-0 break-words text-xs text-muted-foreground">{entry.tags.join(' · ')}</p>}
 		<ul className="m-0 grid list-none gap-0 p-0">
-			{shown.map(credential => <li key={credential.id} className="flex min-w-0 items-center gap-1">
-				<span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={credentialLabel(credential)}>{credentialLabel(credential) || t('safe.unnamedAccount')}</span>
+			{shown.map((credential, index) => <li key={credential.id} className="flex min-w-0 items-center gap-1">
+				{actions.inspectAccount ? <Button autoFocus={expanded && index === 3} data-safe-account={credential.id} variant="ghost" className="h-auto min-h-11 min-w-0 flex-1 justify-start whitespace-normal text-left [overflow-wrap:anywhere]" onClick={() => actions.inspectAccount?.(entry, credential)}>{credentialLabel(credential) || t('safe.unnamedAccount')}</Button> : <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={credentialLabel(credential)}>{credentialLabel(credential) || t('safe.unnamedAccount')}</span>}
 				<CopyButtons credential={credential} actions={actions} />
 			</li>)}
 		</ul>
-		{more > 0 && <button type="button" className="self-start rounded-sm text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50" onClick={() => actions.open(entry)} disabled={actions.busy}>{t('safe.moreAccounts', { count: more })}</button>}
+		{more > 0 && <Button type="button" variant="ghost" size="sm" className="self-start whitespace-normal text-left" onClick={() => setExpanded(true)} disabled={actions.busy}>{t('safe.moreAccounts', { count: more })}</Button>}
 	</li>;
 }
 

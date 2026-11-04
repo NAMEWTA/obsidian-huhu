@@ -53,3 +53,29 @@ export function AccountRelations({ entries, currentEntry, credential, disabled, 
 		</div>}
 	</div>;
 }
+
+/** Read-only links resolve the pair of stable IDs on each render; missing targets never become buttons. */
+export function AccountRelationLinks({ entries, entry, credential, onNavigate }: {
+	entries: readonly SafeEntry[]; entry: SafeEntry; credential: CredentialInput;
+	onNavigate: (entryId: string, credentialId: string) => void;
+}) {
+	const t = useT();
+	const live = entries.filter(item => item.deletedAt === null);
+	const label = (target: SafeEntry, account: CredentialInput) => `${entryLabel(target) || t('safe.unnamedEntry')} · ${credentialLabel(account) || t('safe.unnamedAccount')}`;
+	const incoming = live.flatMap(target => target.credentials.filter(account => account.relations.some(link => link.entryId === entry.id && link.credentialId === credential.id)).map(account => ({ target, account })));
+	return <div className="grid min-w-0 grid-cols-1 gap-2" role="group" aria-label={t('safe.relations')}>
+		{credential.relations.map(link => {
+			const target = live.find(item => item.id === link.entryId);
+			const account = target?.credentials.find(item => item.id === link.credentialId);
+			return <div key={relationKey(link)} className="grid min-w-0 grid-cols-1 gap-1">
+				<span className="text-xs text-muted-foreground">{t(link.kind === 'login' ? 'safe.relationLogin' : 'safe.relationRelated')}</span>
+				{target && account ? <Button variant="outline" className="h-auto min-h-11 min-w-0 justify-start whitespace-normal text-left [overflow-wrap:anywhere]" onClick={() => onNavigate(target.id, account.id)}>{label(target, account)}</Button>
+					: <p role="status" className="m-0 text-sm text-muted-foreground">{t('safe.relationUnavailable')}</p>}
+			</div>;
+		})}
+		{incoming.length > 0 && <>
+			<h4 className="m-0 text-sm font-medium">{t('safe.relationIncoming')}</h4>
+			{incoming.map(({ target, account }) => <Button key={`${target.id}/${account.id}`} variant="outline" className="h-auto min-h-11 min-w-0 justify-start whitespace-normal text-left [overflow-wrap:anywhere]" onClick={() => onNavigate(target.id, account.id)}>{label(target, account)}</Button>)}
+		</>}
+	</div>;
+}

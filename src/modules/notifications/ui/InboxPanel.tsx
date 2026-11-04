@@ -144,7 +144,7 @@ export function InboxPanel({
 													key={channel}
 													className={DELIVERY_TONE[delivery]}
 												>
-													{`${t(`automation.${channel}`)}${t('automation.colon')}${t(`automation.delivery.${delivery}`)}`}
+													{`${channel === 'in-app' || channel === 'system' ? t(`automation.${channel}`) : channel}${t('automation.colon')}${t(delivery === 'unavailable' ? 'notification.deliveryUnavailable' : `automation.delivery.${delivery}`)}`}
 												</Badge>
 											);
 										})}
@@ -154,7 +154,7 @@ export function InboxPanel({
 											{record.target && (
 												<div className="min-w-0">
 													<div className="text-[11px] font-medium uppercase text-muted-foreground">
-														{t('notification.targetName')}
+													{t(record.target.kind === 'health' ? 'notification.targetNameGeneric' : 'notification.targetName')}
 													</div>
 													<div className="break-words text-sm">
 														{(() => {
@@ -162,13 +162,14 @@ export function InboxPanel({
 															if (!found) return t('notification.targetUnknown');
 															return found.state === 'deleted'
 																? t('notification.targetDeleted')
-																: found.name.trim() || t('automation.unnamedAutomation');
+															: found.name.trim() || t(record.target?.kind === 'health' ? 'notification.targetUnknown' : 'automation.unnamedAutomation');
 														})()}
 													</div>
 												</div>
 											)}
-											{record.target && <IdRow label={t('notification.automationId')} value={record.target.automationId} />}
-											{record.target && <IdRow label={t('notification.runId')} value={record.target.runId} />}
+											{record.target?.kind === 'health' && <IdRow label={t('notification.reportId')} value={record.target.reportId} />}
+											{record.target && record.target.kind !== 'health' && <IdRow label={t('notification.automationId')} value={record.target.automationId} />}
+											{record.target && record.target.kind !== 'health' && <IdRow label={t('notification.runId')} value={record.target.runId} />}
 										</div>
 									)}
 								</div>

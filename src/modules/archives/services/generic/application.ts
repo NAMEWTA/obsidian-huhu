@@ -1,3 +1,5 @@
+import { PersonJournalService } from './person-journal';
+import { BelongingsService } from './belongings';
 import type { ArchivesCatalog, ArchivesCommands, ArchivesQuery } from '../../api';
 import type { ArchiveRuntime } from './runtime';
 import { EntityCommands } from './entities';
@@ -13,8 +15,10 @@ export class ArchivesApplication {
 	readonly catalog: ArchivesCatalog;
 	readonly query: ArchivesQuery;
 	readonly commands: ArchivesCommands;
+	readonly personJournal: PersonJournalService;
 	constructor(readonly runtime: ArchiveRuntime) {
 		this.entities = new EntityCommands(runtime);
+		const belongings = new BelongingsService(runtime, this.entities);
 		this.relations = new RelationCommands(runtime);
 		this.definitions = new DefinitionCommands(runtime);
 		this.recovery = new RecoveryCommands(runtime);
@@ -29,6 +33,7 @@ export class ArchivesApplication {
 			subscribe: (listener) => runtime.subscribe(listener),
 		};
 		this.query = {
+			belongings: options => belongings.query(options),
 			entities: async (query) => {
 				await loaded();
 				return runtime.index.query(query);
@@ -53,6 +58,7 @@ export class ArchivesApplication {
 			subscribe: (listener) => runtime.subscribe(listener),
 		};
 		this.commands = {
+			belongings,
 			initialize: (signal) => runtime.command({}, (_input, context) => runtime.bootstrap(context), signal),
 			create: (input, signal) => this.entities.create(input, signal),
 			beginEdit: (id) => this.entities.beginEdit(id),
@@ -74,5 +80,6 @@ export class ArchivesApplication {
 			saveDraft: (session) => this.entities.saveDraft(session),
 			discardDraft: (id) => this.entities.discardDraft(id),
 		};
+		this.personJournal = new PersonJournalService(this.catalog, this.query, this.commands);
 	}
 }

@@ -766,3 +766,57 @@ describe('contact, label, relation and generator boundaries', () => {
 		expect(service.store.getState().status).toBe('locked');
 	});
 });
+
+test('closing a picker cancels its queued copy without locking the shared session', async () => {
+	const { service, clipboard, actions } = await fixture();
+	const entered = deferred(), release = deferred();
+	const original = actions.clipboard.writeText;
+	actions.clipboard.writeText = async value => {
+		if (value === 'first copy') { entered.resolve(); await release.promise; }
+		await original(value);
+	};
+	const first = service.copy('first copy', ownerWindow);
+	await entered.promise;
+	const controller = new AbortController();
+	const pending = service.copy('cancelled picker secret', ownerWindow, controller.signal);
+	const rejected = expect(pending).rejects.toMatchObject({ code: 'canceled' });
+	controller.abort();
+	release.resolve();
+	await first;
+	await rejected;
+	expect(clipboard.writes).toEqual(['first copy']);
+	expect(service.store.getState().status).toBe('unlocked');
+});
+
+test('closing during unlock prevents a late decrypted session from opening', async () => {
+	const { service, files } = await fixture(emptyRaw, false);
+	const entered = deferred(), release = deferred();
+	files.beforeRead = async name => { if (name === MAIN) { entered.resolve(); await release.promise; } };
+	const controller = new AbortController();
+	const opening = service.unlock(master, controller.signal);
+	const rejected = expect(opening).rejects.toMatchObject({ code: 'canceled' });
+	await entered.promise;
+	controller.abort();
+	release.resolve();
+	await rejected;
+	expect(service.store.getState()).toMatchObject({ status: 'locked', entries: [], busy: false });
+});
+
+test('cancelling an in-flight picker copy preserves clipboard content changed externally', async () => {
+	const { service, clipboard, actions } = await fixture();
+	const entered = deferred(), release = deferred();
+	const original = actions.clipboard.writeText;
+	actions.clipboard.writeText = async value => {
+		entered.resolve(); await release.promise;
+		await original(value);
+		clipboard.text = 'external content';
+	};
+	const controller = new AbortController();
+	const pending = service.copy(secret, ownerWindow, controller.signal);
+	const rejected = expect(pending).rejects.toMatchObject({ code: 'canceled' });
+	await entered.promise;
+	controller.abort(); release.resolve();
+	await rejected;
+	expect(clipboard.text).toBe('external content');
+	expect(clipboard.writes).toEqual([secret]);
+});

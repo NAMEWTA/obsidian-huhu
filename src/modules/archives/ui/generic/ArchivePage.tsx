@@ -1,7 +1,7 @@
 import { displayLabel, at, ct, Button, Check, ErrorBox, Input, Section, Select, TextField, confirmAt } from './common';
 import { VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import type { App } from 'obsidian';
 import { openNoteAt } from '../../../../host/obsidian/open-note';
 import { useT } from '../../../../ui/react/hooks';
@@ -12,6 +12,7 @@ import {
 	ArchiveError,
 	type EntityQuery,
 	type EntitySummary,
+	type ArchiveTypeDefinition,
 	type FormSession,
 	type FormTemplate,
 	type QueryResult,
@@ -27,6 +28,8 @@ import { Diagnostics, UpgradePanel } from './RecoveryPanel';
 import { QueryBuilder } from './QueryBuilder';
 import { useArchiveVersion } from './hooks';
 import type { ArchivePageState } from './page-state';
+
+const PersonReadingPage = lazy(() => import('../person/PersonReadingPage'));
 
 export function Resources({
 	application,
@@ -191,7 +194,8 @@ export function ArchivePage({
 		version = useArchiveVersion(application),
 		catalog = application.catalog.snapshot(),
 		[result, setResult] = useState<QueryResult>(),
-		[selected, setSelected] = useState<EntitySummary>(),
+		[selectedRecord, setSelected] = useState<EntitySummary>(),
+		[personSnapshot, setPersonSnapshot] = useState<{ entity: EntitySummary; type: ArchiveTypeDefinition }>(),
 		[error, setError] = useState<unknown>(),
 		[session, setSession] = useState<FormSession>(),
 		[drafts, setDrafts] = useState<FormSession[]>([]),
@@ -199,6 +203,14 @@ export function ArchivePage({
 		[showUpgrade, setShowUpgrade] = useState(false),
 		[busy, setBusy] = useState(false),
 		[generation, setGeneration] = useState(0);
+	// A rescan replaces the index before revisions arrive. Keep the same person's editor mounted.
+	const recoveringPerson =
+		!application.runtime.ready ||
+		application.runtime.loading ||
+		catalog.diagnostics.some((item) => item.code === 'read-failed');
+	const selected =
+		selectedRecord ??
+		(personSnapshot && personSnapshot.entity.id === state.selectedId ? personSnapshot.entity : undefined);
 	const view = catalog.views.find((item) => item.definition.id === state.section)?.definition,
 		viewDefinition = view?.kind === 'view' ? view : undefined;
 	const typeId =
@@ -244,7 +256,21 @@ export function ArchivePage({
 		let alive = true;
 		void application.query.entity(selectedId ?? '').then(
 			(value) => {
-				if (alive) setSelected(value);
+				if (alive) {
+					setSelected(value);
+					if (
+						!value &&
+						application.runtime.ready &&
+						!application.runtime.loading &&
+						!application.catalog.snapshot().diagnostics.some((item) => item.code === 'read-failed')
+					)
+						setPersonSnapshot(undefined);
+					const definition = value
+						? application.runtime.index.schema(value.schemaRevisionId)?.definition
+						: undefined;
+					if (value?.typeId === 'type-person' && definition?.kind === 'type')
+						setPersonSnapshot({ entity: value, type: definition });
+				}
 			},
 			(error) => {
 				if (alive) setError(error);
@@ -361,12 +387,118 @@ export function ArchivePage({
 			? application.runtime.index.schema(selected.schemaRevisionId)?.definition
 			: undefined,
 		currentType = selected ? application.runtime.index.definition(selected.typeId) : undefined;
-	const selectedType = selectedSchema?.kind === 'type' ? selectedSchema : undefined;
+	const selectedType =
+		selectedSchema?.kind === 'type'
+			? selectedSchema
+			: recoveringPerson &&
+				  personSnapshot &&
+				  personSnapshot.entity.id === selectedId &&
+				  selected?.schemaRevisionId === personSnapshot.entity.schemaRevisionId
+				? personSnapshot.type
+				: undefined;
 	const readSource = async (path: string) => {
 		if (!underRoot(application.runtime.root, path)) return;
 		const file = app.vault.getFileByPath(path);
 		if (file) await openNoteAt(app, file, { owner: owner.ownerDocument.defaultView ?? undefined });
 	};
+	if (selectedId && selected && selectedType && selected.typeId === 'type-person')
+		return (
+			<Suspense fallback={<p role="status">{ct('loading')}</p>}>
+				<ErrorBox error={error} />
+				<PersonReadingPage
+					key={selected.id}
+					application={application}
+					entity={selected}
+					type={selectedType}
+					app={app}
+					owner={owner}
+					guard={guard}
+					back={() => {
+						void navigate(state.section).catch(setError);
+					}}
+					edit={() => {
+						void begin();
+					}}
+					open={open}
+					source={() => {
+						void readSource(selected.path).catch(setError);
+					}}
+					resources={
+						<>
+							<div className="flex flex-wrap gap-2">
+								<Button
+									variant="outline"
+									disabled={busy}
+									onClick={() => {
+										setBusy(true);
+										void application.commands
+											.impact(selected.id)
+											.then(async (impact) => {
+												if (
+													!(await confirmAt(
+														owner,
+														`${at('impact')}: ${at('relations')} ${impact.relations}, ${at('contextRoles')} ${impact.contexts}, ${at('resources')} ${impact.attachments}, ${at('reminder')} ${impact.reminders}`,
+														at(selected.lifecycle === 'archived' ? 'activate' : 'archive'),
+													))
+												)
+													return;
+												await application.commands.setState({
+													operationId: crypto.randomUUID(),
+													id: selected.id,
+													expectedHash: impact.contentHash,
+													lifecycle:
+														selected.lifecycle === 'archived' ? 'active' : 'archived',
+												});
+											})
+											.catch(setError)
+											.finally(() => setBusy(false));
+									}}
+								>
+									{at(selected.lifecycle === 'archived' ? 'activate' : 'archive')}
+								</Button>
+								{currentType?.definition.kind === 'type' &&
+									currentType.revisionId !== selected.schemaRevisionId && (
+										<Button variant="outline" onClick={() => setShowUpgrade(!showUpgrade)}>
+											{at('upgrade')}
+										</Button>
+									)}
+							</div>
+							{drafts
+								.filter((draft) => !draft.creating && draft.entityId === selected.id)
+								.map((draft) => (
+									<Button
+										key={draft.id}
+										variant="outline"
+										onClick={() => {
+											void begin(draft);
+										}}
+									>
+										{at('restoreDraft')}
+									</Button>
+								))}
+							{showUpgrade && currentType?.definition.kind === 'type' && (
+								<UpgradePanel
+									application={application}
+									entity={selected}
+									type={currentType.definition}
+									app={app}
+									owner={owner}
+									finished={() => setShowUpgrade(false)}
+								/>
+							)}
+							<Resources application={application} entity={selected} app={app} owner={owner} />
+						</>
+					}
+					actions={
+						host.newReminder ? (
+							<Button variant="outline" onClick={() => host.newReminder?.(selected)}>
+								{at('reminder')}
+							</Button>
+						) : undefined
+					}
+				/>
+			</Suspense>
+		);
 	if (selectedId)
 		return (
 			<div className="space-y-4">

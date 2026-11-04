@@ -64,6 +64,11 @@ export interface PeriodicNotePreview extends PeriodicNoteInfo {
 	summary?: string;
 	image?: string;
 }
+export interface PeriodicNoteListEntry extends PeriodicNotePreview {
+	status: 'existing';
+	/** ready includes an empty summary; unavailable means preview could not provide one (read failure or timeout included). */
+	summaryStatus: 'ready' | 'unavailable';
+}
 export type PeriodicPreparation = { status: 'ready'; path: string; content: string; cursor?: number } | {
 	status: 'cancelled' | 'unavailable' | 'failed';
 	code: 'period-disabled' | 'periodic-unavailable' | 'template-missing' | 'template-input-required' | 'template-engine-unavailable' | 'template-invalid';
@@ -102,4 +107,18 @@ export interface NavigatorPeriodic {
 	ensure(period: Period, date: Date): Promise<TFile | undefined>;
 }
 
-export const NAVIGATOR_PERIODIC = serviceKey<NavigatorPeriodic>('navigator', 'periodic');
+/** Public service adds batch reads to the single-note journal used by calendar adapters. */
+export interface NavigatorPeriodicService extends NavigatorPeriodic {
+	/**
+	 * Existing notes of periods containing the inclusive local calendar dates from/to, newest first.
+	 * Reads paths and summaries through the same journal as preview(); never creates notes or runs templates.
+	 * Invalid dates reject with RangeError; reversed ranges return []. Disabled/unavailable periods,
+	 * module shutdown/restart or root/week-start changes during a read return [] rather than stale results.
+	 * Summaries are best-effort: a rejected file read or preview timeout keeps the existing note in the list
+	 * with summaryStatus unavailable and no summary. The underlying preview does not distinguish these causes.
+	 * A ready summary may be empty. Unexpected preview exceptions still reject. The input dates are not mutated.
+	 */
+	list(period: Period, from: Date, to: Date): Promise<PeriodicNoteListEntry[]>;
+}
+
+export const NAVIGATOR_PERIODIC = serviceKey<NavigatorPeriodicService>('navigator', 'periodic');

@@ -1,3 +1,6 @@
+import { BELONGING_TYPE_ID } from '../../api';
+import { BELONGING_FIELDS } from '../belongings/lifecycle';
+export { BELONGING } from '../belongings/preset';
 import { ARCHIVE_PATHS } from '../../../../shared/storage/vault-layout';
 import type { LocalizedLabel } from './labels';
 const presetLabel = (label: string, labelKey: LocalizedLabel['labelKey']): LocalizedLabel => ({ label, labelKey });
@@ -192,7 +195,7 @@ export function defaultForms(type: ArchiveTypeDefinition): FormTemplate[] {
 					columns: 2,
 					controls: type.fields
 						.filter((field) => !field.archived)
-						.map((field) => ({ fieldId: field.fieldId })),
+						.map((field) => ({ fieldId: field.fieldId, ...(type.id === BELONGING_TYPE_ID && BELONGING_FIELDS.some(id => id === field.fieldId) ? { readOnly: true } : {}) })),
 				},
 			],
 		},

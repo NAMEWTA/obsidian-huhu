@@ -1,3 +1,6 @@
+import { BELONGING_TYPE_ID } from '../../api';
+import { BELONGING_FIELDS, initialBelongingValues, parseBelonging, transitionValues, undoValues } from '../../core/belongings/lifecycle';
+import { BELONGING_UNDO_MS, type UndoBelonging, type TransitionBelonging } from '../../core/belongings/model';
 import { VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import type { CreateEntity, SaveEntity, ArchiveImpact } from '../../core/schema/commands';
 export type { CreateEntity, SaveEntity, ArchiveImpact } from '../../core/schema/commands';
@@ -34,6 +37,7 @@ import type { ArchiveRuntime } from './runtime';
 
 const states: readonly EntityState[] = ['draft', 'active', 'archived'];
 export class EntityCommands {
+	private readonly belongingUndos = new Map<string, { id: string; hash: string; expires: number }>();
 	constructor(readonly runtime: ArchiveRuntime) {}
 	private noPendingOperation(id: string): void {
 		if (
@@ -82,6 +86,7 @@ export class EntityCommands {
 					values = { ...copy(template.defaults), ...values };
 					body = template.body;
 				}
+				if (type.id === BELONGING_TYPE_ID) values = initialBelongingValues(values);
 				const lifecycle = input.lifecycle ?? 'active';
 				validateValues(type.fields, values, lifecycle === 'active');
 				const name = displayName(values[type.nameFieldId], VISIBLE_NAMES.untitled),
@@ -133,6 +138,56 @@ export class EntityCommands {
 		};
 	}
 	save(input: SaveEntity, signal?: AbortSignal): Promise<CommandReceipt> {
+		return this.saveInternal(input, signal);
+	}
+	async transitionBelonging(input: TransitionBelonging, signal?: AbortSignal): Promise<CommandReceipt> {
+		const owned = copy(input);
+		requiredId(owned.operationId);
+		if (signal?.aborted) throw new ArchiveError('cancelled');
+		const fingerprint = await digest(canonical({ kind: 'belonging-transition', input: owned }));
+		const session = await this.beginEdit(owned.id);
+		if (session.typeId !== BELONGING_TYPE_ID) throw new ArchiveError('invalid-belonging');
+		const item = parseBelonging({ id: session.entityId, contentHash: session.baseHash, values: session.baseValues });
+		const replay = item.events.find(event => event.rowId === owned.operationId);
+		if (replay) {
+			if (replay.values.commandHash !== fingerprint) throw new ArchiveError('command-id-conflict');
+			return this.runtime.receipt(owned.operationId, session.entityId, session.path, session.baseHash);
+		}
+		if (session.baseHash !== owned.expectedHash) throw new ArchiveError('write-conflict');
+		const now = new Date();
+		const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+		session.draft = { ...session.draft, ...transitionValues(item, owned, fingerprint, today) };
+		session.dirtyFields = [...BELONGING_FIELDS];
+		const receipt = await this.saveInternal({ operationId: owned.operationId, session }, signal, owned.expectedHash, fingerprint);
+		for (const [key, token] of this.belongingUndos) if (token.expires < Date.now() || token.id === receipt.id) this.belongingUndos.delete(key);
+		this.belongingUndos.set(JSON.stringify([receipt.id, owned.operationId]), { id: receipt.id, hash: receipt.contentHash, expires: Date.now() + BELONGING_UNDO_MS });
+		return receipt;
+	}
+	async undoBelonging(input: UndoBelonging, signal?: AbortSignal): Promise<CommandReceipt> {
+		const owned = copy(input);
+		requiredId(owned.operationId); requiredId(owned.originalOperationId);
+		if (signal?.aborted) throw new ArchiveError('cancelled');
+		const fingerprint = await digest(canonical({ kind: 'belonging-undo', input: owned }));
+		const session = await this.beginEdit(owned.id);
+		if (session.typeId !== BELONGING_TYPE_ID) throw new ArchiveError('invalid-belonging');
+		const item = parseBelonging({ id: session.entityId, contentHash: session.baseHash, values: session.baseValues });
+		const replay = item.events.find(event => event.rowId === owned.operationId);
+		if (replay) {
+			if (replay.values.commandHash !== fingerprint) throw new ArchiveError('command-id-conflict');
+			return this.runtime.receipt(owned.operationId, session.entityId, session.path, session.baseHash);
+		}
+		if (session.baseHash !== owned.expectedHash) throw new ArchiveError('write-conflict');
+		const token = this.belongingUndos.get(JSON.stringify([owned.id, owned.originalOperationId]));
+		const authorize = () => {
+			if (!token || token.id !== owned.id || token.hash !== owned.expectedHash || token.expires < Date.now()) throw new ArchiveError('belonging-undo-expired');
+		};
+		authorize();
+		const now = new Date(), today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+		session.draft = { ...session.draft, ...undoValues(item, owned.originalOperationId, owned.operationId, fingerprint, today) };
+		session.dirtyFields = [...BELONGING_FIELDS];
+		return this.saveInternal({ operationId: owned.operationId, session }, signal, owned.expectedHash, fingerprint, authorize);
+	}
+	private saveInternal(input: SaveEntity, signal?: AbortSignal, transitionHash?: string, transitionFingerprint?: string, authorize?: () => void): Promise<CommandReceipt> {
 		return this.runtime.command(
 			input,
 			async ({ operationId, session, lifecycle }, context) => {
@@ -150,6 +205,20 @@ export class EntityCommands {
 				)
 					throw new ArchiveError('invalid-session');
 				if ((await digest(session.baseRaw)) !== session.baseHash) throw new ArchiveError('invalid-session');
+				if (session.typeId === BELONGING_TYPE_ID && transitionHash === undefined) {
+					for (const field of BELONGING_FIELDS)
+						if (session.dirtyFields.includes(field) && !equal(session.baseValues[field], session.draft[field])) throw new ArchiveError('belonging-transition-required');
+					session.dirtyFields = session.dirtyFields.filter(field => !BELONGING_FIELDS.some(protectedField => field === protectedField));
+				}
+				if (transitionHash !== undefined) {
+					const latest = await this.runtime.entity(session.entityId, context);
+					const replay = parseBelonging(latest.entity).events.find(event => event.rowId === operationId);
+					if (replay) {
+						if (replay.values.commandHash !== transitionFingerprint) throw new ArchiveError('command-id-conflict');
+						return this.runtime.receipt(operationId, session.entityId, latest.entity.path, latest.entity.contentHash);
+					}
+					if (transitionHash !== session.baseHash) throw new ArchiveError('write-conflict');
+				}
 				const baseRevision = await this.runtime.verifySchema(session.schemaRevisionId, context),
 					baseType = baseRevision.definition;
 				if (baseType.kind !== 'type' || baseType.id !== session.typeId)
@@ -173,6 +242,8 @@ export class EntityCommands {
 				const written = await this.runtime.patch(
 					entity.path,
 					(latest) => {
+						authorize?.();
+						if (transitionHash !== undefined && latest !== session.baseRaw) throw new ArchiveError('write-conflict');
 						const current = decodeEntity(latest, entity.path, '', entity.modified, latestRevision);
 						if (
 							current.id !== session.entityId ||
@@ -190,6 +261,7 @@ export class EntityCommands {
 							session.dirtyFields,
 						);
 						validateValues(type.fields, values, state === 'active', current.values);
+						if (type.id === BELONGING_TYPE_ID) parseBelonging({ id: current.id, contentHash: '', values });
 						return encodeEntity(
 							{ ...current, values, lifecycle: state },
 							type,

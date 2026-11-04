@@ -2,6 +2,7 @@
 /** Strings of the notes navigator, registered when the module loads. */
 export const messages = {
 	en: {
+		"navigator.diary.title": "Diary book",
 		"navigator.navigation": "Folders and tags",
 		"navigator.folders": "Folders",
 		"navigator.tags": "Tags",
@@ -411,6 +412,7 @@ export const messages = {
 		"navigator.mergeLossy": "The merge result does not fully match the original notes, so the original notes were kept. Please check {path}.",
 	},
 	zh: {
+		"navigator.diary.title": "书页日记",
 		"navigator.navigation": "文件夹和标签",
 		"navigator.folders": "文件夹",
 		"navigator.tags": "标签",

@@ -1,11 +1,14 @@
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
-import { NAVIGATOR_LISTS, NAVIGATOR_PANEL, NAVIGATOR_PERIODIC, NAVIGATOR_VIEW_TYPE, type NavigatorLists, type NavigatorListsSnapshot, type NavigatorPanel, type NavigatorPeriodic } from './api';
+import { NAVIGATOR_LISTS, NAVIGATOR_PANEL, NAVIGATOR_PERIODIC, NAVIGATOR_VIEW_TYPE, type NavigatorLists, type NavigatorListsSnapshot, type NavigatorPanel, type NavigatorPeriodicService } from './api';
+import { listPeriodicNotes } from './services/periodic-batch';
 import { periodicNotePath } from '../../shared/periodic-paths';
 import { navigatorSchema } from './settings';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
 import { messages as calendarStrings } from '../../shared/i18n/lazy/calendar';
+import { HEALTH_PROVIDERS, HEALTH_INVALIDATED } from '../health/api';
+import { PERIODIC_HEALTH, PERIODIC_HEALTH_PROVIDERS, createPeriodicHealth } from './contrib/health';
 
 registerMessages(messages);
 registerMessages(calendarStrings);
@@ -31,7 +34,10 @@ export default function createNavigatorModule(context: ModuleContext): ModuleIns
 	const listeners = new Set<() => void>();
 	let detach: (() => void) | undefined;
 	const periodicListeners = new Set<() => void>();
-	const firePeriodic = () => { for (const listener of [...periodicListeners]) listener(); };
+	const firePeriodic = () => {
+		for (const listener of [...periodicListeners]) listener();
+		context.events?.emit(HEALTH_INVALIDATED, {});
+	};
 	let detachPeriodic: (() => void) | undefined;
 	const lists: NavigatorLists = {
 		snapshot: () => runtime?.lists.snapshot() ?? empty,
@@ -43,7 +49,7 @@ export default function createNavigatorModule(context: ModuleContext): ModuleIns
 	};
 	const fire = () => { for (const listener of [...listeners]) listener(); };
 	// The journal settings follow the settings store; week start and note creation need the live runtime.
-	const periodic: NavigatorPeriodic = {
+	const periodic: NavigatorPeriodicService = {
 		root: () => settings.get().periodicRoot,
 		template: (period, date) => runtime?.journal.template(period, date) ?? (date ? undefined : settings.get().periods[period].template || undefined),
 		weekStart: () => runtime?.journal.weekStart() ?? 1,
@@ -52,12 +58,28 @@ export default function createNavigatorModule(context: ModuleContext): ModuleIns
 		inspect: (period, date) => runtime?.journal.inspect(period, date) ?? { period, date: '', path: periodicNotePath(settings.get().periodicRoot, period, date, 1), title: '', status: 'unavailable', active: false },
 		subscribe: (listener) => { periodicListeners.add(listener); return () => { periodicListeners.delete(listener); }; },
 		preview: async (period, date) => runtime ? runtime.journal.preview(period, date) : periodic.inspect(period, date),
+		list: (period, from, to) => listPeriodicNotes(() => runtime?.journal, period, from, to),
 		prepare: async (period, date, options) => runtime ? runtime.journal.prepare(period, date, options) : { status: 'unavailable', code: 'periodic-unavailable' },
 		open: async (period, date, options) => runtime?.journal.open(period, date, options) ?? false,
 		active: () => runtime?.journal.active(),
 	};
+	const health = createPeriodicHealth({
+		available: () => !!runtime,
+		periodic, app: context.app, settings,
+	});
 	return {
-		services: [[NAVIGATOR_PANEL, panel], [NAVIGATOR_LISTS, lists], [NAVIGATOR_PERIODIC, periodic]],
+		pages: {
+			diary: async () => (await import('./ui/diary/workbench-page')).createDiaryPage({
+				periodic,
+				read: async (path) => {
+					const file = context.app.vault.getFileByPath(path);
+					if (!file) throw new Error(`Diary file unavailable: ${path}`);
+					return context.app.vault.read(file);
+				},
+			}),
+		},
+		services: [[NAVIGATOR_PANEL, panel], [NAVIGATOR_LISTS, lists], [NAVIGATOR_PERIODIC, periodic], [PERIODIC_HEALTH, health]],
+		contributions: [[HEALTH_PROVIDERS, PERIODIC_HEALTH_PROVIDERS]],
 		settingsPage: async () => (await import('./ui/settings-page')).navigatorSettingsPage(settings, () => runtime, context.app),
 		async activate(signal) {
 			const { createNavigatorRuntime } = await import('./ui/runtime');
@@ -75,6 +97,7 @@ export default function createNavigatorModule(context: ModuleContext): ModuleIns
 			});
 		},
 		async dispose(reason) {
+			health.dispose();
 			if (reason === 'disabled') context.app.workspace.detachLeavesOfType(NAVIGATOR_VIEW_TYPE);
 			const current = runtime;
 			runtime = undefined;

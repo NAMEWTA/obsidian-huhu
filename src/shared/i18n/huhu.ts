@@ -1,6 +1,8 @@
 /** Home, module gates, intro, and HUHU about copy. */
 export const messages = {
 	en: {
+		'health.title': 'Data health',
+		'health.description': 'Read-only data checks and diagnostic reports.',
 		"settings.homeGeneral": "General settings",
 		"settings.homeModules": "Modules",
 		"settings.homeDesc": "Language and module switches for HUHU.",
@@ -67,6 +69,8 @@ export const messages = {
 		"about.licenseFile": "HUHU License",
 	},
 	zh: {
+		'health.title': '数据体检',
+		'health.description': '只读检查数据并生成诊断报告。',
 		"settings.homeGeneral": "通用设置",
 		"settings.homeModules": "功能模块",
 		"settings.homeDesc": "HUHU 的界面语言与功能模块开关。",

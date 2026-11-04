@@ -1,3 +1,5 @@
+import { FileChanges } from '../host/obsidian/file-changes';
+import { DomainEvents } from '../shared/events/domain-events';
 import type { NativeHostAccess } from '../shared/native/host';
 import type { NativeHostOwner } from '../shared/native/lazy-host';
 import { Component, Notice, Platform, Plugin, type Command } from 'obsidian';
@@ -30,7 +32,7 @@ import { refreshLeafTitle, retitleDeferredLeaves, type LeafTitlePair } from '../
 import { registerLocalizedCommand, type LocalizedCommand } from '../host/obsidian/localized-command';
 import { setDiagnosticRoots } from '../shared/diagnostics/roots';
 import { useStorageTimers } from '../shared/storage/timers';
-import { getLanguage, onLanguageChanged, setLanguage, t, tFor } from '../shared/i18n/index';
+import { getLanguage, onLanguageChanged, registerMessages, setLanguage, t, tFor } from '../shared/i18n/index';
 import { refreshLocalizedDom } from '../host/obsidian/localized-dom';
 import { AUTOMATIONS, type AutomationsService } from '../modules/automations/api';
 import { COMMENTS_VIEW_TYPE, CommentsLeaf } from './workbench/comments-leaf';
@@ -42,6 +44,53 @@ import type { ContentFiles } from '../host/obsidian/storage/content-files';
 import { EditorContextService } from './editor-panel/context';
 import type { SharedWorkspaceOwner } from './contracts/shared-workspace';
 import type { RecoveryHost } from './recovery';
+import { FeedbackHost, type FeedbackRenderer } from '../host/obsidian/feedback';
+
+/** UI initialization remains behind the first workbench feedback, outside the startup closure. */
+export async function mountFeedbackRenderer(container: HTMLElement, toasterId: string): Promise<FeedbackRenderer> {
+	const [{ createElement }, { createRoot }, { flushSync }, { Toaster, toast }, { PortalContainerContext }, { messages }] = await Promise.all([
+		import('react'), import('react-dom/client'), import('react-dom'), import('../ui/components/sonner'),
+		import('../ui/react/contexts'), import('../shared/i18n/lazy/ui'),
+	]);
+	if (!container.isConnected) return { present: () => {}, remove: () => {}, dispose: () => {} };
+	registerMessages(messages);
+	const root = createRoot(container);
+	flushSync(() => root.render(createElement(PortalContainerContext.Provider, { value: container },
+		createElement(Toaster, { id: toasterId, container }),
+	)));
+	let disposed = false;
+	const ids = new Set<string>();
+	return {
+		present: view => {
+			if (disposed) return;
+			const id = `${toasterId}:${view.id}`;
+			ids.add(id);
+			const progress = view.progress;
+			const description = progress?.total !== undefined && progress.total > 0
+				? `${Math.max(0, Math.min(progress.completed, progress.total))} / ${progress.total}` : undefined;
+			const notify = progress ? toast.loading : view.outcome === 'success' ? toast.success : toast[view.level];
+			notify(view.text, {
+				id, toasterId, duration: Infinity, description,
+				action: view.actions.length ? createElement('div', null, ...view.actions.map(action => createElement('button', {
+					key: action.id, type: 'button', 'data-button': true, 'data-action': true,
+					onClick: () => { void Promise.resolve().then(() => action.run()).catch(() => {}); },
+				}, action.label))) : undefined,
+			});
+		},
+		remove: id => {
+			const scoped = `${toasterId}:${id}`;
+			toast.dismiss(scoped);
+			ids.delete(scoped);
+		},
+		dispose: () => {
+			if (disposed) return;
+			disposed = true;
+			root.unmount();
+			for (const id of ids) toast.dismiss(id);
+			ids.clear();
+		},
+	};
+}
 
 /**
  * Composition root. Module code is created by the module registry from `MANIFESTS`; this class keeps the
@@ -50,6 +99,8 @@ import type { RecoveryHost } from './recovery';
 export default class DashboardPlugin extends Plugin {
 	managedContent!: ContentFiles;
 	documents!: EditorContextService;
+	private readonly domainEvents = new DomainEvents();
+	private fileChanges?: FileChanges;
 	override addCommand(command: LocalizedCommand): Command {
 		return registerLocalizedCommand(this, command, (native) => super.addCommand(native));
 	}
@@ -94,10 +145,20 @@ export default class DashboardPlugin extends Plugin {
 	private readonly postProcessors = new Set<MarkdownPostProcessor>();
 
 	async onload(): Promise<void> {
+		this.register(() => this.domainEvents.dispose());
+		this.fileChanges = new FileChanges(this.app, this.domainEvents);
+		this.register(() => this.fileChanges?.dispose());
 		this.documents = new EditorContextService(this.app, (path, text) => this.managedContent.checkEditor(path, text));
 		this.register(() => this.documents.dispose());
 		useStorageTimers(window);
 		setLanguage(defaultLanguage());
+		const feedback = new FeedbackHost({ mount: mountFeedbackRenderer });
+		const bindFeedback = (doc: Document) => { if (doc.defaultView) feedback.bind(doc.defaultView); };
+		bindFeedback(this.app.workspace.containerEl.ownerDocument);
+		this.app.workspace.iterateAllLeaves(leaf => bindFeedback(leaf.view.containerEl.ownerDocument));
+		this.registerEvent(this.app.workspace.on('window-open', win => bindFeedback(win.doc)));
+		this.registerEvent(this.app.workspace.on('window-close', win => { if (win.doc.defaultView) feedback.close(win.doc.defaultView); }));
+		this.register(() => feedback.dispose());
 		await initializeDevice(this.app, {
 			machineIdentity: desktopMachineIdentity,
 			label: t('storage.defaultDevice'),
@@ -176,6 +237,7 @@ export default class DashboardPlugin extends Plugin {
 					manifest: this.manifest,
 					env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
 					lifetime,
+					events: this.domainEvents,
 					settings: this.runtime.store,
 					services,
 					sharedWorkspace: this.sharedWorkspace,
@@ -256,6 +318,8 @@ export default class DashboardPlugin extends Plugin {
 	}
 
 	onunload(): void {
+		this.fileChanges?.dispose();
+		this.domainEvents.dispose();
 		this.workbench?.dispose();
 		this.registry?.disposeNow();
 		void this.sharedWorkspaceLoading

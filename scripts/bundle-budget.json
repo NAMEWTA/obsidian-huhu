@@ -13,6 +13,7 @@
     "npm:radix-ui"
   ],
   "moduleActivationBytes": {
+    "health": 10240,
     "home": 493568,
     "agent": 1385472,
     "icons": 158720,

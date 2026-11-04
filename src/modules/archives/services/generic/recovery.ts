@@ -1,7 +1,9 @@
+import { BELONGING_TYPE_ID } from '../../api';
+import { BELONGING_FIELDS, parseBelonging } from '../../core/belongings/lifecycle';
 import type { PrepareUpgrade, RecoveryResult } from '../../core/schema/commands';
 export type { PrepareUpgrade, RecoveryResult } from '../../core/schema/commands';
 import { ArchiveError } from '../../core/schema/model';
-import { digest, identifier, requiredId, own } from '../../core/schema/value';
+import { digest, identifier, requiredId, own, equal } from '../../core/schema/value';
 import { validateValues } from '../../core/schema/fields';
 import { backupPath, migrationPath, underRoot } from '../../core/generic/paths';
 import {
@@ -64,6 +66,11 @@ export class RecoveryCommands {
 				for (const key of Object.keys(record.values))
 					if (!own(input.values, key)) throw new ArchiveError('conversion-required', key);
 				validateValues(type.fields, input.values, record.lifecycle === 'active', record.values);
+				if (entity?.typeId === BELONGING_TYPE_ID) {
+					for (const field of BELONGING_FIELDS)
+						if (!equal(record.values[field], input.values[field])) throw new ArchiveError('belonging-transition-required');
+					parseBelonging({ ...entity, values: input.values });
+				}
 				const properties = frontmatter(raw);
 				for (const field of type.fields)
 					if (

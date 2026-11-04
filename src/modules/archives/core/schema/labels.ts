@@ -1,6 +1,11 @@
 import { t } from '../../../../shared/i18n';
 
 export const PRESET_LABEL_KEYS = [
+	'archives.preset.personJournal',
+	'archives.preset.journalDate',
+	'archives.preset.journalTitle',
+	'archives.preset.journalContent',
+	'archives.preset.journalRelatedEntities',
 	'archives.preset.name',
 	'archives.preset.aliases',
 	'archives.preset.region',
@@ -46,6 +51,26 @@ export const PRESET_LABEL_KEYS = [
 	'archives.preset.basic',
 	'archives.preset.full',
 	'archives.preset.details',
+	'archives.preset.belongingBelonging',
+	'archives.preset.belongingCategory',
+	'archives.preset.belongingImage',
+	'archives.preset.belongingSpecification',
+	'archives.preset.belongingPurchaseDate',
+	'archives.preset.belongingPurchase',
+	'archives.preset.belongingExitDate',
+	'archives.preset.belongingSale',
+	'archives.preset.belongingOwnerId',
+	'archives.preset.belongingRelatedPeople',
+	'archives.preset.belongingCompanyId',
+	'archives.preset.belongingReceipt',
+	'archives.preset.belongingEvents',
+	'archives.preset.belongingEventDate',
+	'archives.preset.belongingCommandHash',
+	'archives.preset.belongingUsing',
+	'archives.preset.belongingStatus',
+	'archives.preset.belongingIdle',
+	'archives.preset.belongingSold',
+	'archives.preset.belongingDiscard',
 ] as const;
 export type PresetLabelKey = (typeof PRESET_LABEL_KEYS)[number];
 export interface LocalizedLabel {

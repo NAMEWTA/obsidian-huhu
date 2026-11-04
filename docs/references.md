@@ -31,6 +31,8 @@
 | dbx | [色盘数值转写与视觉参考](third-party/behavior-references.md#dbx)：当前核验为 Apache-2.0；历史采用提交、原路径、版权及采用时许可待核实 |
 | Windows Terminal | [公开协议记录](third-party/behavior-references.md)：MIT，ConPTY win32-input-mode 文档与本地键盘编码对应 |
 | 工作台 CLI 与交付 | [来源与许可登记](third-party/agent-workbench-cli.md)：只借鉴公开机制，未复制或改编第三方源码 |
+| bz | [固定提交、采用方式与偏离登记](third-party/bz.md)、[原 MIT 许可](third-party/licenses/bz-MIT.txt)；逐项登记复制、改编、交互复刻与未采用边界 |
+| page-flip / StPageFlip | [书页翻页嵌入适配与独立 MIT 来源](third-party/bz.md)、[完整许可与版权](../NOTICE)；2.0.7 按需加载，不作为 npm 运行时依赖 |
 | skills-manager | [发现、复制与界面对应](third-party/skills-manager.md) |
 | SuliWorld / GitHub Theme | [SuliWorld](third-party/suliworld.md)、[GitHub](third-party/github-theme.md)，字体另循 OFL |
 | Iconic、obsidian-git、shadcn/ui、cc-switch 等 | [NOTICE](../NOTICE)与源码头中的固定来源 |

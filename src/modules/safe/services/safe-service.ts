@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import type { WriteQueue } from '../../../shared/storage/write-queue';
 import { normalizeWebUrl } from '../../../shared/web-url';
+import { reportOperationFailure } from '../../../host/obsidian/feedback';
 import {
 	CLIPBOARD_CLEAR_MS, SafeError, createEntry, editEntry,
 	deleteEntry as moveToTrash, restoreEntry as restoreFromTrash, pruneExpiredTrash, makePayload,
@@ -190,12 +191,15 @@ export class SafeService {
 		this.pendingCreation = created;
 	}
 
-	async unlock(password: string): Promise<void> {
+	async unlock(password: string, signal?: AbortSignal): Promise<void> {
+		if (signal?.aborted) throw new SafeError('canceled');
 		this.assertCurrent(this.generation());
 		this.lock();
 		const generation = this.generation();
 		const secret = this.holdSensitive(password);
 		password = '';
+		const cancel = () => { if (this.isCurrent(generation)) this.lock(); };
+		signal?.addEventListener('abort', cancel, { once: true });
 		await this.operation(generation, () => this.options.queue.run(SAFE_MAIN_PATH, async () => {
 			this.assertCurrent(generation);
 			const raw = await this.options.repository.readCurrent();
@@ -208,7 +212,7 @@ export class SafeService {
 			this.raw = raw;
 			this.store.setState({ status: 'unlocked', entries: opened.payload.entries, error: null });
 			this.touch();
-		})).finally(secret.clear);
+		})).finally(() => { secret.clear(); signal?.removeEventListener('abort', cancel); });
 		if (!this.isCurrent(generation)) return;
 		if (!this.isCurrent(generation)) return;
 		const entries = this.store.getState().entries;
@@ -540,29 +544,43 @@ export class SafeService {
 		});
 	}
 
-	async copy(value: string, ownerWindow: Window): Promise<void> {
+	/** A picker may cancel its own copy without locking other safe surfaces. In-flight writes are conditionally cleared. */
+	async copy(value: string, ownerWindow: Window, signal?: AbortSignal): Promise<void> {
+		if (signal?.aborted) throw new SafeError('canceled');
 		const generation = this.generation();
 		const secret = this.holdSensitive(value);
 		value = '';
-		await this.operation(generation, () => this.enqueueClipboard(async () => {
+		const assertCopy = () => {
+			if (signal?.aborted) throw new SafeError('canceled');
 			this.assertOpen(generation);
+		};
+		signal?.addEventListener('abort', secret.clear, { once: true });
+		await this.operation(generation, () => this.enqueueClipboard(async () => {
+			assertCopy();
 			const port = this.options.actions(ownerWindow).clipboard;
 			const fingerprint = await this.fingerprint(secret.read());
-			this.assertOpen(generation);
+			assertCopy();
 			const copy = { id: ++this.clipboardSequence, fingerprint, port };
 			try { await port.writeText(secret.read()); }
-			catch { throw new SafeError('clipboard'); }
+			catch {
+				if (signal?.aborted) throw new SafeError('canceled');
+				if (this.isCurrent(generation)) reportOperationFailure(ownerWindow, 'safe', 'safe.error.clipboard');
+				throw new SafeError('clipboard');
+			}
 			finally { secret.clear(); }
 			this.clearClipboardTimer();
 			this.clipboardCopy = copy;
-			if (!this.isCurrent(generation) || !this.checkDeadline()) {
-				await this.clearCopiedText();
+			if (signal?.aborted || !this.isCurrent(generation) || !this.checkDeadline()) {
+				await this.clearCopiedText().catch(() => { throw new SafeError('canceled'); });
 				throw new SafeError('canceled');
 			}
 			this.clipboardTimer = this.options.timers.set(() => {
 				void this.enqueueClipboard(() => this.clearCopiedText(copy.id)).catch(() => {});
 			}, CLIPBOARD_CLEAR_MS);
-		})).finally(secret.clear);
+		})).finally(() => {
+			secret.clear();
+			signal?.removeEventListener('abort', secret.clear);
+		});
 	}
 
 	private async fingerprint(text: string): Promise<string> {

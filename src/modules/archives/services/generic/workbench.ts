@@ -1,6 +1,6 @@
 import { displayLabel } from '../../core/schema/labels';
 import type { NavigationItem, PanelModel } from '../../../../app/contracts/workbench';
-import type { ArchivesWorkbench } from '../../api';
+import { BELONGING_TYPE_ID, type ArchivesWorkbench } from '../../api';
 import { t } from '../../../../shared/i18n';
 import type { ArchivesApplication } from './application';
 export function genericArchivesWorkbench(source: () => ArchivesApplication | undefined): ArchivesWorkbench {
@@ -9,6 +9,10 @@ export function genericArchivesWorkbench(source: () => ArchivesApplication | und
 		navigation(): readonly NavigationItem[] {
 			const catalog = source()?.catalog.snapshot();
 			return [
+				...(!catalog?.types.some(type => type.id === BELONGING_TYPE_ID && type.enabled) ? [{
+					id: 'archives-belongings', labelKey: 'archives.belongings.title', icon: 'package',
+					target: { feature: 'contacts' as const, section: BELONGING_TYPE_ID },
+				}] : []),
 				...(catalog?.types
 					.filter((type) => type.enabled)
 					.map((type) => ({
@@ -45,6 +49,7 @@ export function genericArchivesWorkbench(source: () => ArchivesApplication | und
 		title(target): string {
 			const application = source(),
 				section = target.section;
+			if (section === BELONGING_TYPE_ID && !target.resourceId) return t('archives.belongings.title');
 			if (section === 'archive-designer') return t('archives.designer');
 			if (section === 'archive-recovery') return t('archives.recovery');
 			if (target.resourceId) {
@@ -71,6 +76,10 @@ export function genericArchivesWorkbench(source: () => ArchivesApplication | und
 					{
 						id: 'archives-tools',
 						items: [
+							...(!catalog.types.some(type => type.id === BELONGING_TYPE_ID && type.enabled) ? [{
+								id: 'archives-belongings', label: t('archives.belongings.title'), icon: 'package',
+								target: { feature: 'contacts' as const, section: BELONGING_TYPE_ID },
+							}] : []),
 							{
 								id: 'archive-designer',
 								label: t('archives.designer'),

@@ -15,6 +15,7 @@ import { ENTITY_TAG, frontmatter } from '../../core/generic/markdown';
 import { validateValues } from '../../core/schema/fields';
 import { copy, equal } from '../../core/schema/value';
 import { useT } from '../../../../ui/react/hooks';
+import { reportOperationFailure } from '../../../../host/obsidian/feedback';
 
 import { ValueForm } from './FieldRenderer';
 
@@ -125,6 +126,8 @@ export function RecordEditor({
 			committed(receipt);
 		} catch (error) {
 			if (alive.current) {
+				const win = owner.ownerDocument.defaultView;
+				if (win) reportOperationFailure(win, 'archives', 'archives.saveFailed');
 				setError(error);
 				const fields = error instanceof ArchiveError ? error.fields : [];
 				setErrors(fields);

@@ -90,7 +90,7 @@ export class NotificationPresentation extends ReactSurface {
 		this.rerender();
 		void operation()
 			.catch((error) => {
-				this.error = error instanceof Error ? error.message : String(error);
+				this.error = t('notification.operationFailed');
 				this.report(error);
 			})
 			.finally(() => {

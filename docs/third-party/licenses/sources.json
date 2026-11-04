@@ -65,5 +65,12 @@
     "source": "https://github.com/madsmtm/objc2/blob/4fc083f1c6d6784577e38b0ee8dbd344481e2fd2/LICENSE.txt",
     "sha256": "e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5",
     "note": "发布包 objc2-encode@4.1.0 声明 MIT 但未附许可全文；发布源码的许可政策见 https://github.com/madsmtm/objc2/blob/8d214f5477365ffcbcbb7de058c86ed9a518efb7/LICENSE.md（含上游 Apple SDK 说明）。此处逐字节保留同项目固定历史提交的 MIT 全文及 Steven Sheldon 原版权行。该历史提交不是本版本的发布提交，全文不冒称来自本发布包。"
+  },
+  "bz@d76a0870329403247917a00c43019e203a2560a4": {
+    "license": "MIT",
+    "file": "bz-MIT.txt",
+    "source": "https://github.com/yeshimei/bz/blob/d76a0870329403247917a00c43019e203a2560a4/LICENSE",
+    "sha256": "9fdaddcce3609e5ccec46c1841c61a2e559db82b866394e214dd933e18ddacbb",
+    "note": "bz 来源登记所保留的上游许可原文；固定源码提交，不是 npm 运行依赖。具体采用范围见 docs/third-party/bz.md。"
   }
 }

@@ -7,6 +7,12 @@ import { NAVIGATOR_PERIODIC, NAVIGATOR_VIEW_TYPE, type NavigatorPeriodic } from 
 import { navigatorSchema, type NavigatorSettings } from './settings';
 import createNavigatorModule from './module';
 
+const diary = vi.hoisted(() => ({ load: vi.fn(), create: vi.fn() }));
+vi.mock('./ui/diary/workbench-page', () => {
+	diary.load();
+	return { createDiaryPage: diary.create };
+});
+
 const ensured: Array<{ date: Date; period: string }> = [];
 
 vi.mock('./ui/runtime', () => ({
@@ -83,9 +89,18 @@ test('an activation that was cancelled places nothing', async () => {
 	expect(workspace.ensureSideLeaf).not.toHaveBeenCalled();
 });
 
-test('the module no longer registers a workbench page, so the rail has no Notes entry to open', () => {
+test('the module registers the diary page without loading its UI until requested', async () => {
 	const { instance } = fixture();
-	expect(instance.pages).toBeUndefined();
+	expect(instance.pages?.diary).toBeTypeOf('function');
+	expect(diary.load).not.toHaveBeenCalled();
+	expect(diary.create).not.toHaveBeenCalled();
+	await instance.pages!.diary!();
+	expect(diary.load).toHaveBeenCalledOnce();
+	expect(diary.create).toHaveBeenCalledOnce();
+	expect(diary.create.mock.calls[0]?.[0]).toMatchObject({
+		periodic: instance.services?.find(([key]) => key === NAVIGATOR_PERIODIC)?.[1],
+		read: expect.any(Function),
+	});
 });
 
 test('the journal service tells the dashboard where daily notes live and creates them with the navigator templates', async () => {

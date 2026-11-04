@@ -4,7 +4,7 @@ import { cpus, platform } from 'node:os';
 import { memoryArchives } from '../src/modules/archives/services/generic/test-port';
 import { ArchivesApplication } from '../src/modules/archives/services/generic/application';
 import { encodeEntity, encodeRelation, patchProperties } from '../src/modules/archives/core/generic/markdown';
-import { PERSON, RELATION_PRESETS } from '../src/modules/archives/core/schema/presets';
+import { PERSON, RELATION_PRESETS, presetRevisionId } from '../src/modules/archives/core/schema/presets';
 import { entityPath, relationPath } from '../src/modules/archives/core/generic/paths';
 const round = (value: number) => Math.round(value * 100) / 100;
 function percentiles(values: number[]) {
@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 						id,
 						path,
 						typeId: PERSON.id,
-						schemaRevisionId: `preset-${PERSON.id}-v1`,
+						schemaRevisionId: presetRevisionId(PERSON.id),
 						lifecycle: 'active',
 						values: {
 							name: `Person ${String(i).padStart(5, '0')}`,
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
 							id,
 							path,
 							relationTypeId: relation.id,
-							schemaRevisionId: `preset-${relation.id}-v1`,
+							schemaRevisionId: presetRevisionId(relation.id),
 							sourceId: `person-${i}`,
 							targetId: `person-${(i + n) % count}`,
 							values: { notes: `Relationship ${n}` },

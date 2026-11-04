@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`belonging money and lifecycle table have a stable portable Markdown representation > belonging lifecycle table and exact money 1`] = `
+"---
+"huhu-format-version": 2
+"huhu-type": "archive-record"
+"huhu-id": "golden-item"
+"huhu-archive-type-id": "type-belonging"
+"huhu-schema-revision": "golden-belonging-v1"
+"huhu-state": "active"
+"name": "Golden item"
+"category": "Devices"
+"purchaseDate": "2026-01"
+"purchase": {"amount":"12345678901234567890.0100","currency":"CNY"}
+"status": "sold"
+"exitDate": "2026-02-01"
+"sale": {"amount":"0.00","currency":"CNY"}
+"events": [{"rowId":"golden-sale","values":{"status":"sold","date":"2026-02-01","exitDate":"2026-02-01","sale":{"amount":"0.00","currency":"CNY"},"commandHash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}]
+---
+"
+`;
+
+exports[`person journal rows keep IDs, related entity IDs and multiline text in portable archive Markdown > person journal table and preserved Markdown 1`] = `
+"---
+"huhu-format-version": 2
+"huhu-type": "archive-record"
+"huhu-id": "person-001"
+"huhu-archive-type-id": "type-person"
+"huhu-schema-revision": "golden-person-journal-v3"
+"huhu-state": "active"
+"name": "同名人物"
+"person-journal": [{"rowId":"journal-row-001","values":{"date":"2026-11-05","title":"手工纪事","content":"**Markdown 内容**\\n第二段\\n","relatedEntityIds":["person-002","company-001"]}}]
+---
+
+
+## Notes
+
+<!-- huhu:field notes -->
+**保留资料**
+第二行
+<!-- /huhu:field notes -->
+"
+`;
