@@ -44,8 +44,6 @@ export type {
 	UpdateRelation,
 	PublishDefinition,
 	DefinitionPublication,
-	MigrationPreflight,
-	PrepareMigration,
 	PrepareUpgrade,
 	RecoveryResult,
 	ArchiveImpact,
@@ -70,8 +68,6 @@ import type {
 	UpdateRelation,
 	PublishDefinition,
 	DefinitionPublication,
-	MigrationPreflight,
-	PrepareMigration,
 	PrepareUpgrade,
 	RecoveryResult,
 	ArchiveImpact,
@@ -110,8 +106,6 @@ export interface ArchivesCommands {
 		affectedIds: string[];
 		fingerprint: string;
 	};
-	preflightMigrations(): Promise<MigrationPreflight>;
-	prepareMigration(input: PrepareMigration, signal?: AbortSignal): Promise<ArchiveOperation>;
 	prepareUpgrade(input: PrepareUpgrade, signal?: AbortSignal): Promise<ArchiveOperation>;
 	resumeOperation(input: { operationId: string }, signal?: AbortSignal): Promise<RecoveryResult>;
 	rollbackOperation(input: { operationId: string }, signal?: AbortSignal): Promise<RecoveryResult>;

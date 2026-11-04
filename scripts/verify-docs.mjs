@@ -224,10 +224,7 @@ function checkTarget(fromFile, raw) {
 	if (destination) {
 		links += 1;
 		const missing = !safeExistingTarget(resolved);
-		// Format guides show archive-relative examples such as ../李四/基本信息.md.
-		// Those paths exist in a user vault, not in this repository.
-		const vaultExample = fromFile.startsWith('src/modules/archives/core/persist/format-guide');
-		if (missing && !vaultExample) {
+		if (missing) {
 			// Session evidence logs are gitignored on purpose. A link to them is a local
 			// pointer, not a repository document that this gate can require to exist.
 			// Paths outside the repository cannot be ignored by it and fail outright.
@@ -235,7 +232,6 @@ function checkTarget(fromFile, raw) {
 			failures.push(inside ? { unlessIgnored: relative, text: `${fromFile}: missing local link ${target}` } : `${fromFile}: missing local link ${target}`);
 			return;
 		}
-		if (missing) return;
 	}
 	if (fragment && !headings.get(relative)?.has(fragment)) failures.push(`${fromFile}: missing heading anchor ${target}`);
 }

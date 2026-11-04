@@ -111,7 +111,7 @@ export class ArchiveRuntime {
 					files.slice(start, start + 16).map((file) => this.readEntry(file, context)),
 				);
 				this.assert(context);
-				for (const entry of entries) if (entry) this.apply(entry, true);
+				for (const entry of entries) if (entry) this.apply(entry);
 			}
 			// Only unresolved schema dependents need another read after definitions arrived out of order.
 			for (const path of this.index.paths()) {
@@ -120,18 +120,16 @@ export class ArchiveRuntime {
 				if (
 					record &&
 					this.index.schema(record.schemaRevisionId) &&
-					Object.keys(record.values).length === 0 &&
-					!entry?.legacy
+					Object.keys(record.values).length === 0
 				) {
 					const file = this.files.getFileByPath(path);
 					if (file) {
 						const next = await this.readEntry(file, context);
-						if (next) this.apply(next, true);
+						if (next) this.apply(next);
 					}
 				}
 			}
 			this.assert(context);
-			this.index.refreshAllLegacy();
 			this.index.loading = false;
 			this.loaded = true;
 			this.emit();
@@ -304,7 +302,7 @@ export class ArchiveRuntime {
 		}
 		this.referencesByPath.delete(path);
 	}
-	private apply(entry: IndexedArchive, deferLegacy = false): void {
+	private apply(entry: IndexedArchive): void {
 		this.untrack(entry.path);
 		const record = entry.entity ?? entry.relation,
 			references: string[] = [];
@@ -340,7 +338,7 @@ export class ArchiveRuntime {
 			this.fileDependents.set(target, paths);
 		}
 		this.referencesByPath.set(entry.path, { schema: record?.schemaRevisionId, files: references });
-		this.index.apply(entry, deferLegacy);
+		this.index.apply(entry);
 		if (entry.collectionId) this.observedCollection = true;
 	}
 	/** Arguments are owned before queueing. An AbortSignal stays live and is checked before each commit. */
@@ -501,7 +499,7 @@ export class ArchiveRuntime {
 				this.observedCollection ||
 				this.index.paths().some((path) => {
 					const entry = this.index.entry(path);
-					return entry?.definition || entry?.relation || entry?.entity?.format === 2 || entry?.operation;
+					return entry?.definition || entry?.relation || entry?.entity || entry?.operation;
 				})
 			)
 				throw new ArchiveError('missing-collection');

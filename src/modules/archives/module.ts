@@ -24,7 +24,7 @@ import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
 
 registerMessages(messages);
-/** The generic archive service owns the one metadata index; v1 is a non-writing adapter within it. */
+/** The generic archive service owns the one metadata index. */
 export default function createArchivesModule(context: ModuleContext): ModuleInstance {
 	const settings = context.settings.bind('archives', archivesSettings);
 	let application: ArchivesApplication | undefined, reminders: AutomationSource | undefined;
@@ -114,7 +114,7 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 		},
 		async activate(signal) {
 			const runtime = await ArchiveRuntime.create(
-				vaultContactsFiles(context.app, () => ''),
+				vaultContactsFiles(context.app),
 				() => settings.get().rootFolder,
 				storageWriteQueue(context.app.vault),
 				archiveDraftStore(context.app),

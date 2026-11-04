@@ -1,5 +1,4 @@
 import type {
-	ArchiveDiagnostic,
 	CommandReceipt,
 	Definition,
 	DefinitionRevision,
@@ -64,32 +63,10 @@ export interface UpdateRelation {
 	validTo?: PrecisionDate;
 	lifecycle: RelationRecord['lifecycle'];
 }
-export interface MigrationPreflightEntry {
-	id: string;
-	path: string;
-	hash: string;
-	rows: number;
-	manualRows: number;
-	reminders: number;
-	diagnostics: ArchiveDiagnostic[];
-}
-export interface MigrationPreflight {
-	entries: MigrationPreflightEntry[];
-	diagnostics: ArchiveDiagnostic[];
-	legacy: number;
-	v2: number;
-	relations: number;
-	manualRows: number;
-	blocked: number;
-	entityRevision: number;
-	schemaRevision: number;
-}
-export interface PrepareMigration {
+export interface PrepareUpgrade {
 	operationId: string;
 	id: string;
 	expectedHash: string;
-}
-export interface PrepareUpgrade extends PrepareMigration {
 	revisionId: string;
 	values: Values;
 }

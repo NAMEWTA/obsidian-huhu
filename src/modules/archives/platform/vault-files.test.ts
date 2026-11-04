@@ -18,7 +18,7 @@ function fixture() {
 		vault: { getFileByPath: () => file, getAbstractFileByPath: () => folder, read: () => Promise.resolve('disk') },
 		workspace: { getLeavesOfType: () => leaves },
 	} as unknown as App;
-	return { file, view, other, app, files: vaultContactsFiles(app, () => '') };
+	return { file, view, other, app, files: vaultContactsFiles(app) };
 }
 describe('archive production editor guard adapter', () => {
 	test('checks all Markdown leaves, not only the active leaf', () => {

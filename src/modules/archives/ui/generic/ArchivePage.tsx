@@ -410,57 +410,46 @@ export function ArchivePage({
 										{at('reminder')}
 									</Button>
 								)}
-								{selected.format === 2 && (
-									<Button
-										variant="outline"
-										disabled={busy}
-										onClick={() => {
-											setBusy(true);
-											void application.commands
-												.impact(selected.id)
-												.then(async (impact) => {
-													if (
-														!(await confirmAt(
-															owner,
-															`${at('impact')}: ${at('relations')} ${impact.relations}, ${at('contextRoles')} ${impact.contexts}, ${at('resources')} ${impact.attachments}, ${at('reminder')} ${impact.reminders}`,
-															at(
-																selected.lifecycle === 'archived'
-																	? 'activate'
-																	: 'archive',
-															),
-														))
-													)
-														return;
-													await application.commands.setState({
-														operationId: crypto.randomUUID(),
-														id: selected.id,
-														expectedHash: impact.contentHash,
-														lifecycle:
-															selected.lifecycle === 'archived' ? 'active' : 'archived',
-													});
-												})
-												.catch(setError)
-												.finally(() => setBusy(false));
-										}}
-									>
-										{at(selected.lifecycle === 'archived' ? 'activate' : 'archive')}
-									</Button>
-								)}
-								{selected.format === 1 ? (
-									<Button
-										variant="outline"
-										onClick={() => {
-											void navigate('archive-recovery').catch(setError);
-										}}
-									>
-										{at('migrate')}
-									</Button>
-								) : currentType?.definition.kind === 'type' &&
-								  currentType.revisionId !== selected.schemaRevisionId ? (
-									<Button variant="outline" onClick={() => setShowUpgrade(!showUpgrade)}>
-										{at('upgrade')}
-									</Button>
-								) : null}
+								<Button
+									variant="outline"
+									disabled={busy}
+									onClick={() => {
+										setBusy(true);
+										void application.commands
+											.impact(selected.id)
+											.then(async (impact) => {
+												if (
+													!(await confirmAt(
+														owner,
+														`${at('impact')}: ${at('relations')} ${impact.relations}, ${at('contextRoles')} ${impact.contexts}, ${at('resources')} ${impact.attachments}, ${at('reminder')} ${impact.reminders}`,
+														at(
+															selected.lifecycle === 'archived'
+																? 'activate'
+																: 'archive',
+														),
+													))
+												)
+													return;
+												await application.commands.setState({
+													operationId: crypto.randomUUID(),
+													id: selected.id,
+													expectedHash: impact.contentHash,
+													lifecycle:
+														selected.lifecycle === 'archived' ? 'active' : 'archived',
+												});
+											})
+											.catch(setError)
+											.finally(() => setBusy(false));
+									}}
+								>
+									{at(selected.lifecycle === 'archived' ? 'activate' : 'archive')}
+								</Button>
+								{currentType?.definition.kind === 'type' &&
+									currentType.revisionId !== selected.schemaRevisionId && (
+										<Button variant="outline" onClick={() => setShowUpgrade(!showUpgrade)}>
+											{at('upgrade')}
+										</Button>
+									)}
 							</div>
 						</div>
 						{result && !result.items.some((item) => item.id === selected.id) && (

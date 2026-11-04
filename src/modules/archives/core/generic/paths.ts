@@ -25,9 +25,6 @@ export function underRoot(root: string, path: string): boolean {
 export function isDiscoveryPath(root: string, path: string): boolean {
 	if (!underRoot(root, path) || !/\.md$/i.test(path)) return false;
 	const tail = path.slice(root.length + 1);
-	// Protect recovery originals inside the selected root, without discovering old default roots.
-	const parts = tail.split('/');
-	if (parts.length === 4 && parts[0] === '迁移记录' && parts[1] && parts[2] === '原文') return false;
 	// Backups contain real huhu-id/frontmatter and must never become a second entity.
 	return !tail.startsWith(ARCHIVE_PATHS.migrations + '/') || tail.split('/').length === 2;
 }

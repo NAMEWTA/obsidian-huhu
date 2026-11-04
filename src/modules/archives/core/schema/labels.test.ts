@@ -21,7 +21,7 @@ describe('built-in label metadata', () => {
 		expect(PERSON.folder).toBe('people');
 		for (const revision of chinese) validateDefinition(revision.definition, [PERSON]);
 	});
-	test('raw legacy/user labels are never inferred from their text; editing removes only the corresponding key', () => {
+	test('raw user labels are never inferred from their text; editing removes only the corresponding key', () => {
 		expect(displayLabel({ label: 'People' })).toBe('People');
 		expect(displayLabel({ label: '个人档案' })).toBe('个人档案');
 		const custom = customLabel(PERSON, '我的 客户');

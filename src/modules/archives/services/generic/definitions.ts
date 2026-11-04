@@ -168,7 +168,6 @@ export class DefinitionCommands {
 					: definition.kind === 'relation-type'
 						? this.runtime.index
 								.allRelations(definition.id, true)
-								.filter((record) => !record.legacy)
 								.map((record) => record.id)
 						: [],
 			fingerprint: canonical(definition),

@@ -158,8 +158,6 @@ export function entityMetadata(record: EntityRecord): Values {
 		'huhu-archive-type-id': record.typeId,
 		'huhu-schema-revision': record.schemaRevisionId,
 		'huhu-state': record.lifecycle,
-		'huhu-migration-id': record.migrationId,
-		'huhu-expected-relations': record.expectedRelationIds,
 	};
 }
 export function encodeEntity(
@@ -191,14 +189,6 @@ export function decodeEntity(
 			schema.revisionId !== data['huhu-schema-revision'])
 	)
 		throw new ArchiveError('schema-mismatch');
-	if (data['huhu-migration-id'] !== undefined) requiredId(data['huhu-migration-id']);
-	if (
-		data['huhu-expected-relations'] !== undefined &&
-		(!Array.isArray(data['huhu-expected-relations']) ||
-			!data['huhu-expected-relations'].every(identifier) ||
-			new Set(data['huhu-expected-relations']).size !== data['huhu-expected-relations'].length)
-	)
-		throw new ArchiveError('invalid-migration-evidence');
 	const values = type?.kind === 'type' ? valuesFrom(raw, data, type.fields) : {};
 	if (type?.kind === 'type') validateValues(type.fields, values, data['huhu-state'] === 'active', values);
 	return {
@@ -210,9 +200,6 @@ export function decodeEntity(
 		path,
 		contentHash: hash,
 		modified,
-		format: 2,
-		...(data['huhu-migration-id'] ? { migrationId: data['huhu-migration-id'] } : {}),
-		...(data['huhu-expected-relations'] ? { expectedRelationIds: data['huhu-expected-relations'] } : {}),
 	};
 }
 export function relationMetadata(record: RelationRecord): Values {
@@ -230,7 +217,6 @@ export function relationMetadata(record: RelationRecord): Values {
 		'huhu-valid-to': record.validTo?.value,
 		'huhu-valid-to-precision': record.validTo?.precision,
 		'huhu-context-refs': record.contextRefs,
-		'huhu-provenance': record.provenance,
 	};
 }
 export function encodeRelation(
@@ -273,16 +259,6 @@ export function decodeRelation(
 			throw new ArchiveError('invalid-date');
 		return { value: value as string, precision };
 	};
-	const provenance = data['huhu-provenance'];
-	if (
-		provenance !== undefined &&
-		(!object(provenance) ||
-			!identifier(provenance.migrationId) ||
-			!identifier(provenance.legacyOwnerId) ||
-			!identifier(provenance.legacyRowId) ||
-			!['employments', 'relations'].includes(String(provenance.legacySection)))
-	)
-		throw new ArchiveError('invalid-provenance');
 	const values = type?.kind === 'relation-type' ? valuesFrom(raw, data, type.fields) : {};
 	if (type?.kind === 'relation-type') validateValues(type.fields, values, data['huhu-state'] === 'active', values);
 	return {
@@ -296,7 +272,6 @@ export function decodeRelation(
 		contextRefs: contexts as Record<string, string>,
 		validFrom: date('from'),
 		validTo: date('to'),
-		provenance: provenance as RelationRecord['provenance'],
 		path,
 		contentHash: hash,
 		modified,

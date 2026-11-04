@@ -40,7 +40,6 @@ async function main(): Promise<void> {
 							region: `region-${i % 10}`,
 							notes: `needle-${i}`,
 						},
-						format: 2,
 						contentHash: '',
 						modified: 0,
 					},

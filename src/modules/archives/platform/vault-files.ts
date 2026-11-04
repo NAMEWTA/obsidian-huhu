@@ -1,6 +1,5 @@
 import { MarkdownView, TFile, TFolder, normalizePath, type App, type TAbstractFile } from 'obsidian';
-import type { ContactsFile, ContactsFiles } from '../core/files';
-import { ContactsError } from '../core/model';
+import { ContactsError, type ContactsFile, type ContactsFiles } from '../core/files';
 import type { ArchiveFolderEntry } from '../core/resources';
 
 /**
@@ -8,7 +7,7 @@ import type { ArchiveFolderEntry } from '../core/resources';
  * so Obsidian's Vault API reads, writes and trashes them. `process` serializes disk writes;
  * a separate all-leaf guard below rejects unsaved editor buffers.
  */
-export function vaultContactsFiles(app: App, formatGuide: () => string): ContactsFiles {
+export function vaultContactsFiles(app: App): ContactsFiles {
 	const { vault } = app;
 	/** The vault's own file object for an index entry (the entry may be a stale copy after a rename). */
 	const fileFor = (file: ContactsFile): TFile => {
@@ -52,9 +51,6 @@ export function vaultContactsFiles(app: App, formatGuide: () => string): Contact
 		return into;
 	};
 	return {
-		get formatGuide() {
-			return formatGuide();
-		},
 		ready: async () => {
 			if (!app.workspace.layoutReady) await new Promise<void>((resolve) => app.workspace.onLayoutReady(resolve));
 		},

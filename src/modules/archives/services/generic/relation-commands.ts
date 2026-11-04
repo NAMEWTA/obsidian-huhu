@@ -76,7 +76,6 @@ export class RelationCommands {
 				requiredId(input.id);
 				const previous = this.runtime.index.relation(input.id);
 				if (!previous) throw new ArchiveError('missing-or-duplicate-id');
-				if (previous.legacy) throw new ArchiveError('migration-required');
 				const raw = await this.runtime.read(previous.path, context, true);
 				if ((await digest(raw)) !== input.expectedHash) throw new ArchiveError('write-conflict');
 				const revision = await this.runtime.verifySchema(previous.schemaRevisionId, context),

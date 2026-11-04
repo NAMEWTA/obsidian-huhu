@@ -7,7 +7,7 @@ import { canonicalTextResources, normalizeBuildText } from './build-text-resourc
 
 // Retain the small owned fixture for debugging; never touch tracked sources.
 const fixture = await mkdtemp(path.join(tmpdir(), 'huhu-build-text-'));
-for (const source of ['src/modules/archives/core/persist/format-guide.md', 'src/modules/archives/core/persist/format-guide-en.md']) {
+for (const source of ['src/modules/home/core/board/parser/__fixtures__/apex-dashboard-template.md']) {
 	const text = normalizeBuildText(await readFile(source, 'utf8'));
 	for (const extension of ['md', 'svg']) {
 		const filename = path.join(fixture, `resource.${extension}`);

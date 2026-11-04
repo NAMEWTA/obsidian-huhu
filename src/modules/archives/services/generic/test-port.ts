@@ -4,7 +4,6 @@ import { ArchiveRuntime, type ArchiveDraftStore } from './runtime';
 
 /** Fault-injectable file port; production code never imports this fixture. */
 export class MemoryArchiveFiles implements ContactsFiles {
-	readonly formatGuide = '';
 	readonly text = new Map<string, string>();
 	readonly files = new Map<string, ContactsFile>();
 	readonly unsaved = new Set<string>();

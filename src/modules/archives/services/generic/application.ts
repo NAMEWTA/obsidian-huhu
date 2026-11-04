@@ -63,8 +63,6 @@ export class ArchivesApplication {
 			updateRelation: (input, signal) => this.relations.update(input, signal),
 			publishDefinition: (input, signal) => this.definitions.publish(input, signal),
 			previewDefinition: (definition) => this.definitions.preview(definition),
-			preflightMigrations: () => this.recovery.preflight(),
-			prepareMigration: (input, signal) => this.recovery.prepareMigration(input, signal),
 			prepareUpgrade: (input, signal) => this.recovery.prepareUpgrade(input, signal),
 			resumeOperation: (input, signal) => this.recovery.execute(input, signal),
 			rollbackOperation: (input, signal) => this.recovery.rollback(input, signal),

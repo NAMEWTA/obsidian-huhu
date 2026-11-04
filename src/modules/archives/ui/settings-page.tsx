@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { normalizeVaultFolder, type ContactsSettings } from '../../../shared/contacts-settings';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { WriteQueue } from '../../../shared/storage/write-queue';
-import { ContactsError } from '../core/model';
+import { ContactsError } from '../core/files';
 import { ct } from './labels';
 import { openReactDialog, dialogOwner } from '../../../ui/react/dialog';
 import { useT } from '../../../ui/react/hooks';

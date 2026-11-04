@@ -6,7 +6,6 @@ export interface ContactsFile {
 	readonly stat: { mtime: number; size: number };
 }
 export interface ContactsFiles {
-	readonly formatGuide: string;
 	ready(): Promise<void>;
 	getMarkdownFiles(): ContactsFile[];
 	getFileByPath(path: string): ContactsFile | null;
@@ -22,4 +21,12 @@ export interface ContactsFiles {
 	createFolder(path: string): Promise<void>;
 	mkdir(path: string): Promise<void>;
 	checkEditor(file: ContactsFile, disk: string): void;
+}
+export class ContactsError extends Error {
+	constructor(
+		public code: string,
+		public detail = '',
+	) {
+		super(code);
+	}
 }

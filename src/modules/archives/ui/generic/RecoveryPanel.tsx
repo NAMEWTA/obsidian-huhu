@@ -10,7 +10,6 @@ import type {
 	RelationTypeDefinition,
 	Values,
 } from '../../core/schema/model';
-import type { MigrationPreflight } from '../../core/schema/commands';
 import type { ArchiveOperation } from '../../core/generic/operations';
 import { validateValues } from '../../core/schema/fields';
 import { canonical, copy } from '../../core/schema/value';
@@ -157,11 +156,9 @@ export function RecoveryPanel({
 	owner: HTMLElement;
 }) {
 	const version = useArchiveVersion(application),
-		[preflight, setPreflight] = useState<MigrationPreflight>(),
 		[operations, setOperations] = useState<ArchiveOperation[]>([]),
 		[busy, setBusy] = useState(false),
-		[error, setError] = useState<unknown>(),
-		[progress, setProgress] = useState('');
+		[error, setError] = useState<unknown>();
 	useEffect(() => {
 		let alive = true;
 		void application.commands.operations().then(
@@ -176,40 +173,6 @@ export function RecoveryPanel({
 			alive = false;
 		};
 	}, [application, version]);
-	const inspect = async () => {
-		setBusy(true);
-		setError(undefined);
-		try {
-			setPreflight(await application.commands.preflightMigrations());
-		} catch (error) {
-			setError(error);
-		} finally {
-			setBusy(false);
-		}
-	};
-	const migrate = async (entries: NonNullable<MigrationPreflight>['entries']) => {
-		if (!entries.length || !(await confirmAt(owner, at('migrationConfirm'), at('migrate')))) return;
-		setBusy(true);
-		setError(undefined);
-		try {
-			for (let index = 0; index < entries.length; index++) {
-				const entry = entries[index]!;
-				setProgress(`${index + 1}/${entries.length} · ${entry.path}`);
-				const operation = await application.commands.prepareMigration({
-					operationId: crypto.randomUUID(),
-					id: entry.id,
-					expectedHash: entry.hash,
-				});
-				await application.commands.resumeOperation({ operationId: operation.id });
-			}
-			setPreflight(await application.commands.preflightMigrations());
-			setProgress('');
-		} catch (error) {
-			setError(error);
-		} finally {
-			setBusy(false);
-		}
-	};
 	const recover = async (operation: ArchiveOperation, rollback: boolean) => {
 		if (rollback && !(await confirmAt(owner, at('rollbackConfirm'), at('rollback')))) return;
 		setBusy(true);
@@ -217,7 +180,6 @@ export function RecoveryPanel({
 		try {
 			if (rollback) await application.commands.rollbackOperation({ operationId: operation.id });
 			else await application.commands.resumeOperation({ operationId: operation.id });
-			setPreflight(undefined);
 		} catch (error) {
 			setError(error);
 		} finally {
@@ -228,76 +190,8 @@ export function RecoveryPanel({
 	return (
 		<div className="space-y-4">
 			<h2 className="text-xl font-semibold">{at('recovery')}</h2>
-			<p className="text-sm text-muted-foreground">{at('migrationHint')}</p>
+			<p className="text-sm text-muted-foreground">{at('recoveryHint')}</p>
 			<ErrorBox error={error} />
-			{progress && (
-				<p role="status" className="text-sm">
-					{progress}
-				</p>
-			)}
-			<div className="flex flex-wrap gap-2">
-				<Button
-					disabled={busy}
-					onClick={() => {
-						void inspect();
-					}}
-				>
-					{at('preflight')}
-				</Button>
-				<Button
-					variant="outline"
-					disabled={busy || !preflight?.entries.some((entry) => !entry.diagnostics.length)}
-					onClick={() => {
-						void migrate(preflight!.entries.filter((entry) => !entry.diagnostics.length));
-					}}
-				>
-					{at('migrateAll')}
-				</Button>
-			</div>
-			{preflight && (
-				<Section title={at('preflight')}>
-					<div className="flex flex-wrap gap-4 text-sm">
-						<span>
-							{at('v1')}: {preflight.legacy}
-						</span>
-						<span>
-							{at('v2')}: {preflight.v2}
-						</span>
-						<span>
-							{at('rows')}: {preflight.relations}
-						</span>
-						<span>
-							{at('manualRows')}: {preflight.manualRows}
-						</span>
-						<span>
-							{at('blocked')}: {preflight.blocked}
-						</span>
-					</div>
-					{preflight.entries.map((entry) => (
-						<div
-							key={entry.path}
-							className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3"
-						>
-							<div className="min-w-0">
-								<p className="break-all text-sm">{entry.path}</p>
-								<p className="text-xs text-muted-foreground">
-									{at('rows')}: {entry.rows} · {at('manualRows')}: {entry.manualRows} ·{' '}
-									{at('blocked')}: {entry.diagnostics.length}
-								</p>
-							</div>
-							<Button
-								variant="outline"
-								disabled={busy || !!entry.diagnostics.length}
-								onClick={() => {
-									void migrate([entry]);
-								}}
-							>
-								{at('migrate')}
-							</Button>
-						</div>
-					))}
-				</Section>
-			)}
 			<Section title={at('operations')}>
 				{operations.map((operation) => (
 					<article key={operation.id} className="space-y-2 rounded-md border p-3">

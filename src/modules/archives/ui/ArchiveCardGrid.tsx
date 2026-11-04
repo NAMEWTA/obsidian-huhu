@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-/** Keep the pre-migration 272px card minimum and maximum-column width caps. */
+/** Keep the 272px card minimum and maximum-column width caps. */
 export function ArchiveCardGrid({ columns, children }: { columns: number; children: ReactNode }) {
 	return (
 		<div

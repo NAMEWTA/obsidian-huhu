@@ -210,14 +210,7 @@ export async function presetRevisions(): Promise<DefinitionRevision[]> {
 		definitions.map((definition) => createRevision(definition, [], 1, presetRevisionId(definition.id))),
 	);
 }
-export function legacyTypeId(kind: 'person' | 'company'): string {
-	return kind === 'person' ? PERSON.id : COMPANY.id;
-}
-export function legacySchemaId(kind: 'person' | 'company'): string {
-	return presetRevisionId(legacyTypeId(kind));
-}
-
-/** New immutable preset generation; existing v1 definitions remain their own on-disk authority. */
+/** Immutable preset generation id. */
 export function presetRevisionId(id: string): string {
 	return `preset-${id}-v2`;
 }

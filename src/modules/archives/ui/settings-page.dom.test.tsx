@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TestProviders } from '../../../ui/react/test-providers';
 import { setLanguage, t } from '../../../shared/i18n';
-import type { ContactsController } from '../platform/controller';
 import { archivesSettingsPage } from './settings-page';
 import { SettingsStore } from '../../../shared/settings/store';
 import { archivesSettings } from '../settings';
@@ -21,7 +20,7 @@ test('archive settings reject invalid roots and persist column changes through t
 		},
 	);
 	const settings = store.bind('archives', archivesSettings),
-		controller = { countFolder: vi.fn() } as unknown as ContactsController;
+		controller = { countFolder: vi.fn() } as unknown as Parameters<typeof archivesSettingsPage>[1];
 	const vault = { on: () => ({}), offref: () => {}, getAllLoadedFiles: () => [{ path: '档案', children: [] }] };
 	const Page = archivesSettingsPage(
 		{ workspace: { containerEl: document.body }, vault } as never,

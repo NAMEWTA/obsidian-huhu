@@ -6,66 +6,13 @@ import { ArchivesApplication } from './application';
 import { DefinitionCommands } from './definitions';
 import { RelationCommands } from './relation-commands';
 import { RecoveryCommands } from './recovery';
-import { newRecord, emptyRef } from '../../core/model';
-import { createMarkdown, parseRecord, relativeLink } from '../../core/persist/markdown';
-import { createRevision } from '../../core/schema/definitions';
-import { PERSON, COMPANY, EMPLOYMENT, presetRevisions } from '../../core/schema/presets';
+import { PERSON, COMPANY, EMPLOYMENT } from '../../core/schema/presets';
 import { decodeOperation } from '../../core/generic/operations';
-import { encodeDefinition, decodeDefinition, frontmatter, patchProperties } from '../../core/generic/markdown';
+import { encodeDefinition, frontmatter, patchProperties } from '../../core/generic/markdown';
+import { createRevision } from '../../core/schema/definitions';
 import { definitionPath, migrationPath } from '../../core/generic/paths';
 import { digest } from '../../core/schema/value';
 const root = 'huhu/archives';
-function legacyFixture() {
-	const company = newRecord('company');
-	company.id = 'company-a';
-	company.path = `${root}/Moved/Organisation.md`;
-	company.fields.name = '001 Company';
-	const leader = newRecord('person');
-	leader.id = 'person-leader';
-	leader.path = `${root}/People/Leader.md`;
-	leader.fields.name = 'Leader';
-	const person = newRecord('person');
-	person.id = 'person-a';
-	person.path = `${root}/任意层级/原档案.md`;
-	person.fields.name = '0012';
-	person.fields.mobiles = ['00123'];
-	person.employments = [
-		{
-			id: 'job-1',
-			company: { id: company.id, label: company.fields.name, link: relativeLink(person.path, company.path) },
-			department: '研发',
-			title: 'Engineer',
-			start: '2020-02',
-			end: '',
-			status: 'past',
-			keyRole: '',
-			notes: 'raw | note',
-		},
-	];
-	person.relations = [
-		{
-			id: 'relation-1',
-			person: { id: leader.id, label: leader.fields.name, link: relativeLink(person.path, leader.path) },
-			company: emptyRef(),
-			kind: 'leader',
-			notes: 'A reports to B',
-		},
-	];
-	const raw =
-		createMarkdown(person).replace('name: "0012"', 'name: "0012" # preserved') +
-		'\n## Custom\nFree notes unchanged.\n';
-	return {
-		person,
-		company,
-		leader,
-		raw,
-		initial: new Map([
-			[person.path, raw],
-			[company.path, createMarkdown(company)],
-			[leader.path, createMarkdown(leader)],
-		]),
-	};
-}
 async function createPair() {
 	const fixture = await memoryArchives(),
 		entities = new EntityCommands(fixture.runtime);
@@ -252,77 +199,31 @@ describe('generic archives command boundary', () => {
 		).rejects.toThrow('relation-tombstoned');
 	});
 });
-describe('legacy authority and recoverable migration', () => {
-	test('legacy reads are non-writing and source-direction correct; ordinary edits remain v1', async () => {
-		const source = legacyFixture(),
-			{ runtime, files } = await memoryArchives(source.initial),
-			entities = new EntityCommands(runtime);
-		expect(files.writes).toEqual([]);
-		const edges = runtime.index.relations(source.person.id).items;
-		expect(edges).toHaveLength(2);
-		const reports = edges.find((edge) => edge.relationTypeId === 'relation-reports-to')!;
-		expect([reports.sourceId, reports.targetId]).toEqual([source.person.id, source.leader.id]);
-		expect(edges.find((edge) => edge.relationTypeId === 'relation-employment')).toMatchObject({
-			validFrom: { value: '2020-02', precision: 'month' },
-			values: { status: 'past', keyRole: '' },
+describe('recoverable schema upgrades', () => {
+	test('every execution write can fail before or after commit; a restart resumes to one committed upgrade', async () => {
+		const pair = await createPair(),
+			revision = pair.runtime.index.definition(PERSON.id)!;
+		await pair.definitions.publish({
+			operationId: 'resume-schema',
+			definition: {
+				...PERSON,
+				fields: PERSON.fields.map((field) =>
+					field.fieldId === 'name' ? { ...field, storageKey: 'client-name' } : field,
+				),
+			},
+			expectedHeads: [revision.revisionId],
 		});
-		const session = await entities.beginEdit(source.person.id);
-		session.draft.region = 'Taipei';
-		session.dirtyFields = ['region'];
-		await entities.save({ operationId: 'legacy-save', session });
-		expect(parseRecord(files.text.get(source.person.path)!, source.person.path)?.fields.region).toBe('Taipei');
-		expect(files.text.get(source.person.path)).toContain('Free notes unchanged.');
-		expect(runtime.index.get(source.person.id)?.format).toBe(1);
-	});
-	test('migration persists stable maps/backups, preserves original data, rebuilds from visible root and rolls back exactly', async () => {
-		const source = legacyFixture(),
-			{ runtime, files } = await memoryArchives(source.initial),
-			recovery = new RecoveryCommands(runtime);
-		const before = await recovery.preflight();
-		expect(before.blocked).toBe(0);
-		expect(before.relations).toBe(2);
-		const plan = await recovery.prepareMigration({
-			operationId: 'migration-a',
-			id: source.person.id,
-			expectedHash: await digest(source.raw),
+		const before = pair.files.text.get(pair.person.path)!;
+		const plan = await pair.recovery.prepareUpgrade({
+			operationId: 'upgrade-resume',
+			id: pair.person.id,
+			expectedHash: await digest(before),
+			revisionId: 'resume-schema',
+			values: pair.runtime.index.get(pair.person.id)!.values,
 		});
-		expect(plan.edges).toHaveLength(2);
-		expect(runtime.index.allEntities()).toHaveLength(3);
-		expect(runtime.index.relations(source.person.id).items).toHaveLength(2);
-		await recovery.execute({ operationId: plan.id });
-		expect(parseRecord(files.text.get(source.person.path)!, source.person.path)).toBeNull();
-		expect(runtime.index.get(source.person.id)?.format).toBe(2);
-		expect(runtime.index.relations(source.person.id).items).toHaveLength(2);
-		expect(runtime.index.relations(source.person.id).isComplete).toBe(true);
-		expect(files.text.get(source.person.path)).toContain('Free notes unchanged.');
-		expect(files.text.get(plan.owner.backupPath!)).toBe(source.raw);
-		const reopened = await memoryArchives(files.text);
-		expect(reopened.runtime.index.allEntities()).toHaveLength(3);
-		expect(
-			reopened.runtime.index
-				.relations(source.person.id)
-				.items.map((edge) => edge.id)
-				.sort(),
-		).toEqual(plan.edges.map((edge) => edge.record.id).sort());
-		await new RecoveryCommands(reopened.runtime).rollback({ operationId: plan.id });
-		expect(reopened.files.text.get(source.person.path)).toBe(source.raw);
-		expect(reopened.runtime.index.get(source.person.id)?.format).toBe(1);
-		expect(reopened.runtime.index.relations(source.person.id).items).toHaveLength(2);
-		for (const edge of plan.edges)
-			expect(frontmatter(reopened.files.text.get(edge.write.path)!)['huhu-state']).toBe('deleted');
-	});
-	test('every execution write can fail before or after commit; a restart resumes without duplicating rows', async () => {
-		const source = legacyFixture(),
-			initial = await memoryArchives(source.initial),
-			recovery = new RecoveryCommands(initial.runtime);
-		const plan = await recovery.prepareMigration({
-			operationId: 'migration-resume',
-			id: source.person.id,
-			expectedHash: await digest(source.raw),
-		});
-		const prepared = new Map(initial.files.text);
+		const prepared = new Map(pair.files.text);
 		for (const after of [false, true])
-			for (let failAt = 1; failAt <= 9; failAt++) {
+			for (let failAt = 1; failAt <= 5; failAt++) {
 				const fault = await memoryArchives(prepared);
 				let writes = 0;
 				const fail = () => {
@@ -341,66 +242,37 @@ describe('legacy authority and recoverable migration', () => {
 				fault.runtime.dispose();
 				const resumed = await memoryArchives(fault.files.text);
 				await new RecoveryCommands(resumed.runtime).execute({ operationId: plan.id });
-				expect(resumed.runtime.index.get(source.person.id)?.format, `after=${after}, write=${failAt}`).toBe(2);
-				expect(resumed.runtime.index.relations(source.person.id).items).toHaveLength(2);
+				expect(
+					frontmatter(resumed.files.text.get(pair.person.path)!)['client-name'],
+					`after=${after}, write=${failAt}`,
+				).toBe('0012');
 				expect(decodeOperation(resumed.files.text.get(migrationPath(root, plan.id))!).state).toBe('committed');
 			}
 	}, 30000);
-	test('source changes abort before authority flip; rollback never overwrites later owner or edge edits', async () => {
-		const source = legacyFixture(),
-			fixture = await memoryArchives(source.initial),
-			recovery = new RecoveryCommands(fixture.runtime);
-		const plan = await recovery.prepareMigration({
-			operationId: 'migration-conflicts',
-			id: source.person.id,
-			expectedHash: await digest(source.raw),
+	test('a source change aborts the upgrade; rollback never overwrites a later owner edit', async () => {
+		const { runtime, files, person, definitions, recovery } = await createPair();
+		await definitions.publish({
+			operationId: 'conflict-schema',
+			definition: {
+				...PERSON,
+				fields: PERSON.fields.map((field) =>
+					field.fieldId === 'name' ? { ...field, storageKey: 'client-name' } : field,
+				),
+			},
+			expectedHeads: [runtime.index.definition(PERSON.id)!.revisionId],
 		});
-		fixture.files.external(source.person.path, source.raw + '\nExternal edit\n');
+		const before = files.text.get(person.path)!;
+		const plan = await recovery.prepareUpgrade({
+			operationId: 'upgrade-conflict',
+			id: person.id,
+			expectedHash: await digest(before),
+			revisionId: 'conflict-schema',
+			values: runtime.index.get(person.id)!.values,
+		});
+		files.external(person.path, before + '\nExternal edit\n');
 		await expect(recovery.execute({ operationId: plan.id })).rejects.toThrow('source-changed');
 		await recovery.rollback({ operationId: plan.id });
-		expect(fixture.files.text.get(source.person.path)).toContain('External edit');
-		const clean = await memoryArchives(source.initial),
-			committed = new RecoveryCommands(clean.runtime),
-			operation = await committed.prepareMigration({
-				operationId: 'migration-later',
-				id: source.person.id,
-				expectedHash: await digest(source.raw),
-			});
-		await committed.execute({ operationId: operation.id });
-		const path = operation.edges[0]!.write.path;
-		clean.files.external(path, clean.files.text.get(path)! + '\nNewer edge note\n');
-		await expect(committed.rollback({ operationId: operation.id })).rejects.toThrow('rollback-conflict');
-		expect(clean.runtime.index.get(source.person.id)?.format).toBe(2);
-		expect(clean.files.text.get(path)).toContain('Newer edge note');
-	});
-	test('missing synced edges remain pending; a manual v1 restore is a conflict, not a duplicate migration', async () => {
-		const source = legacyFixture(),
-			{ runtime, files } = await memoryArchives(source.initial),
-			recovery = new RecoveryCommands(runtime),
-			plan = await recovery.prepareMigration({
-				operationId: 'migration-sync',
-				id: source.person.id,
-				expectedHash: await digest(source.raw),
-			});
-		await recovery.execute({ operationId: plan.id });
-		const missing = plan.edges[0]!;
-		files.delete(missing.write.path);
-		await runtime.flushEvents();
-		expect(runtime.index.relations(source.person.id).isComplete).toBe(false);
-		expect(runtime.index.relations(source.person.id).items).toHaveLength(1);
-		files.external(missing.write.path, missing.write.after);
-		files.external(source.person.path, source.raw);
-		await runtime.flushEvents();
-		expect(runtime.index.diagnostics().some((item) => item.code === 'migration-conflict')).toBe(true);
-		expect(runtime.index.relations(source.person.id).items).toHaveLength(2);
-		await expect(new EntityCommands(runtime).beginEdit(source.person.id)).rejects.toThrow('migration-conflict');
-		await expect(
-			recovery.prepareMigration({
-				operationId: 'duplicate-migration',
-				id: source.person.id,
-				expectedHash: await digest(source.raw),
-			}),
-		).rejects.toThrow('migration-conflict');
+		expect(files.text.get(person.path)).toContain('External edit');
 	});
 	test('breaking upgrades are explicit, backed up and reversible; label-only publishing does not rewrite notes', async () => {
 		const { runtime, files, person, definitions, recovery } = await createPair();
@@ -534,6 +406,16 @@ describe('generic archives additional safety boundaries', () => {
 	});
 });
 
+test('a v1 person/company file is reported as an unknown record and never rewritten', async () => {
+	const path = `${root}/people/Old/profile.md`,
+		raw = '---\nhuhu-type: "person"\nhuhu-id: "old-person"\nname: "Old"\n---\n\n## Notes\n';
+	const { runtime, files } = await memoryArchives(new Map([[path, raw]]));
+	expect(runtime.index.get('old-person')).toBeUndefined();
+	expect(runtime.index.diagnostics().some((item) => item.path === path && item.code === 'unknown-record')).toBe(true);
+	expect(files.text.get(path)).toBe(raw);
+	expect(files.writes).toEqual([]);
+});
+
 test('public read APIs reject a retained service after module disposal', async () => {
 	const { runtime } = await memoryArchives();
 	const application = new ArchivesApplication(runtime);
@@ -542,76 +424,4 @@ test('public read APIs reject a retained service after module disposal', async (
 	await expect(application.query.entity('missing')).rejects.toThrow('unavailable');
 	await expect(application.query.relations('missing')).rejects.toThrow('unavailable');
 	await expect(application.query.revisions()).rejects.toThrow('unavailable');
-});
-
-test('an initialized v1 preset collection and user labels reopen without upgrade, pointer changes or byte rewrites', async () => {
- const fresh=await memoryArchives(new Map(),'Custom Archives');
- const app=new ArchivesApplication(fresh.runtime);
- await app.commands.initialize();
- await app.commands.create({operationId:'existing-person',typeId:PERSON.id,values:{name:'原有 客户'}});
- const old=new Map<string,string>();
- for(const [path,raw] of fresh.files.text) {
-  let text=raw.replaceAll('-v2','-v1');
-  if(frontmatter(raw)['huhu-type']==='archive-definition') {
-   const revision=await decodeDefinition(raw);
-   const definition=JSON.parse(JSON.stringify(revision.definition), (key,value)=>key.endsWith('LabelKey')||key==='labelKey'?undefined:value);
-   if(definition.id===PERSON.id) {definition.label='用户自定 客户';definition.fields[0].label='客户 姓名';}
-   text=encodeDefinition(await createRevision(definition,[],1,revision.revisionId.replace('-v2','-v1')));
-  }
-  const names: Record<string,string> = { definitions:'档案定义', types:'类型', forms:'表单', templates:'记录模板', 'relation-types':'关系', views:'视图', revisions:'修订', 'current.md':'当前.md', 'collection.md':'档案集合.md', people:'个人档案', 'profile.md':'基本信息.md' };
-  const oldPath=path.replaceAll('-v2','-v1').split('/').map(part=>names[part]??part).join('/');
-  old.set(oldPath,text);
- }
- const legacy=legacyFixture();for(const [path,text] of legacy.initial) old.set(path.replace(root,'Custom Archives'),text);
- const backup='Custom Archives/迁移记录/op/原文/'+legacy.person.id+'.md';
- old.set(backup,legacy.raw);
- const orphan=newRecord('person');orphan.id='backup-only';orphan.fields.name='仅恢复原文';
- const orphanPath='Custom Archives/迁移记录/op/原文/backup-only.md';
- old.set(orphanPath,createMarkdown(orphan));
- old.set('Custom Archives/migrations/op/originals/'+legacy.person.id+'.md',legacy.raw);
- const legitimate=['Custom Archives/迁移记录-笔记/op/原文/ordinary.md','Custom Archives/迁移记录/op/原文章节/ordinary.md','Custom Archives/资料/迁移记录/op/原文/ordinary.md'];
- for(const [number,path] of legitimate.entries()) {
-  const record=newRecord('person');record.id='ordinary-'+number;record.fields.name='合法用户记录';old.set(path,createMarkdown(record));
- }
- fresh.runtime.dispose();
- const reopened=await memoryArchives(old,'Custom Archives');
- const before=new Map(reopened.files.text);
- expect(reopened.runtime.index.entitiesById(legacy.person.id).map(entity=>entity.path)).toEqual([legacy.person.path.replace(root,'Custom Archives')]);
- expect(reopened.runtime.index.diagnostics().filter(item=>item.code==='duplicate-id')).toEqual([]);
- expect(reopened.runtime.index.entry(backup)).toBeUndefined();
- expect(reopened.runtime.index.entry(orphanPath)).toBeUndefined();
- expect(reopened.runtime.index.entitiesById(orphan.id)).toEqual([]);
- expect(reopened.runtime.index.entry('Custom Archives/migrations/op/originals/'+legacy.person.id+'.md')).toBeUndefined();
- for(const [number,path] of legitimate.entries()) expect(reopened.runtime.index.get('ordinary-'+number)?.path).toBe(path);
- const pointer='Custom Archives/档案定义/类型/type-person/当前.md';
- expect(before.get(pointer)).toBeDefined();
- const oldSchema=reopened.runtime.index.definition(PERSON.id)!;
- expect(oldSchema.revisionId).toBe('preset-type-person-v1');
- expect(oldSchema.definition.label).toBe('用户自定 客户');
- expect(oldSchema.definition).not.toHaveProperty('labelKey');
- expect(reopened.runtime.index.get('existing-person')?.isComplete).toBe(true);
- expect(reopened.runtime.index.get(legacy.person.id)?.schemaRevisionId).toBe('preset-type-person-v1');
- expect(reopened.runtime.index.get(legacy.person.id)?.isComplete).toBe(true);
- expect(reopened.runtime.index.relations(legacy.person.id).items.every(edge=>edge.schemaRevisionId.endsWith('-v1'))).toBe(true);
- expect(reopened.runtime.index.relations(legacy.person.id).items).toHaveLength(2);
- await new ArchivesApplication(reopened.runtime).commands.initialize();
- expect(reopened.files.text).toEqual(before);
- expect(reopened.files.writes).toEqual([]);
- expect((await presetRevisions()).every(revision=>revision.revisionId.endsWith('-v2'))).toBe(true);
- reopened.runtime.dispose();
- try {
-  for(const language of ['en','zh'] as const) {
-   setLanguage(language);
-   const rebuilt=await memoryArchives(before,'Custom Archives');
-   expect(rebuilt.runtime.index.entitiesById(legacy.person.id)).toHaveLength(1);
-   expect(rebuilt.runtime.index.entry(backup)).toBeUndefined();
-   expect(rebuilt.runtime.index.entitiesById(orphan.id)).toEqual([]);
-   for(const [number,path] of legitimate.entries()) expect(rebuilt.runtime.index.get('ordinary-'+number)?.path).toBe(path);
-   expect(rebuilt.runtime.index.definition(PERSON.id)).toEqual(oldSchema);
-   expect(rebuilt.files.text.get(pointer)).toBe(before.get(pointer));
-   expect(rebuilt.files.text.get(backup)).toBe(legacy.raw);
-   expect(rebuilt.files.text).toEqual(before);expect(rebuilt.files.writes).toEqual([]);
-   rebuilt.runtime.dispose();
-  }
- } finally {setLanguage('zh');}
 });

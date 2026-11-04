@@ -453,7 +453,6 @@ export function RelationPanel({
 				setSession(restored);
 				return;
 			}
-			if (relation?.legacy) throw new ArchiveError('migration-required');
 			const schema = relation
 				? await application.query.definition(relation.schemaRevisionId)
 				: application.runtime.index.definition(typeId || types[0]?.id || '');
@@ -570,44 +569,40 @@ export function RelationPanel({
 							<div className="flex flex-wrap gap-2">
 								<Button
 									variant="outline"
-									disabled={!!relation.legacy}
 									onClick={() => {
 										void begin(relation);
 									}}
 								>
 									{ct('edit')}
 								</Button>
-								{!relation.legacy &&
-									latest?.definition.kind === 'relation-type' &&
+								{latest?.definition.kind === 'relation-type' &&
 									latest.revisionId !== relation.schemaRevisionId && (
 										<Button variant="outline" onClick={() => setUpgrade(relation)}>
 											{at('upgrade')}
 										</Button>
 									)}
-								{!relation.legacy && (
-									<Button
-										variant="outline"
-										onClick={() => {
-											void confirmAt(owner, at('deleteRelationPrompt'), at('deleteRelation'))
-												.then(async (accepted) => {
-													if (accepted)
-														await application.commands.updateRelation({
-															operationId: crypto.randomUUID(),
-															id: relation.id,
-															expectedHash: relation.contentHash,
-															values: relation.values,
-															contextRefs: relation.contextRefs,
-															validFrom: relation.validFrom,
-															validTo: relation.validTo,
-															lifecycle: 'deleted',
-														});
-												})
-												.catch(setError);
-										}}
-									>
-										{at('deleteRelation')}
-									</Button>
-								)}
+								<Button
+									variant="outline"
+									onClick={() => {
+										void confirmAt(owner, at('deleteRelationPrompt'), at('deleteRelation'))
+											.then(async (accepted) => {
+												if (accepted)
+													await application.commands.updateRelation({
+														operationId: crypto.randomUUID(),
+														id: relation.id,
+														expectedHash: relation.contentHash,
+														values: relation.values,
+														contextRefs: relation.contextRefs,
+														validFrom: relation.validFrom,
+														validTo: relation.validTo,
+														lifecycle: 'deleted',
+													});
+											})
+											.catch(setError);
+									}}
+								>
+									{at('deleteRelation')}
+								</Button>
 							</div>
 						</div>
 						{upgrade?.id === relation.id && latest?.definition.kind === 'relation-type' && (
@@ -620,7 +615,6 @@ export function RelationPanel({
 								finished={() => setUpgrade(undefined)}
 							/>
 						)}
-						{relation.legacy && <p className="text-xs text-muted-foreground">{at('legacyRelation')}</p>}
 						<dl className="grid gap-2 sm:grid-cols-2">
 							{Object.entries(relation.values).map(([id, value]) => (
 								<div key={id}>

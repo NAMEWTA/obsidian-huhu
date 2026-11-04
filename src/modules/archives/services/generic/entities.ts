@@ -21,8 +21,6 @@ import {
 	safeRelativePath,
 } from '../../core/schema/value';
 import { decodeEntity, encodeEntity, frontmatter, patchProperties } from '../../core/generic/markdown';
-import { adaptLegacy, patchLegacy } from '../../core/generic/legacy';
-import { parseRecord } from '../../core/persist/markdown';
 import { entityPath, underRoot } from '../../core/generic/paths';
 import {
 	safeArchiveName,
@@ -49,8 +47,6 @@ export class EntityCommands {
 				)
 		)
 			throw new ArchiveError('pending-migration');
-		if (this.runtime.index.diagnostics().some((item) => item.id === id && item.code === 'migration-conflict'))
-			throw new ArchiveError('migration-conflict');
 	}
 	create(input: CreateEntity, signal?: AbortSignal): Promise<CommandReceipt> {
 		return this.runtime.command(
@@ -99,7 +95,6 @@ export class EntityCommands {
 					path,
 					contentHash: '',
 					modified: Date.now(),
-					format: 2,
 				};
 				let raw = encodeEntity(record, type, body);
 				raw = patchProperties(raw, {
@@ -159,10 +154,7 @@ export class EntityCommands {
 					baseType = baseRevision.definition;
 				if (baseType.kind !== 'type' || baseType.id !== session.typeId)
 					throw new ArchiveError('invalid-session');
-				const baseLegacy = parseRecord(session.baseRaw, session.path),
-					base = baseLegacy
-						? adaptLegacy(baseLegacy, session.baseHash)
-						: decodeEntity(session.baseRaw, session.path, session.baseHash, 0, baseRevision);
+				const base = decodeEntity(session.baseRaw, session.path, session.baseHash, 0, baseRevision);
 				if (
 					base.id !== session.entityId ||
 					base.typeId !== session.typeId ||
@@ -181,16 +173,6 @@ export class EntityCommands {
 				const written = await this.runtime.patch(
 					entity.path,
 					(latest) => {
-						if (entity.format === 1) {
-							if (lifecycle && lifecycle !== 'active') throw new ArchiveError('migration-required');
-							return patchLegacy(
-								latest,
-								session.baseRaw,
-								entity.path,
-								session.draft,
-								session.dirtyFields,
-							);
-						}
 						const current = decodeEntity(latest, entity.path, '', entity.modified, latestRevision);
 						if (
 							current.id !== session.entityId ||
@@ -238,7 +220,6 @@ export class EntityCommands {
 				if (!states.includes(input.lifecycle)) throw new ArchiveError('invalid-state');
 				const { entity, raw } = await this.runtime.entity(input.id, context);
 				this.noPendingOperation(entity.id);
-				if (entity.format === 1) throw new ArchiveError('migration-required');
 				if ((await digest(raw)) !== input.expectedHash) throw new ArchiveError('write-conflict');
 				const revision = await this.runtime.verifySchema(entity.schemaRevisionId, context);
 				if (revision.definition.kind !== 'type') throw new ArchiveError('missing-definition');

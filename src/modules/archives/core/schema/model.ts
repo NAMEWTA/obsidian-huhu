@@ -163,15 +163,6 @@ export interface EntityRecord {
 	path: string;
 	contentHash: string;
 	modified: number;
-	format: 1 | 2;
-	migrationId?: string;
-	expectedRelationIds?: string[];
-}
-export interface MigrationProvenance {
-	migrationId: string;
-	legacyOwnerId: string;
-	legacySection: 'employments' | 'relations';
-	legacyRowId: string;
 }
 export interface RelationRecord {
 	id: string;
@@ -184,12 +175,9 @@ export interface RelationRecord {
 	validFrom?: PrecisionDate;
 	validTo?: PrecisionDate;
 	contextRefs: Record<string, string>;
-	provenance?: MigrationProvenance;
 	path: string;
 	contentHash: string;
 	modified: number;
-	/** Virtual v1 projections are read-only and never counted as extra stored facts. */
-	legacy?: { ownerId: string; section: 'employments' | 'relations'; rowId: string };
 }
 export type DiagnosticCode =
 	| 'invalid-format'
@@ -205,7 +193,6 @@ export type DiagnosticCode =
 	| 'duplicate-relation'
 	| 'cycle'
 	| 'pending-migration'
-	| 'migration-conflict'
 	| 'read-failed'
 	| 'unknown-record'
 	| 'missing-file'

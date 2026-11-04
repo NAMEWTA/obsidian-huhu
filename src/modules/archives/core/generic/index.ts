@@ -1,6 +1,3 @@
-import { presetRevisionId } from '../schema/presets';
-import type { ArchiveRecord } from '../model';
-import { parseRecord, resolveRelative as legacyLinkPath } from '../persist/markdown';
 import {
 	ArchiveError,
 	type ArchiveDiagnostic,
@@ -18,7 +15,6 @@ import {
 } from '../schema/model';
 import { revisionGraph } from '../schema/definitions';
 import { canonical, copy, digest, identifier, displayName } from '../schema/value';
-import { adaptLegacy, projectLegacy } from './legacy';
 import {
 	COLLECTION_TAG,
 	decodeDefinition,
@@ -46,7 +42,6 @@ export interface IndexedArchive {
 	diagnostics: ArchiveDiagnostic[];
 	entity?: EntityRecord;
 	relation?: RelationRecord;
-	legacy?: ArchiveRecord;
 	definition?: DefinitionRevision;
 	operation?: ArchiveOperation;
 	collectionId?: string;
@@ -74,11 +69,7 @@ export class ArchiveIndex {
 	private readonly edgeIds = new Map<string, Set<string>>();
 	private readonly edgeTypes = new Map<string, Set<string>>();
 	private readonly adjacency = new Map<string, Set<string>>();
-	private readonly virtualByOwner = new Map<string, Set<string>>();
-	private readonly legacyDependents = new Map<string, Set<string>>();
-	private readonly legacyKeysByOwner = new Map<string, Set<string>>();
 	private readonly operationIds = new Map<string, Set<string>>();
-	private readonly ownerOperations = new Map<string, Set<string>>();
 	private schemaCache?: {
 		revisions: Map<string, DefinitionRevision>;
 		current: Map<string, DefinitionRevision>;
@@ -153,20 +144,6 @@ export class ArchiveIndex {
 			)
 				current.set(id, revisions.get(graph.heads[0]!)!);
 		}
-		// Legacy projections have no persisted schema reference. Keep an existing v1 preset
-		// authority when present; new collections use the current preset generation.
-		for (const entry of this.entries.values())
-			if (entry.legacy && entry.entity) {
-				const previous = `preset-${entry.entity.typeId}-v1`;
-				entry.entity.schemaRevisionId = revisions.has(previous)
-					? previous
-					: presetRevisionId(entry.entity.typeId);
-			}
-		for (const edge of this.edges.values())
-			if (edge.legacy) {
-				const previous = `preset-${edge.relationTypeId}-v1`;
-				edge.schemaRevisionId = revisions.has(previous) ? previous : presetRevisionId(edge.relationTypeId);
-			}
 		return (this.schemaCache = { revisions, current, all, diagnostics });
 	}
 	schema(id: string): DefinitionRevision | undefined {
@@ -192,21 +169,8 @@ export class ArchiveIndex {
 				tag = properties['huhu-type'];
 			if (typeof tag !== 'string') return result;
 			result.tag = tag;
-			if (tag === 'person' || tag === 'company') {
-				const legacy = parseRecord(raw, path, modified);
-				if (!legacy) throw new ArchiveError('invalid-legacy');
-				result.legacy = { ...legacy, raw: '' }; // The parser's raw is intentionally not retained in the index.
-				if (identifier(legacy.id)) result.entity = adaptLegacy(legacy, result.hash);
-				result.diagnostics.push(
-					...legacy.errors.map((detail) => ({
-						code: 'invalid-format' as const,
-						path,
-						id: legacy.id,
-						detail,
-					})),
-				);
-			} else if (tag === DEFINITION_TAG) result.definition = await decodeDefinition(raw);
-			else if (tag === ENTITY_TAG)
+			if (tag === DEFINITION_TAG) result.definition = await decodeDefinition(raw);
+						else if (tag === ENTITY_TAG)
 				result.entity = decodeEntity(
 					raw,
 					path,
@@ -247,11 +211,8 @@ export class ArchiveIndex {
 		this.diagnosticCache = undefined;
 		this.queryCache = undefined;
 	}
-	apply(entry: IndexedArchive, deferLegacy = false): void {
-		const previous = this.entries.get(entry.path),
-			affected = new Set<string>([entry.path]);
-		for (const key of [entry.path, previous?.entity?.id, entry.entity?.id])
-			if (key) for (const owner of this.legacyDependents.get(key) ?? []) affected.add(owner);
+	apply(entry: IndexedArchive): void {
+		const previous = this.entries.get(entry.path);
 		this.detach(entry.path);
 		this.entries.set(entry.path, entry);
 		if (entry.entity) {
@@ -262,29 +223,22 @@ export class ArchiveIndex {
 		if (entry.definition) add(this.schemaPaths, entry.definition.revisionId, entry.path);
 		if (entry.collectionId) this.collections.set(entry.path, entry.collectionId);
 		if (entry.relation) this.attachEdge(entry.path, entry.relation);
-		if (entry.legacy) this.trackLegacy(entry.legacy);
 		if (entry.operation) {
 			add(this.operationIds, entry.operation.id, entry.path);
-			add(this.ownerOperations, entry.operation.ownerId, entry.path);
 		}
 		this.invalidate(!!(entry.definition || previous?.definition || entry.collectionId || previous?.collectionId));
-		if (!deferLegacy) for (const owner of affected) this.refreshLegacy(owner);
 	}
 	delete(path: string, folder = false): void {
 		const paths = folder
 				? [...this.entries.keys()].filter((item) => item === path || item.startsWith(path + '/'))
-				: [path],
-			affected = new Set<string>();
+				: [path];
 		let schema = false;
 		for (const item of paths) {
 			const previous = this.entries.get(item);
 			schema ||= !!(previous?.definition || previous?.collectionId);
-			for (const key of [item, previous?.entity?.id])
-				if (key) for (const owner of this.legacyDependents.get(key) ?? []) affected.add(owner);
 			this.detach(item);
 		}
 		this.invalidate(schema);
-		for (const owner of affected) this.refreshLegacy(owner);
 	}
 	private detach(path: string): void {
 		const previous = this.entries.get(path);
@@ -296,33 +250,10 @@ export class ArchiveIndex {
 		if (previous?.definition) remove(this.schemaPaths, previous.definition.revisionId, path);
 		this.collections.delete(path);
 		if (previous?.relation) this.detachEdge(path);
-		for (const key of this.virtualByOwner.get(path) ?? []) this.detachEdge(key);
-		this.virtualByOwner.delete(path);
-		if (previous?.legacy) {
-			for (const key of this.legacyKeysByOwner.get(path) ?? []) remove(this.legacyDependents, key, path);
-			this.legacyKeysByOwner.delete(path);
-		}
 		if (previous?.operation) {
 			remove(this.operationIds, previous.operation.id, path);
-			remove(this.ownerOperations, previous.operation.ownerId, path);
 		}
 		this.entries.delete(path);
-	}
-	private trackLegacy(record: ArchiveRecord): void {
-		const keys = new Set<string>();
-		for (const ref of [
-			...record.employments.map((job) => job.company),
-			...record.relations.flatMap((relation) => [relation.person, relation.company]),
-		]) {
-			if (ref.id) keys.add(ref.id);
-			if (ref.link) {
-				// The resolver below handles .. and encoded links; dependencies also index the exact resolved path.
-				const path = legacyLinkPath(record.path, ref.link);
-				if (path) keys.add(path);
-			}
-		}
-		this.legacyKeysByOwner.set(record.path, keys);
-		for (const key of keys) add(this.legacyDependents, key, record.path);
 	}
 	private attachEdge(key: string, edge: RelationRecord): void {
 		this.edges.set(key, edge);
@@ -339,38 +270,6 @@ export class ArchiveIndex {
 		remove(this.edgeTypes, edge.relationTypeId, key);
 		for (const id of new Set([edge.sourceId, edge.targetId, ...Object.values(edge.contextRefs)]))
 			remove(this.adjacency, id, key);
-	}
-	private refreshLegacy(path: string): void {
-		for (const key of this.virtualByOwner.get(path) ?? []) this.detachEdge(key);
-		this.virtualByOwner.delete(path);
-		const entry = this.entries.get(path);
-		if (!entry?.legacy) return;
-		if (entry.entity) {
-			const previous = `preset-${entry.entity.typeId}-v1`;
-			entry.entity.schemaRevisionId = this.schemas().revisions.has(previous) ? previous : presetRevisionId(entry.entity.typeId);
-		}
-		const projection = projectLegacy(entry.legacy, {
-			byId: (id) => this.entitiesById(id),
-			byPath: (path) => this.entries.get(path)?.entity,
-		});
-		entry.diagnostics = entry.diagnostics.filter(
-			(item) => !['missing-endpoint', 'reference-conflict', 'duplicate-id'].includes(item.code),
-		);
-		entry.diagnostics.push(...projection.diagnostics);
-		const keys = new Set<string>();
-		for (const edge of projection.relations) {
-			const previous = `preset-${edge.relationTypeId}-v1`;
-			if (this.schemas().revisions.has(previous)) edge.schemaRevisionId = previous;
-			const key = `virtual:${path}:${edge.id}`;
-			keys.add(key);
-			this.attachEdge(key, edge);
-		}
-		this.virtualByOwner.set(path, keys);
-		this.diagnosticCache = undefined;
-		this.queryCache = undefined;
-	}
-	refreshAllLegacy(): void {
-		for (const entry of this.entries.values()) if (entry.legacy) this.refreshLegacy(entry.path);
 	}
 	entry(path: string): IndexedArchive | undefined {
 		const item = this.entries.get(path);
@@ -416,34 +315,12 @@ export class ArchiveIndex {
 	collectionPaths(): string[] {
 		return [...this.collections.keys()];
 	}
-	private visible(edge: RelationRecord): boolean {
-		if (edge.legacy)
-			return ![...(this.ownerOperations.get(edge.legacy.ownerId) ?? [])].some((path) => {
-				const operation = this.entries.get(path)?.operation;
-				return (
-					operation?.kind === 'migration' &&
-					(operation.state === 'committed' ||
-						(operation.state === 'rolling-back' && operation.verified.includes(operation.owner.path)))
-				);
-			});
-		if (!edge.provenance) return true;
-		const operation = this.operationValue(edge.provenance.migrationId),
-			owner = this.entity(edge.provenance.legacyOwnerId);
-		if (operation?.state === 'rolled-back') return false;
-		if (owner?.format === 2 && owner.migrationId === edge.provenance.migrationId) return true;
-		return (
-			operation?.state === 'committed' ||
-			(operation?.state === 'rolling-back' && operation.verified.includes(operation.owner.path))
-		);
-	}
-	allRelations(typeId?: string, includeDeleted = false, includeStaged = false): RelationRecord[] {
+	allRelations(typeId?: string, includeDeleted = false): RelationRecord[] {
 		const values = typeId
 			? [...(this.edgeTypes.get(typeId) ?? [])].map((key) => this.edges.get(key)!)
 			: [...this.edges.values()];
 		return copy(
-			values.filter(
-				(edge) => (includeDeleted || edge.lifecycle !== 'deleted') && (includeStaged || this.visible(edge)),
-			),
+			values.filter((edge) => includeDeleted || edge.lifecycle !== 'deleted'),
 		);
 	}
 	relationCount(id: string): number {
@@ -456,7 +333,7 @@ export class ArchiveIndex {
 	private adjacent(id: string): RelationRecord[] {
 		return [...(this.adjacency.get(id) ?? [])]
 			.map((key) => this.edges.get(key)!)
-			.filter((edge) => this.visible(edge) && edge.lifecycle !== 'deleted');
+			.filter((edge) => edge.lifecycle !== 'deleted');
 	}
 	relations(id: string): RelationResult {
 		const diagnostics = this.diagnostics().filter((item) => item.id === id || item.relatedIds?.includes(id));
@@ -619,31 +496,12 @@ export class ArchiveIndex {
 						id: entity.id,
 						detail: entity.schemaRevisionId,
 					});
-				if (entity.migrationId) {
-					const operation = this.operation(entity.migrationId);
-					if (!operation || operation.state !== 'committed')
-						result.push({
-							code: 'pending-migration',
-							path: entity.path,
-							id: entity.id,
-							detail: entity.migrationId,
-						});
-					for (const id of entity.expectedRelationIds ?? []) {
-						const edge = this.relation(id);
-						if (
-							!edge ||
-							edge.provenance?.migrationId !== entity.migrationId ||
-							edge.provenance.legacyOwnerId !== entity.id
-						)
-							result.push({ code: 'pending-migration', path: entity.path, id: entity.id, detail: id });
-					}
-				}
 			}
 		const cardinalities = new Map<string, { max: number; edges: RelationRecord[] }>(),
 			duplicates = new Map<string, RelationRecord[]>(),
 			graphs = new Map<string, RelationRecord[]>();
 		for (const edge of this.edges.values()) {
-			if (!this.visible(edge) || edge.lifecycle === 'deleted') continue;
+			if (edge.lifecycle === 'deleted') continue;
 			const type = this.schemas().revisions.get(edge.schemaRevisionId)?.definition;
 			if (type?.kind !== 'relation-type') {
 				report('missing-definition', edge, edge.schemaRevisionId);
@@ -720,14 +578,6 @@ export class ArchiveIndex {
 					report('cycle', edge);
 		}
 		for (const operation of this.operations()) {
-			const owner = this.entity(operation.ownerId);
-			if (
-				operation.state === 'committed' &&
-				operation.kind === 'migration' &&
-				owner &&
-				(owner.format !== 2 || owner.migrationId !== operation.id)
-			)
-				result.push({ code: 'migration-conflict', path: owner.path, id: owner.id, detail: operation.id });
 			if (operation.state !== 'committed' && operation.state !== 'rolled-back')
 				result.push({
 					code: 'pending-migration',

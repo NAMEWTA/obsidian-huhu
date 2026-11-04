@@ -1,5 +1,7 @@
 import { ARCHIVE_PATHS } from '../../../shared/storage/vault-layout';
-import { ContactsError, type RecordKind } from './model';
+import { ContactsError } from './files';
+
+type RecordKind = 'person' | 'company';
 
 export const archiveEntryName = ARCHIVE_PATHS.entry;
 export const archiveCategories: Record<RecordKind, string> = { person: ARCHIVE_PATHS.people,
