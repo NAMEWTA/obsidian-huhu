@@ -2,15 +2,16 @@
 
 Lead: host:claude-code/root。生成：2026-11-04，HEAD a1e0031 之上的 T-38 验收快照。`docs/e2e` 按 LOG-025 不重建；票级细节见各 `evidence/T-xx.md`（纯文本路径）。
 
+AC-311 于 2026-11-04 经用户授权的 Windows CI 例外运行后关闭。
+
 状态取值：passed / passed（宿主部分待用户真机验收）/ CI 待统一处理（用户 2026-11-04 指示 CI/CD 之后统一解决）/ withdrawn（OOS-008、ADR-011）/ cancelled（负责票取消，不作通过结论）。
 
 ## 统计（46 条 AC）
 
 | 状态 | 数量 | AC |
 |---|---|---|
-| passed | 26 | 001, 002, 191, 192, 201, 221, 231, 241, 262, 271, 312, 321, 331, 332, 352, 353, 401, 402, 403, 404, 405, 407, 408, 901, 902, 903 |
+| passed | 27 | 001, 002, 191, 192, 201, 221, 231, 241, 262, 271, 311, 312, 321, 331, 332, 352, 353, 401, 402, 403, 404, 405, 407, 408, 901, 902, 903 |
 | passed（宿主部分待用户真机验收） | 5 | 163, 202, 211, 251, 351 |
-| CI 待统一处理 | 1 | 311 |
 | withdrawn | 7 | 161, 162, 281, 282, 291, 293, 406 |
 | cancelled | 7 | 261, 283, 284, 292, 301, 341, 342 |
 
@@ -34,7 +35,7 @@ Lead: host:claude-code/root。生成：2026-11-04，HEAD a1e0031 之上的 T-38 
 | AC-281、AC-282、AC-291 | T-04、T-06、T-09 | withdrawn | 各票 evidence | huhubot 删除（OOS-008） |
 | AC-283、AC-284、AC-292、AC-301、AC-341、AC-342 | T-05、T-07、T-08、T-10 | cancelled | 各票 evidence | 负责票随 huhubot 删除取消 |
 | AC-293 | T-11 | withdrawn | evidence/T-11.md | ADR-011 |
-| AC-311 | T-12、T-13 | CI 待统一处理 | evidence/T-12.md、evidence/T-13.md | Linux 20 轮 96/96 有序；Windows run 41633805663 attempt 1 success、attempt 2 failure（细节未取回） |
+| AC-311 | T-12、T-13 | passed | evidence/T-12.md、evidence/T-13.md（AC-311 关闭） | Linux 20 轮 96/96 有序；Windows run 41752095795 连续两次 20/20（每轮 96/96、无顺序违例） |
 | AC-312 | T-13 | passed | evidence/T-13.md | hooks 10 文件 85 例 |
 | AC-321 | T-22 | passed | evidence/T-22.md | 决定表；stop-native 本机 64 次未复现，记为未复现非已修复 |
 | AC-331 | T-02、T-37 | passed | evidence/T-37.md | check:bundle within limits，阈值未改 |
@@ -52,5 +53,5 @@ Lead: host:claude-code/root。生成：2026-11-04，HEAD a1e0031 之上的 T-38 
 
 ## 未验收项（不填成通过）
 
-- CI 待统一处理：AC-311 Windows 多轮复核；release 工作流实跑；hook/perf workflow 在最新 HEAD 上的结果。
+- CI 待统一处理：release 工作流实跑（AC-405 的发行部分）；perf workflow 在最新 HEAD 上的结果。
 - 待用户真机验收：AC-163 实际启动预算、AC-202/211/251/351 宿主内表现；Windows/macOS 实机。
