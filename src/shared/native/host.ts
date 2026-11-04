@@ -175,7 +175,7 @@ export class NativeReplyError extends Error {
 export interface NativeConnection {
 	/** Bounded pure profile read of this captured generation; never starts a helper or consults later process.env. */
 	spawnEnvironment?(overrides: Readonly<Record<string, string>>): NativeSpawnEnvironment;
-	readonly editorTransactions: 1;
+	readonly editorTransactions?: 1;
 	/** Original lease/generation/SID handle only. No capability means no fallback paste/Enter. */
 	editorBinding(sid: number): NativeEditorBinding | undefined;
 	readonly alive: boolean;

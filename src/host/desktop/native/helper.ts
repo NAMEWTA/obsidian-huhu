@@ -141,7 +141,7 @@ export class PtyHelper {
 	terminalTermination?: 1;
 	readonly replySettlement = 1;
 	readonly localControl = 1;
-	readonly editorTransactions = 1;
+	editorTransactions?: 1;
 	private platform = '';
 	private readonly terminationSequences = new Map<number, number>();
 
@@ -227,12 +227,16 @@ export class PtyHelper {
 		}
 		const capabilities: Record<string, unknown> = hello.capabilities && typeof hello.capabilities === 'object' ? hello.capabilities as Record<string, unknown> : {};
 		const limits = parseNativeInputLimits(hello.inputLimits);
-		const missing = ['inputAdmission', 'outputAbandon', 'replySettlement', 'localControl', 'editorTransactions'].filter(name => capabilities[name] !== 1);
+		const required = ['inputAdmission', 'outputAbandon', 'replySettlement', 'localControl'];
+		// Foreground ownership, and therefore editor transactions, is Linux-only.
+		if (process.platform === 'linux') required.push('editorTransactions');
+		const missing = required.filter(name => capabilities[name] !== 1);
 		if (!limits) missing.push('inputLimits');
 		if (missing.length)
 			return helper.startFailed(new Error(
 				`The terminal helper does not declare the required capabilities (${missing.join(', ')}); this plugin needs protocol ${HELPER_PROTOCOL} with all of them. Install the matching release.`,
 			));
+		if (capabilities.editorTransactions === 1) helper.editorTransactions = 1;
 		helper.pid = typeof hello.pid === 'number' ? hello.pid : 0;
 		helper.version = typeof hello.version === 'string' ? hello.version : '';
 		helper.platform = typeof hello.platform === 'string' ? hello.platform : '';
@@ -643,6 +647,7 @@ export class PtyHelper {
 		};
 		if (this.spawns.size >= 32 || this.terminationSequences.size >= 32)
 			return none('Native session capacity exceeded');
+		if (options.editor && this.editorTransactions !== 1) return none('Native editor transactions are unavailable');
 		let editor: EditorBindingState | undefined;
 		try {
 			controlBytes({ type: 'spawn', sid, ...options });

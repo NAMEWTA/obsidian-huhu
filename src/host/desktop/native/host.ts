@@ -592,7 +592,7 @@ export class NativeHost implements NativeHostAccess {
 			}
 		};
 		return {
-			editorTransactions: 1 as const,
+			get editorTransactions() { return generation.helper?.editorTransactions; },
 			editorBinding: sid => {
 				const helper = pty(sid), running = owner.running.get(sid);
 				if (!running?.editorLaunch) return;
