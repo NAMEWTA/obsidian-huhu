@@ -1,6 +1,8 @@
 # 首页可选恢复时限
 
-状态：Accepted（已采纳决策；实现和验收状态沿来源分别核验）
+状态：Superseded（2026-11-04）
+
+Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-003（可选初始化不进入启动关键路径）与 ADR-001（网易云音乐及其 Cookie 恢复已删除）。ADR-001 的 5 秒等待上限不再存在；其“迟到的 Cookie 不能登录”“计时器属于所属窗口”的保护已作为一般原则并入后继。正文原样保留为历史。
 
 日期：2026-10-31
 

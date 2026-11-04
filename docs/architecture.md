@@ -40,7 +40,7 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 - agent 管理 CLI/PTY、Space、账号、技能、标签及工作空间用量。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
-- archives 在一个领域内管理类型/字段、表单、模板、实体、关系与视图；公开 catalog/query/commands 和工作台契约。v1 只留在适配边界，v2 定义修订和恢复计划随可见资料保存；详见[档案实施方案](archives-implementation.md)。
+- archives 在一个领域内管理类型/字段、表单、模板、实体、关系与视图；公开 catalog/query/commands 和工作台契约。v2 定义修订和恢复计划随可见资料保存；详见[档案实施方案](archives-implementation.md)。
 - versioning 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。HistoryQueryService 负责纯读取；NoteReviewService 固定来源 buffer 与比较会话；RestoreService 通过共享写入队列、检查点与正文适配器恢复，SyncService 保留同步调度。
 - app/editor-panel 提供同窗口 EditorContextAccess 和批注/历史宿主；revision-review 复用工作台贡献，不新增 Obsidian 原生视图类型。comments 的写入参与者只映射锚点，不回滚评论消息。
 

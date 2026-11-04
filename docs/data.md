@@ -50,7 +50,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
 | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |
 | 智能体空间、会话与布局 | `.huhu/terminal-agent/<device-id>/workbench-v2.json`：稳定 Space/Session、目录授权、按空间分开的布局 |
-| 智能体被动邮箱 | 同一 `workbench-v2.json` 的可选 `inbox` 子文档：保存带原 Space/Session 收件人、有限正文、描述性来源、Vault 文件元数据引用、单调序号与一次性 ack 的消息；旧记录缺少该字段时只读为空。发送与 ack 由唯一 SpaceService writer 排队 |
+| 智能体被动邮箱 | 同一 `workbench-v2.json` 的必需 `inbox` 子文档（缺失或格式无效按无效记录处理，不补空文档）：保存带原 Space/Session 收件人、有限正文、描述性来源、Vault 文件元数据引用、单调序号与一次性 ack 的消息。发送与 ack 由唯一 SpaceService writer 排队 |
 | 智能体统计 | `stats.json` / `workspace-stats.json` |
 | 备份包与导入报告 | `.huhu/exports/huhu-backup-<时间>.json`；`.huhu/recovery/backup-import/last.json` |
 | 恢复副本与事务日志 | `.huhu/recovery/transaction/`：`journal.a.json` / `journal.b.json` 与 `<操作 ID>/old-*.txt`、`new-*.txt` |
@@ -108,7 +108,7 @@ v2 记录由当前 TypeScript 进程懒取得一个本机排他监听来保护�
 
 其他模块要复用同一恢复协议，在应用的 `recovery` 主机注册自己的文件 owner（预检、关闭写入口、严格排空、采用重载、释放），详见[智能体工作台](agent-workbench.md#恢复协议)。
 
-新 v2 不覆盖旧 `workspace.json`；业务入口（看板按钮、技能按钮、快捷命令、一次性运行、自动化智能体/脚本操作）已要求明确的 Space，旧定义保持未绑定并等待你选择。当前模块内缺少明确目标的创建入口会要求选择空间，即使只有一个候选也不会猜测。无空间时网页仍可打开。遇到不支持的新版本或损坏且无有效备份的数据时保留原件，停止写入并显示错误；有效备份的恢复写入也受同一 writer 保护。
+业务入口（看板按钮、技能按钮、快捷命令、一次性运行、自动化智能体/脚本操作）要求明确的 Space。当前模块内缺少明确目标的创建入口会要求选择空间，即使只有一个候选也不会猜测。遇到不支持的新版本或损坏且无有效备份的数据时保留原件，停止写入并显示错误；有效备份的恢复写入也受同一 writer 保护。
 
 ## 多设备与同步
 

@@ -1,6 +1,8 @@
 # Bot应用权威与恢复边界
 
-状态：Accepted（已采纳决策；实现和验收状态沿来源分别核验）
+状态：Superseded（2026-11-04，整份失去对象）
+
+Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-001：huhubot（Go Runner、HAP、Bot 客户端）已整体删除（来源 change 2026-10-31-dev-stabilization-overhaul 的 ADR-010，不保留空壳）；ADR-011 同时撤回旧 Profile 的保留义务。本文 ADR-001–011、013、014、016–024、027（含 Profile WAL 与持久屏障）因此不再约束任何现行代码，不得作为现役约束引用；正文原样保留为历史推理，重新引入 Bot 需从新的设计与 ADR 开始。
 
 日期：2026-10-31
 

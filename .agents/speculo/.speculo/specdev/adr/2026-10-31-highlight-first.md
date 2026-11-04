@@ -28,4 +28,4 @@ HiLighter 的划词→卡片交互可借鉴，但其 [IndexedDB + 同步文件](
 
 ### Verification / Migration
 
-所有 CRUD 保证 Markdown 字节不变；沿用 App 级实例交接与串行写入。迁移先备份并验证，失败保留旧数据且不静默覆盖；v1 继续单独提示，不宣称已兼容。精确新数据与迁移合同在 Grill 后续轮次关闭，再由 Spec 定义验收。
+所有 CRUD 保证 Markdown 字节不变；沿用 App 级实例交接与串行写入。迁移先备份并验证，失败保留旧数据且不静默覆盖；v1 继续单独提示，不宣称已兼容。（2026-11-04 修订：评论 v1/v2 迁移与备份已随发布前无兼容义务删除，见 [ADR-002](2026-11-04-dev-stabilization-overhaul.md)；现行 sidecar 只认 version 3，其他版本按无效文件拒绝，不改写。）精确新数据与迁移合同在 Grill 后续轮次关闭，再由 Spec 定义验收。

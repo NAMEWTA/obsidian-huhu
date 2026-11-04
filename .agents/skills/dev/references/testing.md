@@ -27,7 +27,7 @@
 
 ## Vitest
 
-当前配置包含 `unit`（Obsidian 别名到 `scripts/obsidian-stub.ts`，node 环境）、`settings-iconic`（列出的设置/Iconic 测试，使用专用桩）、`dom`（happy-dom，包含 `src/**/*.dom.test.tsx`，Obsidian 使用普通桩）与 `native-integration`。后者使用普通桩，在其余项目完成后以单 worker 串行运行真实 Git 和 Chrome 测试，避免 Windows 子进程启动与磁盘 IO 竞争；各用例保留原有超时和断言。`unit` 排除另三个项目的用例，避免重复执行。JSX 统一为 React，不设置兼容运行时别名；组件约定见 [ui 技能](../../ui/SKILL.md)。初始化文件 `scripts/module-strings.ts` 注册模块词典和懒加载词典，所以组件渲染的是真实文案。`.svg` 和 `.md` 导入与打包一样按文本加载。
+当前配置包含 `unit`（Obsidian 别名到 `scripts/obsidian-stub.ts`，node 环境）、`settings-iconic`（列出的设置/Iconic 测试，使用专用桩）、`dom`（happy-dom，包含 `src/**/*.dom.test.tsx`，Obsidian 使用普通桩）与 `native-integration`。后者使用普通桩，在其余项目完成后以单 worker 串行运行真实 Git 和 Chrome 测试，避免 Windows 子进程启动与磁盘 IO 竞争；各用例保留原有超时和断言。并行项目的 worker 上限为核数的一半（`maxWorkers: '50%'`）：不少用例带真实时限（进程树回收、真实文件系统、重型 DOM 渲染），满额并行时机器上稍有其他负载就会随机越界；调度调整不放宽任何时限或断言。`unit` 排除另三个项目的用例，避免重复执行。JSX 统一为 React，不设置兼容运行时别名；组件约定见 [ui 技能](../../ui/SKILL.md)。初始化文件 `scripts/module-strings.ts` 注册模块词典和懒加载词典，所以组件渲染的是真实文案。`.svg` 和 `.md` 导入与打包一样按文本加载。
 
 纯逻辑测试是就近的 `*.test.ts`，React 交互测试是 `*.dom.test.tsx` 文件，从 `vitest` 导入 `test`/`vi`，而不是新增验证脚本。测试在 `pnpm run build` 期间由 `tsconfig.test.json` 做类型检查。测试依赖的时区或时钟要固定（`vi.useFakeTimers({ now, toFake: ['Date'] })`）。
 

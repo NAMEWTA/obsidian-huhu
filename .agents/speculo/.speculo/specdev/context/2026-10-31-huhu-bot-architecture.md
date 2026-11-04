@@ -2,6 +2,8 @@
 
 类型：domain-terms
 
+状态：Superseded（2026-11-04，整份失去对象）。huhubot 已整体删除，见 [adr/2026-11-04-dev-stabilization-overhaul.md](../adr/2026-11-04-dev-stabilization-overhaul.md) ADR-001；下列术语（Run、Effect、Receipt、Checkpoint 等）不再对应任何现行实现，不得作为现役术语引用。正文原样保留为历史。
+
 适用范围：2026-10-25-huhu-bot-architecture 的已采纳领域合同；目标与实际实现分别判断。
 
 来源：[CONTEXT.md](../changes/archive/2026-10-25-huhu-bot-architecture/CONTEXT.md)，SHA-256 `3736d058bb3b1667bfc3f22c1ba8e7305f12ed270c4f43b1db1cafd26f964614`；关联[决策](../adr/2026-10-31-huhu-bot-architecture.md)。提升日期：2026-10-31；网关 owner：specdev/archive-and-consolidate，codex:/root。

@@ -1,4 +1,4 @@
-# 浏览器历史档案边界
+# 档案与历史边界（原含浏览器，浏览器条目已退出现役）
 
 状态：Accepted（已采纳决策；实现和验收状态沿来源分别核验）
 
@@ -9,6 +9,8 @@
 来源：[2026-10-26-unified-browser-versioning-archives / ADR.md](../changes/archive/2026-10-26-unified-browser-versioning-archives/ADR.md)，原始字节 SHA-256 `d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3`。授权与归档范围见[原请求](../changes/archive/2026-10-26-unified-browser-versioning-archives/archive-approval.md)。
 
 本条保留长期取舍、边界与恢复义务；归档不证明下述目标已全部实现。原始理由、被拒方案、研究引用及验证合同随来源保留；本次未重新联网核验历史外部资料。
+
+2026-11-04 部分失效：ADR-004、ADR-006（浏览器）已 superseded；ADR-001 的 v1 兼容与迁移条款已作修订标注；ADR-002、003、005 仍现役。依据见 [产品线收缩与发布前无兼容义务](2026-11-04-dev-stabilization-overhaul.md)。
 
 ## ADR-001: 通用档案采用 v2 身份、独立关系和可携带业务事实
 
@@ -22,11 +24,11 @@
 
 ### Context / Trade-off / Consequences
 
-来源已比较旧内嵌表、整库 JSON 与独立关系文件；采用独立文件便于携带、审查和局部恢复，但文件数量增大，必须验证三万业务文件场景。隐藏设备日志不能决定业务权威；v1 保持可读、既有基本字段按旧 codec 路由写入，关系和新字段写入必须显式迁移。
+来源已比较旧内嵌表、整库 JSON 与独立关系文件；采用独立文件便于携带、审查和局部恢复，但文件数量增大，必须验证三万业务文件场景。隐藏设备日志不能决定业务权威。（2026-11-04 修订：原“v1 保持可读、既有基本字段按旧 codec 路由写入、关系和新字段显式迁移”已失效——v1 个人/企业适配器与迁移预检随发布前无兼容义务删除，见 [ADR-002](2026-11-04-dev-stabilization-overhaul.md)；非 v2 外层标识的文件按未知记录报告，不读取也不改写。）
 
 ### Verification / Migration
 
-Spec AC-018–025、027–030。迁移稳定 ID、源 hash、关系预写/读回、owner CAS、可携带回执和冲突回退必须验证；现有旧 parser 对 v2 标识拒绝写入须保留。采纳不代表 P0–P4 已落地。
+Spec AC-018–025、027–030。迁移稳定 ID、源 hash、关系预写/读回、owner CAS、可携带回执和冲突回退必须验证；现有旧 parser 对 v2 标识拒绝写入须保留。（2026-11-04 修订：旧 parser 已不存在，“拒绝写入 v2”的保护义务随之消失；迁移稳定 ID、源 hash、关系预写/读回等验证仅适用于用户自定义类型的 schema 升级迁移。）采纳不代表 P0–P4 已落地。
 
 
 ## ADR-002: 受管档案历史覆盖由档案 owner 预检
@@ -71,7 +73,7 @@ Spec AC-017、AC-034。固定时钟和内容变化验证周期/事件采样、�
 
 ## ADR-004: 浏览器以四组桌面平台作为完整交付门
 
-**Status:** accepted
+**Status:** superseded（2026-11-04；Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-001：浏览器已整体删除，其交付门不再适用）
 **Source:** LOG-007；[Issue #1 NFR-05、8.3、21.2](../changes/archive/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“按你说的这四组”
 **Supersedes:** none
 
@@ -109,7 +111,7 @@ Spec AC-020、024–026、AC-033。从真实表单/删除/迁移/历史恢复入
 
 ## ADR-006: Cookie 与 Identity 为必需，origin storage 保留条件扩展
 
-**Status:** accepted
+**Status:** superseded（2026-11-04；Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-001：浏览器及其 Cookie/Identity、origin storage 已整体删除）
 **Source:** LOG-009；[Issue #1 FR-17 与 12.5](../changes/archive/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“保持扩展，Cookie/Identity 为必需”
 **Supersedes:** none
 

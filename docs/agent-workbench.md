@@ -287,7 +287,7 @@ OpenCode 和 Gemini CLI 的按钮须将技能名称留空，通过普通提示�
 
 ## 终端组件
 
-终端由一个小型原生程序 `huhu-pty` 运行（MIT，源码在 `native/pty-server`）。插件只通过它的标准输入输出通信，不监听端口，也不需要令牌。启动时 HUHU 核对协议版本（3），版本不符时明确失败。插件停止时，它会结束全部终端。在 Windows 上使用 ConPTY，并通过作业对象保证子进程随之退出。
+终端由一个小型原生程序 `huhu-pty` 运行（MIT，源码在 `native/pty-server`）。插件只通过它的标准输入输出通信，不监听端口，也不需要令牌。启动时 HUHU 核对协议版本（3），版本不符，或握手缺少当前所需的任一能力声明时，同样明确失败，不降级运行。插件停止时，它会结束全部终端。在 Windows 上使用 ConPTY，并通过作业对象保证子进程随之退出。
 
 组件为 Windows x64、macOS x64/arm64、Linux x64/arm64 发布，始终由 CI 构建。首次使用从插件同版本 Release 下载 `huhu-pty-<平台>-<架构>`（Windows 加 `.exe`）与正式摘要，保存到 `.huhu/helpers/<device-id>/<platform-arch>/<version>/`。各版本独立，升级保留旧文件。摘要缺失或不匹配时停止并保留来源。
 
