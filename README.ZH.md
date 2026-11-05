@@ -3,7 +3,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/brand/huhu-logo-dark.svg">
-    <img src="assets/brand/huhu-logo-light.svg" width="360" height="126" alt="HUHU 虎虎卡通品牌标识：圆脸橘色虎斑猫，双白前爪轻收在下巴下方">
+    <img src="assets/brand/huhu-logo-light.svg" width="360" height="126" alt="HUHU 虎虎卡通品牌标识：侧身蜷躺、抬起白爪打招呼的橘色虎斑猫">
   </picture>
 </p>
 

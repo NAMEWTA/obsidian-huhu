@@ -1,39 +1,28 @@
-HUHU 虎虎软萌卡通品牌生成记录
+HUHU 品牌概念图来源
 
-生成日期：2026-11-05
-工具：OpenAI image_gen（内置图像生成工具）
-背景：两轮均使用 transparent_background=true
-参考：本次直接逐张查看用户提供的四张虎虎原始照片，并以四张照片作为第一轮生成参考。第二轮以第一轮草图为编辑对象，同时保留四张原图作为身份参考。私人原始照片不提交到仓库。
-用途：从真实虎虎的橘色虎斑、黄绿眼睛、白下巴、白色胸腹、四只白袜爪与收爪姿势提炼更软萌的品牌角色。短圆耳、大头和短身体是卡通比例处理。
-最终选择：第二轮的大头短身、圆脸闭嘴、双白爪收在下巴下的版本。
-说明：huhu-imagegen.png 保留第二轮最终生成图的原始字节。正式 SVG 是据此手工绘制的原生矢量适配稿，保持角色和比例，简化光影与轮廓；不是原始 PNG 的无损矢量转换。
+本轮方向：整体协调的完整虎虎形象，沿用用户偏好的仰躺抬爪构图。
+工具：image_gen（透明背景编辑）。
+轮次：本轮共 1 次编辑生成，保留该次输出为 huhu-imagegen.png。
 
-第一轮：直接参考四张原始照片
+输入角色：
+1. 指定的当前大头版品牌图：本轮编辑目标，用于明确被修改的既有品牌资产。
+2. 用户本轮附上的完整虎虎卡通截图：本轮构图、头身比例和姿态的主要参考；截图中的棋盘格、编辑／分享控件不属于设计。
+3. 一张用户提供的虎虎原始照片：只辅助橘色虎斑、黄绿眼、粉鼻、白胸腹与白袜爪等身份特征，不覆盖用户指定的卡通表情和姿态。
 
-Use case: logo-brand.
-Asset type: HUHU / 虎虎, a very cute chibi cartoon cat brand icon. One single complete mascot, square canvas, real transparent alpha.
-Input images: ALL FOUR supplied images are ORIGINAL PHOTOS OF THE SAME REAL CAT HUHU. Study the photos carefully for actual identity, coat colors and pose. They are the only visual references. The owner specifically wants a MUCH CUTER, MORE CARTOONISH design grounded in THIS cat.
+上述输入图片不随本 PR 上传。huhu-imagegen.png 保留生成输出的原始字节。
+正式 huhu-mark.svg 等文件为依据最终概念图绘制的原生 SVG 适配稿，使用独立路径和统一平面配色。SVG 保留完整身体、抬爪、白腹和卷尾；它与生成概念图在局部色块、轮廓、阴影和细节上存在矢量化调整，不是 PNG 的无损转换，也不嵌入位图。
 
-Identity from the photos: warm golden-orange tabby, copper-orange M-shaped forehead stripes and cheek bands, very round curious yellow-green eyes with dark pupils, small pink nose, white chin and throat, broad soft white chest/belly, white front mittens and back socks. Huhu lies relaxed on its back with a big soft tummy, one front paw tucked up near its cheek and the other loosely curled over its chest. It has a mild innocent slightly puzzled expression, not an excited shouting face.
+完整生成提示词（原文）
+----------------------
+Edit the cat logo in reference image 1 (the existing huge-head orange cat brand asset) to fulfill the user's correction, using reference image 2 as the PRIMARY desired final character composition and proportions. Reference image 3 is a real photograph of the user's cat Huhu for markings and identity only.
 
-Primary design: turn Huhu into an irresistibly cute premium 2D chibi/dumpling mascot, approximately 1.6 heads tall. The head should be a big soft round-cheeked shape, about 65% of visual mass; body much smaller, squishy and bean-shaped. Head stays nearly upright with a gentle 8-degree curious tilt, round cheeks and tiny short rounded triangular ears; ears must be SMALL, not long/pointy. Face: large simple glossy dark round pupils with a narrow soft olive/yellow-green iris ring; one main white catchlight and one tiny dot. Eyes low on the face, far apart with plenty of forehead, no eyelids or eyelashes. A TINY soft pink nose and a tiny CLOSED rounded cat-w mouth. Two subtle peach cheek-blush ovals. White chin is a small rounded patch, not a huge split muzzle.
-Pose: Huhu is nestled belly-up like in the photos, very compact and almost circular, BOTH small white front mittens gently tucked under its chin/over the top of its white chest, one slightly higher beside the cheek. Small mitten paws are rounded like mochi, no giant waving paw, no heart-paw sign. A tiny rounded white hind foot on each bottom side, the peach pads may be tiny and subtle. Broad smooth white belly, short striped orange tail curled softly along lower right edge, few large simple copper stripe shapes. Every limb is short, rounded and cuddly.
-Styling: boldly CARTOON, super-deformed proportions, soft kawaii editorial/sticker character with a distinctive real-cat identity. Premium professional vector-friendly illustration with flat solid warm apricot orange, warm ivory white, soft pink, muted olive irises, cocoa brown outline; uniform medium-bold rounded contour. A maximum of two small soft CEL-SHADING patches, absolutely no gradients. All curves rounded, beautiful designed negative spaces, simple legible forms. Richness through personality, proportions and charming paw posture, never through busy fur detail. No jagged fur tufts, no long whisker forest (two short rounded whiskers per cheek is enough). Tiny nose/mouth, the adorable full cheeks and little tucked mittens dominate.
-Composition: one single isolated full mascot; centered; fits square with 8-10% transparent padding; all ears, paws and tail fully visible. Strong compact silhouette suitable for app icon and a clean SVG redraw. No additional objects, badge shape, props, floor, background, shadows, decorations, sparkles or hearts. No typography or letters. No realistic anatomy, no fox face, no tall ears, no open mouth or tongue, no teeth, no eye outlines resembling spectacles, no 3D toy/plastic shading.
-Output: a very cute, soft, calm, cuddly chibi Huhu on genuine transparency.
+The user dislikes the huge head and tiny body of image 1 and explicitly prefers the harmonious FULL-BODY reclining cartoon in image 2. Transform image 1 accordingly. Preserve the character identity, but return to the lively, balanced full-body pose in image 2: slightly tilted head in the upper-left; upright triangular cat ears with rounded tips; joyful open smile and small pink tongue; one front white-mitten paw folded softly over the chest, the other front paw raised at upper-right showing a cute soft pink heart-like central pad and small toe pads; a large visible cream-white chest and belly; one visible lower white hind paw; the other naturally occluded behind the body; one striped tail curling along the right side and the lower edge.
 
-第二轮：强化软萌 Q 版比例
+Match image 2 closely in the overall silhouette and body language. Make a careful refinement, not a different mascot. The lower body and belly must have real volume and length and visually balance the head. Reduce the head very modestly compared with image 2, while keeping it expressive: the head including ears should occupy approximately half of the total silhouette height, and the facial mass alone less than 40 percent. Do not preserve the enormous head from image 1. Do not compress the torso into a tiny bean. Do not turn it into a seated or frontal chibi doll. The head, ears, shoulders, wrist, hind paw, and tail should connect naturally. The raised paw should be rounded but not oversized. Keep a clear separation between forearm and tail; one continuous elegant tapering tail, not a balloon ring.
 
-Use case: logo-brand, targeted chibi-proportion revision.
-Input 1 is the CURRENT CARTOON EDIT TARGET. Inputs 2–5 are the original photographs of Huhu for identity only.
-Keep the current cartoon's tucked white front mittens, closed tiny w mouth, pink tiny nose, orange M forehead/cheek stripes, round olive/yellow-green eyes, white chin and irregular white chest/belly, two small white hind paws and orange striped tail.
+Identity from image 3: warm orange domestic tabby with copper-brown forehead M stripes and cheek stripes, yellow-green eyes with dark pupils, pink nose, white chin/chest/belly and white mittens. Image 2 is still the authoritative cartoon expression and pose; keep its smile and raised paw, even though the photo differs. Preserve cheerful cuteness through soft curves and bright eyes rather than head enlargement. Keep the eyes proportional to image 2, not much larger.
 
-Make a clearly MORE CHIBI, MORE CARTOONISH, MUCH CUTER app-logo version with these precise corrections:
-1. Head takes about TWO THIRDS of total visible height, including ears. Overall body is only 1.35 to 1.45 heads tall. Enlarge the face/round cheeks 15–20 percent and shorten the body height by about 40 percent. Broad squishy dumpling face and tiny bean body.
-2. Shrink BOTH ears to about HALF their current height. Tiny rounded triangular ears with soft rounded tips, almost plush bear-like smallness but unmistakably CAT. No tall pointed ears.
-3. Make the eyes innocent glossy DARK BROWN CIRCLES with only a THIN muted olive iris rim, small white catchlights, and a large calm gap between eyes. Tiny centered pink nose and very small rounded closed w mouth. Add gentle simple flat peach blush ovals.
-4. Both paws should be TINY round white mochi mittens held together close to the chin/chest; one a little higher. Keep all four limbs easy to count. Hind paws become small rounded white pebbles at the lower sides. Tail is slender and secondary, curls gently at lower right without forming a thick seat around the entire body.
-5. Flatten the art into exquisite professional 2D kawaii vector-style shapes: warm honey-apricot orange, light ivory, muted copper stripes, milk-chocolate outline. Smooth consistent medium-bold round strokes. SOLID FLAT COLORS with just one or two very simple cel-shadow patches. ZERO gradients, ZERO painted fur, ZERO airbrush shading. Remove tiny jagged fur notches. No extra texture. Short rounded whiskers only.
-6. Composition must be compact and round, about equal width and height, designed like an adorable premium stationery/app mascot. Keep all edges at least 8% from square canvas boundary. Transparent alpha only; no ground shadow, props, hearts, stars, accessories, letters, text, watermark or background shape.
+Style: polished professional cartoon brand mascot with clean smooth warm deep-brown outlines, warm golden-orange fur, soft apricot highlights, copper tabby stripes, ivory cream belly, yellow-green irises, restrained pink ears and pads. Friendly, cohesive, lively, not generic baby plush. Use flat vector-friendly color shapes and very restrained simple shading; no photographic fur texture, no airbrush bloom, no intricate clutter. Balanced detail and clear small-size silhouette. Refine the paw anatomy, keep uncluttered short whiskers, remove awkward overlaps and jagged shapes.
 
-This is a purposeful stylized chibi redesign from the photos, not a natural-anatomy portrait. Preserve the real cat's coat and calm curious feeling while strongly exaggerating the head/small-body proportions. One single final mascot.
+Output ONE centered complete mascot only on a genuinely transparent background with alpha. Square canvas, healthy 6–8 percent clear margin around every extremity, all ears, paws and tail fully visible. Absolutely no checkerboard pixels, no screenshot UI or bottom dark gradient from image 2, no edit/share buttons, no lettering, no HUHU text, no badge border, no decorative stars, no extra characters, no ground shadow.
+
