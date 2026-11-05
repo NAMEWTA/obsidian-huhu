@@ -1,21 +1,22 @@
-HUHU brand identity — imagegen provenance
+HUHU 虎虎卡通品牌生成记录
 
-1. Initial generation (transparent_background=true)
+生成日期：2026-11-05
+工具：OpenAI image_gen（内置图像生成工具）
+背景：transparent_background=true
+用途：虎虎完整卡通角色概念；正式可编辑 SVG 为人工整理的矢量适配稿。
+参考：本次会话中已有的两张虎虎猫咪草图，用作毛色和身份参考。未将用户的私人原始照片提交到仓库。
+说明：huhu-imagegen.png 保留本次生成输出的原始字节。正式 SVG 保留角色、配色和动作，对毛发与阴影作矢量化简化；不是原始 PNG 的无损矢量转换。
+
+完整生成提示词
 
 Use case: logo-brand.
-Asset type: production master symbol for HUHU, an Obsidian personal workbench bringing notes, tasks, modular dashboards, coding agents, archives and automations together, with content kept in the user's own vault.
-Create ONE original, exceptionally polished, memorable geometric brand icon on a genuinely transparent background. No text.
-Concept: "paired pages, one workspace". A confident capital H formed from TWO interlocking thick, rounded page/ribbon shapes. Two strong vertical pillars and a central joining bridge should read immediately as H. The two page modules carry a subtle open-book / side-by-side workspace feeling. Give the top and bottom interior openings a distinctive soft stepped curve, and a clean diagonal meeting seam through the central bridge. Friendly, calm, intelligent, quietly capable; premium independent productivity software.
-Keep the silhouette compact and beautifully balanced, near-square, with a generous sturdy visual weight, softly rounded outer corners, broad negative spaces, and only TWO essential filled shapes. Left page in deep evergreen teal (#246B58), right page in fresh muted mint green (#78BF9B). Flat solid colors, no gradients, no third color. It must also work as a one-color silhouette at 16–24 pixels.
-Composition: isolated symbol centered, occupying about 72 percent of a square 1024 by 1024 canvas, equal transparent margins. Front-facing precise vector-like edges, no perspective. No enclosing square, badge, or frame.
-Avoid: literal book outlines, generic dashboard grids, AI sparkle stars, robots, animals, circuits, nodes, Obsidian crystal, infinity sign, excessive tiny cutouts, hairlines, glossy 3D effects, shadows, grain, mockups, repeated variants, watermarks, typography.
-Produce the actual logo asset, not a presentation board.
+Asset type: definitive HUHU cartoon mascot logo for an Obsidian personal workbench, square composition with real transparent background.
+Input images: the two supplied orange-cat drawings are IDENTITY REFERENCES ONLY. Retain their real-cat identity: orange tabby, yellow-green rounded eyes, pink nose, white chin, broad white chest/belly, white mittens. The owner wants a substantially richer, livelier, more expressive CARTOON logo than those stiff portraits.
 
-2. Refinement of the first generated image (transparent_background=true)
+Primary request: create one exceptionally polished, charming, original 2D cartoon mascot of Huhu, a chubby orange tabby reclining and curled into a compact almost-circular silhouette. Big expressive head in the upper-left/center, a slight playful head tilt, two open curious yellow-green eyes with deep chocolate pupils and small bright highlights, rounded cheeks and a tiny open happy mouth with a pink tongue. Keep a recognizable dark orange M forehead pattern. Small rounded triangular pink inner ears and just a few purposeful cheek tufts.
+Pose: a clean readable playful three-quarter curl; cream-white belly below the head; one white front mitten resting over its belly; the other white front paw raised beside its right cheek with a clearly drawn large pink heart-shaped central pad and three toe pads. One small white hind paw at the bottom. A chunky orange tail with exactly three darker tabby bands curves around the lower-right side of the belly, making a strong enclosed rounded contour. Anatomically plausible, no extra limbs. Face and raised paw dominate, bodily shapes remain clear.
+Style/medium: richly characterized premium app mascot, joyful modern hand-designed flat vector illustration. Beautiful bold warm espresso outlines with round joins, harmonious simple shapes, clean minimal cel shading using only a few purposeful warm orange and pale cream color patches. Richness must come from character, pose, expression and clear layered anatomy, NOT fur noise. Crisp edges. No photorealism, no soft airbrush gradients, no 3D, no plastic shine. No dark muddy shading.
+Colors: vivid apricot/tangerine orange, burnt orange tabby stripes, warm cream whites, peach-pink pads and nose, yellow-green irises, warm deep espresso outline. A few delicate pink cheek accents.
+Composition/framing: single isolated mascot, centered with 8% empty transparent margin on all sides, fully visible ears, tail and paws, comfortably fits a square application icon. It should remain recognizable at 64 px. No detached decorations, no stars, no background circle or square, no drop shadow. NO text, NO letters, NO watermark, NO presentation sheet, NO collage.
+Output: one complete full-color mascot on genuine transparent alpha, ready for the user's new HUHU brand.
 
-Use case: logo-brand / precise-object-edit.
-Edit target: the supplied HUHU paired-page H mark.
-Preserve exactly the existing bold H silhouette: two page-like vertical pillars with gently sloping shoulders, the rounded upper and lower cutouts, a wide central bridge and its diagonal color junction. Preserve centered square composition and transparent background. This is the chosen brand identity.
-Make ONE refinement only: turn this into a perfectly clean flat logo asset. Remove ALL edge debris, green speckles, stray marks, texture, shading, gradients and highlights. Rebuild both filled shapes with immaculate smooth vector-like edges. Left shape is a single uniform solid #246B58. Right shape is a single uniform solid #78BF9B. No dark outlines. Every pixel outside the logo must be truly transparent. No text, no border, no shadows, no added elements. Equal clean transparent padding, whole symbol entirely in frame.
-
-The unmodified result of call 2 is retained as huhu-imagegen.png. Production SVG files are a separately constructed flat vector realization of the selected silhouette; production PNGs are exports from those SVGs.

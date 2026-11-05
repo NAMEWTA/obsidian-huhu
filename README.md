@@ -3,7 +3,7 @@ English | [简体中文](README.ZH.md)
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/brand/huhu-logo-dark.svg">
-    <img src="assets/brand/huhu-logo-light.svg" width="360" height="110" alt="HUHU paired-page brand logo">
+    <img src="assets/brand/huhu-logo-light.svg" width="360" height="126" alt="HUHU cartoon logo: Huhu the orange tabby waving a white paw">
   </picture>
 </p>
 
