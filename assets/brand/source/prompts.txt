@@ -1,0 +1,21 @@
+HUHU brand identity — imagegen provenance
+
+1. Initial generation (transparent_background=true)
+
+Use case: logo-brand.
+Asset type: production master symbol for HUHU, an Obsidian personal workbench bringing notes, tasks, modular dashboards, coding agents, archives and automations together, with content kept in the user's own vault.
+Create ONE original, exceptionally polished, memorable geometric brand icon on a genuinely transparent background. No text.
+Concept: "paired pages, one workspace". A confident capital H formed from TWO interlocking thick, rounded page/ribbon shapes. Two strong vertical pillars and a central joining bridge should read immediately as H. The two page modules carry a subtle open-book / side-by-side workspace feeling. Give the top and bottom interior openings a distinctive soft stepped curve, and a clean diagonal meeting seam through the central bridge. Friendly, calm, intelligent, quietly capable; premium independent productivity software.
+Keep the silhouette compact and beautifully balanced, near-square, with a generous sturdy visual weight, softly rounded outer corners, broad negative spaces, and only TWO essential filled shapes. Left page in deep evergreen teal (#246B58), right page in fresh muted mint green (#78BF9B). Flat solid colors, no gradients, no third color. It must also work as a one-color silhouette at 16–24 pixels.
+Composition: isolated symbol centered, occupying about 72 percent of a square 1024 by 1024 canvas, equal transparent margins. Front-facing precise vector-like edges, no perspective. No enclosing square, badge, or frame.
+Avoid: literal book outlines, generic dashboard grids, AI sparkle stars, robots, animals, circuits, nodes, Obsidian crystal, infinity sign, excessive tiny cutouts, hairlines, glossy 3D effects, shadows, grain, mockups, repeated variants, watermarks, typography.
+Produce the actual logo asset, not a presentation board.
+
+2. Refinement of the first generated image (transparent_background=true)
+
+Use case: logo-brand / precise-object-edit.
+Edit target: the supplied HUHU paired-page H mark.
+Preserve exactly the existing bold H silhouette: two page-like vertical pillars with gently sloping shoulders, the rounded upper and lower cutouts, a wide central bridge and its diagonal color junction. Preserve centered square composition and transparent background. This is the chosen brand identity.
+Make ONE refinement only: turn this into a perfectly clean flat logo asset. Remove ALL edge debris, green speckles, stray marks, texture, shading, gradients and highlights. Rebuild both filled shapes with immaculate smooth vector-like edges. Left shape is a single uniform solid #246B58. Right shape is a single uniform solid #78BF9B. No dark outlines. Every pixel outside the logo must be truly transparent. No text, no border, no shadows, no added elements. Equal clean transparent padding, whole symbol entirely in frame.
+
+The unmodified result of call 2 is retained as huhu-imagegen.png. Production SVG files are a separately constructed flat vector realization of the selected silhouette; production PNGs are exports from those SVGs.

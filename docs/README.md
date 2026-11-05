@@ -11,7 +11,7 @@
 | 智能体、终端、技能与用量 | [智能体工作台](agent-workbench.md) |
 | 资料与健康检查 | [档案](contacts.md)、[数据体检](health.md) |
 | 定时操作 | [自动化与通知](automation.md) |
-| 图标与配色 | [图标](icons.md)、[外观](appearance.md) |
+| 图标与配色 | [图标](icons.md)、[外观](appearance.md)、[品牌标识](brand.md) |
 | 版本与凭据 | [版本管理与笔记历史](sync.md)、[保险箱](safe.md) |
 | 保存、恢复与外部访问 | [数据与恢复](data.md)、[隐私](privacy.md) |
 | 工程与发布 | [架构](architecture.md)、[设计系统](design-system.md)、[开发发布](development.md) |
