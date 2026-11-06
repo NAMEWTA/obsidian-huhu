@@ -1,14 +1,10 @@
 import { registerShellCommands } from '../src/app/commands';
 import type DashboardPlugin from '../src/app/main';
 import assert from 'node:assert/strict';
-import { type App } from 'obsidian';
-import { El, findTag } from './mini-dom';
-import { Setting as StubSetting } from './obsidian-stub';
 import { resolveWidgetLabel } from '../src/modules/home/core/board/default-widget-label';
 import { generateDefaultMarkdown } from '../src/modules/home/core/board/parser/default-document';
 import { parse, serialize } from '../src/modules/home/core/board/parser';
 import type { AnniversaryConfig, CountdownConfig } from '../src/modules/home/core/board/types';
-import { CountdownSettingsModal } from '../src/modules/home/ui/widgets/countdown-modal';
 import { runHomeReactChecks } from './run-home-react-checks';
 import { createDashboardSettingsAccess } from '../src/modules/home/ui/settings-access';
 import { readCalendarTaskFilter, writeCalendarTaskFilter } from '../src/modules/home/ui/calendar/calendar-preferences';
@@ -27,7 +23,7 @@ import {
 import type { DashboardSettings } from '../src/modules/home/core/board/types/index';
 
 async function main() {
-	runHomeReactChecks(['ui/widgets/anniversary-editor.dom.test.tsx']);
+	runHomeReactChecks(['ui/widgets/anniversary-editor.dom.test.tsx', 'ui/widgets/countdown-editor.dom.test.tsx']);
 	const exampleCountdown: CountdownConfig = {
 		id: 'cd-default',
 		label: 'New Year Countdown',
@@ -98,31 +94,6 @@ async function main() {
 			'Language changes never rewrite saved section names',
 		);
 	}
-	setLanguage('en');
-	(globalThis as unknown as { activeDocument: unknown }).activeDocument = { querySelector: () => null };
-	let savedCountdown: CountdownConfig | undefined;
-	const editCountdown = (input: boolean) => {
-		const before = StubSetting.created.length;
-		const modal = new CountdownSettingsModal({} as App, exampleCountdown, (updated) => {
-			savedCountdown = updated;
-		});
-		modal.onOpen();
-		const name = StubSetting.created.slice(before).find((row) => row.name === t('countdown.label'))!.texts[0]!;
-		assert.equal(name.value, 'New Year');
-		if (input) name.fire!('Anniversary');
-		findTag(modal.contentEl as unknown as El, 'button')
-			.find((button) => button.textContent === t('common.save'))!
-			.click();
-	};
-	editCountdown(false);
-	assert.equal(savedCountdown!.defaultLabel, true, 'Saving another field preserves localized default mode');
-	setLanguage('zh');
-	assert.equal(resolveWidgetLabel(savedCountdown!, 'countdown'), '新年');
-	setLanguage('en');
-	editCountdown(true);
-	setLanguage('zh');
-	assert.equal(savedCountdown!.defaultLabel, false);
-	assert.equal(resolveWidgetLabel(savedCountdown!, 'countdown'), 'Anniversary');
 	const commandCleanups: Array<() => void> = [];
 	const commands: Command[] = [];
 	const commandHost = {
@@ -198,7 +169,7 @@ async function main() {
 	let safeEnabled = true;
 	registerShellCommands({
 		addCommand,
-		moduleState: (module: string) => module === 'safe' ? 'idle' : 'active',
+		moduleState: (module: string) => (module === 'safe' ? 'idle' : 'active'),
 		moduleEnabled: (module: string) => module === 'safe' && safeEnabled,
 		openWorkbench: async (target: { feature: string }) => {
 			if (target.feature === 'notifications') inboxOpens++;
@@ -239,7 +210,11 @@ async function main() {
 		for (const command of [openAutomation, openInbox])
 			assert.equal(command.checkCallback?.(false), true, 'Module commands run while the module is active');
 		const beforeSafeOpen = safeOpens;
-		assert.equal(openSafe.checkCallback?.(true), true, 'The enabled safe can be opened before its on-demand activation');
+		assert.equal(
+			openSafe.checkCallback?.(true),
+			true,
+			'The enabled safe can be opened before its on-demand activation',
+		);
 		assert.equal(safeOpens, beforeSafeOpen, 'Checking command availability does not open the safe');
 		assert.equal(openSafe.checkCallback?.(false), true);
 		assert.equal(safeOpens, beforeSafeOpen + 1, 'Running the command opens the safe workbench target once');
