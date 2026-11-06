@@ -83,7 +83,7 @@ export function createDiffsLanguages({ compressGrammars = true } = {}) {
 					contents: `import {decodeAsset} from './src/modules/versioning/ui/diff/compressed-asset.ts';export default JSON.parse(decodeAsset(${JSON.stringify(encoded)})).map(Object.freeze);`,
 				};
 			});
-			build.onLoad({ filter: /[\/]@pierre[\/]diffs[\/]dist[\/].*\.js$/ }, async (args) => {
+			build.onLoad({ filter: /[\\/]@pierre[\\/]diffs[\\/]dist[\\/].*\.js$/ }, async (args) => {
 				const relative = args.path.replaceAll('\\', '/').split('/@pierre/diffs/dist/')[1];
 				if (relative === 'worker/worker-portable.js') throw Error('Forbidden diffs runtime: worker-portable');
 				if (!hashes[relative]) {

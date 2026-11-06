@@ -202,3 +202,16 @@ test('invalid encoded assets fail at decoding rather than becoming empty source'
 	assert.throws(() => module.exports.decodeAsset('not base64!'));
 	assert.throws(() => module.exports.decodeAsset(btoa('not gzip')));
 });
+
+test('Pierre backend interception accepts POSIX and Windows physical paths', () => {
+	const filters = [];
+	createDiffsLanguages().setup({
+		onResolve() {},
+		onLoad(options) {
+			filters.push(options.filter);
+		},
+	});
+	const posix = '/repo/node_modules/@pierre/diffs/dist/highlighter/backends/shiki.js';
+	const windows = posix.replaceAll('/', String.fromCharCode(92));
+	assert.ok(filters.some((filter) => filter.test(posix) && filter.test(windows)));
+});
