@@ -38,7 +38,7 @@ test('real lazy resource imports retain Unicode, default identity, mutability an
 	assert.throws(() => decodeResource('!bad gzip!'));
 });
 test('fixed source assets reject unknown and changed inputs', () => {
-	const source = readFileSync('src/modules/icons/core/res/emojis.json', 'utf8');
+	const source = readFileSync('src/modules/icons/core/res/emojis.json', 'utf8').replaceAll('\r\n', '\n');
 	assert.equal(
 		encodeIconicResource('emojis.json', source),
 		encodeIconicResource('emojis.json', source.replaceAll('\n', '\r\n')),

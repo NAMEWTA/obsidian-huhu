@@ -29,7 +29,7 @@ test('atomic full-blob index update preserves other staged paths, worktree and H
 			other = git('rev-parse', ':other.md'),
 			old = git('rev-parse', ':note.md');
 		const body = readFileSync(path.join(cwd, 'note.md'));
-		const quotedPath = '奇怪 "path" \t😀\n.md';
+		const quotedPath = process.platform === 'win32' ? '奇怪 path 😀.md' : '奇怪 "path" \t😀\n.md';
 		writeFileSync(path.join(cwd, quotedPath), 'quoted before\n');
 		git('add', '--', quotedPath);
 		const quotedOid = git('rev-parse', `:${quotedPath}`);
@@ -127,7 +127,7 @@ test('queued stage/unstage changes one selected hunk and rejects a stale source 
 		const diff = hunkProof(before, after, metadata),
 			first = diff.chunks[0]!;
 		const request = {
-			repositoryId: cwd,
+			repositoryId: (await service!.versionAccess()).repositoryId,
 			path: 'note.md',
 			direction: 'stage' as const,
 			head: git('rev-parse', 'HEAD'),
@@ -200,7 +200,7 @@ test('queued stage/unstage changes one selected hunk and rejects a stale source 
 				direction === 'stage' ? 'accept' : 'reject',
 			);
 			await service!.applyIndexHunks({
-				repositoryId: cwd,
+				repositoryId: (await service!.versionAccess()).repositoryId,
 				path,
 				direction,
 				head,
@@ -313,7 +313,7 @@ test.each(['staged', 'unstaged'] as const)(
 			if (direction === 'staged')
 				await expect(
 					service.applyIndexHunks({
-						repositoryId: cwd,
+						repositoryId: (await service!.versionAccess()).repositoryId,
 						path: 'new.md',
 						direction: 'unstage',
 						head,
@@ -326,7 +326,7 @@ test.each(['staged', 'unstaged'] as const)(
 					}),
 				).rejects.toThrow('hunk endpoints changed');
 			await service.applyIndexHunks({
-				repositoryId: cwd,
+				repositoryId: (await service!.versionAccess()).repositoryId,
 				path: 'new.md',
 				direction: direction === 'staged' ? 'unstage' : 'stage',
 				head,
@@ -340,7 +340,9 @@ test.each(['staged', 'unstaged'] as const)(
 			expect(execFileSync('git', ['show', ':new.md'], { cwd, encoding: 'utf8', env: gitEnvironment() })).toBe(
 				direction === 'staged' ? after.replace(/^new/, 'old') : before.replace(/^old/, 'new'),
 			);
-			expect(git('ls-files', '--stage', 'new.md')).toMatch(/^100755 /);
+			expect(git('ls-files', '--stage', 'new.md')).toMatch(
+				process.platform === 'win32' ? /^100644 / : /^100755 /,
+			);
 			expect(git('ls-files', '--stage', 'old.md')).toBe('');
 			expect(git('rev-parse', ':other.md')).toBe(other);
 			expect(git('rev-parse', 'HEAD')).toBe(head);
@@ -348,7 +350,7 @@ test.each(['staged', 'unstaged'] as const)(
 			expect(readFileSync(path.join(cwd, 'new.md'), 'utf8')).toBe(after);
 			await expect(
 				service.applyIndexHunks({
-					repositoryId: cwd,
+					repositoryId: (await service!.versionAccess()).repositoryId,
 					path: 'new.md',
 					direction: direction === 'staged' ? 'unstage' : 'stage',
 					head,
@@ -460,7 +462,7 @@ test.each(['new', 'deleted', 'empty'] as const)(
 				targetPath: file,
 				mode: 'replace-current',
 				gitHunks: {
-					repositoryId: cwd,
+					repositoryId: (await service!.versionAccess()).repositoryId,
 					path: file,
 					targetPath: file,
 					indexId: index.id,

@@ -77,6 +77,7 @@ function reviewedDateTimeCommon(hit: string, source: string): boolean {
  return safe && declarations === 1 && forwards === 2;
 }
 function reviewedForwarder(item: string, hit: string, source: string): boolean {
+ item = item.replaceAll(String.fromCharCode(92), "/");
  // DateTimeField's local object is closed to six known non-type keys and read-only uses.
  if (item === 'src/ui/components/huhu/date/DateTimeField.tsx' && reviewedDateTimeCommon(hit, source)) return true;
  if (!/^(?:dynamic|spread):<Input(?:\s|>)/.test(hit)) return false;
