@@ -34,9 +34,11 @@ export const versioningWorkerSource = {
 		}));
 		build.onLoad({ filter: /.*/, namespace: 'huhu-worker' }, async (args) => {
 			const result = await buildVersioningWorker({ parse: args.path.includes('-parse-') });
+			const compressed = gzipSync(result.outputFiles[0].contents, { level: 9 });
+			compressed[9] = 3; // Stable gzip OS metadata across Node/zlib platforms.
 			return {
 				loader: 'js',
-				contents: `export default ${JSON.stringify(gzipSync(result.outputFiles[0].contents, { level: 9 }).toString('base64'))};`,
+				contents: `export default ${JSON.stringify(compressed.toString('base64'))};`,
 				watchFiles: Object.keys(result.metafile.inputs).map((file) => path.resolve(root, file)),
 			};
 		});

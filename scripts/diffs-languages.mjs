@@ -76,7 +76,10 @@ export function createDiffsLanguages({ compressGrammars = true } = {}) {
 				const { default: grammar } = await import(
 					pathToFileURL(args.path).href + '?sha256=' + createHash('sha256').update(source).digest('hex')
 				);
-				const encoded = gzipSync(JSON.stringify(grammar), { level: 9 }).toString('base64');
+				const compressed = gzipSync(JSON.stringify(grammar), { level: 9 });
+				// Gzip OS metadata varies across Node/zlib platforms; payload and CRC stay unchanged.
+				compressed[9] = 3;
+				const encoded = compressed.toString('base64');
 				return {
 					loader: 'js',
 					resolveDir: path.resolve(import.meta.dirname, '..'),

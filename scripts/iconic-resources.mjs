@@ -13,7 +13,9 @@ export function encodeIconicResource(name, source) {
 	if (!hashes[name] || createHash('sha256').update(source.replaceAll('\r\n', '\n')).digest('hex') !== hashes[name])
 		throw Error(`Unknown Iconic resource source: ${name}`);
 	const value = JSON.parse(source);
-	return gzipSync(JSON.stringify(value), { level: 9 }).toString('base64');
+	const compressed = gzipSync(JSON.stringify(value), { level: 9 });
+	compressed[9] = 3; // Stable gzip OS metadata across Node/zlib platforms.
+	return compressed.toString('base64');
 }
 
 /** Transport only: original Iconic JSON files remain the physical build inputs. */
