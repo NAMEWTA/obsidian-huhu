@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-huhu",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "HUHU — dashboards, comments, coding agents, icons, contacts, automations and notifications.",
 	"main": "main.js",
 	"type": "module",
