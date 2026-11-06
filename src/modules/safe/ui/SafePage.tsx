@@ -1,16 +1,40 @@
+import './i18n';
 // Layout adapted from yeshimei/bz d76a0870329403247917a00c43019e203a2560a4 (MIT): src/password-vault/render.ts (deskHTML), ui.ts.
 // Copyright (c) 2026 叫我包仔
 // Changes: HUHU container-responsive scope/list/detail composition, existing tag favorites and encrypted service lifecycle.
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useId, useState, useSyncExternalStore } from 'react';
 import { useStore } from 'zustand';
-import { ArrowLeft, Download, FileInput, KeyRound, LayoutGrid, List, LockKeyhole, MoreHorizontal, Plus, Search, Trash2, Vault } from 'lucide-react';
+import {
+	ArrowLeft,
+	Download,
+	FileInput,
+	KeyRound,
+	LayoutGrid,
+	List,
+	LockKeyhole,
+	MoreHorizontal,
+	Plus,
+	Search,
+	Trash2,
+	Vault,
+} from 'lucide-react';
+import { DetailPane } from '../../../ui/components/huhu/DetailPane';
+import { useLeafMetrics } from '../../../ui/react/use-leaf-metrics';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../ui/components/dialog';
+import { QuickPick } from './QuickPick';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Label } from '../../../ui/components/label';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
 import { SegmentedControl } from '../../../ui/components/huhu/SegmentedControl';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../ui/components/dropdown-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '../../../ui/components/dropdown-menu';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
 import { useVisible } from '../../../ui/react/contexts';
 import { DesignScope } from '../../../ui/react/design-scope';
@@ -26,10 +50,12 @@ import { EntryCards, EntryRows, TrashRows, type EntryActions } from './EntryList
 import { ChangePasswordDialog, SafeErrorMessage, SecretInput, safeErrorKey, useSafeAction } from './SafeDialogs';
 import { lockRuleLines } from './lock-rules';
 import { AccountDetail } from './AccountDetail';
-import { cn } from '../../../ui/lib/utils';
 
 function useLockPolicy(service: SafeService): LockPolicy {
-	return useSyncExternalStore(listener => service.subscribePolicy(listener), () => service.lockPolicy());
+	return useSyncExternalStore(
+		(listener) => service.subscribePolicy(listener),
+		() => service.lockPolicy(),
+	);
 }
 
 /** No route, title or workbench state contains record data. The complete subtree belongs to one epoch. */
@@ -42,7 +68,9 @@ export function SafePage({ service, preferences }: { service: SafeService; prefe
 	}, [service, visible]);
 	useEffect(() => {
 		const doc = win.document;
-		const focus = () => { service.checkDeadline(); };
+		const focus = () => {
+			service.checkDeadline();
+		};
 		const visibility = () => {
 			if (doc.visibilityState === 'hidden') service.leave('switch');
 			else service.checkDeadline();
@@ -57,11 +85,15 @@ export function SafePage({ service, preferences }: { service: SafeService; prefe
 	}, [service, win]);
 	// Discard forms and decrypted DOM on a page switch without treating it as a page close.
 	if (!visible) return null;
-	return <DesignScope className="flex h-full min-h-0 min-w-0 flex-col">
-		{state.status === 'unlocked'
-			? <UnlockedSafe key={state.generation} service={service} state={state} preferences={preferences} />
-			: <LockedSafe key={state.generation} service={service} state={state} />}
-	</DesignScope>;
+	return (
+		<DesignScope className="flex h-full min-h-0 min-w-0 flex-col">
+			{state.status === 'unlocked' ? (
+				<UnlockedSafe key={state.generation} service={service} state={state} preferences={preferences} />
+			) : (
+				<LockedSafe key={state.generation} service={service} state={state} />
+			)}
+		</DesignScope>
+	);
 }
 
 function LockedSafe({ service, state }: { service: SafeService; state: SafeState }) {
@@ -69,13 +101,17 @@ function LockedSafe({ service, state }: { service: SafeService; state: SafeState
 	const id = useId();
 	const policy = useLockPolicy(service);
 	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 	const [confirmation, setConfirmation] = useState('');
 	const [restore, setRestore] = useState(false);
 	const action = useSafeAction(service);
 	const creating = state.status === 'absent';
 	const busy = state.busy || action.busy;
 	const submit = () => {
-		if (creating && password !== confirmation) { action.setError('safe.passwordMismatch'); return; }
+		if (creating && password !== confirmation) {
+			action.setError('safe.passwordMismatch');
+			return;
+		}
 		void action.run(async () => {
 			if (creating) validateMasterPassword(password);
 			const secret = password;
@@ -85,70 +121,176 @@ function LockedSafe({ service, state }: { service: SafeService; state: SafeState
 			else await service.unlock(secret);
 		});
 	};
-	return <section className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek p-4" aria-label={t('safe.title')}>
-		<div className="m-auto flex w-full max-w-xs flex-col gap-3 py-6">
-			<div className="flex flex-col items-center gap-1.5 text-center">
-				<Vault className="size-8 text-muted-foreground" aria-hidden />
-				<h2 className="m-0 text-base font-semibold text-foreground">{t(state.status === 'error' ? 'safe.readErrorTitle' : creating ? 'safe.createTitle' : 'safe.lockedTitle')}</h2>
-				{state.status !== 'error' && <p className="m-0 text-xs text-muted-foreground">{t(creating ? 'safe.createDescription' : 'safe.lockedDescription')}</p>}
-			</div>
-			{state.status === 'loading' ? <p role="status" className="m-0 text-center text-sm text-muted-foreground">{t('safe.loading')}</p> : state.status === 'error' ? <>
-				<SafeErrorMessage error={safeErrorKey(state.error)} />
-				<Button size="sm" disabled={busy} onClick={() => { void action.run(() => service.probe()); }}>{t('safe.retry')}</Button>
-			</> : <form className="grid gap-2.5" onSubmit={event => { event.preventDefault(); submit(); }} aria-busy={busy}>
-				<div className="grid gap-1.5">
-					<Label htmlFor={`${id}-master`}>{t('safe.masterPassword')}</Label>
-					<SecretInput id={`${id}-master`} className="h-8" value={password} onChange={event => setPassword(event.currentTarget.value)} disabled={busy} required autoFocus aria-describedby={creating ? `${id}-hint` : undefined} />
+	return (
+		<section
+			className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek p-4"
+			aria-label={t('safe.title')}
+		>
+			<div className="m-auto flex w-full max-w-sm flex-col gap-5 rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-6">
+				<div className="flex flex-col items-center gap-1.5 text-center">
+					<Vault className="size-8 text-muted-foreground" aria-hidden />
+					<h2 className="m-0 text-base font-semibold text-foreground">
+						{t(
+							state.status === 'error'
+								? 'safe.readErrorTitle'
+								: creating
+									? 'safe.createTitle'
+									: 'safe.lockedTitle',
+						)}
+					</h2>
+					{state.status !== 'error' && (
+						<p className="m-0 text-xs text-muted-foreground">
+							{t(creating ? 'safe.createDescription' : 'safe.lockedDescription')}
+						</p>
+					)}
 				</div>
-				{creating && <>
-					<div className="grid gap-1.5"><Label htmlFor={`${id}-confirm`}>{t('safe.confirmPassword')}</Label><SecretInput id={`${id}-confirm`} className="h-8" value={confirmation} onChange={event => setConfirmation(event.currentTarget.value)} required disabled={busy} /></div>
-					<p id={`${id}-hint`} className="m-0 text-xs text-muted-foreground">{t('safe.masterHint')} {t('safe.noRecovery')}</p>
-				</>}
-				<SafeErrorMessage error={action.error || (state.error ? safeErrorKey(state.error) : '')} />
-				<Button type="submit" size="sm" disabled={busy || !password}>{t(busy ? 'safe.busy' : creating ? 'safe.create' : 'safe.unlock')}</Button>
-			</form>}
-			{state.status !== 'loading' && <Button variant="ghost" size="sm" className="text-muted-foreground" disabled={busy} onClick={() => setRestore(true)}>{t('safe.restore')}</Button>}
-			<ul className="m-0 grid list-none gap-0.5 p-0 text-center text-xs text-muted-foreground" aria-label={t('safe.rules')}>
-				{lockRuleLines(t, policy).map(line => <li key={line}>{line}</li>)}
-			</ul>
-		</div>
-		{restore && <RestoreDialog service={service} onClose={() => setRestore(false)} />}
-	</section>;
+				{state.status === 'loading' ? (
+					<p role="status" className="m-0 text-center text-sm text-muted-foreground">
+						{t('safe.loading')}
+					</p>
+				) : state.status === 'error' ? (
+					<>
+						<SafeErrorMessage error={safeErrorKey(state.error)} />
+						<Button
+							size="sm"
+							disabled={busy}
+							onClick={() => {
+								void action.run(() => service.probe());
+							}}
+						>
+							{t('safe.retry')}
+						</Button>
+					</>
+				) : (
+					<form
+						className="grid gap-2.5"
+						onSubmit={(event) => {
+							event.preventDefault();
+							submit();
+						}}
+						aria-busy={busy}
+					>
+						<div className="grid gap-1.5">
+							<Label htmlFor={`${id}-master`}>{t('safe.masterPassword')}</Label>
+							<SecretInput
+								id={`${id}-master`}
+								type={showPassword ? 'text' : 'password'}
+								value={password}
+								onChange={(event) => setPassword(event.currentTarget.value)}
+								disabled={busy}
+								required
+								autoFocus
+								aria-describedby={creating ? `${id}-hint` : undefined}
+							/>
+							<Button
+								type="button"
+								variant="ghost"
+								aria-pressed={showPassword}
+								onClick={() => setShowPassword((value) => !value)}
+							>
+								{t(showPassword ? 'safe.hidePassword' : 'safe.showPassword')}
+							</Button>
+						</div>
+						{creating && (
+							<>
+								<div className="grid gap-1.5">
+									<Label htmlFor={`${id}-confirm`}>{t('safe.confirmPassword')}</Label>
+									<SecretInput
+										id={`${id}-confirm`}
+										className="h-8"
+										value={confirmation}
+										onChange={(event) => setConfirmation(event.currentTarget.value)}
+										required
+										disabled={busy}
+									/>
+								</div>
+								<p id={`${id}-hint`} className="m-0 text-xs text-muted-foreground">
+									{t('safe.masterHint')} {t('safe.noRecovery')}
+								</p>
+							</>
+						)}
+						<SafeErrorMessage error={action.error || (state.error ? safeErrorKey(state.error) : '')} />
+						<Button type="submit" size="sm" disabled={busy || !password}>
+							{t(busy ? 'safe.busy' : creating ? 'safe.create' : 'safe.unlock')}
+						</Button>
+					</form>
+				)}
+				{state.status !== 'loading' && (
+					<Button
+						variant="ghost"
+						size="sm"
+						className="text-muted-foreground"
+						disabled={busy}
+						onClick={() => setRestore(true)}
+					>
+						{t('safe.restore')}
+					</Button>
+				)}
+				<ul
+					className="m-0 grid list-none gap-0.5 p-0 text-center text-xs text-muted-foreground"
+					aria-label={t('safe.rules')}
+				>
+					{lockRuleLines(t, policy).map((line) => (
+						<li key={line}>{line}</li>
+					))}
+				</ul>
+			</div>
+			{restore && <RestoreDialog service={service} onClose={() => setRestore(false)} />}
+		</section>
+	);
 }
 
 type Notice = { key: string; params?: Record<string, string | number> };
 
 function importNotice(summary: MergeSummary): Notice {
-	return { key: 'safe.import.notice', params: { added: summary.addedEntries, merged: summary.mergedEntries, skipped: summary.skippedEntries } };
+	return {
+		key: 'safe.import.notice',
+		params: { added: summary.addedEntries, merged: summary.mergedEntries, skipped: summary.skippedEntries },
+	};
 }
 
-function UnlockedSafe({ service, state, preferences }: { service: SafeService; state: SafeState; preferences: SafePreferences }) {
+function UnlockedSafe({
+	service,
+	state,
+	preferences,
+}: {
+	service: SafeService;
+	state: SafeState;
+	preferences: SafePreferences;
+}) {
 	const t = useT();
 	const win = useOwnerWindow();
 	const id = useId();
 	const policy = useLockPolicy(service);
-	const mode = useSyncExternalStore(listener => preferences.subscribe(listener), () => preferences.viewMode());
+	const mode = useSyncExternalStore(
+		(listener) => preferences.subscribe(listener),
+		() => preferences.viewMode(),
+	);
 	const [query, setQuery] = useState('');
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [selection, setSelection] = useState<{ entryId: string; credentialId: string } | null>(null);
-	const trigger = useRef<HTMLElement | null>(null);
+	const { ref: leafRef, width: leafWidth } = useLeafMetrics();
+	const [quick, setQuick] = useState(false);
 	const [trash, setTrash] = useState(false);
 	const [editing, setEditing] = useState<{ entry?: SafeEntry } | null>(null);
 	const [dialog, setDialog] = useState<'password' | 'import' | 'replace' | 'tags' | null>(null);
 	const [notice, setNotice] = useState<Notice | null>(null);
 	const action = useSafeAction(service);
 	const entries = searchEntries(state.entries, query, trash, selectedTags);
-	const selectedEntry = entries.find(entry => entry.id === selection?.entryId);
-	const selectedAccount = selectedEntry?.credentials.find(account => account.id === selection?.credentialId);
+	const selectedEntry = entries.find((entry) => entry.id === selection?.entryId);
+	const selectedAccount = selectedEntry?.credentials.find((account) => account.id === selection?.credentialId);
 	const hasDetail = !!selectedEntry && !!selectedAccount;
 	const navigate = (entryId: string, credentialId: string) => {
 		if (!service.checkDeadline()) return;
-		const target = service.store.getState().entries.find(entry => entry.id === entryId && entry.deletedAt === null);
-		if (!target?.credentials.some(account => account.id === credentialId)) return;
-		const focused = win.document.activeElement as HTMLElement | null;
-		if (focused?.closest('[data-safe-entries]')) trigger.current = focused;
+		const target = service.store
+			.getState()
+			.entries.find((entry) => entry.id === entryId && entry.deletedAt === null);
+		if (!target?.credentials.some((account) => account.id === credentialId)) return;
 		setTrash(false);
-		if (!entries.some(entry => entry.id === entryId)) { setQuery(''); setSelectedTags([]); }
+		if (!entries.some((entry) => entry.id === entryId)) {
+			setQuery('');
+			setSelectedTags([]);
+		}
 		setSelection({ entryId, credentialId });
 	};
 	const busy = state.busy || action.busy;
@@ -156,77 +298,313 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 		if (!service.checkDeadline()) return;
 		setEditing({ entry });
 	};
-	const toggleTrash = () => { setTrash(value => !value); setSelection(null); setQuery(''); setNotice(null); };
+	const toggleTrash = () => {
+		setTrash((value) => !value);
+		setSelection(null);
+		setQuery('');
+		setNotice(null);
+	};
 	const actions: EntryActions = {
 		busy,
-		open: entry => navigate(entry.id, entry.credentials[0]!.id),
+		open: (entry) => navigate(entry.id, entry.credentials[0]!.id),
 		inspectAccount: (entry, account) => navigate(entry.id, account.id),
-		copy: (value, kind) => { void action.run(() => service.copy(value, win), () => setNotice({ key: kind === 'username' ? 'safe.copiedUsername' : 'safe.copiedPassword' })); },
-		openUrl: url => { void action.run(() => service.openUrl(url, win)); },
+		copy: (value, kind) => {
+			void action.run(
+				() => service.copy(value, win),
+				() => setNotice({ key: kind === 'username' ? 'safe.copiedUsername' : 'safe.copiedPassword' }),
+			);
+		},
+		openUrl: (url) => {
+			void action.run(() => service.openUrl(url, win));
+		},
 	};
-	return <section className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto p-3 scrollbar-sleek @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
-		<div className="flex flex-wrap items-center gap-2">
-			{trash && <>
-				<Button size="sm" variant="outline" onClick={toggleTrash}><ArrowLeft />{t('safe.backToRecords')}</Button>
-				<h2 className="m-0 text-sm font-medium text-foreground">{t('safe.trash')}</h2>
-			</>}
-			<div className="relative min-w-[min(100%,10rem)] flex-1">
-				<Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-				<Input id={`${id}-search`} type="search" aria-label={t('safe.search')} title={t(trash ? 'safe.trashHint' : 'safe.searchHint')} className="h-8 pl-8 text-[13px] md:text-[13px]" value={query} onChange={event => { if (service.checkDeadline()) { setSelection(null); setQuery(event.currentTarget.value); } }} placeholder={t('safe.searchPlaceholder')} autoComplete="off" spellCheck={false} />
+	return (
+		<section
+			ref={leafRef}
+			className="flex min-h-0 min-w-0 flex-1 flex-col @container"
+			aria-label={t('safe.title')}
+			onPointerDownCapture={() => service.touch()}
+			onKeyDownCapture={() => service.touch()}
+			onWheelCapture={() => service.touch()}
+		>
+			<div className="flex shrink-0 flex-wrap items-center gap-3 border-b border-[var(--hu-line)] px-5 py-3">
+				{trash && (
+					<>
+						<Button size="sm" variant="secondary" onClick={toggleTrash}>
+							<ArrowLeft />
+							{t('safe.backToRecords')}
+						</Button>
+						<h2 className="m-0 text-sm font-medium text-foreground">{t('safe.trash')}</h2>
+					</>
+				)}
+				<div className="relative min-w-[min(100%,10rem)] flex-1">
+					<Search
+						className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+						aria-hidden
+					/>
+					<Input
+						id={`${id}-search`}
+						type="search"
+						aria-label={t('safe.search')}
+						title={t(trash ? 'safe.trashHint' : 'safe.searchHint')}
+						className="h-8 pl-8 text-sm md:text-sm"
+						value={query}
+						onChange={(event) => {
+							if (service.checkDeadline()) {
+								setSelection(null);
+								setQuery(event.currentTarget.value);
+							}
+						}}
+						placeholder={t('safe.searchPlaceholder')}
+						autoComplete="off"
+						spellCheck={false}
+					/>
+				</div>
+				{!trash && (
+					<SegmentedControl<'list' | 'cards'>
+						size="sm"
+						ariaLabel={t('safe.view')}
+						value={mode}
+						onChange={(value) => preferences.setViewMode(value)}
+						options={[
+							{
+								value: 'list',
+								label: <List className="size-3.5" />,
+								ariaLabel: t('safe.viewList'),
+								tooltip: t('safe.viewList'),
+							},
+							{
+								value: 'cards',
+								label: <LayoutGrid className="size-3.5" />,
+								ariaLabel: t('safe.viewCards'),
+								tooltip: t('safe.viewCards'),
+							},
+						]}
+					/>
+				)}
+				<Button variant="ghost" disabled={busy} onClick={() => setQuick(true)}>
+					<KeyRound />
+					{t('safe.quick.title')}
+				</Button>
+				{!trash && (
+					<Button size="sm" onClick={() => openEntry()} disabled={busy}>
+						<Plus />
+						{t('safe.addEntry')}
+					</Button>
+				)}
+				<Button size="sm" variant="secondary" onClick={() => service.lock()}>
+					<LockKeyhole />
+					{t('safe.lock')}
+				</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<ActionButton size="icon-sm" label={t('safe.menu')} disabled={busy}>
+							<MoreHorizontal />
+						</ActionButton>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onSelect={() => setDialog('tags')}>{t('safe.manageTags')}</DropdownMenuItem>
+						<DropdownMenuItem onSelect={toggleTrash}>
+							<Trash2 />
+							{t(trash ? 'safe.backToRecords' : 'safe.trash')}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							onSelect={() => {
+								void action.run(async () => {
+									const exported = await service.exportBackup(win);
+									if (exported && action.current()) setNotice({ key: 'safe.exported' });
+								});
+							}}
+						>
+							<Download />
+							{t('safe.export')}
+						</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => setDialog('import')}>
+							<FileInput />
+							{t('safe.import.menu')}
+						</DropdownMenuItem>
+						<DropdownMenuItem variant="destructive" onSelect={() => setDialog('replace')}>
+							{t('safe.replaceMenu')}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onSelect={() => setDialog('password')}>
+							<KeyRound />
+							{t('safe.changePassword')}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
-			{!trash && <SegmentedControl<'list' | 'cards'> size="sm" ariaLabel={t('safe.view')} value={mode} onChange={value => preferences.setViewMode(value)} options={[
-				{ value: 'list', label: <List className="size-3.5" />, ariaLabel: t('safe.viewList'), tooltip: t('safe.viewList') },
-				{ value: 'cards', label: <LayoutGrid className="size-3.5" />, ariaLabel: t('safe.viewCards'), tooltip: t('safe.viewCards') },
-			]} />}
-			{!trash && <Button size="sm" onClick={() => openEntry()} disabled={busy}><Plus />{t('safe.addEntry')}</Button>}
-			<Button size="sm" variant="outline" onClick={() => service.lock()}><LockKeyhole />{t('safe.lock')}</Button>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild><ActionButton size="icon-sm" label={t('safe.menu')} disabled={busy}><MoreHorizontal /></ActionButton></DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuItem onSelect={() => setDialog('tags')}>{t('safe.manageTags')}</DropdownMenuItem>
-					<DropdownMenuItem onSelect={toggleTrash}><Trash2 />{t(trash ? 'safe.backToRecords' : 'safe.trash')}</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onSelect={() => { void action.run(async () => {
-						const exported = await service.exportBackup(win);
-						if (exported && action.current()) setNotice({ key: 'safe.exported' });
-					}); }}><Download />{t('safe.export')}</DropdownMenuItem>
-					<DropdownMenuItem onSelect={() => setDialog('import')}><FileInput />{t('safe.import.menu')}</DropdownMenuItem>
-					<DropdownMenuItem variant="destructive" onSelect={() => setDialog('replace')}>{t('safe.replaceMenu')}</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onSelect={() => setDialog('password')}><KeyRound />{t('safe.changePassword')}</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</div>
 
-		{(action.error || state.error) && <div className="flex flex-wrap items-center gap-2" role="status"><SafeErrorMessage error={action.error || safeErrorKey(state.error)} /><Button size="xs" variant="ghost" onClick={() => { action.setError(''); service.clearError(); }}>{t('safe.dismissError')}</Button></div>}
-		<div data-safe-workspace className={cn("grid min-h-64 min-w-0 flex-1 shrink-0 grid-cols-1 gap-3 @4xl:grid-cols-[10rem_minmax(0,1fr)_minmax(0,1.2fr)] @4xl:grid-rows-1", hasDetail ? "grid-rows-1" : "grid-rows-[auto_minmax(0,1fr)]")}>
-			<aside aria-label={t('safe.workspace.scope')} className={cn("max-h-40 min-h-0 min-w-0 flex-col gap-2 overflow-y-auto scrollbar-sleek @4xl:max-h-none", hasDetail ? "hidden @4xl:flex" : "flex")}>
-				<div className="flex flex-wrap gap-1 @4xl:flex-col">
-					<Button data-safe-scope="all" variant={selectedTags.length === 0 && !trash ? 'secondary' : 'ghost'} onClick={() => { setTrash(false); setSelectedTags([]); setSelection(null); }}>{t('safe.workspace.all')}</Button>
-					<Button data-safe-scope="favorites" variant={selectedTags.includes('favorite') ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes('favorite')} onClick={() => { setTrash(false); setSelectedTags(['favorite']); setSelection(null); }}>{t('safe.workspace.favorites')}</Button>
-					<Button data-safe-scope="trash" variant={trash ? 'secondary' : 'ghost'} onClick={toggleTrash}>{t('safe.trash')}</Button>
+			{(action.error || state.error) && (
+				<div className="flex flex-wrap items-center gap-2" role="status">
+					<SafeErrorMessage error={action.error || safeErrorKey(state.error)} />
+					<Button
+						size="sm"
+						variant="ghost"
+						onClick={() => {
+							action.setError('');
+							service.clearError();
+						}}
+					>
+						{t('safe.dismissError')}
+					</Button>
 				</div>
-				<div className="flex min-w-0 shrink-0 flex-wrap gap-1 overflow-y-auto scrollbar-sleek" role="group" aria-label={t('safe.filterTags')}>
-					{collectTags(state.entries).map(tag => <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes(tag)} onClick={() => { setSelection(null); setSelectedTags(current => current.includes(tag) ? current.filter(item => item !== tag) : [...current, tag]); }}>{tag}</Button>)}
-					{selectedTags.length > 0 && <Button size="sm" variant="outline" onClick={() => setSelectedTags([])}>{t('safe.clearTags')}</Button>}
+			)}
+			<div data-safe-workspace className="flex min-h-0 min-w-0 flex-1">
+				<aside
+					aria-label={t('safe.workspace.scope')}
+					className="flex w-40 min-h-0 min-w-0 shrink-0 flex-col gap-3 overflow-y-auto border-r border-[var(--hu-line)] bg-[var(--hu-sunken)] p-3 scrollbar-sleek @max-[600px]:w-28"
+				>
+					<div className="flex flex-col gap-1">
+						<Button
+							data-safe-scope="all"
+							variant={selectedTags.length === 0 && !trash ? 'secondary' : 'ghost'}
+							onClick={() => {
+								setTrash(false);
+								setSelectedTags([]);
+								setSelection(null);
+							}}
+						>
+							{t('safe.workspace.all')}
+						</Button>
+						<Button
+							data-safe-scope="favorites"
+							variant={selectedTags.includes('favorite') ? 'secondary' : 'ghost'}
+							aria-pressed={selectedTags.includes('favorite')}
+							onClick={() => {
+								setTrash(false);
+								setSelectedTags(['favorite']);
+								setSelection(null);
+							}}
+						>
+							{t('safe.workspace.favorites')}
+						</Button>
+						<Button data-safe-scope="trash" variant={trash ? 'secondary' : 'ghost'} onClick={toggleTrash}>
+							{t('safe.trash')}
+						</Button>
+					</div>
+					<div
+						className="flex min-w-0 shrink-0 flex-wrap gap-1 overflow-y-auto scrollbar-sleek"
+						role="group"
+						aria-label={t('safe.filterTags')}
+					>
+						{collectTags(state.entries).map((tag) => (
+							<Button
+								key={tag}
+								size="sm"
+								variant={selectedTags.includes(tag) ? 'secondary' : 'ghost'}
+								aria-pressed={selectedTags.includes(tag)}
+								onClick={() => {
+									setSelection(null);
+									setSelectedTags((current) =>
+										current.includes(tag)
+											? current.filter((item) => item !== tag)
+											: [...current, tag],
+									);
+								}}
+							>
+								{tag}
+							</Button>
+						))}
+						{selectedTags.length > 0 && (
+							<Button size="sm" variant="secondary" onClick={() => setSelectedTags([])}>
+								{t('safe.clearTags')}
+							</Button>
+						)}
+					</div>
+				</aside>
+				<div
+					data-safe-entries
+					className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto p-3 scrollbar-sleek"
+				>
+					{entries.length === 0 ? (
+						<EmptyState
+							icon={trash ? <Trash2 /> : <Vault />}
+							title={t(
+								query.trim() || selectedTags.length
+									? 'safe.noResults'
+									: trash
+										? 'safe.emptyTrash'
+										: 'safe.emptyTitle',
+							)}
+							description={
+								!trash && !query.trim() && !selectedTags.length
+									? t('safe.emptyDescription')
+									: trash && !query.trim() && !selectedTags.length
+										? t('safe.trashHint')
+										: undefined
+							}
+						/>
+					) : trash ? (
+						<TrashRows
+							entries={entries}
+							busy={busy}
+							onRestore={(entry) => {
+								void action.run(() => service.restoreEntry(entry));
+							}}
+							onDelete={(entry) => service.deleteEntry(entry)}
+						/>
+					) : mode === 'cards' ? (
+						<EntryCards entries={entries} actions={actions} />
+					) : (
+						<EntryRows entries={entries} actions={actions} />
+					)}
 				</div>
-			</aside>
-			<div data-safe-entries className={cn("min-h-0 min-w-0 flex-1 flex-col overflow-y-auto scrollbar-sleek", hasDetail ? "hidden @4xl:flex" : "flex")}>
-				{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() || selectedTags.length ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() && !selectedTags.length ? t('safe.emptyDescription') : trash && !query.trim() && !selectedTags.length ? t('safe.trashHint') : undefined} />
-					: trash ? <TrashRows entries={entries} busy={busy} onRestore={entry => { void action.run(() => service.restoreEntry(entry)); }} onDelete={entry => service.deleteEntry(entry)} />
-					: mode === 'cards' ? <EntryCards entries={entries} actions={actions} /> : <EntryRows entries={entries} actions={actions} />}
+				<DetailPane
+					open={hasDetail}
+					leafWidth={leafWidth}
+					title={t('safe.workspace.details')}
+					onOpenChange={(open) => {
+						if (!open) setSelection(null);
+					}}
+				>
+					{hasDetail && (
+						<AccountDetail
+							key={`${selectedEntry.id}/${selectedAccount.id}`}
+							entry={selectedEntry}
+							account={selectedAccount}
+							entries={state.entries}
+							actions={actions}
+							onNavigate={navigate}
+							onEdit={() => openEntry(selectedEntry)}
+							onBack={() => setSelection(null)}
+						/>
+					)}
+				</DetailPane>
 			</div>
-			{hasDetail ? <AccountDetail key={`${selectedEntry.id}/${selectedAccount.id}`} entry={selectedEntry} account={selectedAccount} entries={state.entries} actions={actions} onNavigate={navigate} onEdit={() => openEntry(selectedEntry)} onBack={() => { setSelection(null); win.requestAnimationFrame(() => trigger.current?.focus()); }} />
-				: <div className="hidden min-w-0 items-center justify-center rounded-lg border border-border p-3 text-sm text-muted-foreground @4xl:flex">{t('safe.workspace.select')}</div>}
-		</div>
-		<div className="flex flex-wrap justify-between gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-			<span role={notice ? 'status' : undefined}>{notice ? t(notice.key, notice.params) : t('safe.recordCount', { count: entries.length })}</span>
-			<span className="min-w-0 truncate" title={lockRuleLines(t, policy).join(' ')}>{policy.idleMs === null ? t('safe.rule.idleNever') : t('safe.rule.idle', { minutes: Math.round(policy.idleMs / 60_000) })}</span>
-		</div>
-		{editing && <EntryDialog service={service} entry={editing.entry} onClose={() => setEditing(null)} />}
-		{dialog === 'tags' && <TagManager service={service} onClose={() => setDialog(null)} changed={() => setSelectedTags([])} />}
-		{dialog === 'password' && <ChangePasswordDialog service={service} onClose={() => setDialog(null)} />}
-		{dialog === 'import' && <ImportDialog service={service} onClose={() => setDialog(null)} onImported={summary => setNotice(importNotice(summary))} />}
-		{dialog === 'replace' && <RestoreDialog service={service} onClose={() => setDialog(null)} />}
-	</section>;
+			<div className="flex shrink-0 flex-wrap justify-between gap-3 border-t border-[var(--hu-line)] px-5 py-3 text-xs text-[var(--hu-fg-3)]">
+				<span role={notice ? 'status' : undefined}>
+					{notice ? t(notice.key, notice.params) : t('safe.recordCount', { count: entries.length })}
+				</span>
+				<span className="min-w-0 truncate" title={lockRuleLines(t, policy).join(' ')}>
+					{policy.idleMs === null
+						? t('safe.rule.idleNever')
+						: t('safe.rule.idle', { minutes: Math.round(policy.idleMs / 60_000) })}
+				</span>
+			</div>
+			<Dialog open={quick} onOpenChange={setQuick}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{t('safe.quick.title')}</DialogTitle>
+						<DialogDescription>{t('safe.quick.description')}</DialogDescription>
+					</DialogHeader>
+					{quick && <QuickPick service={service} onClose={() => setQuick(false)} />}
+				</DialogContent>
+			</Dialog>
+			{editing && <EntryDialog service={service} entry={editing.entry} onClose={() => setEditing(null)} />}
+			{dialog === 'tags' && (
+				<TagManager service={service} onClose={() => setDialog(null)} changed={() => setSelectedTags([])} />
+			)}
+			{dialog === 'password' && <ChangePasswordDialog service={service} onClose={() => setDialog(null)} />}
+			{dialog === 'import' && (
+				<ImportDialog
+					service={service}
+					onClose={() => setDialog(null)}
+					onImported={(summary) => setNotice(importNotice(summary))}
+				/>
+			)}
+			{dialog === 'replace' && <RestoreDialog service={service} onClose={() => setDialog(null)} />}
+		</section>
+	);
 }

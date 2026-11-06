@@ -3,46 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ArchivesApplication } from '../../services/generic/application';
 import { ArchiveError, type ArchiveTypeDefinition, type EntitySummary } from '../../core/schema/model';
 import { journalRows, type JournalRow, type JournalValues } from '../../core/person-journal/journal';
-import { at, ct, Button, Input, Textarea, TextField } from '../generic/common';
+import { at, ct, Button, Textarea, TextField, useArchiveConfirm } from '../generic/common';
 import { EntityPicker } from '../generic/RelationPanel';
-import { openReactDialog } from '../../../../ui/react/dialog';
 import { publishFeedback } from '../../../../host/obsidian/feedback';
-import { personHitSize, type Leave } from './common';
+import { type Leave } from './common';
+import { DateField } from '../../../../ui/components/huhu/date';
 
-function confirm(owner: HTMLElement, message: string, accept: string, signal: AbortSignal): Promise<boolean> {
-	if (signal.aborted) return Promise.resolve(false);
-	return new Promise((resolve) => {
-		let accepted = false;
-		const cancel = () => {
-			dialog.close();
-			resolve(false);
-		};
-		const dialog = openReactDialog(owner, {
-			title: accept,
-			description: message,
-			content: (close) => (
-				<div style={personHitSize} className="flex flex-wrap justify-end gap-2">
-					<Button variant="outline" onClick={close}>
-						{ct('cancel')}
-					</Button>
-					<Button
-						onClick={() => {
-							accepted = true;
-							close();
-						}}
-					>
-						{accept}
-					</Button>
-				</div>
-			),
-			onClose: () => {
-				signal.removeEventListener('abort', cancel);
-				resolve(accepted && !signal.aborted);
-			},
-		});
-		signal.addEventListener('abort', cancel, { once: true });
-	});
-}
 function Related({
 	application,
 	id,
@@ -66,7 +32,11 @@ function Related({
 		};
 	}, [application, id]);
 	return (
-		<Button variant="link" className="h-auto max-w-full whitespace-normal break-all px-0" onClick={() => open(id)}>
+		<Button
+			variant="ghost"
+			className="h-auto min-h-[var(--hu-ctl-h)] max-w-full whitespace-normal break-all px-0"
+			onClick={() => open(id)}
+		>
 			{entity?.name ?? at('missing')} · {id}
 		</Button>
 	);
@@ -106,8 +76,8 @@ export function PersonJournal({
 		[notice, setNotice] = useState('');
 	const running = useRef(false),
 		controller = useRef<AbortController | undefined>(undefined),
-		lifetime = useRef<{ id: string; abort: AbortController } | undefined>(undefined),
-		confirming = useRef(false);
+		lifetime = useRef<{ id: string; abort: AbortController } | undefined>(undefined);
+	const prompt = useArchiveConfirm(owner, entity.id);
 	useEffect(() => {
 		const abort = new AbortController();
 		lifetime.current = { id: entity.id, abort };
@@ -118,17 +88,12 @@ export function PersonJournal({
 		};
 	}, [entity.id]);
 	const ask = useCallback(
-		async (message: string, accept: string) => {
+		(message: string, accept: string) => {
 			const current = lifetime.current;
-			if (!current || current.id !== entity.id || confirming.current) return false;
-			confirming.current = true;
-			try {
-				return await confirm(owner, message, accept, current.abort.signal);
-			} finally {
-				confirming.current = false;
-			}
+			if (!current || current.id !== entity.id) return Promise.resolve(false);
+			return prompt(message, accept);
 		},
-		[owner, entity.id],
+		[entity.id, prompt],
 	);
 	const leave = useCallback(async () => {
 		if (running.current) return false;
@@ -289,16 +254,20 @@ export function PersonJournal({
 							}}
 						>
 							<fieldset disabled={busy} className="m-0 min-w-0 space-y-3 border-0 p-0">
-								<label className="block min-w-0 space-y-1">
-									<span className="text-sm font-medium">{at('preset.journalDate')}</span>
-									<Input
-										type="date"
+								<div className="min-w-0">
+									<DateField
+										label={at('preset.journalDate')}
+										collisionBoundary={
+											owner.closest('[data-huhu-leaf]') ??
+											owner.closest('.workspace-leaf-content')
+										}
 										required
-										className="w-full min-w-0 px-0"
+
 										value={draft.values.date}
-										onChange={(e) => update({ date: e.target.value })}
+										onDraftChange={(date) => update({ date })}
+										onChange={(date) => update({ date: date ?? '' })}
 									/>
-								</label>
+								</div>
 								<TextField
 									label={at('preset.journalTitle')}
 									value={draft.values.title}
@@ -327,7 +296,7 @@ export function PersonJournal({
 										<Related application={application} id={id} open={open} />
 										<Button
 											type="button"
-											variant="outline"
+											variant="secondary"
 											onClick={() =>
 												update({
 													relatedEntityIds: draft.values.relatedEntityIds.filter(
@@ -346,7 +315,7 @@ export function PersonJournal({
 									</Button>
 									<Button
 										type="button"
-										variant="outline"
+										variant="secondary"
 										onClick={() => {
 											void leave();
 										}}
@@ -374,11 +343,15 @@ export function PersonJournal({
 										<Related key={id} application={application} id={id} open={open} />
 									))}
 									<div className="flex flex-wrap gap-2">
-										<Button variant="outline" disabled={busy || !!draft} onClick={() => edit(row)}>
+										<Button
+											variant="secondary"
+											disabled={busy || !!draft}
+											onClick={() => edit(row)}
+										>
 											{ct('edit')}
 										</Button>
 										<Button
-											variant="outline"
+											variant="secondary"
 											disabled={busy || !!draft}
 											onClick={() => {
 												const expectedHash = entity.contentHash;

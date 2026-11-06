@@ -1,6 +1,5 @@
 import type { ComponentType } from 'react';
 import type { BoardStore } from '../../services/board-store';
-import type { WidgetChrome } from './WidgetCard';
 import { AlbumWidget } from '../widgets/AlbumWidget';
 import { AnniversaryWidget } from '../widgets/AnniversaryWidget';
 import { CalendarWidget } from '../widgets/CalendarWidget';
@@ -47,11 +46,7 @@ export const WIDGET_COMPONENTS: Readonly<Record<string, WidgetComponent>> = {
 	shortcuts: QuickActionsWidget,
 };
 
-/**
- * How a kind sits in its card. Every view is drawn under the card's title bar; `minimal` kinds read as a picture
- * and keep the bar hidden until the tile is hovered or focused (it still drags), `bleed` kinds fill the whole card.
- */
-export const WIDGET_FRAME: Readonly<Record<string, { chrome?: WidgetChrome; bleed?: boolean }>> = {
-	clock: { chrome: 'minimal' },
-	album: { chrome: 'minimal', bleed: true },
+/** Pictures fill the body; every kind retains the same persistent card header. */
+export const WIDGET_FRAME: Readonly<Record<string, { bleed?: boolean }>> = {
+    album: { bleed: true },
 };

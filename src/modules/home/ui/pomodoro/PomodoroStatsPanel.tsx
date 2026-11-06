@@ -1,3 +1,4 @@
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../../../ui/components/select';
 import { useEffect, useState } from 'react';
 import {
 	AnalyticsChart,
@@ -13,7 +14,6 @@ import { Input } from '../../../../ui/components/input';
 import { t } from '../../../../shared/i18n';
 import type { PomodoroService } from '../../platform/pomodoro/pomodoro-service';
 import { RecordSaveStatus } from '../dialogs/RecordSaveStatus';
-
 export function PomodoroStatsPanel({ service, close }: { service: PomodoroService; close?: () => void }) {
 	const [, refresh] = useState(0),
 		[activity, setActivity] = useState(''),
@@ -44,22 +44,28 @@ export function PomodoroStatsPanel({ service, close }: { service: PomodoroServic
 			toolbar={
 				<>
 					<AnalyticsRangeControl state={range} />
-					<select
-						className="h-9 max-w-48 rounded-md border border-input bg-background px-3 text-sm"
-						aria-label={t('analytics.activity')}
-						value={activity}
-						onChange={(e) => {
-							setActivity(e.target.value);
+					<Select
+						value={activity || '__none__'}
+						onValueChange={(e) => {
+							setActivity(e === '__none__' ? '' : e);
 							setDay('');
 						}}
 					>
-						<option value="">{t('analytics.allActivities')}</option>
-						{[...new Set(records.map((r) => r.activity))].sort().map((a) => (
-							<option key={a} value={a}>
-								{a || t('analytics.activity')}
-							</option>
-						))}
-					</select>
+						<SelectTrigger
+							className="h-[var(--hu-ctl-h)] max-w-48 rounded-md border border-input bg-background px-3 text-sm"
+							aria-label={t('analytics.activity')}
+						>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="__none__">{t('analytics.allActivities')}</SelectItem>
+							{[...new Set(records.map((r) => r.activity))].sort().map((a) => (
+								<SelectItem key={a} value={a || '__none__'}>
+									{a || t('analytics.activity')}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 				</>
 			}
 		>
@@ -142,8 +148,8 @@ export function PomodoroStatsPanel({ service, close }: { service: PomodoroServic
 						<Button
 							key={d}
 							size="icon-sm"
-							variant={totals[i] ? 'default' : 'secondary'}
-							className="h-8 w-8 text-[10px]"
+							variant={totals[i] ? 'primary' : 'secondary'}
+							className="h-8 w-8 text-xs"
 							title={`${d} · ${minutes(totals[i] ?? 0)}`}
 							aria-label={`${d} · ${minutes(totals[i] ?? 0)}`}
 							onClick={() => setDay(d)}

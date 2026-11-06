@@ -1,3 +1,4 @@
+import './i18n';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/view.ts
 import { useCallback, useEffect, useId, useState } from 'react';
 import { Platform } from 'obsidian';

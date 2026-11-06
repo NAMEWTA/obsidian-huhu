@@ -31,7 +31,7 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 		};
 		return (
 			<SettingsSection title={t('editor.comments.title')}>
-				{writeError && <p role="alert" className="text-sm text-destructive">{t('settings.writeFailed')}</p>}
+				{writeError && <p role="alert" className="text-sm text-[var(--hu-danger)]">{t('settings.writeFailed')}</p>}
 				<SettingsRow
 					label={t('editor.comments.author')}
 					control={
@@ -122,12 +122,12 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 				<SettingsRow label={t('editor.highlights.exportFolder')}
 					control={<Input aria-label={t('editor.highlights.exportFolder')} value={value.exportFolder}
 						onChange={event => save('exportFolder', event.target.value)} />} />
-				<div className="space-y-3 border-t border-border pt-3">
+				<div className="space-y-3 border-t border-[var(--hu-line)] pt-3">
 					<div className="text-sm font-medium">{t('editor.highlights.customColors')}</div>
 					{value.customColors.map(color => <div key={color.id} className="flex flex-wrap items-center gap-2">
-						<span aria-hidden="true" className="size-5 shrink-0 rounded-full border border-border" style={{ backgroundColor: color.hex }} />
+						<span aria-hidden="true" className="size-5 shrink-0 rounded-full border border-[var(--hu-line)]" style={{ backgroundColor: color.hex }} />
 						<span className="min-w-0 flex-1 text-xs">{color.name} ({color.hex})</span>
-						<Button type="button" size="xs" variant="ghost" aria-label={t('editor.highlights.deleteColor') + ': ' + color.name}
+						<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" size="sm" variant="ghost" aria-label={t('editor.highlights.deleteColor') + ': ' + color.name}
 							onClick={() => save('customColors', value.customColors.filter(item => item.id !== color.id))}>{t('editor.highlights.deleteColor')}</Button>
 					</div>)}
 					<div className="flex flex-wrap items-center gap-2">
@@ -135,7 +135,7 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 							aria-label={t('editor.highlights.colorName')} placeholder={t('editor.highlights.colorName')} />
 						<input aria-label={t('editor.highlights.colorValue')} className="h-9 w-12 cursor-pointer"
 							type="color" value={newColorHex} onChange={event => setNewColorHex(event.target.value)} />
-						<Button size="sm" variant="outline" disabled={!newColorName.trim() || value.customColors.length >= 32}
+						<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" disabled={!newColorName.trim() || value.customColors.length >= 32}
 							onClick={() => {
 								const id = ('custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)).slice(0, 23) as `custom-${string}`;
 								save('customColors', [...value.customColors, { id, name: newColorName.trim().slice(0, 60), hex: newColorHex }]);

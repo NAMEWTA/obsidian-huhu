@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/components/
 import { cn } from '../../../ui/lib/utils';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
 import { contextKey, ROOT_FOLDER } from '../core/types';
-import { NAV_ROW_HEIGHT } from '../core/layout';
+import { useDensityRowHeight } from '../../../ui/react/use-density';
 import { foldClick, foldDoubleClick, type FoldSequence } from '../core/fold-click';
 import type { NavRow } from '../core/nav-tree';
 import { normalizeSections, type SectionId } from '../core/sections';
@@ -32,7 +32,7 @@ import {
 	TARGET_DND,
 	upperHalf,
 } from './dnd';
-import { TOUCH_ROW_HEIGHT, useCoarsePointer, useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings } from './hooks';
+import { useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings } from './hooks';
 import { focusWhenVisible, handlePaneKey, usePaneKeyScope } from './keys';
 import { navMenu, type MenuEntry } from './menus';
 
@@ -111,7 +111,7 @@ export function NavPane() {
 	const sections = normalizeSections(settings.sections);
 	const guides = activeGuide(tree.rows, tree.indexByKey.get(selectedKey));
 
-	const rowSize = useCoarsePointer() ? TOUCH_ROW_HEIGHT : NAV_ROW_HEIGHT;
+	const rowSize = useDensityRowHeight(scrollRef);
 	const virtualizer = useVirtualizer({
 		count: tree.rows.length,
 		getScrollElement: () => scrollRef.current,
@@ -223,8 +223,8 @@ export function NavPane() {
 	const banner = activeProfile?.banner ? env.imageUrl(activeProfile.banner) : '';
 
 	return (
-		<section aria-labelledby={titleId} className="@container flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground" data-navigator-pane="nav">
-			<header className="flex shrink-0 flex-wrap items-center justify-between gap-1 border-b border-sidebar-border px-2 py-1">
+		<section aria-labelledby={titleId} className="@container flex h-full min-h-0 flex-col bg-[var(--hu-surface)] text-[var(--hu-fg)]" data-navigator-pane="nav">
+			<header className="flex shrink-0 flex-wrap items-center justify-between gap-1 border-b border-[var(--hu-line)] px-2 py-1">
 				<span id={titleId} className="sr-only">{profiles.length > 1 && activeProfile ? activeProfile.name : t('navigator.navigation')}</span>
 				<SearchBar compact />
 				<div className="flex min-w-0 max-w-full flex-wrap items-center">
@@ -238,9 +238,9 @@ export function NavPane() {
 							{settings.showHidden ? <Eye /> : <EyeOff />}
 						</ToolbarButton>
 					)}
-					{env.actions && <div className="hidden @min-[12rem]:block"><ToolbarButton label={t('navigator.calendar')} active={settings.calendarOpen} onClick={() => service.toggleCalendar()}><CalendarDays /></ToolbarButton></div>}
-					{env.actions && profiles.length > 1 && <div className="hidden @min-[14rem]:block"><ToolbarButton label={t('navigator.selectProfile')} onClick={() => { void env.actions?.chooseProfile().catch(env.report); }}><Layers /></ToolbarButton></div>}
-					<div className="hidden @min-[9rem]:block"><ToolbarButton label={t('navigator.settings')} onClick={env.openSettings}><Settings2 /></ToolbarButton></div>
+					{env.actions && <div className="block"><ToolbarButton label={t('navigator.calendar')} active={settings.calendarOpen} onClick={() => service.toggleCalendar()}><CalendarDays /></ToolbarButton></div>}
+					{env.actions && profiles.length > 1 && <div className="block"><ToolbarButton label={t('navigator.selectProfile')} onClick={() => { void env.actions?.chooseProfile().catch(env.report); }}><Layers /></ToolbarButton></div>}
+					<div className="block"><ToolbarButton label={t('navigator.settings')} onClick={env.openSettings}><Settings2 /></ToolbarButton></div>
 				</div>
 			</header>
 			{banner && <img alt="" src={banner} className="h-16 w-full shrink-0 object-cover" data-navigator-banner />}
@@ -251,7 +251,7 @@ export function NavPane() {
 					tabIndex={0}
 					aria-labelledby={titleId}
 					aria-activedescendant={rowId(navFocusKey)}
-					className="h-full overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50"
+					className="h-full overflow-y-auto outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--hu-accent)]"
 					onKeyDown={onKeyDown}
 					onFocus={(event) => { if (event.target === event.currentTarget) service.setPane('nav'); }}
 				>
@@ -280,15 +280,15 @@ export function NavPane() {
 									data-missing={row.missing || undefined}
 									draggable={draggable}
 									className={cn(
-										'absolute left-0 top-0 flex w-full items-center gap-1 pr-2 text-[13px]',
-										isSection ? 'cursor-default pt-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground' : 'cursor-default rounded-md',
-										selected && 'bg-sidebar-accent text-sidebar-accent-foreground',
-										keyboardFocus && 'ring-[3px] ring-inset ring-ring/50',
-										!selected && !isSection && 'hover:bg-sidebar-accent/50',
+										'absolute left-0 top-0 flex w-full items-center gap-1 pr-2 text-sm',
+										isSection ? 'cursor-default pt-2 text-xs font-semibold uppercase tracking-wide text-[var(--hu-fg-3)]' : 'cursor-default rounded-md',
+										selected && 'bg-[var(--hu-accent-soft)] text-[var(--hu-accent-text)]',
+										keyboardFocus && 'outline-2 -outline-offset-2 outline-[var(--hu-accent)]',
+										!selected && !isSection && 'hover:bg-[var(--hu-accent-soft)]/50',
 										(row.missing || shownHidden) && 'opacity-50',
-										marked === 'into' && 'bg-primary/15 ring-1 ring-inset ring-primary',
-										marked === 'before' && 'shadow-[inset_0_2px_0_0_var(--primary)]',
-										marked === 'after' && 'shadow-[inset_0_-2px_0_0_var(--primary)]',
+										marked === 'into' && 'bg-[var(--hu-accent-soft)] outline-2 -outline-offset-2 outline-[var(--hu-accent)]',
+										marked === 'before' && 'shadow-[inset_0_2px_0_0_var(--hu-accent)]',
+										marked === 'after' && 'shadow-[inset_0_-2px_0_0_var(--hu-accent)]',
 									)}
 									style={{ height: item.size, transform: `translateY(${item.start}px)`, paddingLeft: 8 + row.depth * 14 }}
 									onClick={(event) => {
@@ -349,7 +349,7 @@ export function NavPane() {
 											aria-hidden
 											data-nav-guide={level}
 											data-active={(guides.level === level && item.index > guides.from && item.index < guides.to) || undefined}
-											className="pointer-events-none absolute inset-y-0 w-[var(--nav-indentation-guide-width,1px)] bg-[var(--nav-indentation-guide-color,var(--border))] data-[active]:bg-[var(--nav-indentation-guide-color-active,var(--muted-foreground))]"
+											className="pointer-events-none absolute inset-y-0 w-px bg-[var(--hu-line)] data-[active]:bg-[var(--hu-fg-3)]"
 											style={{ left: 18 + level * 14 }}
 										/>
 									))}
@@ -359,13 +359,13 @@ export function NavPane() {
 										<>
 											<span
 												aria-hidden
-												className={cn('inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-sidebar-accent', !row.hasChildren && 'invisible')}
+												className={cn('inline-flex size-8 [@media(pointer:coarse)]:size-11 shrink-0 items-center justify-center rounded-sm text-[var(--hu-fg-3)] hover:bg-[var(--hu-accent-soft)]', !row.hasChildren && 'invisible')}
 												onClick={(event) => { event.stopPropagation(); clicks.current = null; service.toggleExpanded(row); }}
 												onDoubleClick={(event) => event.stopPropagation()}
 											>
 												<ChevronRight className={cn('size-3.5 transition-transform motion-reduce:transition-none', row.expanded && 'rotate-90')} />
 											</span>
-											{target ? <EntryIcon env={env} version={iconsVersion} open={row.expanded} target={target} /> : <Search aria-hidden className="size-4 shrink-0 text-muted-foreground" />}
+											{target ? <EntryIcon env={env} version={iconsVersion} open={row.expanded} target={target} /> : <Search aria-hidden className="size-4 shrink-0 text-[var(--hu-fg-3)]" />}
 											{editing ? (
 												<InlineEditor
 													initial={row.label}
@@ -376,7 +376,7 @@ export function NavPane() {
 											) : (
 												<span className={cn('min-w-0 flex-1 truncate', row.missing && 'line-through')}>{row.label}</span>
 											)}
-											{!editing && row.count > 0 && <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{row.count}</span>}
+											{!editing && row.count > 0 && <span className="shrink-0 text-xs tabular-nums text-[var(--hu-fg-3)]">{row.count}</span>}
 										</>
 									)}
 								</div>
@@ -407,7 +407,7 @@ function SectionHeader({ row }: { row: NavRow }) {
 			type="button"
 			tabIndex={-1}
 			aria-expanded={row.expanded}
-			className="flex h-auto min-w-0 flex-1 cursor-pointer items-center justify-start gap-1 rounded-sm border-0 bg-transparent p-0 text-left text-[11px] font-semibold uppercase tracking-wide text-muted-foreground shadow-none"
+			className="flex h-auto min-w-0 flex-1 cursor-pointer items-center justify-start gap-1 rounded-sm border-0 bg-transparent p-0 text-left text-xs font-semibold uppercase tracking-wide text-[var(--hu-fg-3)] shadow-none"
 			onClick={(event) => { event.stopPropagation(); if (row.section) service.toggleSection(row.section); }}
 		>
 			<ChevronRight aria-hidden className={cn('size-3 shrink-0 transition-transform motion-reduce:transition-none', row.expanded && 'rotate-90')} />
@@ -420,7 +420,7 @@ export function ToolbarButton({ label, onClick, children, active }: { label: str
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button type="button" variant="ghost" size="icon-sm" aria-label={label} aria-pressed={active} className={cn('text-muted-foreground [&_svg]:size-4', active && 'bg-sidebar-accent text-foreground')} onClick={onClick}>
+				<Button type="button" variant="ghost" size="icon-sm" aria-label={label} aria-pressed={active} className={cn('min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]', 'text-[var(--hu-fg-3)] [&_svg]:size-4', active && 'bg-[var(--hu-accent-soft)] text-[var(--hu-fg)]')} onClick={onClick}>
 					{children}
 				</Button>
 			</TooltipTrigger>

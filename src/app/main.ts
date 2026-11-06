@@ -48,15 +48,17 @@ import { FeedbackHost, type FeedbackRenderer } from '../host/obsidian/feedback';
 
 /** UI initialization remains behind the first workbench feedback, outside the startup closure. */
 export async function mountFeedbackRenderer(container: HTMLElement, toasterId: string): Promise<FeedbackRenderer> {
-	const [{ createElement }, { createRoot }, { flushSync }, { Toaster, toast }, { PortalContainerContext }, { messages }] = await Promise.all([
+	const [{ createElement }, { createRoot }, { flushSync }, { Toaster, toast }, { OwnerDocumentContext, PortalContainerContext }, { messages }] = await Promise.all([
 		import('react'), import('react-dom/client'), import('react-dom'), import('../ui/components/sonner'),
 		import('../ui/react/contexts'), import('../shared/i18n/lazy/ui'),
 	]);
 	if (!container.isConnected) return { present: () => {}, remove: () => {}, dispose: () => {} };
 	registerMessages(messages);
 	const root = createRoot(container);
-	flushSync(() => root.render(createElement(PortalContainerContext.Provider, { value: container },
-		createElement(Toaster, { id: toasterId, container }),
+	flushSync(() => root.render(createElement(OwnerDocumentContext.Provider, { value: container.ownerDocument },
+		createElement(PortalContainerContext.Provider, { value: container },
+			createElement(Toaster, { id: toasterId, container }),
+		),
 	)));
 	let disposed = false;
 	const ids = new Set<string>();
@@ -150,7 +152,7 @@ export default class DashboardPlugin extends Plugin {
 		this.register(() => this.fileChanges?.dispose());
 		this.documents = new EditorContextService(this.app, (path, text) => this.managedContent.checkEditor(path, text));
 		this.register(() => this.documents.dispose());
-		useStorageTimers(window);
+		useStorageTimers(this.app.workspace.containerEl.win);
 		setLanguage(defaultLanguage());
 		const feedback = new FeedbackHost({ mount: mountFeedbackRenderer });
 		const bindFeedback = (doc: Document) => { if (doc.defaultView) feedback.bind(doc.defaultView); };
@@ -159,158 +161,187 @@ export default class DashboardPlugin extends Plugin {
 		this.registerEvent(this.app.workspace.on('window-open', win => bindFeedback(win.doc)));
 		this.registerEvent(this.app.workspace.on('window-close', win => { if (win.doc.defaultView) feedback.close(win.doc.defaultView); }));
 		this.register(() => feedback.dispose());
-		await initializeDevice(this.app, {
-			machineIdentity: desktopMachineIdentity,
-			label: t('storage.defaultDevice'),
-			chooseDevice: async (devices) => (await import('./device-choice')).chooseVaultDevice(this.app, devices),
-		});
+		const deviceChoice = new AbortController();
+		this.register(() => deviceChoice.abort());
+		const startupClosed = () => deviceChoice.signal.aborted || this.nativeClosed;
 		try {
-			this.managedContent = (await import('../host/obsidian/storage/content-files')).contentFiles(this.app);
-			await this.managedContent.refresh();
+			await initializeDevice(this.app, {
+				machineIdentity: desktopMachineIdentity,
+				label: t('storage.defaultDevice'),
+				chooseDevice: async (devices) => {
+					if (this.nativeClosed) deviceChoice.abort();
+					deviceChoice.signal.throwIfAborted();
+					const { chooseVaultDevice } = await import('./device-choice');
+					if (this.nativeClosed) deviceChoice.abort();
+					deviceChoice.signal.throwIfAborted();
+					return chooseVaultDevice(this.app, devices, deviceChoice.signal);
+				},
+			});
+			if (startupClosed()) return;
+			try {
+				const { contentFiles } = await import('../host/obsidian/storage/content-files');
+				if (startupClosed()) return;
+				this.managedContent = contentFiles(this.app);
+				await this.managedContent.refresh();
+			} catch (error) {
+				if (startupClosed()) return;
+				new Notice(t('content.indexFailed'), 0);
+				throw error;
+			}
+			if (startupClosed()) return;
+			const recovery = await import('./recovery-start');
+			if (startupClosed()) return;
+			this.recovery = await recovery.startRecovery(this.app, deviceChoice.signal);
+			if (startupClosed()) return;
+			await this.loadSettings(deviceChoice.signal);
+			if (startupClosed()) return;
+			await recovery.afterSettings(this.app, this.recovery, this.runtime.store);
+			if (startupClosed()) return;
+			new ThemeRuntime(this.runtime.theme).attach(this);
+			const adapter = this.app.vault.adapter as { getBasePath?: () => string };
+			setDiagnosticRoots({ vault: typeof adapter.getBasePath === 'function' ? adapter.getBasePath() : undefined });
+			this.register(
+				onLanguageChanged(() => {
+					this.rewriteDeferredLeafTitles();
+					const documents = new Set<Document>([this.app.workspace.containerEl.ownerDocument]);
+					this.app.workspace.iterateAllLeaves((leaf) => {
+						documents.add(leaf.view.containerEl.ownerDocument);
+					});
+					if (this.settingsTab?.containerEl) documents.add(this.settingsTab.containerEl.ownerDocument);
+					for (const owner of documents) refreshLocalizedDom(owner.body);
+				}),
+			);
+			// registerView can restore leaves after onLayoutReady, especially for hosts that load asynchronously.
+			this.registerEvent(this.app.workspace.on('layout-change', () => this.rewriteDeferredLeafTitles()));
+			this.registerView(COMMENTS_VIEW_TYPE, (leaf) => new CommentsLeaf(leaf, this));
+			this.registerView(NAVIGATOR_VIEW_TYPE, (leaf) => new NavigatorLeaf(leaf, this));
+
+			this.registry = new ModuleRegistry(MANIFESTS, {
+				env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
+				enabled: (id) => this.runtime.ns.app.get().modules[id],
+				createContext: (manifest, services, contributions) => {
+					const lifetime = this.addChild(new Component());
+					const shell: ShellAccess = {
+						open: (target, ownerWindow, state) => this.openWorkbench(target, ownerWindow, state),
+						refresh: () => this.workbench?.refresh(),
+						openFocus: (target, state, ownerWindow) =>
+							this.workbench?.openFocus(target, state, ownerWindow) ??
+							Promise.reject(new Error(t('workbench.notReady'))),
+					};
+					const commands: CommandAccess = {
+						add: (command) => {
+							const registered = registerLocalizedCommand(
+								{ manifest: this.manifest, register: (cleanup) => lifetime.register(cleanup) },
+								command,
+								(native) => super.addCommand(native),
+							);
+							lifetime.register(() => this.removeCommand(command.id));
+							return registered;
+						},
+						remove: (id) => this.removeCommand(id),
+					};
+					const editor: EditorAccess = {
+						addExtension: (extension) => {
+							this.editorExtensions.push(extension);
+							this.app.workspace.updateOptions();
+							lifetime.register(() => {
+								this.editorExtensions.remove(extension);
+								this.app.workspace.updateOptions();
+							});
+						},
+						addPostProcessor: (processor) => {
+							this.postProcessors.add(processor);
+							lifetime.register(() => this.postProcessors.delete(processor));
+						},
+					};
+					return {
+						id: manifest.id,
+						app: this.app,
+						manifest: this.manifest,
+						env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
+						lifetime,
+						events: this.domainEvents,
+						settings: this.runtime.store,
+						services,
+						sharedWorkspace: this.sharedWorkspace,
+						ensureSharedWorkspace: this.ensureSharedWorkspace,
+						recovery: this.recovery,
+						native: this.native,
+						contributions,
+						shell,
+						commands,
+						editor,
+						documents: this.documents,
+					};
+				},
+				releaseContext: (context) => this.removeChild(context.lifetime),
+				report: (id, phase, error) => {
+					console.error(`[HUHU ${id}] ${phase} failed`, error);
+					if (phase === 'activate')
+						new Notice(
+							t('modules.failed', {
+								module: t(MANIFESTS.find((manifest) => manifest.id === id)?.titleKey ?? id),
+							}),
+						);
+				},
+			});
+			// One mutable extension array and one post-processor for all modules, so turning a module off removes its editor features.
+			this.registerEditorExtension(this.editorExtensions);
+			this.registerMarkdownPostProcessor((element, context) => {
+				for (const processor of [...this.postProcessors]) void processor(element, context);
+			});
+			await this.applyModuleFlags();
+			if (startupClosed()) return;
+
+			registerShellCommands(this);
+			registerCopyCommands(this);
+			this.settingsTab = new HuhuSettingTab(this.app, this);
+			this.addSettingTab(this.settingsTab);
+			this.workbench = composeWorkbench(this);
+			const files = this.managedContent;
+			this.register(
+				files.bindOpen((path, ownerWindow, focusId) =>
+					this.openWorkbench({ feature: 'content', resourceId: path, focusId }, ownerWindow),
+				),
+			);
+			this.register(
+				files.watch(this.app.workspace.containerEl.win, (error) => {
+					console.error('[HUHU content]', error);
+					new Notice(t('content.indexFailed'));
+				}),
+			);
+			this.register(files.subscribe(() => this.workbench?.refresh()));
+			const links = await import('../host/obsidian/storage/content-links');
+			if (startupClosed()) return;
+			this.registerMarkdownPostProcessor((element, context) =>
+				links.renderContentLinks(this.app, element, context.sourcePath),
+			);
+			this.registerDomEvent(
+				this.app.workspace.containerEl,
+				'click',
+				(event) => {
+					links.handleContentLink(this.app, event);
+				},
+				true,
+			);
+			this.register(this.runtime.store.onPersisted(() => this.workbench?.refresh()));
+			this.app.workspace.onLayoutReady(() => {
+				if (startupClosed()) return;
+				this.rewriteDeferredLeafTitles();
+				// The module switch owns the sidebar entry: a restored navigator leaf has no place while the module is off.
+				if (!this.moduleEnabled('navigator')) detachNavigatorLeaves(this.app);
+				void this.registry.apply(['startup', 'layout-ready']);
+			});
 		} catch (error) {
-			new Notice(t('content.indexFailed'), 0);
+			if (startupClosed()) return;
 			throw error;
 		}
-		this.recovery = await (await import('./recovery-start')).startRecovery(this.app);
-		await this.loadSettings();
-		await (await import('./recovery-start')).afterSettings(this.app, this.recovery, this.runtime.store);
-		new ThemeRuntime(this.runtime.theme).attach(this);
-		const adapter = this.app.vault.adapter as { getBasePath?: () => string };
-		setDiagnosticRoots({ vault: typeof adapter.getBasePath === 'function' ? adapter.getBasePath() : undefined });
-		this.register(
-			onLanguageChanged(() => {
-				this.rewriteDeferredLeafTitles();
-				const documents = new Set<Document>([document]);
-				this.app.workspace.iterateAllLeaves((leaf) => {
-					documents.add(leaf.view.containerEl.ownerDocument);
-				});
-				if (this.settingsTab?.containerEl) documents.add(this.settingsTab.containerEl.ownerDocument);
-				for (const owner of documents) refreshLocalizedDom(owner.body);
-			}),
-		);
-		// registerView can restore leaves after onLayoutReady, especially for hosts that load asynchronously.
-		this.registerEvent(this.app.workspace.on('layout-change', () => this.rewriteDeferredLeafTitles()));
-		this.registerView(COMMENTS_VIEW_TYPE, (leaf) => new CommentsLeaf(leaf, this));
-		this.registerView(NAVIGATOR_VIEW_TYPE, (leaf) => new NavigatorLeaf(leaf, this));
-
-		this.registry = new ModuleRegistry(MANIFESTS, {
-			env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
-			enabled: (id) => this.runtime.ns.app.get().modules[id],
-			createContext: (manifest, services, contributions) => {
-				const lifetime = this.addChild(new Component());
-				const shell: ShellAccess = {
-					open: (target, ownerWindow, state) => this.openWorkbench(target, ownerWindow, state),
-					refresh: () => this.workbench?.refresh(),
-					openFocus: (target, state, ownerWindow) =>
-						this.workbench?.openFocus(target, state, ownerWindow) ??
-						Promise.reject(new Error(t('workbench.notReady'))),
-				};
-				const commands: CommandAccess = {
-					add: (command) => {
-						const registered = registerLocalizedCommand(
-							{ manifest: this.manifest, register: (cleanup) => lifetime.register(cleanup) },
-							command,
-							(native) => super.addCommand(native),
-						);
-						lifetime.register(() => this.removeCommand(command.id));
-						return registered;
-					},
-					remove: (id) => this.removeCommand(id),
-				};
-				const editor: EditorAccess = {
-					addExtension: (extension) => {
-						this.editorExtensions.push(extension);
-						this.app.workspace.updateOptions();
-						lifetime.register(() => {
-							this.editorExtensions.remove(extension);
-							this.app.workspace.updateOptions();
-						});
-					},
-					addPostProcessor: (processor) => {
-						this.postProcessors.add(processor);
-						lifetime.register(() => this.postProcessors.delete(processor));
-					},
-				};
-				return {
-					id: manifest.id,
-					app: this.app,
-					manifest: this.manifest,
-					env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
-					lifetime,
-					events: this.domainEvents,
-					settings: this.runtime.store,
-					services,
-					sharedWorkspace: this.sharedWorkspace,
-					ensureSharedWorkspace: this.ensureSharedWorkspace,
-					recovery: this.recovery,
-					native: this.native,
-					contributions,
-					shell,
-					commands,
-					editor,
-					documents: this.documents,
-				};
-			},
-			releaseContext: (context) => this.removeChild(context.lifetime),
-			report: (id, phase, error) => {
-				console.error(`[HUHU ${id}] ${phase} failed`, error);
-				if (phase === 'activate')
-					new Notice(
-						t('modules.failed', {
-							module: t(MANIFESTS.find((manifest) => manifest.id === id)?.titleKey ?? id),
-						}),
-					);
-			},
-		});
-		// One mutable extension array and one post-processor for all modules, so turning a module off removes its editor features.
-		this.registerEditorExtension(this.editorExtensions);
-		this.registerMarkdownPostProcessor((element, context) => {
-			for (const processor of [...this.postProcessors]) void processor(element, context);
-		});
-		await this.applyModuleFlags();
-
-		registerShellCommands(this);
-		registerCopyCommands(this);
-		this.settingsTab = new HuhuSettingTab(this.app, this);
-		this.addSettingTab(this.settingsTab);
-		this.workbench = composeWorkbench(this);
-		const files = this.managedContent;
-		this.register(
-			files.bindOpen((path, ownerWindow, focusId) =>
-				this.openWorkbench({ feature: 'content', resourceId: path, focusId }, ownerWindow),
-			),
-		);
-		this.register(
-			files.watch(window, (error) => {
-				console.error('[HUHU content]', error);
-				new Notice(t('content.indexFailed'));
-			}),
-		);
-		this.register(files.subscribe(() => this.workbench?.refresh()));
-		const links = await import('../host/obsidian/storage/content-links');
-		this.registerMarkdownPostProcessor((element, context) =>
-			links.renderContentLinks(this.app, element, context.sourcePath),
-		);
-		this.registerDomEvent(
-			this.app.workspace.containerEl,
-			'click',
-			(event) => {
-				links.handleContentLink(this.app, event);
-			},
-			true,
-		);
-		this.register(this.runtime.store.onPersisted(() => this.workbench?.refresh()));
-		this.app.workspace.onLayoutReady(() => {
-			this.rewriteDeferredLeafTitles();
-			// The module switch owns the sidebar entry: a restored navigator leaf has no place while the module is off.
-			if (!this.moduleEnabled('navigator')) detachNavigatorLeaves(this.app);
-			void this.registry.apply(['startup', 'layout-ready']);
-		});
 	}
 
 	/** The user just turned HUHU on: open the workbench and introduce it once. */
 	override onUserEnable(): void {
 		this.app.workspace.onLayoutReady(() => {
+			if (this.nativeClosed) return;
 			void this.openWorkbench({ feature: 'dashboard' })
 				.then(() => this.maybeShowIntro())
 				.catch((error: unknown) => console.error('[HUHU workbench]', error));
@@ -318,6 +349,7 @@ export default class DashboardPlugin extends Plugin {
 	}
 
 	onunload(): void {
+		this.nativeClosed = true;
 		this.fileChanges?.dispose();
 		this.domainEvents.dispose();
 		this.workbench?.dispose();
@@ -325,7 +357,6 @@ export default class DashboardPlugin extends Plugin {
 		void this.sharedWorkspaceLoading
 			?.then((owner) => owner.dispose())
 			.catch((error) => console.error('[HUHU workspace]', error));
-		this.nativeClosed = true;
 		void this.nativeHost
 			?.then((host) => host.dispose())
 			.catch((error: unknown) => console.error('[HUHU native]', error));
@@ -334,8 +365,13 @@ export default class DashboardPlugin extends Plugin {
 
 	// ---- Settings ---------------------------------------------------------------------------------------
 
-	async loadSettings(): Promise<void> {
-		this.runtime = await loadSettingsRuntime(this.app);
+	private async loadSettings(signal: AbortSignal): Promise<void> {
+		const runtime = await loadSettingsRuntime(this.app);
+		if (signal.aborted || this.nativeClosed) {
+			await runtime.store.dispose().catch((error: unknown) => console.error('[HUHU settings]', error));
+			return;
+		}
+		this.runtime = runtime;
 		setLanguage(this.runtime.ns.app.get().language);
 	}
 
@@ -477,7 +513,7 @@ export default class DashboardPlugin extends Plugin {
 		return this.runtime.theme.update((draft) => {
 			draft.preset =
 				CYCLE_THEME_PRESETS[(CYCLE_THEME_PRESETS.indexOf(draft.preset) + 1) % CYCLE_THEME_PRESETS.length] ??
-				'default';
+				'system';
 		});
 	}
 
@@ -505,14 +541,16 @@ export default class DashboardPlugin extends Plugin {
 	}
 
 	private maybeShowIntro(): void {
-		if (this.runtime.ns.app.get().introSeen) return;
-		new IntroModal(this.app, () => {
-			void this.markIntroSeen();
-		}).open();
+		if (this.nativeClosed || this.runtime.ns.app.get().introSeen) return;
+		const intro = new IntroModal(this.app, () => {
+			if (!this.nativeClosed) void this.markIntroSeen();
+		});
+		this.register(() => intro.cancel());
+		intro.open();
 	}
 
 	private async markIntroSeen(): Promise<void> {
-		if (this.runtime.ns.app.get().introSeen) return;
+		if (this.nativeClosed || this.runtime.ns.app.get().introSeen) return;
 		await this.runtime.ns.app.update((draft) => {
 			draft.introSeen = true;
 		});

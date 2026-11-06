@@ -10,7 +10,8 @@
 | `api.ts` | 其他模块可以使用的类型，以及 `serviceKey()` / `contributionPoint()` 常量 | 启动时（只放类型和键） |
 | `module.ts` | `export default function create<Name>Module(context): ModuleInstance` | 模块启用时 |
 | `settings.ts` | 命名空间的模式（`defineSettings` 或 `domainSettings`） | `app` 绑定它时在启动时，否则随模块 |
-| `i18n.ts` | `export const messages = { en: {…}, zh: {…} }` | 随 `module.ts` |
+| `i18n.ts` | 模块层词典，`export const messages = { en: {…}, zh: {…} }` | 随 `module.ts` |
+| `ui/i18n.ts`（按需） | 纯 UI 词典，双语及占位符规则相同 | 随实际延迟 UI 入口 |
 | `core/`、`platform/`、`services/`、`contrib/`、`ui/`、`styles/` | 见 `architecture.md` 的分区表 | 随模块或更晚 |
 
 值得了解的清单字段：
@@ -23,7 +24,7 @@
 
 1. 把 id 加入 `ModuleId` 和 `MODULE_IDS`（`src/app/contracts/module.ts`）。`app` 命名空间里的模块开关由这个列表生成（`src/app/settings/app-schema.ts`）。
 2. 编写 `manifest.ts`，并加入 `MANIFESTS`（`src/app/manifests.ts`）。`order` 决定启用顺序（停用时反向）。
-3. 编写 `module.ts`。在文件顶部调用 `registerMessages(messages)`（以及它读取的 `shared/i18n/lazy/*` 词典）。工厂函数可以做轻量准备；读写和监听器放进 `activate()`。返回：
+3. 编写 `module.ts`。在文件顶部调用 `registerMessages(messages)`，注册模块层键及该层读取的共享词典。纯 UI 键由实际 UI 入口注册，不在 `activate()` 立即加载；具体分工见 `settings-and-i18n.md`。工厂函数可以做轻量准备；读写和监听器放进 `activate()`。返回：
    - `services` / `contributions`，形式为 `[key, value]` 对（值只在 `activate()` 之后才存在时可以用 getter），
    - `pages`：`{ <page>: async () => (await import('./ui/<page>-page')).create…(…) }`，
    - `settingsPage`：懒加载并返回 React 设置组件（见下文），
@@ -36,7 +37,7 @@
    - 与其他模块交互用 `context.services`（`peek`、`acquire`、`watch`）和 `context.contributions`，
    - 显示工作台页面用 `context.shell.open(target)`，图标轨或面板显示的状态变化后调用 `context.shell.refresh()`，
    - 平台选择用 `context.env`（`desktop`、`mobile`、`phone`）。
-5. 把 `i18n.ts` 加入 `scripts/module-strings.ts`，让测试和验证脚本看得到这些文案。
+5. 把模块词典及按需 UI 词典加入 `scripts/module-strings.ts`，让测试和验证脚本看得到这些文案。
 6. 把模块的 CSS 放在 `styles/` 下，在 `src/styles.json` 里列出每个文件，按 [构建参考](build-and-release.md) 重建样式。新界面优先使用 Tailwind；必要的作者 CSS 限定在模块根类下（见 ui 技能）。
 7. 在 `scripts/bundle-budget.json` 的 `moduleActivationBytes` 下为它的激活闭包添加预算。
 

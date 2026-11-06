@@ -6,7 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { launchFreshVault } from './fresh-vault.mjs';
 import { connect } from './cdp.mjs';
 const source = '# Comments fixture\n\nThe alpha target belongs here.\n\nA second paragraph for line comments.\n\nThe final paragraph.\n';
-const runtime = await launchFreshVault({ root: process.argv[2], port: 9287, files: { 'Note.md': source, 'Second.md': 'Other note.\n' }, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home: false, comments: true, agent: false, archives: false, automations: false, notifications: false, icons: false, sync: false } } } } });
+const runtime = await launchFreshVault({ root: process.argv[2], port: 9287, files: { 'Note.md': source, 'Second.md': 'Other note.\n' }, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home: false, comments: true, agent: false, archives: false, automations: false, notifications: false, icons: false, versioning: false } } } } });
 let c = runtime.connection; const main = c, rows = [];
 const check = (name, value, details) => { rows.push({ name, passed: !!value, details }); assert.ok(value, name); };
 const until = async expression => { const end = Date.now() + 15000; while (Date.now() < end) { if (await c.evaluate(expression)) return; await delay(70); } throw Error('Timeout: ' + expression); };

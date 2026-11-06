@@ -10,8 +10,8 @@ import { useBox } from '../widgets/use-box';
 
 /** Five levels from the muted surface to the chart colour; CSS variables, so every Obsidian theme recolours the grid. */
 const LEVELS = [
-	'var(--muted)',
-	...[25, 45, 70, 100].map((share) => `color-mix(in oklab, var(--chart-2) ${share}%, var(--muted))`),
+	'var(--hu-sunken)',
+	...[25, 45, 70, 100].map((share) => `color-mix(in oklab, var(--hu-chart-2) ${share}%, var(--hu-sunken))`),
 ];
 const THEME: ThemeInput = { light: LEVELS, dark: LEVELS };
 const BLOCK = 11;
@@ -81,7 +81,9 @@ export function HabitHeatmap({ service }: { service: HabitService }) {
 					renderBlock={(block, day) => (
 						<Tooltip>
 							<TooltipTrigger asChild>{block}</TooltipTrigger>
-							<TooltipContent>{t('habit.heatmapTip', { date: day.date, count: day.count })}</TooltipContent>
+							<TooltipContent>
+								{t('habit.heatmapTip', { date: day.date, count: day.count })}
+							</TooltipContent>
 						</Tooltip>
 					)}
 				/>

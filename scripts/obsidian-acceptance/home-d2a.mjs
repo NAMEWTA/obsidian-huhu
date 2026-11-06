@@ -168,7 +168,7 @@ const boards = [
 ];
 const only = process.env.HUHU_D2A_ONLY?.split(',');
 const selected = boards.filter(([name]) => !only || only.includes(name));
-const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, versioning: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_D2A_PORT || 9361),

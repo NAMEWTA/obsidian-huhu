@@ -1,4 +1,5 @@
 /** Calendar read model. The task aggregate (not a calendar row or file line) owns mutations. */
+import type { TaskWallTimeReason } from './time';
 export type CalendarTaskFilter = 'all' | 'due' | 'start' | 'active' | 'open' | 'completed' | 'overdue';
 export interface CalendarTask {
 	id?: string;
@@ -49,11 +50,14 @@ export interface CalendarTaskInput {
 	time?: string;
 	reminder?: string;
 	signal?: AbortSignal;
+	/** Interactive creation rejects ambiguous wall times; internal scheduling retains its default policy. */
+	strictTime?: boolean;
 }
 export interface CalendarFailure {
 	status: 'failed' | 'unavailable' | 'cancelled';
 	code: 'invalid-input' | 'source-missing' | 'conflict' | 'write-failed' | 'stopped';
 	message?: string;
+	timeReason?: TaskWallTimeReason;
 }
 export type CalendarMutationResult = { status: 'updated' } | CalendarFailure;
 export type CalendarCreateResult = { status: 'created'; task: CalendarTask } | CalendarFailure;

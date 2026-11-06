@@ -43,8 +43,8 @@ function ConfirmBody({ onConfirm, onCancel }: { onConfirm: () => void; onCancel:
 	const label = useT();
 	return (
 		<div className="flex justify-end gap-2">
-			<Button type="button" variant="outline" onClick={onCancel}>{label('navigator.cancel')}</Button>
-			<Button type="button" variant="destructive" autoFocus onClick={onConfirm}>{label('navigator.delete')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" onClick={onCancel}>{label('navigator.cancel')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="danger" autoFocus onClick={onConfirm}>{label('navigator.delete')}</Button>
 		</div>
 	);
 }
@@ -75,8 +75,8 @@ function NameBody({ label, value, confirm, onSubmit, onCancel }: { label: string
 				<Input id={id} aria-label={label} value={text} autoFocus onChange={(event) => setText(event.target.value)} />
 			</div>
 			<div className="flex justify-end gap-2">
-				<Button type="button" variant="outline" onClick={onCancel}>{t('navigator.cancel')}</Button>
-				<Button type="submit">{confirm}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" onClick={onCancel}>{t('navigator.cancel')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="submit">{confirm}</Button>
 			</div>
 		</form>
 	);
@@ -97,13 +97,13 @@ export function chooseFolder(app: App, registry: DialogRegistry, folders: readon
 function FolderList({ folders, onPick }: { folders: readonly string[]; onPick: (folder: string) => void }) {
 	const label = useT();
 	return (
-		<Command className="h-72 rounded-md border border-border">
+		<Command className="h-72 rounded-md border border-[var(--hu-line)]">
 			<CommandInput autoFocus placeholder={label('navigator.searchFolders')} aria-label={label('navigator.searchFolders')} />
 			<CommandList>
 				<CommandEmpty>{label('navigator.noFolders')}</CommandEmpty>
 				{[...folders].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).map((folder) => (
 					<CommandItem key={folder} value={folder} onSelect={() => onPick(folder)}>
-						<Folder aria-hidden className="size-4 text-muted-foreground" />
+						<Folder aria-hidden className="size-4 text-[var(--hu-fg-3)]" />
 						<span className="truncate">{folder === ROOT_FOLDER ? label('navigator.rootFolder') : folder}</span>
 					</CommandItem>
 				))}
@@ -189,9 +189,9 @@ function AppearanceBody({ service, context, close }: { service: NavigatorService
 				<Switch checked={value('includeDescendants')} disabled={!on('includeDescendants')} aria-label={label('navigator.includeDescendants')} onCheckedChange={(next) => set({ includeDescendants: next })} />
 			))}
 			<div className="flex justify-end gap-2 pt-2">
-				<Button type="button" variant="ghost" onClick={() => { service.setAppearance(context, undefined); close(); }}>{label('navigator.reset')}</Button>
-				<Button type="button" variant="outline" onClick={close}>{label('navigator.cancel')}</Button>
-				<Button type="button" onClick={() => { service.setAppearance(context, draft); close(); }}>{label('navigator.save')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="ghost" onClick={() => { service.setAppearance(context, undefined); close(); }}>{label('navigator.reset')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" onClick={close}>{label('navigator.cancel')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" onClick={() => { service.setAppearance(context, draft); close(); }}>{label('navigator.save')}</Button>
 			</div>
 		</div>
 	);

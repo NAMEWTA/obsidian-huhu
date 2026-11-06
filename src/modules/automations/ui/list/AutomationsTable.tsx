@@ -1,4 +1,6 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/automations/AutomationsListPanel.tsx, AutomationListTableHeader.tsx, AutomationListSortHeader.tsx
+import { Platform } from 'obsidian';
+import { actionDefinition } from '../../core/actions/registry';
 import { useEffect, useRef } from 'react';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
@@ -15,6 +17,8 @@ export function AutomationsTable({
 	definitions,
 	runs,
 	selected,
+	focused,
+	pending,
 	sort,
 	onSort,
 	disabled,
@@ -24,6 +28,8 @@ export function AutomationsTable({
 	definitions: readonly AutomationDefinition[];
 	runs: readonly AutomationRun[];
 	selected: string;
+	focused: string;
+	pending: ReadonlySet<string>;
 	sort: ListSort;
 	onSort: (sort: ListSort) => void;
 	disabled: boolean;
@@ -33,11 +39,11 @@ export function AutomationsTable({
 		scroll = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		scroll.current?.querySelector('[data-current=true]')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
-	}, [selected]);
+	}, [focused]);
 	const header = (key: ListSort['by']) => (
 		<Button
 			variant="ghost"
-			size="xs"
+			size="sm"
 			className="justify-start px-0 text-xs font-medium"
 			onClick={() => onSort({ by: key, direction: sort.by === key && sort.direction === 'asc' ? 'desc' : 'asc' })}
 		>
@@ -71,7 +77,18 @@ export function AutomationsTable({
 						{header('name')}
 					</span>
 					{['schedule', 'actionDirectory', 'nextRun'].map((key) => (
-						<span role="columnheader" key={key} className={cn(STACK_HEADER_HIDDEN, key === 'nextRun' ? NARROW_HIDDEN : key === 'actionDirectory' ? NARROWER_HIDDEN : undefined)}>
+						<span
+							role="columnheader"
+							key={key}
+							className={cn(
+								STACK_HEADER_HIDDEN,
+								key === 'nextRun'
+									? NARROW_HIDDEN
+									: key === 'actionDirectory'
+										? NARROWER_HIDDEN
+										: undefined,
+							)}
+						>
 							{t(`automation.${key}`)}
 						</span>
 					))}
@@ -85,7 +102,11 @@ export function AutomationsTable({
 						{header('lastRun')}
 					</span>
 					{['status', 'agent', 'actions'].map((key) => (
-						<span role="columnheader" key={key} className={cn(STACK_HEADER_HIDDEN, key === 'agent' ? NARROW_HIDDEN : undefined)}>
+						<span
+							role="columnheader"
+							key={key}
+							className={cn(STACK_HEADER_HIDDEN, key === 'agent' ? NARROW_HIDDEN : undefined)}
+						>
 							{t(`automation.${key}`)}
 						</span>
 					))}
@@ -97,7 +118,14 @@ export function AutomationsTable({
 							definition={d}
 							lastRun={[...runs].reverse().find((run) => run.automationId === d.id)}
 							selected={selected === d.id}
-							disabled={disabled || d.deviceId !== deviceId}
+							focused={focused === d.id}
+							pending={pending.has(d.id)}
+							disabled={
+								disabled ||
+								d.deviceId !== deviceId ||
+								pending.has(d.id) ||
+								(!!actionDefinition(d.action.kind)?.desktop && !Platform.isDesktopApp)
+							}
 							{...actions}
 						/>
 					))}

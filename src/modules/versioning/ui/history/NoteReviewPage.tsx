@@ -1,3 +1,4 @@
+import { useDiffPreferences } from '../diff/use-diff-preferences';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { ArrowLeft, Copy, History, MoreHorizontal, RefreshCw, RotateCcw } from 'lucide-react';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
@@ -18,7 +19,7 @@ import {
 } from '../../../../ui/components/alert-dialog';
 import { useT } from '../../../../ui/react/hooks';
 import { DiffSurface } from '../DiffSurface';
-import { DEFAULT_DIFF_PREFERENCES, type DiffLayout } from '../diff-model';
+import { type DiffLayout } from '../diff/preferences';
 
 export interface NoteReviewPageProps {
 	id: string;
@@ -41,24 +42,32 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 		() => host.sync.snapshot,
 	);
 	const sourceContext = useSyncExternalStore(
-		useCallback(listener => host.documents.subscribe(listener), [host]),
-		() => session ? host.documents.get(session.source.id) : undefined,
+		useCallback((listener) => host.documents.subscribe(listener), [host]),
+		() => (session ? host.documents.get(session.source.id) : undefined),
 	);
 	const [preferredLayout, setPreferredLayout] = useState(layout);
-	const [preferences, setPreferences] = useState(DEFAULT_DIFF_PREFERENCES);
+	const [preferences, setPreferences] = useDiffPreferences();
 	const [plan, setPlan] = useState<RestorePlan>();
 	const [shownReceipt, setReceipt] = useState<RestoreReceipt>();
-	useSyncExternalStore(useCallback(listener => host.automaticHistory?.subscribe(listener) ?? (() => {}), [host]), () => host.automaticHistory?.snapshot);
-	const receipt = shownReceipt && (host.restores.receipts().find(item => item.id === shownReceipt.id) ?? shownReceipt);
+	useSyncExternalStore(
+		useCallback((listener) => host.automaticHistory?.subscribe(listener) ?? (() => {}), [host]),
+		() => host.automaticHistory?.snapshot,
+	);
+	const receipt =
+		shownReceipt && (host.restores.receipts().find((item) => item.id === shownReceipt.id) ?? shownReceipt);
 	const [busy, setBusy] = useState(false),
 		[error, setError] = useState('');
 	const alive = useRef(false),
 		generation = useRef({ value: 0 });
 	const offered = useRef<RestorePlan | undefined>(undefined);
 	const operation = useRef<'prepare' | 'write' | null>(null);
-	const changed = useMemo(() => !session || !sourceContext || host.reviews.isCurrentChanged(session.id), [host, session, sourceContext]);
+	const changed = useMemo(
+		() => !session || !sourceContext || host.reviews.isCurrentChanged(session.id),
+		[host, session, sourceContext],
+	);
 	const comparison = session?.comparison;
-	const candidate = session?.mode === 'current' ? comparison?.left : comparison?.right;
+	const candidate = session?.mode === 'change' ? comparison?.right : comparison?.left;
+	const candidateLabel = session?.mode === 'pair' ? session.baseline?.subject : session?.selected.subject;
 	useEffect(() => {
 		alive.current = true;
 		return () => {
@@ -87,22 +96,32 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 			? `${t(message.slice(0, separator))} · ${message.slice(separator + 2)}`
 			: t(message);
 	};
-	const prepare = async (mode: 'replace-current' | 'create-copy', hunks?: { diff: HunkDiff; selected: readonly string[] }) => {
+	const prepare = async (
+		mode: 'replace-current' | 'create-copy',
+		hunks?: { diff: HunkDiff; selected: readonly string[] },
+	) => {
 		if (!session || candidate?.status !== 'text' || operation.current) return;
 		operation.current = 'prepare';
 		const token = generation.current.value;
 		setBusy(true);
 		setError('');
 		try {
-			if (hunks && (mode !== 'replace-current' || session.mode !== 'current' || !session.restoreTarget
-				|| sourceContext?.id !== session.source.id || sourceContext.generation !== session.source.generation)) throw new Error('versioning.restore.changed');
+			if (
+				hunks &&
+				(mode !== 'replace-current' ||
+					session.mode !== 'current' ||
+					!session.restoreTarget ||
+					sourceContext?.id !== session.source.id ||
+					sourceContext.generation !== session.source.generation)
+			)
+				throw new Error('versioning.restore.changed');
 			if (mode === 'replace-current' && host.reviews.isCurrentChanged(id))
 				throw new Error('versioning.restore.changed');
 			const next = await host.restores.prepare({
 				source: {
 					id: candidate.id,
 					text: candidate.snapshot.text,
-					label: session.selected.subject || candidate.label,
+					label: candidateLabel || candidate.label,
 				},
 				targetPath: session.source.path,
 				originLeafId: session.source.leafId,
@@ -190,7 +209,7 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 				<History className="size-6" />
 				<p>{t('review.expired')}</p>
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						void context.close();
 					}}
@@ -218,7 +237,7 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 					<TooltipContent className="break-all">{session.source.path}</TooltipContent>
 				</Tooltip>
 				<Button
-					variant="outline"
+					variant="secondary"
 					size="sm"
 					disabled={busy || !host.sync.ready || candidate?.status !== 'text'}
 					onClick={() => {
@@ -236,11 +255,11 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 					}}
 				>
 					<RotateCcw className="size-4" />
-					{t('review.restore')}
+					{t(session.mode === 'pair' ? 'versioning.compare.restoreA' : 'review.restore')}
 				</Button>
 				<Button
 					variant="ghost"
-					size="icon"
+					size="icon-md"
 					className="size-8"
 					aria-label={t('workbench.more')}
 					onClick={(event) => context.openPageMenu?.(event.nativeEvent)}
@@ -248,9 +267,19 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 					<MoreHorizontal className="size-4" />
 				</Button>
 			</header>
-			<p className="shrink-0 border-b px-3 py-2 text-xs text-muted-foreground">{t('history.bufferCaptured', { time: new Date(session.bufferCapturedAt).toLocaleString() })}</p>
-			{candidate?.status === 'text' && <p className="shrink-0 border-b px-3 py-2 text-xs text-muted-foreground">{t('review.restoreSource', { source: session.selected.subject || candidate.label })}</p>}
-			{!host.sync.ready && <p role="status" className="shrink-0 px-3 py-2 text-xs text-muted-foreground">{t('history.localReadOnly')}</p>}
+			<p className="shrink-0 border-b px-3 py-2 text-xs text-muted-foreground">
+				{t('history.bufferCaptured', { time: new Date(session.bufferCapturedAt).toLocaleString() })}
+			</p>
+			{candidate?.status === 'text' && (
+				<p className="shrink-0 border-b px-3 py-2 text-xs text-muted-foreground">
+					{t('review.restoreSource', { source: candidateLabel || candidate.label })}
+				</p>
+			)}
+			{!host.sync.ready && (
+				<p role="status" className="shrink-0 px-3 py-2 text-xs text-muted-foreground">
+					{t('history.localReadOnly')}
+				</p>
+			)}
 			{changed && (
 				<div
 					className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-muted/50 px-3 py-2 text-xs"
@@ -272,7 +301,7 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 				<div className="flex shrink-0 flex-wrap items-center gap-2 border-b px-3 py-2 text-xs" role="status">
 					<span className="min-w-0 flex-1">{t('review.syncHold')}</span>
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						disabled={busy}
 						onClick={() => run(() => host.sync.acknowledgeRestore())}
@@ -285,12 +314,14 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 				<div className="flex shrink-0 flex-wrap items-center gap-2 border-b px-3 py-2 text-xs" role="status">
 					<span className="min-w-0 flex-1">
 						{t(receipt.undoOf ? 'review.undoDone' : 'review.restored')} · {receipt.path}
-						{receipt.selectedHunks && <span> · {t('review.hunks.receipt', { count: receipt.selectedHunks.length })}</span>}
+						{receipt.selectedHunks && (
+							<span> · {t('review.hunks.receipt', { count: receipt.selectedHunks.length })}</span>
+						)}
 					</span>
 					{receipt.objectsReleasedAt !== undefined && <span>{t('review.checkpointReleased')}</span>}
 					{!receipt.undoOf && !receipt.undoneBy && receipt.objectsReleasedAt === undefined && (
 						<Button
-							variant="outline"
+							variant="secondary"
 							size="sm"
 							disabled={busy}
 							onClick={() => {
@@ -322,7 +353,7 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 					<div role="alert" className="flex flex-col items-start gap-3 p-4">
 						<p className="text-sm text-destructive">{t('review.error')}</p>
 						<p className="break-words text-xs text-muted-foreground">{session.error}</p>
-						<Button variant="outline" onClick={() => run(() => host.reviews.retry(id))}>
+						<Button variant="secondary" onClick={() => run(() => host.reviews.retry(id))}>
 							{t('history.retry')}
 						</Button>
 					</div>
@@ -333,9 +364,21 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 						initialLayout={preferredLayout}
 						preferences={preferences}
 						onPreferencesChange={setPreferences}
-						hunkRestore={{ busy, reason: !host.sync.ready ? 'history.localReadOnly' : session.mode !== 'current' ? 'review.hunks.currentOnly'
-							: changed || sourceContext?.generation !== session.source.generation || !session.restoreTarget ? 'review.hunks.refresh' : undefined,
-							prepare: draft => { void prepare('replace-current', draft); } }}
+						hunkRestore={{
+							busy,
+							reason: !host.sync.ready
+								? 'history.localReadOnly'
+								: session.mode !== 'current'
+									? 'review.hunks.currentOnly'
+									: changed ||
+										  sourceContext?.generation !== session.source.generation ||
+										  !session.restoreTarget
+										? 'review.hunks.refresh'
+										: undefined,
+							prepare: (draft) => {
+								void prepare('replace-current', draft);
+							},
+						}}
 						onLayoutChange={(next) => {
 							setPreferredLayout(next);
 							onLayoutChange(next);
@@ -353,7 +396,13 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>
-							{t(plan?.selectedHunks ? 'review.hunks.title' : plan?.mode === 'create-copy' ? 'review.copyTitle' : 'review.restoreTitle')}
+							{t(
+								plan?.selectedHunks
+									? 'review.hunks.title'
+									: plan?.mode === 'create-copy'
+										? 'review.copyTitle'
+										: 'review.restoreTitle',
+							)}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
 							{t(plan?.mode === 'create-copy' ? 'review.copyDescription' : 'review.restoreDescription')}
@@ -371,7 +420,9 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 						<li>{t('review.verifyStep')}</li>
 					</ol>
 					{plan?.dirty && <p className="m-0 text-sm text-muted-foreground">{t('review.dirty')}</p>}
-					{plan?.selectedHunks && <p className="m-0 text-sm">{t('review.hunks.confirm', { count: plan.selectedHunks.length })}</p>}
+					{plan?.selectedHunks && (
+						<p className="m-0 text-sm">{t('review.hunks.confirm', { count: plan.selectedHunks.length })}</p>
+					)}
 					<p className="m-0 text-xs text-muted-foreground">{t('review.syncWillHold')}</p>
 					<AlertDialogFooter>
 						<AlertDialogCancel disabled={busy} onClick={cancel}>

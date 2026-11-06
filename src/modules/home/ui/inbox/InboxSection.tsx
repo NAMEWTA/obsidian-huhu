@@ -8,13 +8,7 @@ import { useT } from '../../../../ui/react/hooks';
 import { nowMoment } from '../../../../host/obsidian/datetime';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
 import { captureDayOf } from '../../../../shared/storage/vault-layout';
-import {
-	createMemoFile,
-	inboxRoot,
-	isCaptureFile,
-	listMemos,
-	memoTitle,
-} from '../../platform/vault/memo-files';
+import { createMemoFile, inboxRoot, isCaptureFile, listMemos, memoTitle } from '../../platform/vault/memo-files';
 import type { BoardStore } from '../../services/board-store';
 import { IconButton } from '../board/controls';
 import { FileGlyph } from '../board/rows';
@@ -50,7 +44,9 @@ export function InboxSection({ store }: { store: BoardStore }) {
 		setProblem({ message: error instanceof Error && error.message ? error.message : fallback, retry });
 	const trash = (file: ContentFile) => {
 		setProblem(null);
-		void store.trash(file).catch((error: unknown) => failed(error, t('home.inbox.deleteFailed'), () => trash(file)));
+		void store
+			.trash(file)
+			.catch((error: unknown) => failed(error, t('home.inbox.deleteFailed'), () => trash(file)));
 	};
 	return (
 		<div data-inbox className="flex h-full min-h-0 min-w-0 flex-col gap-2">
@@ -67,11 +63,11 @@ export function InboxSection({ store }: { store: BoardStore }) {
 				>
 					<span className="min-w-0 flex-1 break-words">{problem.message}</span>
 					{problem.retry && (
-						<Button type="button" size="xs" variant="outline" onClick={problem.retry}>
+						<Button type="button" size="sm" variant="secondary" onClick={problem.retry}>
 							{t('home.content.retry')}
 						</Button>
 					)}
-					<Button type="button" size="xs" variant="ghost" onClick={() => setProblem(null)}>
+					<Button type="button" size="sm" variant="ghost" onClick={() => setProblem(null)}>
 						{t('home.content.dismiss')}
 					</Button>
 				</div>
@@ -134,7 +130,7 @@ export function InboxSection({ store }: { store: BoardStore }) {
 										<Button
 											type="button"
 											variant="ghost"
-											className="h-auto min-h-9 w-full min-w-0 items-start justify-start gap-2 px-2 py-1.5 text-left font-normal whitespace-normal"
+											className="h-auto min-h-[var(--hu-row-h)] w-full min-w-0 items-start justify-start gap-2 px-2 py-1.5 text-left font-normal whitespace-normal"
 											onClick={() => open(today.path)}
 										>
 											<time className="mt-px w-10 shrink-0 text-xs text-muted-foreground tabular-nums">
@@ -229,7 +225,7 @@ function ItemRow({
 		title = rowTitle(file, t);
 	return (
 		<li data-inbox-item data-capture-file={capture || undefined} className="group/row min-w-0">
-			<div className="flex h-9 items-center gap-1 rounded-md pr-1 pl-2 focus-within:bg-accent hover:bg-accent dark:focus-within:bg-accent/50 dark:hover:bg-accent/50">
+			<div className="flex h-[var(--hu-ctl-h)] items-center gap-1 rounded-md pr-1 pl-2 focus-within:bg-accent hover:bg-accent dark:focus-within:bg-accent/50 dark:hover:bg-accent/50">
 				<Button
 					type="button"
 					variant="ghost"

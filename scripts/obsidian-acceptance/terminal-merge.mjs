@@ -7,18 +7,19 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { launchFreshVault } from './fresh-vault.mjs';
 
 const root = process.argv[2];
 assert.ok(root && path.isAbsolute(root), 'pass a NEW absolute directory');
 assert.ok(process.env.HUHU_PTY_BINARY && path.isAbsolute(process.env.HUHU_PTY_BINARY), 'HUHU_PTY_BINARY must be an absolute local helper');
-const MARK = 'HUHU_TERMINAL_MERGE_OK';
-const MARK2 = 'HUHU_TERMINAL_SECOND';
+const MARK = 'HUHU_TERMINAL_' + randomUUID().replaceAll('-', '');
+const MARK2 = MARK + '_SECOND';
 const runtime = await launchFreshVault({
 	root,
 	port: 9337,
-	files: { 'Welcome.md': '# 终端合入\n', 'huhu/笔记/并存.md': '# 任务旁边的笔记\n' },
+	files: { '.huhu/dashboards/dashboard.md':'---\nwidgets: []\n---\n', 'Welcome.md': '# 终端合入\n', 'huhu/笔记/并存.md': '# 任务旁边的笔记\n' },
 	settings: {
 		version: 1,
 		namespaces: {
@@ -53,7 +54,7 @@ const until = async (expression, label, ms = 25000) => {
 	const end = Date.now() + ms;
 	let last;
 	while (Date.now() < end) {
-		last = await c.evaluate(expression).catch((error) => String(error));
+		last = await c.evaluate(`!!(${expression})`).catch(() => false);
 		if (last) return last;
 		await delay(120);
 	}
@@ -137,6 +138,12 @@ try {
 	await typeLine(`echo ${MARK}`);
 	await until(`${buffers}.some((text) => text.includes(${JSON.stringify(MARK)}))`, 'first output', 20000);
 	check('first-command-output', true, await c.evaluate(buffers));
+	for (const preset of ['paper', 'ink']) {
+		await c.evaluate(`app.plugins.plugins.huhu.theme.update(d=>{d.preset='${preset}'},{persist:'immediate'})`);
+		await until(`document.querySelector('.huhu-ui[data-theme="${preset}"]')`, 'terminal theme');
+		const colors = await c.evaluate(`(()=>{const terminal=document.querySelector('.huhu-terminal-view'),root=terminal.closest('.huhu-ui');const cs=getComputedStyle(root);const surface=app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(l=>l.view.getNativeSurfaces?.()??[]).find(s=>s.getViewType()==='huhu-agent-page');return {surface:cs.getPropertyValue('--hu-surface').trim(),foreground:cs.getPropertyValue('--hu-fg').trim(),theme:{background:terminal.style.getPropertyValue('--huhu-terminal-background').trim(),expected:getComputedStyle(terminal).getPropertyValue('--hu-term-bg').trim(),foreground:getComputedStyle(terminal).getPropertyValue('--hu-term-fg').trim()}}})()`);
+		check('terminal-real-colors-' + preset, !!colors.theme?.background && !!colors.theme?.foreground && colors.theme.background === colors.theme.expected && colors.theme.background !== colors.theme.foreground, colors);
+	}
 	await runtime.shot('terminal-merge-output');
 	await pressPointer('button', '新建标签');
 	await until(`[...document.querySelectorAll('[data-new-tab-menu] [role="option"] span')].some((span) => span.textContent.trim() === '新建终端')`, 'new tab menu');

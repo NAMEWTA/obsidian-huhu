@@ -1,7 +1,8 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/terminal-pane/TerminalContextMenu.tsx, TerminalProcessExitOverlay.tsx
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, useCallback, Fragment } from 'react';
 import { RotateCw, X } from 'lucide-react';
-import { Panel, PanelGroup, PanelResizeHandle, type ImperativePanelGroupHandle } from 'react-resizable-panels';
+import type { GroupImperativeHandle } from 'react-resizable-panels';
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '../../../../ui/components/resizable';
 import type { TerminalTabData } from '../../core/workspace/model';
 import { projectPaneIdentities, type PaneIdentity } from '../../core/workspace/pane-identity';
 import type { LayoutNode } from '../../core/terminal/layout';
@@ -531,19 +532,19 @@ export function TerminalHost({
 		>
 			<div
 				data-pane-header=""
-				className={`huhu-agent-pane-header flex min-h-[34px] min-w-0 shrink-0 items-center gap-2 px-2 text-xs ${focused ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'}`}
+				className={`huhu-agent-pane-header flex min-h-[var(--hu-row-h)] min-w-0 shrink-0 items-center gap-2 px-2 text-xs ${focused ? 'bg-[var(--hu-surface)] text-[var(--hu-fg)]' : 'bg-[var(--hu-sunken)] text-[var(--hu-fg-2)]'}`}
 			>
 				<button
 					type="button"
 					data-pane-title=""
-					className="min-w-0 flex-1 truncate text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					className="min-w-0 flex-1 truncate text-left outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50"
 					title={`${info?.customTitle || session?.title || tab.title}\n${info?.spaceId ?? ''}\n${info?.persistentSessionId ?? sessionId}\n${sessionId}\n${paneId ?? info?.paneId ?? ''}`}
 					onClick={() => workspace.focusSession(sessionId)}
 				>
 					{info?.customTitle || session?.title || tab.title}
 				</button>
 				{focused && active && (
-					<span className="huhu-agent-pane-focus shrink-0 text-[11px]">
+					<span className="huhu-agent-pane-focus shrink-0 text-sm">
 						{t('agent.workspace.selectedPane')}
 					</span>
 				)}
@@ -552,7 +553,7 @@ export function TerminalHost({
 				)}
 				<Button
 					variant="ghost"
-					size="icon-xs"
+					size="icon-sm"
 					className="huhu-agent-pane-close size-8"
 					data-pane-close=""
 					aria-label={closeLabel}
@@ -563,7 +564,7 @@ export function TerminalHost({
 				</Button>
 			</div>
 			{live && active && focused && (
-				<p className="m-0 shrink-0 px-2 py-1 text-xs text-muted-foreground">
+				<p className="m-0 shrink-0 px-2 py-1 text-xs text-[var(--hu-fg-2)]">
 					{t('agent.managed.closeViewHint')}
 				</p>
 			)}
@@ -576,7 +577,7 @@ export function TerminalHost({
 					)}
 					{!session && managed.completionHint && (
 						<p
-							className="m-0 break-words text-xs text-muted-foreground"
+							className="m-0 break-words text-xs text-[var(--hu-fg-2)]"
 							data-completion-hint={managed.completionHint.runtimeId}
 						>
 							{t('agent.activityEvidence.previousCompletion')} · {managed.completionHint.runtimeId} ·{' '}
@@ -587,7 +588,7 @@ export function TerminalHost({
 					)}
 					{seenError &&
 						(runtime?.runtimeId ?? managed.completionHint?.runtimeId) === seenError.target.runtimeId && (
-							<div role="alert" className="space-y-1 text-xs text-destructive">
+							<div role="alert" className="space-y-1 text-xs text-[var(--hu-danger)]">
 								<p className="m-0 break-words">
 									{t('agent.activityEvidence.seenFailed')} {seenError.message} ·{' '}
 									{seenError.at.runtimeId} · {seenError.at.activitySequence}
@@ -601,7 +602,7 @@ export function TerminalHost({
 				</ManagedStatusRegion>
 			)}
 			{pending && session && (
-				<p role="status" className="m-0 shrink-0 px-2 py-1 text-xs text-muted-foreground">
+				<p role="status" className="m-0 shrink-0 px-2 py-1 text-xs text-[var(--hu-fg-2)]">
 					{t('agent.managed.starting')}
 				</p>
 			)}
@@ -842,14 +843,14 @@ export function TerminalHost({
 			</Dialog>
 
 			{session && !session.running && !pending && (
-				<div className="pointer-events-none absolute inset-0 z-[var(--layer-popover)] flex items-end justify-center p-4">
+				<div className="pointer-events-none absolute inset-0 z-[var(--hu-z-panel)] flex items-end justify-center p-4">
 					<div
 						role={session.exitCode ? 'alert' : 'status'}
 						data-terminal-exit={session.exitCode ?? ''}
-						className="pointer-events-auto flex w-full max-w-md flex-col gap-3 rounded-lg border border-border bg-card p-4 text-card-foreground shadow-xs"
+						className="pointer-events-auto flex w-full max-w-md flex-col gap-3 rounded-lg border border-[var(--hu-line)] bg-[var(--hu-raised)] p-4 text-card-foreground shadow-xs"
 					>
 						<div className="space-y-1">
-							<div className="text-sm font-medium text-foreground">
+							<div className="text-sm font-medium text-[var(--hu-fg)]">
 								{phaseKey && runtime?.phase !== 'exited'
 									? t(phaseKey)
 									: t('agent.workspace.exited', {
@@ -858,10 +859,10 @@ export function TerminalHost({
 										})}
 							</div>
 							{runtime?.error ? (
-								<div className="text-xs text-muted-foreground">{t(runtime.error.messageKey)}</div>
+								<div className="text-xs text-[var(--hu-fg-2)]">{t(runtime.error.messageKey)}</div>
 							) : (
 								session.error && (
-									<div className="text-xs text-muted-foreground">
+									<div className="text-xs text-[var(--hu-fg-2)]">
 										{managed ? t('agent.managed.launchFailed') : session.error}
 									</div>
 								)
@@ -889,7 +890,7 @@ export function TerminalHost({
 			{error && (
 				<p
 					role="alert"
-					className="absolute bottom-2 left-2 rounded border bg-card p-2 text-xs text-destructive"
+					className="absolute bottom-2 left-2 rounded border bg-[var(--hu-raised)] p-2 text-xs text-[var(--hu-danger)]"
 				>
 					{error}
 				</p>
@@ -915,18 +916,14 @@ function PaneTree({
 	identities: readonly PaneIdentity[];
 }) {
 	const { controller } = useWorkspaceUI(),
-		panel = useRef<ImperativePanelGroupHandle>(null);
-	const resizing = useRef(false);
-	useLayoutEffect(() => {
-		resizing.current = false;
-	}, [narrow]);
+		panel = useRef<GroupImperativeHandle>(null);
 	useLayoutEffect(() => {
 		if (
 			node.kind === 'split' &&
 			panel.current &&
-			Math.abs(panel.current.getLayout()[0]! / 100 - node.ratio) > 0.001
+			Math.abs(panel.current.getLayout().first! / 100 - node.ratio) > 0.001
 		)
-			panel.current.setLayout([node.ratio * 100, (1 - node.ratio) * 100]);
+			panel.current.setLayout({ first: node.ratio * 100, second: (1 - node.ratio) * 100 });
 	}, [node, narrow]);
 	if (node.kind === 'pane')
 		return (
@@ -944,41 +941,23 @@ function PaneTree({
 			/>
 		);
 	return (
-		<PanelGroup
-			ref={panel}
-			direction={!narrow && node.direction === 'row' ? 'horizontal' : 'vertical'}
-			onLayout={(sizes) => {
-				if (resizing.current && Math.abs(sizes[0]! / 100 - node.ratio) > 0.001)
-					controller.workspace.resizePane(tab.id, path, sizes[0]! / 100);
+		<ResizablePanelGroup
+			groupRef={panel}
+			orientation={!narrow && node.direction === 'row' ? 'horizontal' : 'vertical'}
+			onLayoutChanged={(layout, meta) => {
+				const first = (meta.requestedLayout ?? layout).first! / 100;
+				if (meta.isUserInteraction && Math.abs(first - node.ratio) > 0.001)
+					controller.workspace.resizePane(tab.id, path, first);
 			}}
 		>
 			{(['first', 'second'] as const).map((part, i) => (
 				<Fragment key={part}>
 					{i > 0 && (
-						<PanelResizeHandle
-							className="huhu-agent-resize w-px bg-border data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full hover:bg-ring"
-							onDragging={(value) => {
-								resizing.current = value;
-							}}
-							onKeyDownCapture={(event) => {
-								if (
-									!event.nativeEvent.isComposing &&
-									['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(
-										event.key,
-									)
-								)
-									resizing.current = true;
-							}}
-							onKeyUp={() => {
-								resizing.current = false;
-							}}
-							onBlur={() => {
-								resizing.current = false;
-							}}
+						<ResizableHandle
 							onDoubleClick={() => controller.workspace.resizePane(tab.id, path, 0.5)}
 						/>
 					)}
-					<Panel minSize={15} defaultSize={(i ? 1 - node.ratio : node.ratio) * 100}>
+					<ResizablePanel id={part} minSize="15%" defaultSize={`${(i ? 1 - node.ratio : node.ratio) * 100}%`}>
 						<PaneTree
 							node={node[part]}
 							path={[...path, part]}
@@ -988,10 +967,10 @@ function PaneTree({
 							narrow={narrow}
 							identities={identities}
 						/>
-					</Panel>
+					</ResizablePanel>
 				</Fragment>
 			))}
-		</PanelGroup>
+		</ResizablePanelGroup>
 	);
 }
 export function TerminalTabView({

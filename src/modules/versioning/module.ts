@@ -1,4 +1,5 @@
 import { FileSystemAdapter, MarkdownView, Notice, TFile } from 'obsidian';
+import type { EditorContextAccess, EditorPanelHandle } from '../../app/contracts/editor-context';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { registerMessages, t } from '../../shared/i18n/index';
 import { messages as commonStrings } from '../../shared/i18n/lazy/common';
@@ -111,17 +112,17 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 			[
 				NOTE_HISTORY_PANEL,
 				{
-					mount(container: HTMLElement) {
-						let closed = false,
-							cleanup: (() => void) | undefined;
+					mount(container: HTMLElement, _documents: EditorContextAccess, initialVisible: boolean): EditorPanelHandle {
+						let closed = false, visible = initialVisible;
+						let handle: EditorPanelHandle | undefined;
 						void import('./ui/history/history-panel-page')
 							.then(({ mountNoteHistoryPanel }) => {
-								if (!closed && !disposed) cleanup = mountNoteHistoryPanel(container, historyHost());
+								if (!closed && !disposed) handle = mountNoteHistoryPanel(container, historyHost(), visible);
 							})
 							.catch(report);
-						return () => {
-							closed = true;
-							cleanup?.();
+						return {
+							setVisible(next) { visible = next; handle?.setVisible(next); },
+							dispose() { if (closed) return; closed = true; handle?.dispose(); },
 						};
 					},
 				},
@@ -133,6 +134,7 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 				return createSyncPage({
 					service: () => service,
 					queries: () => queries,
+					restores: () => restores,
 					repoFolder,
 					openSettings,
 					report,

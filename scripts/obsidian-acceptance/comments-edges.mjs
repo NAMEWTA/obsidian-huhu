@@ -27,7 +27,7 @@ const store = new CommentStore(memory, { timers: { set: () => 0, clear: () => {}
 for (const name of ['Note.md','Moved.md','Synced.md']) await store.add(name, { anchor: createAnchor(base, 18, 24), text: 'Thread ' + name });
 for (const item of rich) { const quote = item.quote ?? item.source.trimEnd(), start = item.from ?? item.source.indexOf(quote); await store.add(item.path, { anchor: createAnchor(item.source, start, start + quote.length), text: 'Thread ' + item.path }); }
 await store.close();
-const runtime = await launchFreshVault({ root: process.argv[2], port: 9498, files, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home:false,comments:true,agent:false,archives:false,automations:false,notifications:false,icons:false,sync:false } } } } });
+const runtime = await launchFreshVault({ root: process.argv[2], port: 9498, files, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home:false,comments:true,agent:false,archives:false,automations:false,notifications:false,icons:false,versioning:false } } } } });
 const c = runtime.connection, rows = []; let pop;
 const until = async (expression, connection = c) => { for (let i=0; i<200; i++) { if (await connection.evaluate(expression)) return; await delay(50); } throw Error('Timeout: ' + expression); };
 const record = async (name, details) => { rows.push({ name, passed: true, ...details }); await fs.writeFile(path.join(runtime.evidence, 'result.json'), JSON.stringify({ passed: true, rows }, null, 2)); };
@@ -42,14 +42,20 @@ try {
  await c.evaluate(`[...document.querySelectorAll('[role=menuitem]')].find(e=>e.textContent==='Settings').click();true`);
  const follow = `document.querySelector('[role=switch][aria-label="Follow theme accent"]')`;
  await until(`!!${follow}`);
- assert.ok(await c.evaluate(`!document.querySelector('input[type=color]')`));
+ assert.ok(await c.evaluate(`!document.querySelector('input[type=color][aria-label="Comment color"]')`));
  await c.evaluate(`${follow}.click();true`);
- await until(`!!document.querySelector('input[type=color]')`);
- await c.evaluate(`document.querySelector('input[type=color]').scrollIntoView({block:'center'});true`); await delay(300);
- await record('panel-menu-and-conditional-color-picker', { value: await c.evaluate(`document.querySelector('input[type=color]').value`) }); await runtime.shot('comment-settings');
+ await until(`!!document.querySelector('input[type=color][aria-label="Comment color"]')`);
+ await c.evaluate(`document.querySelector('input[type=color][aria-label="Comment color"]').scrollIntoView({block:'center'});true`); await delay(300);
+ await record('panel-menu-and-conditional-color-picker', { value: await c.evaluate(`document.querySelector('input[type=color][aria-label="Comment color"]').value`) }); await runtime.shot('comment-settings');
  await c.evaluate(`app.workspace.revealLeaf(a)`);
  await c.evaluate(`a.openFile(app.vault.getFileByPath('Second.md'))`); await delay(200); await c.evaluate(`a.openFile(app.vault.getFileByPath('Note.md'))`); await until(`!!a.view.containerEl.querySelector('.huhu-comment-hl')`);
+
  await assertAnchor('Note.md', base, 'switch-note-roundtrip');
+ assert.ok(await c.evaluate(`(()=>{const markers=[...a.view.containerEl.querySelectorAll('.huhu-comment-marker')];return markers.length>0&&markers.every(e=>e.getAttribute('role')==='img'&&!e.querySelector('button,[role=button],[tabindex]'))})()`),'editor gutter is a noninteractive image; exact comments command opens its panel');
+ await c.evaluate(`window.probeCommentsRoot=document.querySelector('.huhu-comments-panel');app.workspace.rightSplit.collapse();true`);await delay(250);
+ await c.evaluate(`app.workspace.rightSplit.expand();true`);await delay(250);
+ assert.ok(await c.evaluate(`document.querySelector('.huhu-comments-panel')===probeCommentsRoot&&document.querySelectorAll('.huhu-comments-panel').length===1`),'hidden panel restores the same root once');
+
  await c.evaluate(`window.b=app.workspace.getLeaf('split');b.openFile(app.vault.getFileByPath('Note.md'))`); await until(`!!b.view.containerEl.querySelector('.huhu-comment-hl')`);
  let text = 'prefix\n' + base;
  await c.evaluate(`a.view.editor.replaceRange('prefix\\n',{line:0,ch:0});true`); await assertAnchor('Note.md', text, 'same-note-two-editors');
@@ -67,9 +73,11 @@ try {
  await c.evaluate(`app.vault.modify(app.vault.getFileByPath('Synced.md'),'external prefix\\n'+a.view.editor.getValue())`); await assertAnchor('Synced.md', 'external prefix\n' + base, 'external-update');
  await c.evaluate(`[...document.querySelectorAll('.huhu-comments-panel [role=radio]')].find(e=>e.textContent==='Vault').click();true`); await delay(150);
  await c.evaluate(`[...document.querySelectorAll('.huhu-comments-panel button')].find(e=>e.textContent.includes('Moved.md')).click();true`); await until(`[...document.querySelectorAll('.huhu-comments-panel article')].some(e=>e.textContent.includes('Thread Moved.md'))`);
- await c.evaluate(`[...document.querySelectorAll('.huhu-comments-panel article')].find(e=>e.textContent.includes('Thread Moved.md')).querySelector('button').click();true`);
+ await c.evaluate(`[...document.querySelectorAll('.huhu-comments-panel article')].find(e=>e.textContent.includes('Thread Moved.md')).querySelector('button[aria-label="Jump to quoted text"]').click();true`);
  await assertAnchor('Moved.md', files['Moved.md'], 'vault-jump-after-external-insert');
- assert.equal(await c.evaluate(`app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Moved.md').view.editor.getSelection()`), 'TARGET'); await runtime.shot('vault-jump');
+ // Current approved navigation preserves selection and scrolls the exact marked context.
+ await until(`(()=>{const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Moved.md'),mark=leaf?.view.containerEl.querySelector('.huhu-comment-hl');if(!mark)return false;const r=mark.getBoundingClientRect(),v=leaf.view.containerEl.getBoundingClientRect();return mark.textContent==='TARGET'&&r.width>0&&r.top>=v.top&&r.bottom<=v.bottom})()`);
+ assert.equal(await c.evaluate(`app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Moved.md').view.editor.getSelection()`), ''); await runtime.shot('vault-jump');
  for (const item of rich) {
   await c.evaluate(`a.openFile(app.vault.getFileByPath(${JSON.stringify(item.path)}),{state:{mode:'preview'}})`);
   await until(`a.view.getMode()==='preview' && !!a.view.containerEl.querySelector('.markdown-preview-view .huhu-comment-hl')`);

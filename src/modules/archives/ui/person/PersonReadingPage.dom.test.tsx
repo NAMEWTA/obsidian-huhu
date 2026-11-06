@@ -98,10 +98,10 @@ test('real person route offers four views without writes; profile uses existing 
 			</TestProviders>,
 		);
 		const user = userEvent.setup();
-		expect(await screen.findByRole('navigation', { name: 'Person views' })).toBeTruthy();
+		expect(await screen.findByRole('radiogroup', { name: 'Person views' })).toBeTruthy();
 		for (const name of ['Overview', 'Profile', 'Relations', 'Journal'])
-			expect(screen.getByRole('button', { name })).toBeTruthy();
-		await user.click(screen.getByRole('button', { name: 'Profile' }));
+			expect(screen.getByRole('radio', { name })).toBeTruthy();
+		await user.click(screen.getByRole('radio', { name: 'Profile' }));
 		expect(screen.getByText(f.item.id, { exact: false })).toBeTruthy();
 		expect(f.files.writes.length).toBe(before);
 		await user.click(screen.getByRole('button', { name: 'Other record' }));
@@ -140,7 +140,7 @@ async function journalPage(f: Awaited<ReturnType<typeof setup>>) {
 		</TestProviders>,
 	);
 	const user = userEvent.setup();
-	await user.click(await screen.findByRole('button', { name: 'Journal' }));
+	await user.click(await screen.findByRole('radio', { name: 'Journal' }));
 	return user;
 }
 test('journal add/update/delete use the owner service; cancel deletion leaves the entry and other fields intact', async () => {
@@ -192,7 +192,7 @@ test('external journal edit conflicts, retains draft, and cancelled navigation k
 		expect((await screen.findByRole('alert')).textContent).toContain('changed elsewhere');
 		expect(screen.getByLabelText<HTMLInputElement>('Title').value).toBe('Local draft');
 		expect(f.files.writes.length).toBe(writes);
-		await user.click(screen.getByRole('button', { name: 'Profile' }));
+		await user.click(screen.getByRole('radio', { name: 'Profile' }));
 		await user.click(await screen.findByRole('button', { name: 'Cancel' }));
 		expect(screen.getByLabelText<HTMLInputElement>('Title').value).toBe('Local draft');
 		await user.click(screen.getByRole('button', { name: 'Other record' }));
@@ -264,7 +264,7 @@ test('person relations reuse independent relation records and navigate by target
 			</TestProviders>,
 		);
 		const user = userEvent.setup();
-		await user.click(await screen.findByRole('button', { name: 'Relations' }));
+		await user.click(await screen.findByRole('radio', { name: 'Relations' }));
 		await user.click(await screen.findByRole('button', { name: 'Same name' }));
 		await waitFor(() =>
 			expect(document.querySelector('[data-person-id]')?.getAttribute('data-person-id')).toBe(f.other.id),
@@ -371,7 +371,7 @@ test('journal draft and leave guard survive a real reload, read failure and reco
 		await act(() => f.runtime.reload());
 		expect(screen.getByLabelText<HTMLInputElement>('Title').value).toBe('Unsaved before reload');
 		expect(f.files.writes.length).toBe(writes);
-		await user.click(screen.getByRole('button', { name: 'Profile' }));
+		await user.click(screen.getByRole('radio', { name: 'Profile' }));
 		await user.click(await screen.findByRole('button', { name: 'Cancel' }));
 		expect(screen.getByLabelText<HTMLInputElement>('Title').value).toBe('Unsaved before reload');
 		await user.click(screen.getByRole('button', { name: 'Save' }));
@@ -414,7 +414,7 @@ test('overview shows recent journal and independent relationships with view acti
 		const user = userEvent.setup();
 		await user.click(screen.getByRole('button', { name: 'View all notes' }));
 		await screen.findByRole('heading', { name: 'Recent memory' });
-		await user.click(screen.getByRole('button', { name: 'Overview' }));
+		await user.click(screen.getByRole('radio', { name: 'Overview' }));
 		await user.click(screen.getByRole('button', { name: 'View relationships' }));
 		await screen.findByRole('button', { name: 'Same name' });
 		await act(() => f.otherRecord());

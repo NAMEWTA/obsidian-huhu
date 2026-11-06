@@ -1,5 +1,5 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'obsidian';
 import type IconicController from '../../platform/host/controller';
 import type { Category } from '../../core/types';
@@ -27,11 +27,27 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 		[, refresh] = useState(0),
 		[busy, setBusy] = useState(false),
 		[writeError, setWriteError] = useState(false);
+	const alive = useRef(true);
+	const generation = useRef(0);
+	useEffect(() => {
+		alive.current = true;
+		return () => {
+			alive.current = false;
+		};
+	}, []);
+	const [retry, setRetry] = useState<(() => void) | undefined>();
 	const settings = plugin.settings;
 	const save = <K extends keyof Settings>(key: K, value: Settings[K], manager?: Category | 'all' | 'body') => {
-		refresh((n) => n + 1);
+		const sequence = ++generation.current;
 		setWriteError(false);
-		void plugin.updatePreference(key, value).catch(() => setWriteError(true));
+		setRetry(undefined);
+		void plugin.updatePreference(key, value).catch(() => {
+			if (alive.current && sequence === generation.current) {
+				setWriteError(true);
+				setRetry(() => () => save(key, value, manager));
+			}
+		});
+		refresh((n) => n + 1);
 		if (manager === 'body') plugin.refreshBody();
 		else if (manager === 'all') plugin.refreshManagers();
 		else if (manager) plugin.refreshManagers(manager);
@@ -77,6 +93,11 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 			{writeError && (
 				<p role="alert" className="text-sm text-destructive">
 					{t('settings.writeFailed')}
+					{retry && (
+						<Button variant="secondary" onClick={retry}>
+							{t('workbench.retry')}
+						</Button>
+					)}
 				</p>
 			)}
 			{section === 'iconic-general' && (
@@ -85,7 +106,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 						label={t('iconic.settings.rulebook.name')}
 						description={t('iconic.settings.rulebook.desc')}
 						control={
-							<Button variant="outline" onClick={() => RulePicker.open(plugin)}>
+							<Button variant="secondary" onClick={() => RulePicker.open(plugin)}>
 								{t('iconic.settings.manage')}
 							</Button>
 						}
@@ -135,7 +156,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 									value={[settings.maxSearchResults]}
 									onValueChange={(v) => save('maxSearchResults', v[0] ?? 50)}
 								/>
-								<output className="text-xs tabular-nums">{settings.maxSearchResults}</output>
+								<output className="text-sm tabular-nums">{settings.maxSearchResults}</output>
 							</div>
 						}
 					/>
@@ -154,7 +175,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 						description={t('iconic.settings.viewUnusedIcons.desc')}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								disabled={busy}
 								onClick={() => {
 									setBusy(true);
@@ -163,10 +184,14 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 										for (const id of Object.keys(settings.fileIcons))
 											if (!(await plugin.app.vault.adapter.exists(id)))
 												unused.push(plugin.getFileItem(id));
-										if (plugin.isActive()) UsageChecker.open(plugin, unused);
+										if (alive.current && plugin.isActive()) UsageChecker.open(plugin, unused);
 									})()
-										.catch(() => setWriteError(true))
-										.finally(() => setBusy(false));
+										.catch(() => {
+											if (alive.current) setWriteError(true);
+										})
+										.finally(() => {
+											if (alive.current) setBusy(false);
+										});
 								}}
 							>
 								{t('iconic.settings.manage')}
@@ -180,7 +205,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 							<div className="flex flex-wrap gap-2">
 								{Platform.isDesktop && (
 									<Button
-										variant="outline"
+										variant="secondary"
 										onClick={() =>
 											internalApp(plugin.app).openWithDefaultApp(plugin.manifest.dir ?? '')
 										}

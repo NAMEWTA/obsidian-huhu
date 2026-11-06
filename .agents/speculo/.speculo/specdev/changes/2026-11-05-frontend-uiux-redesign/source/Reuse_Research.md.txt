@@ -1,0 +1,237 @@
+# HUHU 前端复用调研与选型记录
+
+> 调研日期：2026-11-05（Asia/Taipei）。
+>
+> 目标：在当前 HUHU 技术栈上解决日期、自动化详情与启停、档案树、任务完成反馈，并形成覆盖全前端的共享设计体系。本文区分“已经存在”“原型实际采用”“正式重构建议”和“尚需实施验证”，不把视觉参考写成运行依赖。
+>
+> 对应技术方案：[Frontend_Refactor_Plan.md](Frontend_Refactor_Plan.md)。
+
+## 1. 调研基线与方法
+
+当前 GitHub 默认分支为 main；原 dev 分支查询返回不存在。本轮生产方案固定到 `37fcede4210a19bcc2a74809e7fdd301e5717957`、版本0.0.3。此前原型引用的 `29644dc5833bb209e6282f84fa71441a5a1b99d4` 是历史来源，不能用它代表当前全部功能。[当前固定提交][h-commit]、[package.json][h-package]
+
+先读当前仓库，再比较外部库。已核对 AGENTS、Speculo workspace/catalog 的发现信息、research-and-reuse 合同、UI 主规则、design-system/shell/theme/motion-a11y、architecture、references、测试选择表，以及四项问题涉及的实际组件。仅使用发现信息和现有合同，没有为本次原型启动额外研发工作流。[仓库研究合同][h-research]、[架构][h-architecture]
+
+选型按五个条件判断：
+
+1. 项目是否已经有可复用实现。
+2. 是否适合 React 19、现有主题 token、所属窗口 Portal 和 Obsidian 生命周期。
+3. 是否有实际需要的键盘、焦点、可访问性和数据量能力。
+4. 维护与许可证是否能核验，复制或分发是否保留来源。
+5. 新依赖、第二套运行时和后续维护成本是否值得。
+
+GitHub 仓库元数据中的 pushed_at 仅说明最近有推送，不能独立证明版本稳定、维护质量或安全性。热门程度也不替代适配验证。对不确定点明确保留实施验证项。
+
+## 2. 当前栈已经足够
+
+| 能力 | 当前版本或来源 | 本次决定 |
+|---|---|---|
+| 页面与组件 | React / ReactDOM 19.2.8 | 沿用，不做 React 迁移 |
+| 类型与构建 | TypeScript ^5.8.3、esbuild0.25.5、pnpm11.1.3 | 沿用插件 CommonJS 构建 |
+| 样式 | Tailwind4.1.13、现有 shadcn new-york-v4 风格代码 | 保留作用域与生成顺序，统一调用 |
+| 交互原语 | radix-ui1.6.7 | Popover、Dialog、Sheet、Switch 等直接复用 |
+| 树 | @headless-tree/core/react1.7.0 | 保留已有 Tree 包装 |
+| 长列表 | @tanstack/react-virtual3.14.13 | 继续用于树与必要列表 |
+| 变体与类合并 | cva0.7.1、clsx2.1.1、tailwind-merge3.7.0 | 不新增平行样式运行时 |
+| 图标 | lucide-react0.577.0、已有 ObsidianIcon | 统一线性图标及尺寸 |
+| 状态 | Zustand5.0.15 | 服务持有 store，React 订阅 |
+| 网格与分屏 | react-grid-layout2.2.4、react-resizable-panels3.0.6、dnd-kit | 不重写看板网格与拖拽 |
+| 反馈与搜索 | sonner2.0.7、cmdk1.1.1、已有 feedback 合同 | 沿用已有统一入口 |
+| 日期字段 | 当前依赖没有专门日期选择库 | 正式实施新增一个适合 React 的日期库 |
+
+版本来自固定提交的 [package.json][h-package]；实际组件与设计约束来自 [设计系统规则][h-design]。Radix 官方文档里某个单独 primitive 的版本与项目 `radix-ui` 聚合包版本是不同发布单位，不能把二者当作版本冲突。
+
+## 3. 四项问题的内部复用证据
+
+### 3.1 Switch：现成控件已经使用
+
+`src/ui/components/switch.tsx` 基于 Radix Switch，默认轨道约36×20px、滑块14px，包含 checked、disabled、focus-visible 样式。自动化 `AutomationRow.tsx` 已经引用它，并将开关区域点击与行打开动作隔离。[Switch 源码][h-switch]、[AutomationRow][h-auto-row]
+
+因此用户要求的滑动启停不需要新库。原型应补齐与真实主线的交互一致性；正式重构聚焦 pending、回滚、名称、状态文案与列表/详情同步。展示用 SwitchIndicator 不具备交互语义，不能替代可点击的 Switch。
+
+Radix 官方提供受控开关、Root/Thumb 组合和键盘交互，适合沿用；不要自己给 div 加 click 再重建 switch 行为。[Radix Switch 官方文档][r-radix-switch]
+
+### 3.2 Tree：当前档案已经有真实树模型
+
+现有 `Tree` 使用 Headless Tree 管理焦点、选择、展开和 ARIA，并用 TanStack Virtual 做长列表窗口化。SidePanel 是 **左侧二级导航**，已经支持 `PanelModel.tree`；档案 workbench 服务将类型目录和记录节点交给它。[Tree][h-tree]、[SidePanel][h-sidepanel]、[档案 workbench][h-archive-workbench]
+
+具体缺口是：此前原型为平铺分组；v1.2 已改为类型→记录树；生产树需要进一步统一行高、搜索展开恢复、受控展开状态和大目录查询完整性。当前查询存在每类型limit500的上限，必须明确继续加载或分页，而不是只增加虚拟滚动。
+
+Headless Tree 官方的 getContainerProps 与 item.getProps 承担相应事件和可访问属性。项目已有包装还处理了所属窗口的键盘边界，重复实现会丢失这些工程积累。[Headless Tree 官方][r-headless-tree]
+
+### 3.3 详情：缺的是页面组织，不是新领域模型
+
+`AutomationsPage.tsx` 根据选中 definition/run 分支替换主区；列表不是与详情同时呈现。正式改动是在现有列表旁引入薄的 DetailPane / Inspector 组合，复用已有 AutomationDetail、RunDetail 与编辑字段，并在窄空间使用现有 Sheet。[AutomationsPage][h-auto-page]
+
+SidePanel 不能误称为已存在的“右侧详情组件”；它负责左导航。新的详情组合只管理布局、关闭、焦点与滚动，不发展为一个通用 schema 引擎，不复制自动化服务，不另建编辑器领域。
+
+### 3.4 任务：已有正确呈现，主列表缺少复用
+
+共享日历 TaskRow 已经为完成标题设置 line-through；主 TaskPage 的标题未采用相同完成态。优先抽取共享任务文字组合，让标题/说明一致画线，保留日期与关联信息可读。无需新增任务表格库或改写任务域。[共享 TaskRow][h-task-row]、[TaskPage][h-task-page]
+
+## 4. 外部候选比较
+
+### 4.1 维护与许可证快照
+
+以下快照来自 GitHub 官方仓库元数据，推送日期统一显示UTC日期；各项目查询时均未归档。许可栏是该时点的 SPDX 信息，实际分发仍核对采用版本的原始许可文本。
+
+| 项目 | 最近推送 | 许可 | 对本项目的判断 |
+|---|---|---|---|
+| [shadcn/ui][r-shadcn] | 2026-11-04 | MIT | 与现有实现同源；使用组合模式与必要的源码更新 |
+| [Radix Primitives][r-radix] | 2026-10-14 | MIT | 项目已经使用；无需重新引入另一套 primitives |
+| [Headless Tree][r-headless] | 2026-10-25 | MIT | 当前 Tree 的行为基础；继续复用 |
+| [React DayPicker][r-daypicker-repo] | 2026-10-21 | MIT | 正式插件日期字段首选 |
+| [Adobe React Spectrum / React Aria][r-adobe] | 2026-11-05 | Apache-2.0 | 值得参考的日期交互方案，本次不新增第二套行为体系 |
+| [Air Datepicker][r-air] | 2025-05-18 | MIT | 适合本次无构建依赖的离线 HTML；不作为生产新依赖 |
+| [Flatpickr][r-flatpickr] | 2024-08-02 | MIT | 本轮快照距调研已超过两年；生产不优先选择 |
+
+元数据可复核入口为上述仓库对应的 GitHub API，例如 [DayPicker元数据][api-daypicker]、[Air元数据][api-air]、[Flatpickr元数据][api-flatpickr]。本表不把“未归档”解释为已经经过HUHU验证。
+
+### 4.2 日期候选的工程权衡
+
+| 选项 | 适合之处 | 本次代价/限制 | 决定 |
+|---|---|---|---|
+| 浏览器原生 date input | 零额外包、原生输入能力 | 日历外观、文案、主题和平台差异不可完全统一，正是用户截图问题 | 从统一日期字段入口移除 |
+| @daypicker/react10.x + Radix Popover | React 同栈；可按现有 token 和组件组合；契合 shadcn 的组合模式 | 需要核验v10 props/classNames、中文locale、React19与多窗口，并锁补丁版 | 正式生产方案 |
+| React Aria DatePicker | 官方提供成体系的日期输入和交互组件 | 与现有Radix及表单模式存在重叠；只为日期增加另一组基础约定不划算 | 保留参考，不引入 |
+| Air Datepicker3.6.0 | 官方分发文件可直接嵌入；无运行时依赖；具有日期、范围、locale等能力 | 命令式DOM生命周期与正式React组件模型不同；仍需做主题和宿主容器衔接 | 仅本次静态原型实际采用 |
+| Flatpickr | 成熟的无框架日期/时间组件，可直接用于静态HTML | 正式项目同样要桥接命令式DOM；本轮维护时间条件不优于候选 | 不采用 |
+
+官方入口：[shadcn Date Picker][r-shadcn-date]、[DayPicker v10升级说明][r-daypicker-upgrade]、[React Aria DatePicker][r-react-aria]、[Air API][r-air-docs]、[Flatpickr][r-flatpickr-docs]。选型理由是当前工程约束下的判断，不代表被排除方案质量差。
+
+### 4.3 DayPicker版本判断
+
+DayPicker v10官方明确推荐 `@daypicker/react`；`react-day-picker` 保留为兼容名称。由于用户要求无兼容重构，新的正式组件直接采用推荐包名，不增加旧包别名或v9 API转换。[v10官方说明][r-daypicker-upgrade]
+
+本轮官方文档展示10.0.0 API，仓库 `packages/react/package.json` 在读取时为10.0.2，React peer范围包含 >=16.8。二者反映文档与仓库状态，不等同于已经核验 npm 发布包。因此正式计划写10.x，T03实施时固定实际可安装补丁版、锁文件、许可证和构建输出。[当前官方package路径][r-daypicker-package]
+
+该10.0.2源码清单还将同版 `react-day-picker` 列为 `@daypicker/react` 的上游依赖。项目只直接消费推荐的 scoped 包及v10 API，不自行增加旧API转换；不能承诺锁文件中完全没有 `react-day-picker` 这个名称，也不能仅凭包名出现就认定有两个运行时。真实依赖图与构建结果在T03核对。[同一官方package清单][r-daypicker-package]
+
+尚未完成生产依赖安装、React19联调、包体测量或真实Obsidian验收。不能因为 peer 范围允许React19就声明多窗口/焦点行为一定可用。验证门槛为：
+
+- 现有React19与TypeScript通过构建，未引入第二份React。
+- 所属Document和焦点返回符合现有Portal。
+- 日期值、范围、中文locale、无效输入与时区测试通过。
+- 引入方式不进入插件启动闭包，通过现有bundle预算。
+- 按采用版本生成第三方声明，而不是复制main的许可摘要。
+
+## 5. 原型实际采用的日期来源
+
+离线HTML实际使用 **Air Datepicker3.6.0**，来源固定到：
+
+`t1m0n/air-datepicker@f2510b92d9cff5ae53d0f0ba3d8443be2eeba544`
+
+该提交的 [package.json][r-air-package] 声明3.6.0和MIT；[LICENSE.md][r-air-license] 已核对为原始MIT文本。官方package没有运行时dependencies，分发代码适合直接离线嵌入；这不表示原型无需初始化、销毁与样式衔接。
+
+本包内对应文件：
+
+| 本地路径 | 性质 |
+|---|---|
+| `src/vendor/air-datepicker/air-datepicker.js` | 官方分发JavaScript |
+| `src/vendor/air-datepicker/air-datepicker.css` | 官方基础样式 |
+| `src/vendor/air-datepicker/zh.js`、`en.js` | 官方locale资源 |
+| `src/vendor/air-datepicker/LICENSE` | 原始MIT许可副本 |
+| `src/date-picker.js` | 原型字段初始化、值同步与生命周期衔接 |
+| `src/date-picker.css` | 与原型token一致的样式覆盖 |
+
+源码摘要与精确资源映射见随包 [Air第三方来源说明](../source/src/vendor/air-datepicker/SOURCE.md)，以实际随包文件为准。打包时JS/CSS内嵌HTML，使用者无需联网请求CDN。
+
+选择Air的直接原因是本次环境npm安装返回403，无法可靠构建React日期依赖；静态原型仍需要一个真实、成熟且可分发的日历实现。没有把环境限制包装成“生产最佳选型”，也没有把Air说成DayPicker。
+
+正式重构只复用原型已确认的行为和视觉规格：统一尺寸、中文月份、清空/今天、范围反馈、主题和焦点。代码使用React组件重新组合，不搬入Air封装，不建立两库共存的兼容层。
+
+## 6. oil-ui 的使用边界
+
+[oil-oil/oil-ui][r-oil] 是指导界面设计、交互与迭代验证的设计技能仓库，不能当成可安装的React控件库。它对本项目有价值的是先理解产品工作场景、保持完整设计方向、建立一致的字体/颜色/密度，并用实际截图审查桌面和窄屏效果。
+
+据此，本次方向采用克制的工作台排版：中性色层级、少量主色、明确选中态、统一边界与字体，适合长期使用的高密度内容。它不改变HUHU已经采用的shadcn/Radix、Obsidian宿主边界或当前领域服务。
+
+没有以“使用oil-ui”为理由复制不明来源组件，也不把其设计建议当成生产已通过验收的证据。本轮阅读其公开仓库说明，不宣称安装或执行了该技能仓库的全部流程。
+
+## 7. 为什么不继续增加库
+
+| 需求 | 复用决定 | 避免的重复投入 |
+|---|---|---|
+| 三栏与可调整宽度 | 现有Shell、layout、react-resizable-panels按需使用 | 不造第二个应用壳或新的全局路由 |
+| 右侧详情 | 现有Sheet/ScrollArea与薄DetailPane组合 | 不用新drawer库，也不创建通用业务渲染引擎 |
+| 启停 | 共享Switch | 不手写滑块行为 |
+| 过滤分段 | 现有SegmentedControl | 不把启停和筛选混为一个组件 |
+| 档案目录 | 现有Tree/HeadlessTree/virtualizer | 不再引入另一套TreeView |
+| 表格与任务行 | 现有Table、布局工具及TaskRow内容抽取 | 不因删线问题引入复杂DataGrid |
+| 看板拖拽 | 现有react-grid-layout、dnd-kit | 不重写布局与拖放算法 |
+| 表单 | 现有Input/Select/Choice/SettingsRow加少量字段组合 | 不一次替换所有表单状态管理 |
+| 图标 | 现有Lucide/ObsidianIcon | 不混入多套线宽和视觉风格 |
+| 通知反馈 | 现有sonner + feedback合同 | 不新增全局toast总线 |
+| 字体 | 现有字体设置与CJK回退 | 不添加联网字体依赖或覆盖用户正文偏好 |
+
+项目的共享 `src/ui` 已相当于内部组件包。本次先提高它的覆盖率和一致性；只有未来出现独立应用的真实复用需求，才讨论单独发布package。当前没有必要为“组件共享”创建新的构建和版本维护层。
+
+## 8. 许可证与来源记录
+
+HUHU自身许可、第三方改编和公开行为参考有不同边界。当前仓库的references与NOTICE已有来源说明，不能因重构目录而丢掉原始版权和固定提交。[现有来源规则][h-references]
+
+- 运行依赖按实际锁定版本登记，重建项目的THIRD-PARTY-NOTICES。
+- 复制或修改源码/样式记录上游commit、原文件、采用位置、变更范围并保留原始许可。
+- 原型vendor的Air许可与来源单独随包保留；生产未采用Air时不把它登记为生产运行依赖。
+- shadcn/Radix/HeadlessTree继续保留已有来源注释；不以“重新排版”删除版权。
+- 字体按实际分发字体的原许可处理，不把GitHub某个字体合集的许可当作全部字体许可。
+- 现有项目对GPL/AGPL案例仅参考公开行为的边界继续有效；本次不复制相关源码、样式或配置。
+
+这是项目交付来源管理的工程约定，不代替对未核验历史来源的结论。仓库既有记录中标注“待核实”的内容仍需独立补证，不在本次重构文档中直接升级为已核验。
+
+## 9. 待实施验证与停止条件
+
+调研已足够支持当前决策，不需要继续搜索大量同类库来延迟交付。正式实施剩余的关键不确定性是当前工程内的集成，而不是再选一个更热门的外观案例：
+
+| 待验证问题 | 责任票 | 判定条件 |
+|---|---|---|
+| DayPicker10.x在当前工程能否构建且包体合格 | T03 | 固定补丁版本、构建、许可证、bundle预算全部满足 |
+| Popover/Sheet在Obsidian弹出窗口的焦点与容器 | T03/T04 | 弹层出现在来源窗口；关闭不抢新叶子焦点 |
+| 32px树行与虚拟器、500以上数据 | T05 | 滚动定位准确，未加载记录可明确继续读取 |
+| 自动化列表是否持续挂载 | T04 | 搜索/筛选/位置保持，切换详情不重建列表 |
+| 任务完成与重复实例规则 | T06 | UI状态来自任务域；完成/取消/失败语义正确 |
+| 全站token和主题是否有遗漏 | T11/T13 | 实际页面与所有弹层采用同一来源，截图和对比验证 |
+| 当前main新增模块是否完整纳入 | T10/T13 | health、归物/人物入口的真实模块验收记录存在 |
+
+本轮没有在生产仓库安装新依赖、改代码、运行正式构建或改写真实用户数据。配套HTML的具体实现和验证结果以随包说明、源码与验收记录为准。原型演示范围与当前main业务范围存在差异时，保留差异说明，不用静态演示冒充真实执行能力。
+
+## 参考入口
+
+HUHU内部来源固定提交；外部文档和GitHub元数据为调研时快照。访问日期均为2026-11-05。
+
+[h-commit]: https://github.com/NAMEWTA/obsidian-huhu/commit/37fcede4210a19bcc2a74809e7fdd301e5717957
+[h-package]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/package.json
+[h-architecture]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/docs/architecture.md
+[h-references]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/docs/references.md
+[h-research]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/speculo/references/research-and-reuse/research-contract.md
+[h-design]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/references/design-system.md
+[h-switch]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/switch.tsx
+[h-auto-row]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/automations/ui/list/AutomationRow.tsx
+[h-tree]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/tree.tsx
+[h-sidepanel]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/shell/panel/SidePanel.tsx
+[h-archive-workbench]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/archives/services/generic/workbench.ts
+[h-auto-page]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/automations/ui/AutomationsPage.tsx
+[h-task-row]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/huhu/calendar/TaskRow.tsx
+[h-task-page]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/task/ui/TaskPage.tsx
+[r-shadcn]: https://github.com/shadcn-ui/ui
+[r-radix]: https://github.com/radix-ui/primitives
+[r-headless]: https://github.com/lukasbach/headless-tree
+[r-daypicker-repo]: https://github.com/gpbl/react-day-picker
+[r-adobe]: https://github.com/adobe/react-spectrum
+[r-air]: https://github.com/t1m0n/air-datepicker
+[r-flatpickr]: https://github.com/flatpickr/flatpickr
+[r-oil]: https://github.com/oil-oil/oil-ui
+[api-daypicker]: https://api.github.com/repos/gpbl/react-day-picker
+[api-air]: https://api.github.com/repos/t1m0n/air-datepicker
+[api-flatpickr]: https://api.github.com/repos/flatpickr/flatpickr
+[r-radix-switch]: https://www.radix-ui.com/primitives/docs/components/switch
+[r-headless-tree]: https://headless-tree.lukasbach.com/features/tree/
+[r-shadcn-date]: https://ui.shadcn.com/docs/components/radix/date-picker
+[r-daypicker-upgrade]: https://daypicker.dev/upgrading
+[r-daypicker-package]: https://github.com/gpbl/react-day-picker/blob/main/packages/react/package.json
+[r-react-aria]: https://react-aria.adobe.com/DatePicker
+[r-flatpickr-docs]: https://flatpickr.js.org/
+[r-air-docs]: https://air-datepicker.com/docs
+[r-air-package]: https://github.com/t1m0n/air-datepicker/blob/f2510b92d9cff5ae53d0f0ba3d8443be2eeba544/package.json
+[r-air-license]: https://github.com/t1m0n/air-datepicker/blob/f2510b92d9cff5ae53d0f0ba3d8443be2eeba544/LICENSE.md
+

@@ -3,9 +3,12 @@ import { builtinModules } from 'node:module';
 import path from 'node:path';
 import { sonnerStyles } from './sonner-styles.mjs';
 import { radixOwnerDocument } from './radix-owner-document.mjs';
+import { diffsOwnerDocument } from './diffs-owner-document.mjs';
+import { createDiffsLanguages } from './diffs-languages.mjs';
 import { draggableOwnerRealm } from './draggable-owner-realm.mjs';
 import { canonicalTextResources, normalizeBuildText } from './build-text-resources.mjs';
 import { versioningWorkerSource } from './versioning-worker.mjs';
+import { iconicResources } from './iconic-resources.mjs';
 import { hookScriptMinify } from './hook-script-minify.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -76,7 +79,7 @@ ${bundled}*/
 			'@lezer/lr',
 			...nodeBuiltins,
 		],
-		plugins: [hookScriptMinify, canonicalTextResources, sonnerStyles, radixOwnerDocument, draggableOwnerRealm, versioningWorkerSource],
+		plugins: [iconicResources, hookScriptMinify, canonicalTextResources, sonnerStyles, radixOwnerDocument, draggableOwnerRealm, diffsOwnerDocument, createDiffsLanguages(), versioningWorkerSource],
 		format: 'cjs',
 		target: 'es2021',
 		logLevel: 'info',

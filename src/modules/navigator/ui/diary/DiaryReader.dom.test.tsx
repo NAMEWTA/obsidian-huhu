@@ -163,3 +163,28 @@ test('journal invalidation drops late old bodies, rereads the current path and r
 	expect(screen.queryByText('Stale body from before the journal change')).toBeNull();
 	view.unmount(); expect(release).toHaveBeenCalledOnce();
 });
+
+test('the shared date field validates an impossible date without navigating or creating a note', async () => {
+ const f = fixture();
+ render(<TestProviders><DiaryReader port={f.port} initialDate="2026-11-04" /></TestProviders>);
+ await screen.findByText('Full diary body Journal/2026-11-04.md');
+ expect(screen.getByLabelText('Jump to date').getAttribute('type')).not.toBe('date');
+ fireEvent.change(screen.getByLabelText('Jump to date'), { target: { value: '2026-02-30' } });
+ fireEvent.blur(screen.getByLabelText('Jump to date'));
+ expect(screen.getByText('Full diary body Journal/2026-11-04.md')).toBeTruthy();
+ expect(f.open).not.toHaveBeenCalled();
+});
+
+test('period selection normalizes through the existing week start and opens that periodic identity', async () => {
+ const f = fixture();
+ f.port.periodic.list = vi.fn(async (period: Parameters<typeof f.port.periodic.list>[0]) => [{ ...notes[0]!, period, date: period === 'week' ? '2026-11-02' : '2026-11-04', path: period === 'week' ? 'Weekly/2026-11-02.md' : notes[0]!.path }]);
+ f.port.periodic.inspect = (period, date) => ({ ...notes[0]!, period, date: `${date.getFullYear()}-11-02`, path: period === 'week' ? 'Weekly/2026-11-02.md' : notes[0]!.path });
+ render(<TestProviders><DiaryReader port={f.port} initialDate="2026-11-04" /></TestProviders>);
+ await screen.findByText('Full diary body Journal/2026-11-04.md');
+ fireEvent.keyDown(screen.getByRole('combobox'), { key: 'ArrowDown' });
+ await screen.findByRole('option', { name: 'Weekly' });
+ fireEvent.click(screen.getByRole('option', { name: 'Weekly' }));
+ await screen.findByText('Full diary body Weekly/2026-11-02.md');
+ fireEvent.click(screen.getByRole('button', { name: 'Open original' }));
+ await waitFor(() => expect(f.open).toHaveBeenCalledWith('week', new Date(2026, 10, 2), { create: false }));
+});

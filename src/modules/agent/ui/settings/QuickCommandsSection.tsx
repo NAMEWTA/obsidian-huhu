@@ -30,7 +30,7 @@ export function QuickCommandsSection({ controller }: { controller: AgentControll
 					<div key={command.id} className="flex flex-wrap items-center gap-2 py-3">
 						<div className="min-w-0 flex-1">
 							<p className="text-sm font-medium">{command.name}</p>
-							<p className="truncate font-mono text-xs text-muted-foreground">{command.content}</p>
+							<p className="truncate font-mono text-xs text-[var(--hu-fg-2)]">{command.content}</p>
 						</div>
 						{command.scope === 'vault' && (
 							<Select
@@ -57,19 +57,19 @@ export function QuickCommandsSection({ controller }: { controller: AgentControll
 						)}
 						<Button
 							variant="ghost"
-							size="xs"
+							size="sm"
 							onClick={() => {
 								void controller.runQuickCommand(command).catch((e) => controller.workspace.report(e));
 							}}
 						>
 							{t('agent.quick.run')}
 						</Button>
-						<Button variant="ghost" size="xs" onClick={() => setEdit(command)}>
+						<Button variant="ghost" size="sm" onClick={() => setEdit(command)}>
 							{t('agent.quick.edit')}
 						</Button>
 						<Button
 							variant="ghost"
-							size="xs"
+							size="sm"
 							onClick={() => {
 								void controller.settings
 									.update((d) => {
@@ -83,7 +83,7 @@ export function QuickCommandsSection({ controller }: { controller: AgentControll
 					</div>
 				))}
 			</div>
-			<Button variant="outline" onClick={() => setEdit(newQuickCommand())}>
+			<Button variant="secondary" onClick={() => setEdit(newQuickCommand())}>
 				{t('agent.quick.add')}
 			</Button>
 			{edit && <QuickCommandEditor command={edit} controller={controller} close={() => setEdit(undefined)} />}

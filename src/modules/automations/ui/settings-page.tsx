@@ -15,7 +15,7 @@ export function AutomationsSettingsPage({ tasks, inbox }: { tasks: () => void; i
 					label={t('automation.title')}
 					description={t('automation.localOnly')}
 					control={
-						<Button variant="outline" size="sm" onClick={tasks}>
+						<Button variant="secondary" size="sm" onClick={tasks}>
 							{t('automation.open')}
 						</Button>
 					}
@@ -23,7 +23,7 @@ export function AutomationsSettingsPage({ tasks, inbox }: { tasks: () => void; i
 				<SettingsRow
 					label={t('automation.inbox')}
 					control={
-						<Button variant="outline" size="sm" onClick={inbox}>
+						<Button variant="secondary" size="sm" onClick={inbox}>
 							{t('automation.open')}
 						</Button>
 					}

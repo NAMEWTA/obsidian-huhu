@@ -1,6 +1,25 @@
 /** Strings of the automations module, registered when the module loads. */
 export const messages = {
 	en: {
+		"automation.source.task": "Task",
+
+		"automation.readOnlyOtherDevice": "This automation belongs to another device and is read-only here.",
+		"automation.unsupportedDevice": "This action is unavailable on this device.",
+
+		"automation.definitionMissing": "This automation is no longer available.",
+		"automation.runMissing": "This run is no longer available.",
+		"automation.details": "Automation details",
+		"automation.runDetails": "Run details",
+		"automation.toggleFailed": "Could not change this automation. The latest saved state is shown.",
+		"automation.time.invalid-date-time": "Enter a complete, valid date and time.",
+		"automation.time.invalid-zone": "Enter a valid IANA time zone.",
+		"automation.time.nonexistent-time": "This local time does not exist because the clock moves forward. Choose another time.",
+		"automation.time.ambiguous-time": "This local time occurs twice because the clock moves back. Choose an unambiguous time.",
+		"automation.scheduleNoEnd": "Recurring schedules do not support an end date.",
+		"automation.taskReminder": "Independent task reminder",
+		"automation.taskReminderHelp": "Optional absolute reminder time, separate from the automation trigger and task deadline.",
+		"automation.startsAt": "Start date and time",
+
 		'automation.unnamedAutomation': 'Unnamed automation',
 		'automation.taskDomain': 'Task domain',
 		'automation.taskDomainHelp':
@@ -169,6 +188,25 @@ export const messages = {
 		'automation.spaceTarget': 'Space: {name}',
 	},
 	zh: {
+		"automation.source.task": "待办",
+		"automation.definitionMissing": "此自动化已不存在。",
+		"automation.runMissing": "此运行记录已不存在。",
+		"automation.details": "自动化详情",
+		"automation.runDetails": "运行详情",
+		"automation.toggleFailed": "无法修改此自动化，已显示最新保存状态。",
+		"automation.time.invalid-date-time": "请输入完整且有效的日期和时间。",
+		"automation.time.invalid-zone": "请输入有效的 IANA 时区。",
+		"automation.time.nonexistent-time": "时钟向前调整，此当地时间不存在，请选择其他时间。",
+		"automation.time.ambiguous-time": "时钟向后调整，此当地时间出现两次，请选择明确的时间。",
+		"automation.scheduleNoEnd": "重复计划目前不支持结束日期。",
+		"automation.taskReminder": "独立待办提醒",
+		"automation.taskReminderHelp": "可选的绝对提醒时间，与自动化触发和待办截止时间相互独立。",
+		"automation.startsAt": "开始日期和时间",
+
+		"automation.readOnlyOtherDevice": "此自动化属于其他设备，在此只读。",
+		"automation.unsupportedDevice": "此设备不支持该操作。",
+
+
 		'automation.unnamedAutomation': '未命名自动化',
 		'automation.taskDomain': '任务领域',
 		'automation.taskDomainHelp': '在独立任务领域创建任务。自动化触发时间、实际创建时间和任务截止时间分别保存。',

@@ -1,10 +1,11 @@
+// @vitest-environment happy-dom
 import { memoryVault } from '../../../scripts/fixtures/memory-vault';
 import { contentFiles } from '../../host/obsidian/storage/content-files';
 // Fixed time zone: localized dates and DST cases below assume America/New_York.
 process.env.TZ = 'America/New_York';
-import { parseHTML } from 'linkedom';
-import { createElement as h } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { act, createElement as h } from 'react';
+import { createRoot } from 'react-dom/client';
+import { HuhuProviders } from '../../ui/react/providers';
 import { InboxPanel } from '../../modules/notifications/ui/InboxPanel';
 import type { NotificationRecord } from '../../modules/notifications/api';
 import { DashboardAutomationSource } from '../../modules/home/platform/board/automation';
@@ -649,12 +650,22 @@ test('widget sources resolve dashboard paths with and without the .md extension 
 	setLanguage('zh');
 });
 
-test('inbox renders structured reasons in the current language and deduplicates only exact reminder text', () => {
-	const { document } = parseHTML('<html><body></body></html>');
-	const prior = globalThis.document;
-	Object.assign(globalThis, { document });
+test('inbox renders structured reasons in the current language and deduplicates only exact reminder text', async () => {
+	const priorCreateDiv = Object.getOwnPropertyDescriptor(document.body, 'createDiv');
+	const priorAct = Reflect.get(globalThis, 'IS_REACT_ACT_ENVIRONMENT');
+	Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', true);
+	Object.assign(document.body, {
+		createDiv(options: { cls?: string } = {}) {
+			const child = document.createElement('div');
+			child.className = options.cls ?? '';
+			document.body.append(child);
+			return child;
+		},
+	});
+	const panel = document.createElement('div');
+	document.body.append(panel);
+	const root = createRoot(panel);
 	try {
-		const panel = document.createElement('div');
 		const records = [
 			{
 				id: 'structured',
@@ -679,22 +690,36 @@ test('inbox renders structured reasons in the current language and deduplicates 
 		}));
 		for (const language of ['zh', 'en', 'zh'] as const) {
 			setLanguage(language);
-			panel.innerHTML = renderToStaticMarkup(
-				h(InboxPanel, {
-					records: records as NotificationRecord[],
-					filter: 'all',
-					markRead: () => {},
-					clearRead: () => {},
-					open: () => {},
-					openable: new Set(['plain']),
-				}),
-			);
+			await act(async () => {
+				root.render(
+					h(HuhuProviders, {
+						ownerDocument: document,
+						children: h(InboxPanel, {
+							records: records as NotificationRecord[],
+							filter: 'all',
+							markRead: () => {},
+							clearRead: () => {},
+							open: () => {},
+							openable: new Set(['plain']),
+						}),
+					}),
+				);
+			});
+			const select = async (title: string) => {
+				const row = [...panel.querySelectorAll('li button')].find((button) =>
+					button.textContent!.includes(title),
+				);
+				assert.ok(row, `Notification row ${title} exists`);
+				await act(async () => (row as HTMLButtonElement).click());
+			};
+			await select('Plain');
 			assert.equal(
-				[...panel.querySelectorAll('button')].filter((button) => button.textContent === t('automation.open'))
+				[...document.querySelectorAll('button')].filter((button) => button.textContent === t('automation.open'))
 					.length,
 				1,
 				'An opener can expose a record without legacy source or target fields',
 			);
+			await select('User title 保留');
 			assert.ok(
 				panel.textContent!.includes(t('automation.cliMissing')),
 				'Persisted system reason follows the current language',
@@ -702,17 +727,20 @@ test('inbox renders structured reasons in the current language and deduplicates 
 			assert.ok(panel.textContent!.includes('Keep original free text 原文'));
 			assert.equal(panel.textContent!.split('Exact reminder').length - 1, 1);
 			assert.ok(panel.textContent!.includes('Different '), 'Whitespace differences are user content');
-			assert.ok(panel.textContent!.includes(language === 'zh' ? '应用内：已提交' : 'In-app: Submitted'));
+			assert.ok(document.body.textContent!.includes(language === 'zh' ? '应用内：已提交' : 'In-app: Submitted'));
 			assert.ok(
-				panel.textContent!.includes(
+				document.body.textContent!.includes(
 					new Date(records[0]!.createdAt).toLocaleString(language === 'zh' ? 'zh-CN' : 'en-US'),
 				),
 			);
 		}
-		panel.replaceChildren();
 	} finally {
-		if (prior === undefined) Reflect.deleteProperty(globalThis, 'document');
-		else Object.assign(globalThis, { document: prior });
+		await act(async () => root.unmount());
+		panel.remove();
+		if (priorCreateDiv) Object.defineProperty(document.body, 'createDiv', priorCreateDiv);
+		else Reflect.deleteProperty(document.body, 'createDiv');
+		if (priorAct === undefined) Reflect.deleteProperty(globalThis, 'IS_REACT_ACT_ENVIRONMENT');
+		else Reflect.set(globalThis, 'IS_REACT_ACT_ENVIRONMENT', priorAct);
 		setLanguage('zh');
 	}
 });

@@ -31,7 +31,7 @@ export function TabLeadingIcon({ tab, sidebar = false }: { tab: WorkspaceTab; si
 			{tab.kind === 'terminal' && tab.unread && !['working', 'waiting', 'permission'].includes(tab.state) && (
 				<BellRing
 					aria-label={t('agent.workspace.unread')}
-					className="size-3 fill-status-warning text-status-warning"
+					className="size-3 fill-[var(--hu-warning)] text-[var(--hu-warning)]"
 				/>
 			)}
 		</span>

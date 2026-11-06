@@ -16,6 +16,7 @@ export type MomentUnit = 'day' | 'days' | 'week' | 'weeks' | 'month' | 'months' 
  */
 export interface MomentLike {
 	format(format?: string): string;
+	fromNow(): string;
 	startOf(unit: MomentUnit): MomentLike;
 	subtract(amount: number, unit: MomentUnit): MomentLike;
 	clone(): MomentLike;

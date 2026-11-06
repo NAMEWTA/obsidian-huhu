@@ -130,3 +130,25 @@ test('settled observations offer explicit dismiss while unknown observations rem
 	expect(f.inbox.presentation.remove).toHaveBeenCalledWith('attempt-done');
 });
 
+
+test('a pending send is deduplicated and its late receipt cannot clear another recipient draft', async () => {
+ const f = fixture('space-a'), user = userEvent.setup();
+ let finish!: (result: { status: 'saved' }) => void;
+ f.inbox.sendMessage.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+ const view = render(<TestProviders><InboxPanel controller={f.controller} close={() => {}} /></TestProviders>);
+ await user.click(screen.getByRole('combobox', { name: '收件人' }));
+ await user.click(await screen.findByRole('option', { name: /session-a/ }));
+ const body = screen.getByRole('textbox', { name: '消息正文' });
+ await user.type(body, 'first draft');
+ const send = screen.getByRole('button', { name: '发送消息' });
+ await user.dblClick(send); expect(f.inbox.sendMessage).toHaveBeenCalledOnce();
+ await user.click(screen.getByRole('combobox', { name: 'Space 范围' }));
+ await user.click(await screen.findByRole('option', { name: '此库的全部 Space' }));
+ await user.click(screen.getByRole('combobox', { name: '收件人' }));
+ await user.click(await screen.findByRole('option', { name: /session-b/ }));
+ await user.clear(body); await user.type(body, 'second draft');
+ await import('@testing-library/react').then(({ act }) => act(async () => { finish({ status: 'saved' }); }));
+ expect((body as HTMLTextAreaElement).value).toBe('second draft');
+ expect(screen.queryByText(/已保存.*m-/)).toBeNull();
+ view.unmount();
+});

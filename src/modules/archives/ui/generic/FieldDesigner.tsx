@@ -44,7 +44,7 @@ export function FieldDesigner({
 						</summary>
 						<div className="mt-3 space-y-3">
 							<TextField label={at('id')} value={field.fieldId} readOnly />
-							<div className="grid gap-3 sm:grid-cols-2">
+							<div className="grid gap-3 @min-[560px]:grid-cols-2">
 								<TextField
 									label={at('label')}
 									value={displayLabel(field)}
@@ -115,7 +115,7 @@ export function FieldDesigner({
 									{field.options.map((option, optionIndex) => (
 										<div
 											key={option.id}
-											className="grid gap-2 rounded-md border p-2 sm:grid-cols-3"
+											className="grid gap-2 rounded-md border p-2 @min-[880px]:grid-cols-3"
 										>
 											<TextField
 												label={at('value')}
@@ -154,7 +154,7 @@ export function FieldDesigner({
 										</div>
 									))}
 									<Button
-										variant="outline"
+										variant="secondary"
 										onClick={() => {
 											const id = crypto.randomUUID();
 											patch(index, {
@@ -182,7 +182,7 @@ export function FieldDesigner({
 								/>
 								{!original && (
 									<Button
-										variant="outline"
+										variant="secondary"
 										onClick={() => onChange(fields.filter((_field, i) => i !== index))}
 									>
 										{at('remove')}
@@ -193,7 +193,7 @@ export function FieldDesigner({
 					</details>
 				);
 			})}
-			<Button variant="outline" onClick={() => onChange([...fields, newField()])}>
+			<Button variant="secondary" onClick={() => onChange([...fields, newField()])}>
 				{at('addField')}
 			</Button>
 		</div>

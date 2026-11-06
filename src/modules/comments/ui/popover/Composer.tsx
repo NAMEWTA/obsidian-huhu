@@ -59,15 +59,15 @@ export function Composer({ app, initial = '', submitLabel, onSubmit, onCancel, o
 
 	return <form ref={form} className="space-y-2" onSubmit={event => { event.preventDefault(); void submit(); }} aria-busy={busy}>
 		<Label htmlFor={id} className="sr-only">{t('editor.comments.placeholder')}</Label>
-		<Textarea ref={input} id={id} value={text} disabled={busy} rows={3} className="min-h-20 resize-y text-[13px]" placeholder={t('editor.comments.placeholder')} aria-describedby={`${id}-help`} aria-invalid={error}
+		<Textarea ref={input} id={id} value={text} disabled={busy} rows={3} className="min-h-20 resize-y text-sm" placeholder={t('editor.comments.placeholder')} aria-describedby={`${id}-help`} aria-invalid={error}
 			onChange={event => setText(event.target.value)} onKeyDown={event => {
 				if (event.nativeEvent.isComposing) return;
 				if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); if (!busy) onCancel(); }
 				if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); void submit(); }
 			}} />
-		<div id={`${id}-help`} className="text-2xs text-muted-foreground">{t('editor.comments.shortcut', { modifier: 'Ctrl/Cmd' })}</div>
+		<div id={`${id}-help`} className="text-xs text-[var(--hu-fg-3)]">{t('editor.comments.shortcut', { modifier: 'Ctrl/Cmd' })}</div>
 		{children}
-		{error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.saveFailed')}</p>}
-		<div className="flex justify-end gap-2"><Button type="button" variant="ghost" size="sm" disabled={busy} onClick={onCancel}>{t('editor.comments.cancel')}</Button><Button type="submit" size="sm" disabled={busy || !text.trim()}>{error ? t('editor.comments.retry') : submitLabel ?? t('editor.comments.popover')}</Button></div>
+		{error && <p role="alert" className="text-xs text-[var(--hu-danger)]">{t('editor.comments.saveFailed')}</p>}
+		<div className="flex justify-end gap-2"><Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="ghost" size="sm" disabled={busy} onClick={onCancel}>{t('editor.comments.cancel')}</Button><Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="submit" size="sm" disabled={busy || !text.trim()}>{error ? t('editor.comments.retry') : submitLabel ?? t('editor.comments.popover')}</Button></div>
 	</form>;
 }

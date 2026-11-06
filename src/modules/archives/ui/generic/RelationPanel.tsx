@@ -1,3 +1,4 @@
+import { PrecisionDateControl } from './PrecisionDateControl';
 import {
 	displayLabel,
 	displayRelationLabel,
@@ -8,7 +9,7 @@ import {
 	Section,
 	Select,
 	TextField,
-	confirmAt,
+	useArchiveConfirm,
 } from './common';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { App } from 'obsidian';
@@ -29,6 +30,8 @@ import { relationPath } from '../../core/generic/paths';
 import { ValueForm, displayValue } from './FieldRenderer';
 import { UpgradePanel } from './RecoveryPanel';
 import { useArchiveVersion } from './hooks';
+import { useT } from '../../../../ui/react/hooks';
+import { Notice } from '../../../../ui/components/huhu/Notice';
 
 export function EntityPicker({
 	application,
@@ -45,11 +48,18 @@ export function EntityPicker({
 	change(this: void, id: string): void;
 	disabled?: boolean;
 }) {
+	const t = useT();
 	const [search, setSearch] = useState(''),
+		[bounds, setBounds] = useState({ pages: 1, count: 0 }),
+		[page, setPage] = useState(0),
+		[more, setMore] = useState(false),
+		[loadedKey, setLoadedKey] = useState<string>(),
 		[items, setItems] = useState<EntitySummary[]>([]),
 		[selected, setSelected] = useState<EntitySummary>(),
 		[error, setError] = useState<unknown>();
 	const key = typeIds.join('|');
+	const requestKey = JSON.stringify([key, search, page]);
+	const loading = loadedKey !== requestKey;
 	useEffect(() => {
 		let alive = true;
 		void Promise.all(
@@ -57,20 +67,38 @@ export function EntityPicker({
 				.split('|')
 				.filter(Boolean)
 				.map((typeId) =>
-					application.query.entities({ typeId, search, states: ['active', 'draft'], limit: 50 }),
+					application.query.entities({
+						typeId,
+						search,
+						states: ['active', 'draft'],
+						offset: page * 50,
+						limit: 50,
+					}),
 				),
 		).then(
 			(results) => {
-				if (alive) setItems(results.flatMap((result) => result.items).slice(0, 150));
+				if (alive) {
+					setItems(results.flatMap((result) => result.items));
+					setError(undefined);
+					setMore(results.some((result) => result.total > (page + 1) * 50));
+					setBounds({
+						pages: Math.max(1, ...results.map((result) => Math.ceil(result.total / 50))),
+						count: results.reduce((sum, result) => sum + result.total, 0),
+					});
+					setLoadedKey(requestKey);
+				}
 			},
 			(error) => {
-				if (alive) setError(error);
+				if (alive) {
+					setError(error);
+					setLoadedKey(requestKey);
+				}
 			},
 		);
 		return () => {
 			alive = false;
 		};
-	}, [application, key, search]);
+	}, [application, key, search, page, requestKey]);
 	useEffect(() => {
 		let alive = true;
 		void application.query.entity(value).then(
@@ -88,11 +116,19 @@ export function EntityPicker({
 	const choices = selected && !items.some((item) => item.id === selected.id) ? [selected, ...items] : items;
 	return (
 		<div className="space-y-2">
-			<TextField label={`${label} · ${at('search')}`} value={search} onChange={setSearch} readOnly={disabled} />
+			<TextField
+				label={`${label} · ${at('search')}`}
+				value={search}
+				onChange={(value) => {
+					setSearch(value);
+					setPage(0);
+				}}
+				readOnly={disabled}
+			/>
 			<Select
 				label={label}
 				value={value}
-				disabled={disabled}
+				disabled={disabled || loading}
 				options={[
 					['', at('none')],
 					...choices.map(
@@ -105,6 +141,25 @@ export function EntityPicker({
 				]}
 				onChange={change}
 			/>
+			<div className="flex gap-2">
+				<Button
+					variant="secondary"
+					disabled={disabled || loading || page === 0}
+					onClick={() => setPage((value) => value - 1)}
+				>
+					{ct('previous')}
+				</Button>
+				<Button
+					variant="secondary"
+					disabled={disabled || loading || !more}
+					onClick={() => setPage((value) => value + 1)}
+				>
+					{ct('next')}
+				</Button>
+				<span role="status">
+					{t('contacts.page', { page: page + 1, total: bounds.pages, count: bounds.count })}
+				</span>
+			</div>
 			<ErrorBox error={error} />
 		</div>
 	);
@@ -200,28 +255,36 @@ function RelationEditor({
 		finished = useRef(false),
 		alive = useRef(true),
 		pending = useRef(Promise.resolve());
+	const confirm = useArchiveConfirm(owner, initial.id);
+	useArchiveVersion(application);
+	const unavailable =
+		!application.runtime.ready ||
+		application.runtime.loading ||
+		application.runtime.index.diagnostics().some((item) => item.code === 'read-failed');
+	const saving = useRef(false);
 	const context = session.relationContext!;
 	const persist = useCallback(
 		(value: FormSession) => {
-			const operation = application.commands.saveDraft(value);
+			const operation = pending.current.catch(() => {}).then(() => application.commands.saveDraft(value));
 			pending.current = operation;
 			void operation.catch((error) => {
-				if (alive.current) setError(error);
+				if (alive.current && current.current === value) setError(error);
 			});
 			return operation;
 		},
 		[application],
 	);
 	const leave = useCallback(async () => {
+		if (saving.current) return false;
 		if (finished.current) return true;
-		if (!(await confirmAt(owner, at('dirtyPrompt'), at('keepDraft')))) return false;
+		if (!(await confirm(at('dirtyPrompt'), at('keepDraft')))) return false;
 		try {
 			await persist(current.current);
-			return true;
+			return alive.current;
 		} catch {
 			return false;
 		}
-	}, [owner, persist]);
+	}, [confirm, persist]);
 	useEffect(() => {
 		alive.current = true;
 		guard(leave);
@@ -239,6 +302,8 @@ function RelationEditor({
 	const patch = (values: Partial<NonNullable<FormSession['relationContext']>>) =>
 		update({ ...current.current, relationContext: { ...current.current.relationContext!, ...values } });
 	const save = async () => {
+		if (saving.current || unavailable) return;
+		saving.current = true;
 		setBusy(true);
 		setError(undefined);
 		try {
@@ -261,17 +326,19 @@ function RelationEditor({
 			await application.commands
 				.discardDraft(value.id)
 				.catch((error) => console.warn('[HUHU archives draft cleanup]', error));
-			close();
+			if (alive.current) close();
 		} catch (error) {
 			if (alive.current) setError(error);
 		} finally {
+			saving.current = false;
 			if (alive.current) setBusy(false);
 		}
 	};
 	return (
 		<Section title={displayLabel(type)}>
 			<ErrorBox error={error} />
-			<fieldset disabled={busy} className="space-y-4">
+			{unavailable && <Notice tone="warning" title={at('incomplete')} />}
+			<fieldset disabled={busy || unavailable} className="space-y-4">
 				<EntityPicker
 					application={application}
 					typeIds={type.sourceTypes}
@@ -289,7 +356,7 @@ function RelationEditor({
 					change={(targetId) => patch({ targetId })}
 				/>
 				{session.creating && (
-					<Button variant="outline" onClick={() => setNewTarget(!newTarget)}>
+					<Button variant="secondary" onClick={() => setNewTarget(!newTarget)}>
 						{at('newTarget')}
 					</Button>
 				)}
@@ -310,13 +377,13 @@ function RelationEditor({
 						{at('targetCreated')}
 					</p>
 				)}
-				<div className="grid gap-3 sm:grid-cols-2">
-					<TextField
+				<div className="grid gap-3 @min-[560px]:grid-cols-2">
+					<PrecisionDateControl
 						label={at('validFrom')}
 						value={context.validFrom?.value ?? ''}
 						onChange={(value) => patch({ validFrom: dateValue(value) })}
 					/>
-					<TextField
+					<PrecisionDateControl
 						label={at('validTo')}
 						value={context.validTo?.value ?? ''}
 						onChange={(value) => patch({ validTo: dateValue(value) })}
@@ -363,23 +430,25 @@ function RelationEditor({
 						{ct('save')}
 					</Button>
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							void leave().then((allowed) => {
-								if (allowed) close();
+								if (allowed && alive.current) close();
 							});
 						}}
 					>
 						{at('keepDraft')}
 					</Button>
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
-							void confirmAt(owner, at('discardDraft'), at('discardDraft'))
+							void confirm(at('discardDraft'), at('discardDraft'))
 								.then(async (accepted) => {
-									if (!accepted) return;
+									if (!accepted || !alive.current) return;
+									const discarded = current.current.id;
 									await pending.current.catch(() => {});
-									await application.commands.discardDraft(current.current.id);
+									await application.commands.discardDraft(discarded);
+									if (!alive.current || current.current.id !== discarded) return;
 									finished.current = true;
 									close();
 								})
@@ -408,6 +477,7 @@ export function RelationPanel({
 	guard(this: void, callback: (() => Promise<boolean>) | undefined): void;
 	open(this: void, id: string): void;
 }) {
+	const confirm = useArchiveConfirm(owner, entity.id);
 	const version = useArchiveVersion(application),
 		[result, setResult] = useState<RelationResult>(),
 		[typeId, setTypeId] = useState(''),
@@ -491,7 +561,12 @@ export function RelationPanel({
 			setError(error);
 		}
 	};
-	const currentType = session ? application.runtime.index.schema(session.schemaRevisionId)?.definition : undefined;
+	const [editorSnapshot, setEditorSnapshot] = useState<{ id: string; type: RelationTypeDefinition }>();
+	if (session && editorSnapshot?.id !== session.id) {
+		const definition = application.runtime.index.schema(session.schemaRevisionId)?.definition;
+		if (definition?.kind === 'relation-type') setEditorSnapshot({ id: session.id, type: definition });
+	}
+	const currentType = editorSnapshot?.id === session?.id ? editorSnapshot?.type : undefined;
 	if (session && currentType?.kind === 'relation-type')
 		return (
 			<RelationEditor
@@ -502,7 +577,7 @@ export function RelationPanel({
 				app={app}
 				owner={owner}
 				guard={guard}
-				close={() => setSession(undefined)}
+				close={() => setSession((current) => (current?.id === session.id ? undefined : current))}
 			/>
 		);
 	return (
@@ -516,7 +591,7 @@ export function RelationPanel({
 			{drafts.map((draft) => (
 				<Button
 					key={draft.id}
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						void begin(undefined, draft);
 					}}
@@ -557,7 +632,7 @@ export function RelationPanel({
 						<div className="flex flex-wrap items-center justify-between gap-2">
 							<div className="min-w-0">
 								<span className="mr-2 text-sm">{label}</span>
-								<Button variant="link" onClick={() => open(otherId)}>
+								<Button variant="ghost" onClick={() => open(otherId)}>
 									{other?.name ?? otherId}
 								</Button>
 								<span className="text-xs text-muted-foreground">
@@ -568,7 +643,7 @@ export function RelationPanel({
 							</div>
 							<div className="flex flex-wrap gap-2">
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() => {
 										void begin(relation);
 									}}
@@ -577,14 +652,14 @@ export function RelationPanel({
 								</Button>
 								{latest?.definition.kind === 'relation-type' &&
 									latest.revisionId !== relation.schemaRevisionId && (
-										<Button variant="outline" onClick={() => setUpgrade(relation)}>
+										<Button variant="secondary" onClick={() => setUpgrade(relation)}>
 											{at('upgrade')}
 										</Button>
 									)}
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() => {
-										void confirmAt(owner, at('deleteRelationPrompt'), at('deleteRelation'))
+										void confirm(at('deleteRelationPrompt'), at('deleteRelation'))
 											.then(async (accepted) => {
 												if (accepted)
 													await application.commands.updateRelation({
@@ -615,7 +690,7 @@ export function RelationPanel({
 								finished={() => setUpgrade(undefined)}
 							/>
 						)}
-						<dl className="grid gap-2 sm:grid-cols-2">
+						<dl className="grid gap-2 @min-[560px]:grid-cols-2">
 							{Object.entries(relation.values).map(([id, value]) => (
 								<div key={id}>
 									<dt className="text-xs text-muted-foreground">
@@ -631,7 +706,7 @@ export function RelationPanel({
 							))}
 						</dl>
 						{Object.entries(relation.contextRefs).map(([role, id]) => (
-							<Button key={role} variant="link" onClick={() => open(id)}>
+							<Button key={role} variant="ghost" onClick={() => open(id)}>
 								{role} · {application.runtime.index.get(id)?.name ?? id}
 							</Button>
 						))}

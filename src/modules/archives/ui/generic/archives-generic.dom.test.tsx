@@ -73,7 +73,7 @@ test('typed controls preserve leading zeros, false, zero and explicit missing/nu
 	const view = valueHarness(fields, { code: '0012', enabled: false, count: 0 }),
 		user = userEvent.setup();
 	expect(screen.getByRole<HTMLInputElement>('textbox', { name: 'Code' }).value).toBe('0012');
-	expect(screen.getByRole<HTMLInputElement>('checkbox', { name: 'Enabled' }).checked).toBe(false);
+	expect(screen.getByRole('checkbox', { name: 'Enabled' }).getAttribute('aria-checked')).toBe('false');
 	fireEvent.change(screen.getByLabelText('Count', { selector: 'input' }), { target: { value: '0' } });
 	expect(view.latest().count).toBe(0);
 	await choose(user, `Code · ${at('fieldState')}`, at('null'));
@@ -266,25 +266,38 @@ test('resource search and pagination remain available after the generic page rep
 });
 
 test('editing a built-in field label clears translation metadata and preserves the custom label across languages', () => {
- setLanguage('zh');
- let latest: FieldDefinition[] = [PERSON.fields[0]!];
- function Harness() {
-  const [fields,setFields]=useState(latest);latest=fields;
-  return <FieldDesigner fields={fields} onChange={setFields} />;
- }
- const view=render(<TestProviders><Harness /></TestProviders>);
- expect(screen.getByLabelText(at('label'),{selector:'input'})).toHaveProperty('value','名称');
- fireEvent.change(screen.getByLabelText(at('label'),{selector:'input'}),{target:{value:'客户 称呼'}});
- expect(latest[0]).not.toHaveProperty('labelKey');
- setLanguage('en');view.rerender(<TestProviders><Harness /></TestProviders>);
- expect(screen.getByLabelText(at('label'),{selector:'input'})).toHaveProperty('value','客户 称呼');
- expect(latest[0]?.storageKey).toBe('name');
+	setLanguage('zh');
+	let latest: FieldDefinition[] = [PERSON.fields[0]!];
+	function Harness() {
+		const [fields, setFields] = useState(latest);
+		latest = fields;
+		return <FieldDesigner fields={fields} onChange={setFields} />;
+	}
+	const view = render(
+		<TestProviders>
+			<Harness />
+		</TestProviders>,
+	);
+	expect(screen.getByLabelText(at('label'), { selector: 'input' })).toHaveProperty('value', '名称');
+	fireEvent.change(screen.getByLabelText(at('label'), { selector: 'input' }), { target: { value: '客户 称呼' } });
+	expect(latest[0]).not.toHaveProperty('labelKey');
+	setLanguage('en');
+	view.rerender(
+		<TestProviders>
+			<Harness />
+		</TestProviders>,
+	);
+	expect(screen.getByLabelText(at('label'), { selector: 'input' })).toHaveProperty('value', '客户 称呼');
+	expect(latest[0]?.storageKey).toBe('name');
 });
 
 test('the archives leaf, its record list and overlays belong to one design scope', async () => {
 	const { application } = await fixture();
 	await application.commands.create({ operationId: 'scope-person', typeId: PERSON.id, values: { name: 'Scoped' } });
-	const host = { application, settings: { get: () => ({ layouts: {}, maxColumns: 6 }) } } as unknown as GenericArchivesHost;
+	const host = {
+		application,
+		settings: { get: () => ({ layouts: {}, maxColumns: 6 }) },
+	} as unknown as GenericArchivesHost;
 	const view = render(
 		<TestProviders>
 			<ArchivesContent
@@ -298,8 +311,57 @@ test('the archives leaf, its record list and overlays belong to one design scope
 			/>
 		</TestProviders>,
 	);
-	await waitFor(() => expect(view.container.querySelector('.huhu-ui.huhu-design')?.textContent ?? '').toContain('Scoped'));
+	await waitFor(() =>
+		expect(view.container.querySelector('.huhu-ui.huhu-design')?.textContent ?? '').toContain('Scoped'),
+	);
 	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
 	view.unmount();
 	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(0);
+});
+
+test('a real index read failure retains the last list projection and type identity until retry', async () => {
+	const { application, runtime, files } = await fixture();
+	const type = { ...PERSON, id: 'retained-type', label: 'Retained type', folder: 'retained' };
+	delete type.labelKey;
+	delete type.defaultFormId;
+	await application.commands.publishDefinition({
+		operationId: 'retained-type-v1',
+		expectedHeads: [],
+		definition: type,
+	});
+	await application.commands.create({
+		operationId: 'retained-record',
+		typeId: type.id,
+		values: { name: 'Retained record' },
+	});
+	const host = {
+		application,
+		settings: { get: () => ({ layouts: {}, maxColumns: 6 }) },
+	} as unknown as GenericArchivesHost;
+	const { ArchivePage } = await import('./ArchivePage');
+	render(
+		<TestProviders>
+			<ArchivePage
+				host={host}
+				app={{} as App}
+				owner={document.body}
+				state={{ section: type.id, search: '', offset: 0, scroll: 0 }}
+				updateState={() => {}}
+				navigate={async () => {}}
+				guard={() => {}}
+			/>
+		</TestProviders>,
+	);
+	const row = await screen.findByRole('button', { name: 'Retained record' });
+	const read = files.read.bind(files);
+	files.read = () => Promise.reject(new Error('read boundary failed'));
+	try {
+		await act(() => runtime.reload());
+		await waitFor(() => expect(screen.getByRole('heading', { name: 'Retained type' })).toBeTruthy());
+		expect(screen.getByRole('button', { name: 'Retained record' })).toBe(row);
+	} finally {
+		files.read = read;
+		await act(() => runtime.reload());
+	}
+	expect(await screen.findByRole('button', { name: 'Retained record' })).toBeTruthy();
 });

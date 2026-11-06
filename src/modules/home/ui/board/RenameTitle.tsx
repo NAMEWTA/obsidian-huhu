@@ -62,7 +62,7 @@ export function RenameTitle({
 		<Button
 			data-grid-action={immersive ? 'move' : undefined}
 			variant="ghost"
-			size="xs"
+			size="sm"
 			className={`h-auto min-w-0 justify-start truncate p-0 text-[length:inherit] font-[inherit] leading-[inherit] text-inherit ${className}`}
 			onDoubleClick={() => {
 				cancelled.current = false;

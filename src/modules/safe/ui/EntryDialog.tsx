@@ -1,41 +1,102 @@
 import { useId, useRef, useState } from 'react';
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, ImagePlus, ImageOff, LockKeyhole, Plus, Trash2, UserRound, WandSparkles } from 'lucide-react';
+import {
+	ArrowDown,
+	ArrowUp,
+	Copy,
+	ExternalLink,
+	Eye,
+	EyeOff,
+	ImagePlus,
+	ImageOff,
+	LockKeyhole,
+	Plus,
+	Trash2,
+	UserRound,
+	WandSparkles,
+} from 'lucide-react';
 import { useStore } from 'zustand';
 import { Button } from '../../../ui/components/button';
+import { FormField } from '../../../ui/components/huhu/FormField';
 import { Input } from '../../../ui/components/input';
 import { AutoTextarea } from './AutoTextarea';
 import { EntryTags } from './EntryTags';
 import { AccountRelations } from './AccountRelations';
 import { ConfirmDialog } from '../../../ui/components/huhu/ConfirmDialog';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../../../ui/components/dialog';
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../../../ui/components/alert-dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../ui/components/dropdown-menu';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '../../../ui/components/dialog';
+import {
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '../../../ui/components/alert-dialog';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '../../../ui/components/dropdown-menu';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
-import { MAX_CREDENTIALS, collectTags, validateEntryInput, type CredentialInput, type EntryInput, type SafeEntry } from '../core/model';
+import {
+	MAX_CREDENTIALS,
+	collectTags,
+	validateEntryInput,
+	type CredentialInput,
+	type EntryInput,
+	type SafeEntry,
+} from '../core/model';
 import type { SafeService } from '../services/safe-service';
 import { EntryIcon } from './EntryIcon';
 import { DIALOG_TITLE_CLASS, safeErrorKey, SafeErrorMessage, SecretInput, useSafeAction } from './SafeDialogs';
 import { canvasDecoder, imageToIcon } from './icon-file';
 
-const newCredential = (): CredentialInput => ({ id: crypto.randomUUID(), username: '', password: '', notes: '', phone: '', email: '', relations: [] });
+const newCredential = (): CredentialInput => ({
+	id: crypto.randomUUID(),
+	username: '',
+	password: '',
+	notes: '',
+	phone: '',
+	email: '',
+	relations: [],
+});
 
 export function draftOf(entry?: SafeEntry): EntryInput {
 	if (!entry) return { title: '', url: '', notes: '', icon: null, tags: [], credentials: [newCredential()] };
 	return {
-		title: entry.title, url: entry.url, notes: entry.notes, icon: entry.icon, tags: [...entry.tags],
+		title: entry.title,
+		url: entry.url,
+		notes: entry.notes,
+		icon: entry.icon,
+		tags: [...entry.tags],
 		credentials: entry.credentials.map(({ updatedAt: _updatedAt, ...credential }) => structuredClone(credential)),
 	};
 }
 
 const sameDraft = (a: EntryInput, b: EntryInput) => JSON.stringify(a) === JSON.stringify(b);
-const compactInput = 'h-8 text-[13px] md:text-[13px]';
+const compactInput = 'h-8 text-sm md:text-sm';
 
 /**
  * Edit one entry: title, website, icon and note, then its accounts as compact blocks (username, password, note) that
  * can be added, removed and reordered. Everything is a draft in memory until Save.
  */
-export function EntryDialog({ service, entry, onClose }: { service: SafeService; entry?: SafeEntry; onClose: () => void }) {
+export function EntryDialog({
+	service,
+	entry,
+	onClose,
+}: {
+	service: SafeService;
+	entry?: SafeEntry;
+	onClose: () => void;
+}) {
 	const t = useT();
 	const win = useOwnerWindow();
 	const id = useId();
@@ -48,8 +109,8 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 	const [notice, setNotice] = useState('');
 	const fileInput = useRef<HTMLInputElement>(null);
 	const action = useSafeAction(service);
-	const serviceBusy = useStore(service.store, state => state.busy);
-	const entries = useStore(service.store, state => state.entries);
+	const serviceBusy = useStore(service.store, (state) => state.busy);
+	const entries = useStore(service.store, (state) => state.entries);
 	const busy = action.busy || serviceBusy;
 	const dirty = !sameDraft(draft, initial);
 	const finishClose = (reason: 'close' | 'lock') => {
@@ -61,152 +122,551 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 		if (dirty) setClosing(reason);
 		else finishClose(reason);
 	};
-	const save = (reason: 'close' | 'lock' = 'close') => action.run(async () => {
-		const input = validateEntryInput(draft);
-		if (entry) await service.saveEntry(input, entry);
-		else await service.saveEntry(input, undefined, previewId);
-	}, () => finishClose(reason));
+	const save = (reason: 'close' | 'lock' = 'close') =>
+		action.run(
+			async () => {
+				const input = validateEntryInput(draft);
+				if (entry) await service.saveEntry(input, entry);
+				else await service.saveEntry(input, undefined, previewId);
+			},
+			() => finishClose(reason),
+		);
 	const edit = (change: (current: EntryInput) => EntryInput) => {
 		if (!service.checkDeadline()) return;
 		service.touch();
 		setDraft(change);
 		setNotice('');
 	};
-	const setField = (key: 'title' | 'url' | 'notes', value: string) => edit(current => ({ ...current, [key]: value }));
-	const setCredential = (credentialId: string, key: 'username' | 'password' | 'phone' | 'email' | 'notes', value: string) => edit(current => ({
-		...current, credentials: current.credentials.map(item => item.id === credentialId ? { ...item, [key]: value } : item),
-	}));
+	const setField = (key: 'title' | 'url' | 'notes', value: string) =>
+		edit((current) => ({ ...current, [key]: value }));
+	const setCredential = (
+		credentialId: string,
+		key: 'username' | 'password' | 'phone' | 'email' | 'notes',
+		value: string,
+	) =>
+		edit((current) => ({
+			...current,
+			credentials: current.credentials.map((item) =>
+				item.id === credentialId ? { ...item, [key]: value } : item,
+			),
+		}));
 	const add = () => {
 		const created = newCredential();
 		setFocusId(created.id);
-		edit(current => current.credentials.length >= MAX_CREDENTIALS ? current : { ...current, credentials: [...current.credentials, created] });
+		edit((current) =>
+			current.credentials.length >= MAX_CREDENTIALS
+				? current
+				: { ...current, credentials: [...current.credentials, created] },
+		);
 	};
-	const remove = (credentialId: string) => edit(current => current.credentials.length <= 1 ? current : { ...current, credentials: current.credentials.filter(item => item.id !== credentialId) });
-	const move = (credentialId: string, delta: number) => edit(current => {
-		const index = current.credentials.findIndex(item => item.id === credentialId);
-		const target = index + delta;
-		if (index < 0 || target < 0 || target >= current.credentials.length) return current;
-		const credentials = [...current.credentials];
-		[credentials[index], credentials[target]] = [credentials[target]!, credentials[index]!];
-		return { ...current, credentials };
-	});
-	const toggleReveal = (credentialId: string) => setRevealed(current => {
-		const next = new Set(current);
-		if (!next.delete(credentialId)) next.add(credentialId);
-		return next;
-	});
-	const copy = (value: string, noticeKey: string) => action.run(() => service.copy(value, win), () => setNotice(noticeKey));
+	const remove = (credentialId: string) =>
+		edit((current) =>
+			current.credentials.length <= 1
+				? current
+				: { ...current, credentials: current.credentials.filter((item) => item.id !== credentialId) },
+		);
+	const move = (credentialId: string, delta: number) =>
+		edit((current) => {
+			const index = current.credentials.findIndex((item) => item.id === credentialId);
+			const target = index + delta;
+			if (index < 0 || target < 0 || target >= current.credentials.length) return current;
+			const credentials = [...current.credentials];
+			[credentials[index], credentials[target]] = [credentials[target]!, credentials[index]!];
+			return { ...current, credentials };
+		});
+	const toggleReveal = (credentialId: string) =>
+		setRevealed((current) => {
+			const next = new Set(current);
+			if (!next.delete(credentialId)) next.add(credentialId);
+			return next;
+		});
+	const copy = (value: string, noticeKey: string) =>
+		action.run(
+			() => service.copy(value, win),
+			() => setNotice(noticeKey),
+		);
 	const chooseIcon = (file: File | undefined) => {
 		if (!file) return;
 		void action.run(async () => {
 			const icon = await imageToIcon(file, canvasDecoder(win.document));
 			if (!action.current()) return;
 			if (icon === null) action.setError('safe.error.icon');
-			else edit(current => ({ ...current, icon }));
+			else edit((current) => ({ ...current, icon }));
 		});
 	};
 	const generate = (credentialId: string) => {
-		try { setCredential(credentialId, 'password', service.generatePassword()); } catch (cause) { action.setError(safeErrorKey(cause)); }
+		try {
+			setCredential(credentialId, 'password', service.generatePassword());
+		} catch (cause) {
+			action.setError(safeErrorKey(cause));
+		}
 	};
-	const relationEntries = [...entries.filter(item => item.id !== previewId), { ...draft, id: previewId, deletedAt: null }];
-	const preview = { id: previewId, icon: draft.icon, title: draft.title, url: draft.url, credentials: draft.credentials };
-	return <>
-		<Dialog open onOpenChange={open => { if (!open) close('close'); }}>
-			<DialogContent className="max-h-[90dvh] gap-3 overflow-y-auto [scrollbar-gutter:stable] p-5 scrollbar-sleek sm:max-w-2xl" showCloseButton={!busy} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()}>
-				<DialogHeader className="gap-0.5">
-					<DialogTitle className={DIALOG_TITLE_CLASS}>{t(entry ? 'safe.editEntry' : 'safe.newEntry')}</DialogTitle>
-					<DialogDescription className="text-xs">{t('safe.draftWarning')}</DialogDescription>
-				</DialogHeader>
-				<form className="@container grid gap-3" onSubmit={event => { event.preventDefault(); void save(); }} aria-busy={busy}>
-					<div className="flex items-start gap-2.5">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button type="button" variant="ghost" className="size-10 shrink-0 p-0" aria-label={t('safe.iconMenu')} disabled={busy}><EntryIcon entry={preview} size="lg" /></Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start">
-								<DropdownMenuItem onSelect={() => fileInput.current?.click()}><ImagePlus />{t('safe.iconUpload')}</DropdownMenuItem>
-								<DropdownMenuItem disabled={!draft.icon} onSelect={() => edit(current => ({ ...current, icon: null }))}><ImageOff />{t('safe.iconRemove')}</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-						<input ref={fileInput} type="file" hidden accept="image/png,image/jpeg,image/webp,image/gif" aria-label={t('safe.iconUpload')} tabIndex={-1}
-							onChange={event => { const input = event.currentTarget; const file = input.files?.[0]; input.value = ''; chooseIcon(file); }} />
-						<div className="grid min-w-0 flex-1 gap-2 @lg:grid-cols-2">
-							<Input id={`${id}-title`} aria-label={t('safe.titleField')} placeholder={t('safe.titleField')} className={compactInput} value={draft.title} onChange={event => setField('title', event.currentTarget.value)} disabled={busy} autoComplete="off" autoFocus={!entry} />
-							<div className="flex items-center gap-1">
-								<Input id={`${id}-url`} aria-label={t('safe.urlField')} placeholder={t('safe.urlField')} className={compactInput} value={draft.url} onChange={event => setField('url', event.currentTarget.value)} disabled={busy} autoComplete="off" autoCapitalize="off" spellCheck={false} />
-								<ActionButton type="button" size="icon-sm" label={t('safe.openWebsite')} disabled={busy || !draft.url} onClick={() => { void action.run(() => service.openUrl(draft.url, win)); }}><ExternalLink /></ActionButton>
+	const relationEntries = [
+		...entries.filter((item) => item.id !== previewId),
+		{ ...draft, id: previewId, deletedAt: null },
+	];
+	const preview = {
+		id: previewId,
+		icon: draft.icon,
+		title: draft.title,
+		url: draft.url,
+		credentials: draft.credentials,
+	};
+	return (
+		<>
+			<Dialog
+				open
+				onOpenChange={(open) => {
+					if (!open) close('close');
+				}}
+			>
+				<DialogContent
+					className="max-h-[90dvh] gap-3 overflow-y-auto [scrollbar-gutter:stable] p-5 scrollbar-sleek sm:max-w-2xl"
+					showCloseButton={!busy}
+					onPointerDownCapture={() => service.touch()}
+					onKeyDownCapture={() => service.touch()}
+				>
+					<DialogHeader className="gap-0.5">
+						<DialogTitle className={DIALOG_TITLE_CLASS}>
+							{t(entry ? 'safe.editEntry' : 'safe.newEntry')}
+						</DialogTitle>
+						<DialogDescription className="text-xs">{t('safe.draftWarning')}</DialogDescription>
+					</DialogHeader>
+					<form
+						className="@container grid gap-3"
+						onSubmit={(event) => {
+							event.preventDefault();
+							void save();
+						}}
+						aria-busy={busy}
+					>
+						<div className="flex items-start gap-2.5">
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										type="button"
+										variant="ghost"
+										className="size-10 shrink-0 p-0"
+										aria-label={t('safe.iconMenu')}
+										disabled={busy}
+									>
+										<EntryIcon entry={preview} size="lg" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="start">
+									<DropdownMenuItem onSelect={() => fileInput.current?.click()}>
+										<ImagePlus />
+										{t('safe.iconUpload')}
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										disabled={!draft.icon}
+										onSelect={() => edit((current) => ({ ...current, icon: null }))}
+									>
+										<ImageOff />
+										{t('safe.iconRemove')}
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<input
+								ref={fileInput}
+								type="file"
+								hidden
+								accept="image/png,image/jpeg,image/webp,image/gif"
+								aria-label={t('safe.iconUpload')}
+								tabIndex={-1}
+								onChange={(event) => {
+									const input = event.currentTarget;
+									const file = input.files?.[0];
+									input.value = '';
+									chooseIcon(file);
+								}}
+							/>
+							<div className="grid min-w-0 flex-1 gap-2 @lg:grid-cols-2">
+								<FormField label={t('safe.titleField')} className="min-w-0 flex-1">
+									<Input
+										id={`${id}-title`}
+										aria-label={t('safe.titleField')}
+										placeholder={t('safe.titleField')}
+										className={compactInput}
+										value={draft.title}
+										onChange={(event) => setField('title', event.currentTarget.value)}
+										disabled={busy}
+										autoComplete="off"
+										autoFocus={!entry}
+									/>
+								</FormField>
+								<div className="flex items-end gap-2">
+									<FormField label={t('safe.urlField')} className="min-w-0 flex-1">
+										<Input
+											id={`${id}-url`}
+											aria-label={t('safe.urlField')}
+											placeholder={t('safe.urlField')}
+											className={compactInput}
+											value={draft.url}
+											onChange={(event) => setField('url', event.currentTarget.value)}
+											disabled={busy}
+											autoComplete="off"
+											autoCapitalize="off"
+											spellCheck={false}
+										/>
+									</FormField>
+									<ActionButton
+										type="button"
+										size="icon-sm"
+										label={t('safe.openWebsite')}
+										disabled={busy || !draft.url}
+										onClick={() => {
+											void action.run(() => service.openUrl(draft.url, win));
+										}}
+									>
+										<ExternalLink />
+									</ActionButton>
+								</div>
 							</div>
 						</div>
-					</div>
-					<AutoTextarea id={`${id}-notes`} rows={1} aria-label={t('safe.entryNotesField')} placeholder={t('safe.entryNotesField')} className="min-h-8 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={draft.notes} onChange={event => setField('notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
-					<EntryTags value={draft.tags} catalog={collectTags(entries)} disabled={busy} onChange={tags => edit(current => ({ ...current, tags }))} />
-					<p className="m-0 text-xs text-muted-foreground">{t('safe.optionalFields')}</p>
-					<div className="flex items-center justify-between gap-2">
-						<h3 className="m-0 text-sm font-medium text-foreground">{t('safe.accounts')} <span className="font-normal text-muted-foreground tabular-nums">{draft.credentials.length}</span></h3>
-						<Button type="button" size="sm" variant="outline" disabled={busy || draft.credentials.length >= MAX_CREDENTIALS} onClick={add}><Plus />{t('safe.addAccount')}</Button>
-					</div>
-					<ul className="m-0 grid list-none gap-2 p-0">
-						{draft.credentials.map((credential, index) => {
-							const label = (field: string) => `${t(field)} ${index + 1}`;
-							const shown = revealed.has(credential.id);
-							return <li key={credential.id} role="group" aria-label={t('safe.accountN', { n: index + 1 })} className="grid gap-1.5 rounded-md border border-border bg-muted/30 p-2">
-								<div className="grid gap-1.5 @lg:grid-cols-2">
-									<div className="flex items-center gap-1">
-										<Input aria-label={label('safe.usernameField')} placeholder={t('safe.usernameField')} className={compactInput} value={credential.username} onChange={event => setCredential(credential.id, 'username', event.currentTarget.value)} disabled={busy} autoComplete="off" autoCapitalize="off" spellCheck={false} autoFocus={focusId === credential.id} />
-										<ActionButton type="button" size="icon-sm" label={label('safe.copyUsername')} disabled={busy || !credential.username} onClick={() => { void copy(credential.username, 'safe.copiedUsername'); }}><UserRound /></ActionButton>
-									</div>
-									<div className="flex items-center gap-1">
-										<SecretInput aria-label={label('safe.passwordField')} placeholder={t('safe.passwordField')} className={compactInput} value={credential.password} type={shown ? 'text' : 'password'} onChange={event => setCredential(credential.id, 'password', event.currentTarget.value)} disabled={busy} />
-										{credential.password ? <ConfirmDialog title={t('safe.generatePassword')} description={t('safe.replacePasswordDescription')} onConfirm={() => generate(credential.id)}>
-											<ActionButton type="button" size="icon-sm" label={label('safe.generatePassword')} disabled={busy}><WandSparkles /></ActionButton>
-										</ConfirmDialog> : <ActionButton type="button" size="icon-sm" label={label('safe.generatePassword')} disabled={busy} onClick={() => generate(credential.id)}><WandSparkles /></ActionButton>}
-										<ActionButton type="button" size="icon-sm" label={label(shown ? 'safe.hidePassword' : 'safe.showPassword')} disabled={busy} onClick={() => toggleReveal(credential.id)}>{shown ? <EyeOff /> : <Eye />}</ActionButton>
-										<ActionButton type="button" size="icon-sm" label={label('safe.copyPassword')} disabled={busy || !credential.password} onClick={() => { void copy(credential.password, 'safe.copiedPassword'); }}><Copy /></ActionButton>
-									</div>
-								</div>
-								<div className="grid gap-1.5 @lg:grid-cols-2">
-									<Input type="tel" aria-label={label('safe.phoneField')} placeholder={t('safe.phoneField')} className={compactInput} value={credential.phone} onChange={event => setCredential(credential.id, 'phone', event.currentTarget.value)} disabled={busy} autoComplete="off" />
-									<Input inputMode="email" aria-label={label('safe.emailField')} placeholder={t('safe.emailField')} className={compactInput} value={credential.email} onChange={event => setCredential(credential.id, 'email', event.currentTarget.value)} disabled={busy} autoComplete="off" autoCapitalize="off" spellCheck={false} />
-								</div>
-								<div className="grid min-w-0 gap-1 @lg:grid-cols-[minmax(0,1fr)_auto]">
-									<AutoTextarea aria-label={label('safe.accountNotesField')} placeholder={t('safe.accountNotesField')} rows={1} className="min-h-8 flex-1 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={credential.notes} onChange={event => setCredential(credential.id, 'notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
-									<div className="flex shrink-0 items-center justify-self-end">
-										<ActionButton type="button" size="icon-sm" label={label('safe.moveUp')} disabled={busy || index === 0} onClick={() => move(credential.id, -1)}><ArrowUp /></ActionButton>
-										<ActionButton type="button" size="icon-sm" label={label('safe.moveDown')} disabled={busy || index === draft.credentials.length - 1} onClick={() => move(credential.id, 1)}><ArrowDown /></ActionButton>
-										<ActionButton type="button" size="icon-sm" label={label('safe.removeAccount')} disabled={busy || draft.credentials.length <= 1} onClick={() => remove(credential.id)}><Trash2 /></ActionButton>
-									</div>
-								</div>
-								<AccountRelations entries={relationEntries} currentEntry={previewId} credential={credential} disabled={busy} onChange={relations => edit(current => ({
-									...current, credentials: current.credentials.map(item => item.id === credential.id ? { ...item, relations } : item),
-								}))} />
-							</li>;
-						})}
-					</ul>
+						<FormField label={t('safe.entryNotesField')} className="min-w-0 flex-1">
+							<AutoTextarea
+								id={`${id}-notes`}
+								rows={1}
+								aria-label={t('safe.entryNotesField')}
+								placeholder={t('safe.entryNotesField')}
+								className="min-h-8 resize-none px-3 py-1.5 text-sm md:text-sm"
+								value={draft.notes}
+								onChange={(event) => setField('notes', event.currentTarget.value)}
+								disabled={busy}
+								autoComplete="off"
+								spellCheck={false}
+							/>
+						</FormField>
+						<EntryTags
+							value={draft.tags}
+							catalog={collectTags(entries)}
+							disabled={busy}
+							onChange={(tags) => edit((current) => ({ ...current, tags }))}
+						/>
+						<p className="m-0 text-xs text-muted-foreground">{t('safe.optionalFields')}</p>
+						<div className="flex items-center justify-between gap-2">
+							<h3 className="m-0 text-sm font-medium text-foreground">
+								{t('safe.accounts')}{' '}
+								<span className="font-normal text-muted-foreground tabular-nums">
+									{draft.credentials.length}
+								</span>
+							</h3>
+							<Button
+								type="button"
+								size="sm"
+								variant="secondary"
+								disabled={busy || draft.credentials.length >= MAX_CREDENTIALS}
+								onClick={add}
+							>
+								<Plus />
+								{t('safe.addAccount')}
+							</Button>
+						</div>
+						<ul className="m-0 grid list-none gap-2 p-0">
+							{draft.credentials.map((credential, index) => {
+								const label = (field: string) => `${t(field)} ${index + 1}`;
+								const shown = revealed.has(credential.id);
+								return (
+									<li
+										key={credential.id}
+										role="group"
+										aria-label={t('safe.accountN', { n: index + 1 })}
+										className="grid gap-1.5 rounded-md border border-border bg-muted/30 p-2"
+									>
+										<div className="grid gap-1.5 @lg:grid-cols-2">
+											<div className="flex items-end gap-2">
+												<FormField
+													label={label('safe.usernameField')}
+													className="min-w-0 flex-1"
+												>
+													<Input
+														aria-label={label('safe.usernameField')}
+														placeholder={t('safe.usernameField')}
+														className={compactInput}
+														value={credential.username}
+														onChange={(event) =>
+															setCredential(
+																credential.id,
+																'username',
+																event.currentTarget.value,
+															)
+														}
+														disabled={busy}
+														autoComplete="off"
+														autoCapitalize="off"
+														spellCheck={false}
+														autoFocus={focusId === credential.id}
+													/>
+												</FormField>
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label('safe.copyUsername')}
+													disabled={busy || !credential.username}
+													onClick={() => {
+														void copy(credential.username, 'safe.copiedUsername');
+													}}
+												>
+													<UserRound />
+												</ActionButton>
+											</div>
+											<div className="flex items-end gap-2">
+												<FormField
+													label={label('safe.passwordField')}
+													className="min-w-0 flex-1"
+												>
+													<SecretInput
+														aria-label={label('safe.passwordField')}
+														placeholder={t('safe.passwordField')}
+														className={compactInput}
+														value={credential.password}
+														type={shown ? 'text' : 'password'}
+														onChange={(event) =>
+															setCredential(
+																credential.id,
+																'password',
+																event.currentTarget.value,
+															)
+														}
+														disabled={busy}
+													/>
+												</FormField>
+												{credential.password ? (
+													<ConfirmDialog
+														title={t('safe.generatePassword')}
+														description={t('safe.replacePasswordDescription')}
+														onConfirm={() => generate(credential.id)}
+													>
+														<ActionButton
+															type="button"
+															size="icon-sm"
+															label={label('safe.generatePassword')}
+															disabled={busy}
+														>
+															<WandSparkles />
+														</ActionButton>
+													</ConfirmDialog>
+												) : (
+													<ActionButton
+														type="button"
+														size="icon-sm"
+														label={label('safe.generatePassword')}
+														disabled={busy}
+														onClick={() => generate(credential.id)}
+													>
+														<WandSparkles />
+													</ActionButton>
+												)}
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label(shown ? 'safe.hidePassword' : 'safe.showPassword')}
+													disabled={busy}
+													onClick={() => toggleReveal(credential.id)}
+												>
+													{shown ? <EyeOff /> : <Eye />}
+												</ActionButton>
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label('safe.copyPassword')}
+													disabled={busy || !credential.password}
+													onClick={() => {
+														void copy(credential.password, 'safe.copiedPassword');
+													}}
+												>
+													<Copy />
+												</ActionButton>
+											</div>
+										</div>
+										<div className="grid gap-1.5 @lg:grid-cols-2">
+											<FormField label={label('safe.phoneField')} className="min-w-0 flex-1">
+												<Input
+													type="tel"
+													aria-label={label('safe.phoneField')}
+													placeholder={t('safe.phoneField')}
+													className={compactInput}
+													value={credential.phone}
+													onChange={(event) =>
+														setCredential(credential.id, 'phone', event.currentTarget.value)
+													}
+													disabled={busy}
+													autoComplete="off"
+												/>
+											</FormField>
+											<FormField label={label('safe.emailField')} className="min-w-0 flex-1">
+												<Input
+													inputMode="email"
+													aria-label={label('safe.emailField')}
+													placeholder={t('safe.emailField')}
+													className={compactInput}
+													value={credential.email}
+													onChange={(event) =>
+														setCredential(credential.id, 'email', event.currentTarget.value)
+													}
+													disabled={busy}
+													autoComplete="off"
+													autoCapitalize="off"
+													spellCheck={false}
+												/>
+											</FormField>
+										</div>
+										<div className="grid min-w-0 gap-1 @lg:grid-cols-[minmax(0,1fr)_auto]">
+											<FormField
+												label={label('safe.accountNotesField')}
+												className="min-w-0 flex-1"
+											>
+												<AutoTextarea
+													aria-label={label('safe.accountNotesField')}
+													placeholder={t('safe.accountNotesField')}
+													rows={1}
+													className="min-h-8 flex-1 resize-none px-3 py-1.5 text-sm md:text-sm"
+													value={credential.notes}
+													onChange={(event) =>
+														setCredential(credential.id, 'notes', event.currentTarget.value)
+													}
+													disabled={busy}
+													autoComplete="off"
+													spellCheck={false}
+												/>
+											</FormField>
+											<div className="flex shrink-0 items-center justify-self-end">
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label('safe.moveUp')}
+													disabled={busy || index === 0}
+													onClick={() => move(credential.id, -1)}
+												>
+													<ArrowUp />
+												</ActionButton>
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label('safe.moveDown')}
+													disabled={busy || index === draft.credentials.length - 1}
+													onClick={() => move(credential.id, 1)}
+												>
+													<ArrowDown />
+												</ActionButton>
+												<ActionButton
+													type="button"
+													size="icon-sm"
+													label={label('safe.removeAccount')}
+													disabled={busy || draft.credentials.length <= 1}
+													onClick={() => remove(credential.id)}
+												>
+													<Trash2 />
+												</ActionButton>
+											</div>
+										</div>
+										<AccountRelations
+											entries={relationEntries}
+											currentEntry={previewId}
+											credential={credential}
+											disabled={busy}
+											onChange={(relations) =>
+												edit((current) => ({
+													...current,
+													credentials: current.credentials.map((item) =>
+														item.id === credential.id ? { ...item, relations } : item,
+													),
+												}))
+											}
+										/>
+									</li>
+								);
+							})}
+						</ul>
+						<SafeErrorMessage error={action.error} />
+						{notice && (
+							<p role="status" className="m-0 text-xs text-muted-foreground">
+								{t(notice)}
+							</p>
+						)}
+						<DialogFooter className="flex-row flex-wrap items-center gap-2 sm:justify-between">
+							<div className="flex items-center">
+								{entry && (
+									<Button
+										type="button"
+										variant="ghost"
+										size="sm"
+										disabled={busy || dirty}
+										onClick={() => {
+											void action.run(() => service.trashEntry(entry), onClose);
+										}}
+									>
+										<Trash2 />
+										{t('safe.moveToTrash')}
+									</Button>
+								)}
+							</div>
+							<div className="ml-auto flex items-center gap-2">
+								<ActionButton
+									type="button"
+									size="icon-sm"
+									label={t('safe.lock')}
+									disabled={busy}
+									onClick={() => close('lock')}
+								>
+									<LockKeyhole />
+								</ActionButton>
+								<Button
+									type="button"
+									size="sm"
+									variant="secondary"
+									disabled={busy}
+									onClick={() => close('close')}
+								>
+									{t('safe.cancel')}
+								</Button>
+								<Button type="submit" size="sm" disabled={busy}>
+									{t(busy ? 'safe.busy' : 'safe.save')}
+								</Button>
+							</div>
+						</DialogFooter>
+					</form>
+				</DialogContent>
+			</Dialog>
+			<AlertDialog
+				open={closing !== null}
+				onOpenChange={(open) => {
+					if (!open && !busy) setClosing(null);
+				}}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle className={DIALOG_TITLE_CLASS}>{t('safe.unsavedTitle')}</AlertDialogTitle>
+						<AlertDialogDescription>{t('safe.unsavedDescription')}</AlertDialogDescription>
+					</AlertDialogHeader>
 					<SafeErrorMessage error={action.error} />
-					{notice && <p role="status" className="m-0 text-xs text-muted-foreground">{t(notice)}</p>}
-					<DialogFooter className="flex-row flex-wrap items-center gap-2 sm:justify-between">
-						<div className="flex items-center">
-							{entry && <Button type="button" variant="ghost" size="sm" disabled={busy || dirty} onClick={() => { void action.run(() => service.trashEntry(entry), onClose); }}><Trash2 />{t('safe.moveToTrash')}</Button>}
-						</div>
-						<div className="ml-auto flex items-center gap-2">
-							<ActionButton type="button" size="icon-sm" label={t('safe.lock')} disabled={busy} onClick={() => close('lock')}><LockKeyhole /></ActionButton>
-							<Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => close('close')}>{t('safe.cancel')}</Button>
-							<Button type="submit" size="sm" disabled={busy}>{t(busy ? 'safe.busy' : 'safe.save')}</Button>
-						</div>
-					</DialogFooter>
-				</form>
-			</DialogContent>
-		</Dialog>
-		<AlertDialog open={closing !== null} onOpenChange={open => { if (!open && !busy) setClosing(null); }}>
-			<AlertDialogContent>
-				<AlertDialogHeader><AlertDialogTitle className={DIALOG_TITLE_CLASS}>{t('safe.unsavedTitle')}</AlertDialogTitle><AlertDialogDescription>{t('safe.unsavedDescription')}</AlertDialogDescription></AlertDialogHeader>
-				<SafeErrorMessage error={action.error} />
-				<AlertDialogFooter className="flex-wrap">
-					<Button variant="outline" size="sm" disabled={busy} onClick={() => setClosing(null)}>{t('safe.keepEditing')}</Button>
-					<Button variant="secondary" size="sm" disabled={busy} onClick={() => { if (closing) finishClose(closing); }}>{t('safe.discard')}</Button>
-					<Button size="sm" disabled={busy} onClick={() => { if (closing) void save(closing); }}>{t('safe.saveAndClose')}</Button>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
-	</>;
+					<AlertDialogFooter className="flex-wrap">
+						<Button variant="secondary" size="sm" disabled={busy} onClick={() => setClosing(null)}>
+							{t('safe.keepEditing')}
+						</Button>
+						<Button
+							variant="secondary"
+							size="sm"
+							disabled={busy}
+							onClick={() => {
+								if (closing) finishClose(closing);
+							}}
+						>
+							{t('safe.discard')}
+						</Button>
+						<Button
+							size="sm"
+							disabled={busy}
+							onClick={() => {
+								if (closing) void save(closing);
+							}}
+						>
+							{t('safe.saveAndClose')}
+						</Button>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</>
+	);
 }

@@ -76,7 +76,7 @@ export function UsageStatusItem({ usage, preferences, onPreferences, navigate, r
 					data-hit-control
 				>
 					{preferences.usageMode === 'verbose' && (
-						<span className="text-2xs text-muted-foreground">
+						<span className="text-xs text-muted-foreground">
 							{t(preferences.usageDisplay === 'used' ? 'shell.used' : 'shell.remaining')}
 						</span>
 					)}
@@ -94,7 +94,7 @@ export function UsageStatusItem({ usage, preferences, onPreferences, navigate, r
 						<span
 							data-usage-more
 							title={hidden.map((p) => p.name).join(' · ')}
-							className={`h-4 rounded-full border px-1.5 text-2xs ${usageTone(Math.max(...hidden.map(maxUsed)))}`}
+							className={`h-4 rounded-full border px-1.5 text-xs ${usageTone(Math.max(...hidden.map(maxUsed)))}`}
 						>
 							+{hidden.length}
 						</span>

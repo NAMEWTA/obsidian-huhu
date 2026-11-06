@@ -39,9 +39,11 @@ function expenseStore() {
 test('the expense widget shows the month first, then the entry form and the category bars as the tile grows', () => {
 	const { store, service } = expenseStore();
 	const { container } = render(
-		<TestProviders><DesignScope>
-			<ExpenseWidget store={store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<ExpenseWidget store={store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	// no title of its own: the card around it draws it
 	expect(container.querySelector('h3')).toBeNull();
@@ -54,7 +56,7 @@ test('the expense widget shows the month first, then the entry form and the cate
 	expect(breakdown.className).toContain('@3xl:flex');
 	expect(breakdown.textContent).toContain(t('expense.cat.transport'));
 	// both text fields are one 36px row high and fill their row
-	for (const input of within(form).getAllByRole('textbox')) expect(input.className).toContain('h-9');
+	for (const input of within(form).getAllByRole('textbox')) expect(input.className).toContain('h-[var(--hu-ctl-h)]');
 	const amount = within(form).getByLabelText(t('expense.colAmount'));
 	fireEvent.change(amount, { target: { value: '7.5' } });
 	fireEvent.keyDown(amount, { key: 'Enter' });
@@ -85,25 +87,29 @@ test('recent notes are 36px rows with a default file icon, and an empty list say
 	}));
 	const store = boardStore(files);
 	const view = render(
-		<TestProviders><DesignScope>
-			<RecentWidget store={store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<RecentWidget store={store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	const list = view.container.querySelector('[data-recent]') as HTMLElement;
 	expect(list.className).toContain('overflow-y-auto');
 	const rows = within(list).getAllByRole('button');
 	expect(rows.length).toBeGreaterThan(0);
 	for (const row of rows) {
-		expect(row.className).toContain('h-9');
+		expect(row.className).toContain('min-h-[var(--hu-row-h)]');
 		expect(row.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 	}
 	fireEvent.click(rows[0]!);
 	expect(store.openFile).toHaveBeenCalled();
 	view.unmount();
 	const empty = render(
-		<TestProviders><DesignScope>
-			<RecentWidget store={boardStore([])} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<RecentWidget store={boardStore([])} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	expect(empty.container.querySelector('[data-slot="empty-state"]')?.textContent).toContain(t('recent.empty'));
 	expect(empty.container.querySelector('[data-recent]')).toBeNull();
@@ -127,9 +133,11 @@ test('quick notes is a list of buttons, each making a note in its own folder and
 		newNote,
 	} as unknown as BoardStore;
 	const view = render(
-		<TestProviders><DesignScope>
-			<QuickNotesWidget store={store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<QuickNotesWidget store={store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	const root = view.container.querySelector('[data-quick-notes]') as HTMLElement;
 	const buttons = root.querySelector('[data-quick-buttons]') as HTMLElement;
@@ -146,9 +154,11 @@ test('quick notes is a list of buttons, each making a note in its own folder and
 	expect(newNote).toHaveBeenLastCalledWith('Ideas', expect.stringMatching(/^\d{4}-\d{2}-\d{2}-\d{4}$/), '');
 	view.unmount();
 	const empty = render(
-		<TestProviders><DesignScope>
-			<QuickNotesWidget store={boardStore([], { quickNotePresets: [] })} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<QuickNotesWidget store={boardStore([], { quickNotePresets: [] })} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	expect(empty.container.querySelector('[data-slot="empty-state"]')?.textContent).toContain(t('quickNote.empty'));
 	expect(within(empty.container).getByRole('button', { name: t('quickNote.addButton') })).toBeTruthy();

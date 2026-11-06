@@ -40,11 +40,17 @@ const card = (id: string, type: DashboardCard['type'], extra: Partial<DashboardC
 	}) as DashboardCard;
 function store(files: unknown[] = []) {
 	setLanguage('en');
-	const sync = { toggleTask: vi.fn(async () => {}), addTask: vi.fn(async () => {}), addDocToCard: vi.fn(async () => {}) };
+	const sync = {
+		toggleTask: vi.fn(async () => {}),
+		addTask: vi.fn(async () => {}),
+		addDocToCard: vi.fn(async () => {}),
+	};
 	return {
 		state: createStore(() => ({ files, path: 'Board', data: { columns: [] }, settings: {} })),
 		sync,
-		host: { app: { vault: { getFiles: () => files, getAllLoadedFiles: () => [], on: () => ({}), offref: () => {} } } },
+		host: {
+			app: { vault: { getFiles: () => files, getAllLoadedFiles: () => [], on: () => ({}), offref: () => {} } },
+		},
 		memoDrafts: new Map(),
 		memoDraftKey: (id: string) => id,
 		image: async () => '',
@@ -90,7 +96,9 @@ test('a section without cards shows an empty state instead of a blank tile', () 
 });
 test('a task list is a checkbox per task, a 36px add field and a progress bar', () => {
 	const s = store();
-	const c = card('t', 'task', { tasks: [task('First'), task('Second', true), task('Third')] as DashboardCard['tasks'] });
+	const c = card('t', 'task', {
+		tasks: [task('First'), task('Second', true), task('Third')] as DashboardCard['tasks'],
+	});
 	const { container } = render(
 		<TestProviders>
 			<TaskList store={s} card={c} />
@@ -98,7 +106,7 @@ test('a task list is a checkbox per task, a 36px add field and a progress bar', 
 	);
 	expect(screen.getAllByRole('checkbox')).toHaveLength(3);
 	const input = screen.getByLabelText(t('home.dashboard.addTask'));
-	expect(input.className).toContain('h-9');
+	expect(input.className).toContain('h-[var(--hu-ctl-h)]');
 	expect(input.className).not.toMatch(/(^| )h-7( |$)/);
 	const bar = screen.getByRole('progressbar');
 	expect(bar.getAttribute('aria-valuenow')).toBe('33');
@@ -109,7 +117,10 @@ test('a task list is a checkbox per task, a 36px add field and a progress bar', 
 });
 const vaultFile = (path: string, mtime = 0) => ({
 	path,
-	basename: path.split('/').pop()!.replace(/\.\w+$/, ''),
+	basename: path
+		.split('/')
+		.pop()!
+		.replace(/\.\w+$/, ''),
 	extension: path.split('.').pop()!,
 	stat: { mtime },
 });
@@ -127,7 +138,11 @@ test('a project is a vault folder: its notes newest first with their file icon, 
 		</TestProviders>,
 	);
 	const list = container.querySelector('[data-project-recent]') as HTMLElement;
-	expect(within(list).getAllByRole('button').map((b) => b.textContent)).toEqual(['Newest', 'Old']);
+	expect(
+		within(list)
+			.getAllByRole('button')
+			.map((b) => b.textContent),
+	).toEqual(['Newest', 'Old']);
 	expect(within(list).queryByRole('button', { name: 'Other' })).toBeNull();
 	expect(list.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 	fireEvent.click(within(list).getByRole('button', { name: 'Old' }));
@@ -151,7 +166,11 @@ test('the new-note button makes the note in the project folder; the finder only 
 	const finder = screen.getByLabelText(t('home.dashboard.findNote'));
 	fireEvent.change(finder, { target: { value: 'rdmp' } });
 	const matches = document.querySelector('[data-project-matches]') as HTMLElement;
-	expect(within(matches).getAllByRole('button').map((b) => b.title)).toEqual(['Projects/Alpha/Roadmap.md']);
+	expect(
+		within(matches)
+			.getAllByRole('button')
+			.map((b) => b.title),
+	).toEqual(['Projects/Alpha/Roadmap.md']);
 	fireEvent.click(within(matches).getByRole('button'));
 	expect(s.sync.addDocToCard).toHaveBeenCalledWith('p', 'Projects/Alpha/Roadmap.md');
 	fireEvent.change(finder, { target: { value: 'Plan' } });

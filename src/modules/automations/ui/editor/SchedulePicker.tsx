@@ -5,6 +5,7 @@ import { systemTimeZone } from '../../core/schedule';
 import { Input } from '../../../../ui/components/input';
 import { Choice, Field, SearchChoice } from '../parts';
 import { useT, useLanguage } from '../../../../ui/react/hooks';
+import { AutomationTimeField } from './AutomationTimeField';
 import { CronField } from './CronField';
 
 export interface DraftProps {
@@ -77,26 +78,36 @@ export function SchedulePicker({ draft, onChange }: DraftProps) {
 				)}
 			</Field>
 			{schedule.kind === 'once' && (
-				<Field label={t('automation.time')}>
-					{(id) => (
-						<Input
-							id={id}
-							type="datetime-local"
-							value={
-								Number.isFinite(schedule.at)
-									? new Date(schedule.at - new Date(schedule.at).getTimezoneOffset() * 60_000)
-											.toISOString()
-											.slice(0, 16)
-									: ''
+				<AutomationTimeField
+					id="schedule-wall"
+					label={t('automation.time')}
+					value={schedule.at}
+					zone={zone}
+					required
+					onChange={(at) =>
+						onChange((d) => {
+							if (d.schedule.kind === 'once') d.schedule.at = at ?? NaN;
+						})
+					}
+				/>
+			)}
+			{schedule.kind === 'recurring' && (
+				<AutomationTimeField
+					id="schedule-wall"
+					label={t('automation.startsAt')}
+					value={schedule.start}
+					zone={zone}
+					required
+					description={t('automation.scheduleNoEnd')}
+					onChange={(at, zone) =>
+						onChange((d) => {
+							if (d.schedule.kind === 'recurring') {
+								d.schedule.start = at ?? NaN;
+								d.schedule.timezone = zone;
 							}
-							onChange={(e) =>
-								onChange((d) => {
-									d.schedule = { kind: 'once', at: new Date(e.target.value).getTime() };
-								})
-							}
-						/>
-					)}
-				</Field>
+						})
+					}
+				/>
 			)}
 			{schedule.kind === 'recurring' && (
 				<>

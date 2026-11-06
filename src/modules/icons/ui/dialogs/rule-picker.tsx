@@ -113,7 +113,7 @@ export function RulePickerContent({ plugin }: { plugin: IconicController }) {
 							/>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="ghost" size="icon" aria-label={t('iconic.rulePicker.editRule')}>
+									<Button variant="ghost" size="icon-md" aria-label={t('iconic.rulePicker.editRule')}>
 										<Ellipsis />
 									</Button>
 								</DropdownMenuTrigger>

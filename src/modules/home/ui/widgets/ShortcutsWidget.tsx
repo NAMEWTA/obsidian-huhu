@@ -75,7 +75,7 @@ export function ShortcutsWidget({ store }: { store: BoardStore }) {
 					description={t('shortcuts.emptyHint')}
 					descriptionClassName="hidden [@container(min-height:12.5rem)]:block"
 					action={
-						<Button size="xs" variant="outline" onClick={() => setConfig(true)}>
+						<Button size="sm" variant="secondary" onClick={() => setConfig(true)}>
 							{t('shortcuts.add')}
 						</Button>
 					}
@@ -93,7 +93,7 @@ export function ShortcutsWidget({ store }: { store: BoardStore }) {
 									aria-label={name}
 									title={keys.length > 0 ? `${name} (${keys.join('+')})` : name}
 									data-shortcut={button.id}
-									className="h-9 w-full justify-start gap-2 px-2.5 font-normal"
+									className="h-[var(--hu-ctl-h)] w-full justify-start gap-2 px-2.5 font-normal"
 									onClick={() => run(button)}
 								>
 									<ObsidianIcon name={button.icon} className="size-4" />

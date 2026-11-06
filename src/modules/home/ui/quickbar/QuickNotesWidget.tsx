@@ -43,9 +43,12 @@ export function QuickNotesWidget({ store }: { store: BoardStore }) {
 			</WidgetActions>
 			<div data-quick-notes className="dashboard-quicknote flex h-full min-h-0 min-w-0 flex-col gap-3">
 				{failure && (
-					<p role="alert" className="m-0 flex items-start gap-2 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]">
+					<p
+						role="alert"
+						className="m-0 flex items-start gap-2 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]"
+					>
 						<span className="min-w-0 flex-1">{failure}</span>
-						<Button size="xs" variant="ghost" onClick={() => setFailure('')}>
+						<Button size="sm" variant="ghost" onClick={() => setFailure('')}>
 							{t('common.close')}
 						</Button>
 					</p>
@@ -63,8 +66,14 @@ export function QuickNotesWidget({ store }: { store: BoardStore }) {
 								className="h-auto min-h-8 max-w-full whitespace-normal py-1"
 								onClick={() => create(preset)}
 							>
-								{preset.icon && preset.icon !== 'file-text' ? <ObsidianIcon name={preset.icon} /> : <FilePlus />}
-								<span className="min-w-0 line-clamp-2 text-left [overflow-wrap:anywhere]">{preset.label || preset.folder}</span>
+								{preset.icon && preset.icon !== 'file-text' ? (
+									<ObsidianIcon name={preset.icon} />
+								) : (
+									<FilePlus />
+								)}
+								<span className="min-w-0 line-clamp-2 text-left [overflow-wrap:anywhere]">
+									{preset.label || preset.folder}
+								</span>
 							</Button>
 						))}
 					</div>
@@ -75,7 +84,7 @@ export function QuickNotesWidget({ store }: { store: BoardStore }) {
 						icon={<NotebookPen />}
 						title={t('quickNote.empty')}
 						action={
-							<Button variant="outline" size="sm" onClick={() => setConfig(true)}>
+							<Button variant="secondary" size="sm" onClick={() => setConfig(true)}>
 								<Plus />
 								{t('quickNote.addButton')}
 							</Button>

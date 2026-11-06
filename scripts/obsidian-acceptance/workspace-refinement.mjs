@@ -16,7 +16,7 @@ const widgets = ['calendar','clock','weather','pomodoro','expense'].map(kind => 
 const board = `---\nwidgets: ${JSON.stringify(widgets)}\ngrid: ${JSON.stringify({v:2,lg:[{i:'widget:calendar',x:0,y:0,w:12,h:4},{i:'widget:clock',x:0,y:4,w:6,h:2},{i:'widget:weather',x:6,y:4,w:6,h:2},{i:'widget:pomodoro',x:0,y:6,w:6,h:2},{i:'widget:expense',x:6,y:6,w:6,h:2}]})}\ncolumns: []\n---\n`;
 const weather = {temperature:25,weatherCode:2,windSpeed:18,humidity:62,feelsLike:27,dailyMax:[28,27,26,27,28,29,28],dailyMin:[22,21,21,20,21,22,22],dailyCodes:[2,3,61,2,1,0,2],dailyDates:Array.from({length:7},(_,i)=>iso(new Date(Date.now()+i*86400000))),fetchedAt:Date.now(),timezone:'Asia/Shanghai',source:'Open-Meteo',hourly:Array.from({length:24},(_,i)=>({time:`${today}T${String(i).padStart(2,'0')}:00`,temperature:25,weatherCode:2,precipitation:20}))};
 const records = Array.from({length:10},(_,i)=>({id:`r${i}`,type:i%3?'expense':'income',amount:12.5+i,date:iso(new Date(Date.now()-(i%5)*86400000)),category:i%3?'food':'salary',note:`Record ${i}`,createdAt:Date.now()-i*1000}));
-const runtime = await launchFreshVault({root,port:9461,settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:true,navigator:true,sync:true,agent:true,archives:false,automations:false,notifications:false,icons:false,comments:false}},home:{dashboardFile:'.huhu/dashboards/Probe',workspaceFiles:['.huhu/dashboards/Probe'],calendarTaskFilter:'all'},navigator:{calendarOpen:true},agent:{statusHooks:false}}},files:{
+const runtime = await launchFreshVault({root,port:9461,settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:true,navigator:true,versioning:true,agent:true,archives:false,automations:false,notifications:false,icons:false,comments:false}},home:{dashboardFile:'.huhu/dashboards/Probe',workspaceFiles:['.huhu/dashboards/Probe'],calendarTaskFilter:'all'},navigator:{calendarOpen:true},agent:{statusHooks:false}}},files:{
  '.huhu/dashboards/Probe.md':board,
  'Tasks.md':`- [ ] Today open [due:: ${today} 09:30]${meta('today')}\n- [x] Completed today [due:: ${today}] [completion:: ${today} 10:00]${meta('done')}\n- [ ] Earlier unfinished [due:: ${yesterday}]${meta('earlier')}\n- [ ] Future task [due:: ${tomorrow}]${meta('future')}\n- [ ] Undated task${meta('undated')}\n`,
  '.huhu/cache/weather/22.8000,113.5000.json':JSON.stringify(weather),
@@ -58,7 +58,7 @@ try {
  }
  await c.evaluate(`document.querySelector('[data-clock-weather] button').click()`);await until(`document.querySelector('[role=dialog]')?.innerText.includes('Next 24 hours')`);await runtime.shot('weather-details');await close();
  execFileSync('git',['init','-q',root]);await fs.writeFile(path.join(root,'outside-secret.md'),'must not appear');
- await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'sync',section:'changes'})`);
+ await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'versioning',section:'changes'})`);
  await until(`app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(l=>l.view.getNativeSurfaces()).some(s=>s.getViewType()==='huhu-sync-page')`);
  await c.evaluate(`window.ss=app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(l=>l.view.getNativeSurfaces()).find(s=>s.getViewType()==='huhu-sync-page').host.service();ss.connect()`);
  check('parent-repository-rejected',await c.evaluate(`ss.snapshot.phase==='no-repo'&&!!ss.snapshot.place.parentRoot&&!ss.snapshot.status`));await runtime.shot('git-parent-rejected');

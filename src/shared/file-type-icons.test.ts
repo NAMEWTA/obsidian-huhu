@@ -1,12 +1,6 @@
 import { expect, test } from 'vitest';
-import { existsSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
+import * as lucide from 'lucide-react';
 import { defaultFileIcon, defaultFolderIcon, defaultIconNames, fileExtension, lucideIconId } from './file-type-icons';
-
-/** lucide-react ships one module per icon name (aliases included), so a file existing means the name resolves. */
-const lucideReactIcons = join(dirname(createRequire(import.meta.url).resolve('lucide-react/package.json')), 'dist', 'esm', 'icons',
-);
 
 test('files map to type icons with theme color variables', () => {
 	expect(defaultFileIcon('notes/a.md')).toEqual({ icon: 'file-text', color: null });
@@ -59,7 +53,10 @@ test('folders switch icons when open and special folders keep theirs', () => {
 });
 
 test('every icon name exists in lucide-react and Obsidian ids are prefixed once', () => {
-	for (const name of defaultIconNames()) expect(existsSync(join(lucideReactIcons, `${name}.js`)), name).toBe(true);
+	for (const name of defaultIconNames()) {
+		const exportName = name.replace(/(^|-)([a-z0-9])/g, (_match, _separator, letter: string) => letter.toUpperCase());
+		expect(Object.hasOwn(lucide, exportName), name).toBe(true);
+	}
 	expect(lucideIconId('file-text')).toBe('lucide-file-text');
 	expect(lucideIconId('lucide-file-text')).toBe('lucide-file-text');
 	for (const value of [defaultFileIcon('a.pdf'), defaultFolderIcon('journal')]) {

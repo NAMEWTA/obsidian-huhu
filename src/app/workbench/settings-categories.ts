@@ -1,3 +1,4 @@
+import { Platform } from 'obsidian';
 import { t } from '../../shared/i18n';
 import type { PanelModel } from '../contracts/workbench';
 import { productGates, visibleProducts, type SettingsProduct } from '../settings/nav';
@@ -19,10 +20,19 @@ export function settingsCategories(plugin: DashboardPlugin): Array<{ id: string;
 	return [
 		{ id: 'general', label: t('settings.tabGeneral'), icon: 'settings' },
 		{ id: 'appearance', label: t('appearance.title'), icon: 'palette' },
-		...visibleProducts(productGates((id) => plugin.moduleEnabled(id)))
+		...visibleProducts(
+			productGates(
+				(id) =>
+					plugin.moduleEnabled(id) &&
+					(!Platform.isMobile ||
+						plugin.moduleManifests().some((manifest) => manifest.id === id && manifest.platforms.mobile)),
+			),
+		)
 			.filter((product): product is Exclude<SettingsProduct, 'home'> => product !== 'home')
 			.map((product) => ({ id: product, label: t(products[product].labelKey), icon: products[product].icon })),
-		...(plugin.appSettings.get().devGallery ? [{ id: 'components', label: t('settings.componentGallery'), icon: 'blocks' }] : []),
+		...(plugin.appSettings.get().devGallery
+			? [{ id: 'components', label: t('settings.componentGallery'), icon: 'blocks' }]
+			: []),
 		{ id: 'about', label: t('settings.tabAbout'), icon: 'info' },
 	];
 }
@@ -34,17 +44,24 @@ export function settingsPanel(plugin: DashboardPlugin, current?: string): PanelM
 		// Every setting of every category, not only the category names.
 		search: {
 			placeholder: t('shell.searchSettings'),
-			query: async (text) => (await import('../settings/react/settings-search-index')).searchSettings(plugin, settingsCategories(plugin), text),
+			query: async (text) =>
+				(await import('../settings/react/settings-search-index')).searchSettings(
+					plugin,
+					settingsCategories(plugin),
+					text,
+				),
 		},
-		sections: [{
-			id: 'categories',
-			items: settingsCategories(plugin).map((category) => ({
-				id: category.id,
-				label: category.label,
-				icon: category.icon,
-				target: { feature: 'settings', section: category.id },
-				active: category.id === active,
-			})),
-		}],
+		sections: [
+			{
+				id: 'categories',
+				items: settingsCategories(plugin).map((category) => ({
+					id: category.id,
+					label: category.label,
+					icon: category.icon,
+					target: { feature: 'settings', section: category.id },
+					active: category.id === active,
+				})),
+			},
+		],
 	};
 }

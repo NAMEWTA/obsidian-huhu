@@ -18,11 +18,13 @@ export function ContentOverview({
 	rows,
 	total,
 	onOpen,
+	onLoadMore,
 }: {
 	folder: string;
 	rows: readonly OverviewRow[];
 	total: number;
-	onOpen: (path: string) => void;
+	onOpen: (path: string) => void | Promise<void>;
+	onLoadMore?: () => void;
 }) {
 	useT();
 	return (
@@ -31,18 +33,25 @@ export function ContentOverview({
 				<h2 className="m-0 min-w-0 truncate text-base font-semibold" title={folder}>
 					{folder}
 				</h2>
-				<span className="shrink-0 text-xs text-muted-foreground">{t('content.fileCount', { count: total })}</span>
+				<span className="shrink-0 text-xs text-muted-foreground">
+					{t('content.fileCount', { count: total })}
+				</span>
 			</div>
 			{rows.length ? (
-				<ul data-content-overview className="m-0 flex min-h-0 flex-1 list-none flex-col gap-0.5 overflow-y-auto p-0">
+				<ul
+					data-content-overview
+					className="m-0 flex min-h-0 flex-1 list-none flex-col gap-0.5 overflow-y-auto p-0"
+				>
 					{rows.map((row) => (
 						<li key={row.path} className="min-w-0">
 							<Button
 								type="button"
 								variant="ghost"
 								title={row.path}
-								className="h-9 w-full min-w-0 justify-start gap-2 px-2 font-normal"
-								onClick={() => onOpen(row.path)}
+								className="h-[var(--hu-list-row-h)] w-full min-w-0 justify-start gap-2 px-2 font-normal"
+								onClick={() => {
+									void onOpen(row.path);
+								}}
 							>
 								<span
 									aria-hidden
@@ -68,6 +77,18 @@ export function ContentOverview({
 					title={t('content.emptyTitle')}
 					description={t('content.emptyHint', { folder })}
 				/>
+			)}
+			{rows.length > 0 && (
+				<div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
+					<span role="status" className="text-sm text-muted-foreground">
+						{t('content.loadedCount', { loaded: rows.length, total })}
+					</span>
+					{rows.length < total && onLoadMore && (
+						<Button variant="secondary" onClick={onLoadMore}>
+							{t('content.loadMore')}
+						</Button>
+					)}
+				</div>
 			)}
 		</>
 	);

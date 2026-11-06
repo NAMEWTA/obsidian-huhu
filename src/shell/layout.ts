@@ -6,8 +6,8 @@ export type ShellLayout = 'wide' | 'medium' | 'narrow';
 export const WIDE_MIN = 960;
 export const MEDIUM_MIN = 600;
 
-export function layoutFor(width: number, phone: boolean): ShellLayout {
-	if (phone || width < MEDIUM_MIN) return 'narrow';
+export function layoutFor(width: number): ShellLayout {
+	if (width < MEDIUM_MIN) return 'narrow';
 	return width < WIDE_MIN ? 'medium' : 'wide';
 }
 
@@ -18,11 +18,15 @@ export type RailAction = { kind: 'toggle-panel' } | { kind: 'navigate'; target: 
  * returns to that module's last route in this leaf and leaves the panel as it is.
  */
 export function railAction(state: WorkbenchState, feature: WorkbenchFeature): RailAction {
-	if (state.target.feature === feature) return { kind: 'toggle-panel' };
-	return { kind: 'navigate', target: state.lastTargets[feature] ?? { feature } };
+	if (state.route.feature === feature) return { kind: 'toggle-panel' };
+	return { kind: 'navigate', target: state.navigation.lastRoutes[feature] ?? { feature } };
 }
 
 /** Remember `target` as its module's last route. */
 export function rememberTarget(state: WorkbenchState, target: WorkbenchTarget): WorkbenchState {
-	return { ...state, target, lastTargets: { ...state.lastTargets, [target.feature]: target } };
+	return {
+		...state,
+		route: target,
+		navigation: { ...state.navigation, lastRoutes: { ...state.navigation.lastRoutes, [target.feature]: target } },
+	};
 }

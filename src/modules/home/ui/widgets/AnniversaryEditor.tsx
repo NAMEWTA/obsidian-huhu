@@ -1,3 +1,6 @@
+import type { App } from 'obsidian';
+import { WidgetBackgroundEditor } from '../settings/WidgetBackgroundEditor';
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/anniversary-settings-modal.ts
 import { useState } from 'react';
 import type { AnniversaryConfig } from '../../core/board/types';
@@ -71,26 +74,36 @@ function LunarInput({
 }
 export function AnniversaryEditor({
 	initial,
+	app,
 	onSave,
 	onDelete,
 	onClose,
+	embedded = false,
 }: {
 	initial: AnniversaryConfig;
-	onSave(this: void, value: AnniversaryConfig): void;
+	app?: App;
+	embedded?: boolean;
+	onSave(this: void, value: AnniversaryConfig): void | Promise<void>;
 	onDelete?(this: void): void;
 	onClose(this: void): void;
 }) {
 	const [draft, setDraft] = useState(initial),
+		[solarRaw, setSolarRaw] = useState(initial.startDate.split('T')[0] ?? ''),
 		[valid, setValid] = useState(!!parseAnniversaryDate(initial.startDate)),
 		t = useT(),
 		lunar = draft.calendar === 'lunar',
 		{ lookup, failed } = useLunarLookup(lunar);
 	return (
 		<DashboardDialog
+			embedded={embedded}
 			title={t('anniversary.editTitle')}
 			onClose={onClose}
-			busy={!valid || (lunar && !lookup)}
-			onSave={() => onSave(draft)}
+			disabled={!valid || (lunar && !lookup)}
+			onSave={() => {
+				if (!valid || (lunar && !lookup)) return;
+				if (!lunar && !parseDate(solarRaw)) return;
+				return onSave(lunar ? draft : { ...draft, startDate: replaceCivilDate(draft.startDate, solarRaw) });
+			}}
 		>
 			<Label className="grid gap-2">
 				{t('anniversary.label')}
@@ -104,8 +117,9 @@ export function AnniversaryEditor({
 				value={draft.calendar ?? 'solar'}
 				options={['solar', 'lunar'].map((value) => ({ value, label: t(`anniversary.${value}`) }))}
 				onChange={(value) => {
-					setValid(!!parseAnniversaryDate(draft.startDate));
-					setDraft({ ...draft, calendar: value as 'solar' | 'lunar' });
+					if (!valid) return;
+					const startDate = lunar ? draft.startDate : replaceCivilDate(draft.startDate, solarRaw);
+					setDraft({ ...draft, startDate, calendar: value as 'solar' | 'lunar' });
 				}}
 			/>
 			{lunar ? (
@@ -115,6 +129,7 @@ export function AnniversaryEditor({
 						start={draft.startDate}
 						onChange={(startDate, valid) => {
 							setValid(valid);
+							if (valid) setSolarRaw(startDate.split('T')[0] ?? '');
 							setDraft({ ...draft, startDate });
 						}}
 					/>
@@ -122,18 +137,23 @@ export function AnniversaryEditor({
 					<p role="status">{t(failed ? 'anniversary.conversionError' : 'anniversary.loading')}</p>
 				)
 			) : (
-				<Label className="grid gap-2">
-					{t('anniversary.startDate')}
-					<Input
-						type="date"
-						value={draft.startDate.split('T')[0] ?? ''}
-						onChange={(e) => {
-							const startDate = replaceCivilDate(draft.startDate, e.target.value);
-							setDraft({ ...draft, startDate });
-							setValid(!!parseAnniversaryDate(startDate));
-						}}
-					/>
-				</Label>
+				<DateField
+					label={t('anniversary.startDate')}
+					required
+					draftValue={solarRaw}
+					onDraftChange={(value) => {
+						setSolarRaw(value);
+						setValid(!!parseDate(value));
+					}}
+
+					value={parseDate(draft.startDate.split('T')[0] ?? '')}
+					onChange={(day) => {
+						setSolarRaw(day ?? '');
+						const startDate = replaceCivilDate(draft.startDate, day ?? '');
+						setDraft({ ...draft, startDate });
+						setValid(!!parseAnniversaryDate(startDate));
+					}}
+				/>
 			)}
 			<Choice
 				label={t('anniversary.precision')}
@@ -152,110 +172,17 @@ export function AnniversaryEditor({
 				/>
 				{t('anniversary.annualReminder')}
 			</Label>
-			<Label className="grid gap-2">
-				{t('wbg.set')}
-				<Input
-					value={draft.background?.image ?? ''}
-					onChange={(e) =>
-						setDraft({
-							...draft,
-							background: e.target.value
-								? { opacity: 100, dim: 30, blur: 0, ...draft.background, image: e.target.value }
-								: undefined,
-						})
-					}
-				/>
-			</Label>
-			{draft.background && (
-				<div className="grid grid-cols-2 gap-2">
-					<Label>
-						{t('wbg.opacity')}
-						<Input
-							type="number"
-							min={0}
-							max={100}
-							value={draft.background.opacity ?? 100}
-							onChange={(e) =>
-								setDraft({
-									...draft,
-									background: {
-										...draft.background!,
-										opacity: Math.max(0, Math.min(100, Number(e.target.value))),
-									},
-								})
-							}
-						/>
-					</Label>
-					<Label>
-						{t('wbg.dim')}
-						<Input
-							type="number"
-							min={0}
-							max={100}
-							value={draft.background.dim ?? 30}
-							onChange={(e) =>
-								setDraft({
-									...draft,
-									background: {
-										...draft.background!,
-										dim: Math.max(0, Math.min(100, Number(e.target.value))),
-									},
-								})
-							}
-						/>
-					</Label>
-					<Label>
-						{t('wbg.blur')}
-						<Input
-							type="number"
-							min={0}
-							max={20}
-							value={draft.background.blur ?? 0}
-							onChange={(e) =>
-								setDraft({
-									...draft,
-									background: {
-										...draft.background!,
-										blur: Math.max(0, Math.min(20, Number(e.target.value))),
-									},
-								})
-							}
-						/>
-					</Label>
-					<Choice
-						label={t('wbg.foreground')}
-						value={draft.background.foreground?.startsWith('#') ? 'custom' : draft.background.foreground ?? 'theme'}
-						options={[
-							{ value: 'theme', label: t('wbg.fgTheme') },
-							{ value: 'light', label: t('wbg.fgLight') },
-							{ value: 'dark', label: t('wbg.fgDark') },
-							{ value: 'custom', label: t('wbg.fgCustom') },
-						]}
-						onChange={(foreground) =>
-							setDraft({
-								...draft,
-								background: {
-									...draft.background!,
-									foreground: foreground === 'theme' ? undefined : foreground === 'custom' ? (draft.background?.foreground?.startsWith('#') ? draft.background.foreground : '#ffffff') : foreground,
-								},
-							})
-						}
-					/>
-					<Label>
-						{t('wbg.fgCustom')}
-						<Input type="color" aria-label={t('wbg.fgCustom')}
-							disabled={!draft.background.foreground?.startsWith('#')}
-							value={draft.background.foreground?.startsWith('#') ? draft.background.foreground : '#ffffff'}
-							onChange={e => setDraft({ ...draft, background: { ...draft.background!, foreground: e.target.value } })} />
-					</Label>
-				</div>
-			)}
+			<WidgetBackgroundEditor
+				app={app}
+				value={draft.background}
+				onChange={(background) => setDraft({ ...draft, background })}
+			/>
 			<p>
 				{t('anniversary.preview')}:{' '}
 				{valid ? formatElapsed(parseAnniversaryDate(draft.startDate)!, new Date(), draft.precision) : '--'}
 			</p>
 			{onDelete && (
-				<Button variant="destructive" onClick={onDelete}>
+				<Button variant="danger" onClick={onDelete}>
 					{t('common.delete')}
 				</Button>
 			)}

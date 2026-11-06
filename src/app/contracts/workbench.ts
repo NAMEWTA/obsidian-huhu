@@ -9,7 +9,6 @@ export const WORKBENCH_FEATURES = [
 	'contacts',
 	'automations',
 	'notifications',
-	'icons',
 	'versioning',
 	'revision-review',
 	'safe',
@@ -28,7 +27,6 @@ export const FEATURE_MODULES: Readonly<Record<WorkbenchFeature, ModuleId | 'app'
 	contacts: 'archives',
 	automations: 'automations',
 	notifications: 'notifications',
-	icons: 'icons',
 	versioning: 'versioning',
 	'revision-review': 'versioning',
 	safe: 'safe',
@@ -45,21 +43,6 @@ export interface WorkbenchTarget {
 	focusId?: string;
 }
 
-/** One compatibility mapping for old icon pages, used by live routes and workspace restoration. */
-export function iconSettingsTarget(
-	target: Pick<WorkbenchTarget, 'section' | 'resourceId' | 'focusId'>,
-): WorkbenchTarget {
-	const page = target.section ?? target.resourceId,
-		focusId = target.focusId;
-	return {
-		feature: 'settings',
-		section: 'iconic',
-		...(page && page.length <= 64 && /^iconic-[a-z-]+$/.test(page) ? { resourceId: page } : {}),
-		...(focusId && focusId.length <= 256 && ![...focusId].some((character) => character.charCodeAt(0) < 32)
-			? { focusId }
-			: {}),
-	};
-}
 export interface FeatureAvailability {
 	enabled: boolean;
 	supported: boolean;
@@ -75,7 +58,6 @@ export interface NavigationItem {
 	target?: WorkbenchTarget;
 	children?: readonly NavigationItem[];
 	badge?: number;
-	aliases?: readonly string[];
 }
 
 /** A page the workbench keeps (or restores) with its bounded state. */
@@ -116,14 +98,20 @@ export interface PanelTree {
 	selectedId?: string;
 	/** Folders open on first render. */
 	defaultExpandedIds?: readonly string[];
-	/** What a click on a folder row does: flip it (default), or only open it. */
-	folderClick?: 'toggle' | 'expand';
 	/** Text shown when no row is left (nothing exists, or the search matches nothing). */
 	emptyText?: string;
 	/** Where a clicked row goes; rows without one only expand or collapse. */
 	target?: (id: string) => WorkbenchTarget | undefined;
 	/** Runs before navigating, like `PanelItem.select`. */
 	select?: (id: string) => void | Promise<void>;
+	/** Optional paged projection. Limits and expansion belong to each leaf, never the domain singleton. */
+	data?: {
+		pageSize?: number;
+		load(request: { search: string; limits: Readonly<Record<string, number>> }): Promise<{
+			nodes: readonly TreeNode[];
+			pages: readonly { id: string; label: string; loaded: number; total: number }[];
+		}>;
+	};
 }
 export interface PanelModel {
 	/** The main action of the module, shown at the top of the panel ("New session", "New board"). */

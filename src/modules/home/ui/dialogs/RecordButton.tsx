@@ -9,11 +9,15 @@ export function RecordButton({ className, ...props }: ComponentProps<typeof Butt
 		<Button
 			{...props}
 			data-hit-control
-			className={cn(
-				'block h-auto gap-0 rounded-none border-0 px-0 py-0 text-start [font-size:inherit] font-normal leading-[inherit] whitespace-normal shadow-none',
-				className,
-			)}
+			className={cn('min-h-[var(--hu-hit)] max-w-full justify-start whitespace-normal text-start', className)}
 		/>
 	);
-	return props['aria-label'] ? <Tooltip><TooltipTrigger asChild>{button}</TooltipTrigger><TooltipContent>{props['aria-label']}</TooltipContent></Tooltip> : button;
+	return props['aria-label'] ? (
+		<Tooltip>
+			<TooltipTrigger asChild>{button}</TooltipTrigger>
+			<TooltipContent>{props['aria-label']}</TooltipContent>
+		</Tooltip>
+	) : (
+		button
+	);
 }

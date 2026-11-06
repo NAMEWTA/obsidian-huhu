@@ -19,7 +19,7 @@ const anchor=createAnchor(quote,0,quote.length);anchor.lineHint=51;
 const files={'Note.md':source};
 const store=new CommentStore({read:async p=>files[p],write:async(p,v)=>{files[p]=v},exists:async p=>p in files,remove:async p=>{delete files[p]}},{timers:{set:()=>0,clear:()=>{}}});
 await store.add('Note.md',{anchor,text:'500-character paragraph modified externally'});await store.close();
-const runtime=await launchFreshVault({root:process.argv[2],port:9701,files,settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:false,comments:true,agent:false,archives:false,automations:false,notifications:false,icons:false,sync:false}}}}});
+const runtime=await launchFreshVault({root:process.argv[2],port:9701,files,settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:false,comments:true,agent:false,archives:false,automations:false,notifications:false,icons:false,versioning:false}}}}});
 const c=runtime.connection;const until=async expression=>{for(let i=0;i<180;i++){if(await c.evaluate(expression))return;await delay(50)}throw Error('timeout '+expression)};
 try{
  await until(`app.plugins.plugins.huhu.moduleState('comments')==='active'`);

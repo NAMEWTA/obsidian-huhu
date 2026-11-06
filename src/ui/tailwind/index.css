@@ -11,12 +11,12 @@
 @source "../../app";
 
 /* 暗色跟随 Obsidian 的 body.theme-dark */
-@custom-variant dark (&:where(.theme-dark, .theme-dark *));
+@custom-variant dark (&:where([data-theme="ink"], [data-theme="ink"] *));
 
 /* 令牌 → Tailwind 颜色/圆角（与 Orca main.css 的 @theme inline 同构） */
 @theme inline {
-  --animate-spin: spin calc(var(--anim-duration-moderate) * 3) linear infinite;
-  --animate-pulse: pulse calc(var(--anim-duration-moderate) * 6) ease-in-out infinite;
+  --animate-spin: spin calc(var(--hu-dur-base) * 3) linear infinite;
+  --animate-pulse: pulse calc(var(--hu-dur-base) * 6) ease-in-out infinite;
   --font-sans: var(--nd-font-sans);
   --font-mono: var(--nd-font-mono);
   --color-background: var(--background);
@@ -54,13 +54,24 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --shadow-floating: 0 10px 24px rgb(0 0 0 / 0.18);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --text-2xs: 0.6875rem;
-  --text-2xs--line-height: calc(1 / 0.6875);
-  --text-3xs: 0.625rem;
-  --text-3xs--line-height: calc(0.875 / 0.625);
+  --shadow-floating: var(--hu-shadow-pop);
+  --radius-sm: var(--hu-radius-sm);
+  --radius-md: var(--hu-radius-md);
+  --radius-lg: var(--hu-radius-lg);
+  --radius-xl: var(--hu-radius-xl);
+  --text-xs: var(--hu-text-xs); --text-xs--line-height: var(--hu-lh-xs);
+  --text-sm: var(--hu-text-sm); --text-sm--line-height: var(--hu-lh-sm);
+  --text-base: var(--hu-text-md); --text-base--line-height: var(--hu-lh-md);
+  --text-lg: var(--hu-text-lg); --text-lg--line-height: var(--hu-lh-lg);
+  --text-xl: var(--hu-text-xl); --text-xl--line-height: var(--hu-lh-xl);
+  --text-2xl: var(--hu-text-2xl); --text-2xl--line-height: var(--hu-lh-2xl);
+  --text-2xs: var(--hu-text-xs); --text-2xs--line-height: var(--hu-lh-xs);
+  --text-3xs: var(--hu-text-xs); --text-3xs--line-height: var(--hu-lh-xs);
+}
+
+/* outline-none sets Tailwind's style variable to none. Explicit outline-2 (including
+ * focus variants) must restore solid so a 2px width actually paints. Input glow
+ * controls retain outline-none because they do not request this utility. */
+@utility outline-2 {
+  --tw-outline-style: solid;
 }

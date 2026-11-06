@@ -3,7 +3,9 @@ import { DocumentMutationCoordinator } from '../../src/host/obsidian/document-mu
 import { restoreHunks } from '../../src/modules/versioning/core/hunk-restore';
 import { CheckpointStore } from '../../src/modules/versioning/services/checkpoint-store';
 import { RestoreService } from '../../src/modules/versioning/services/restore-service';
-import { calculateDiff } from '../../src/modules/versioning/ui/diff-model';
+import { parseDiffFromFile } from '@pierre/diffs';
+import { hunkProof } from '../../src/modules/versioning/ui/diff/hunk-proof';
+import { displayText } from '../../src/modules/versioning/ui/diff/preferences';
 import { sameDocumentSnapshot, type DocumentMutationPort, type DocumentSnapshot } from '../../src/shared/storage/document-mutation';
 import type { TextStorage } from '../../src/shared/storage/ports';
 
@@ -46,10 +48,12 @@ function fixture(before: string) {
 const request = (text: string) => ({ source: { id: 'history', text }, targetPath: 'note.md', originLeafId: 'leaf', mode: 'replace-current' as const });
 const origin = { id: 'context', path: 'note.md', leafId: 'leaf', generation: 1 };
 
-test('actual CM proof and native conversion reject the minimal cross-boundary CR/LF merge before any writes', async () => {
+test('actual Pierre proof and native conversion reject the minimal cross-boundary CR/LF merge before any writes', async () => {
 	const source = 'old\r\rkeep', before = 'new\n\nkeep', f = fixture(before);
 	try {
-		const diff = calculateDiff({ id: 'minimal', left: source, right: before });
+		const diff = hunkProof(source, before, parseDiffFromFile(
+			{ name: 'note.md', contents: displayText(source) },
+			{ name: 'note.md', contents: displayText(before) }, { context: 2 }, true));
 		const selected = restoreHunks(source, before, diff).map(hunk => hunk.id);
 		expect(diff.precise).toBe(true); expect(selected).toEqual(['0:4:0:4']);
 		const target = await f.service.captureTarget('note.md', 'leaf');
@@ -69,7 +73,9 @@ test.each(['old\r\r', 'old\r\r\n', 'old\r\n\r\n', 'old\n\r', 'old\r\n\n'])(
 		for (const selection of ['first', 'last', 'both'] as const) {
 			const f = fixture(before);
 			try {
-				const diff = calculateDiff({ id: selection, left: source, right: before });
+				const diff = hunkProof(source, before, parseDiffFromFile(
+					{ name: 'note.md', contents: displayText(source) },
+					{ name: 'note.md', contents: displayText(before) }, { context: 2 }, true));
 				const hunks = restoreHunks(source, before, diff); expect(hunks).toHaveLength(2);
 				const selected = (selection === 'both' ? hunks : [hunks[selection === 'first' ? 0 : 1]!]).map(hunk => hunk.id);
 				const target = await f.service.captureTarget('note.md', 'leaf');

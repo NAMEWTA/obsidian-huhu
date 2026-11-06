@@ -1,3 +1,4 @@
+import { useVisible } from '../../../../ui/react/contexts';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/media-section.ts
 import { setVaultPreference } from '../../../../host/obsidian/storage/preferences';
 import { type App } from 'obsidian';
@@ -31,7 +32,12 @@ import {
 } from 'lucide-react';
 import { Choice, IconButton } from '../board/controls';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../../ui/components/dropdown-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '../../../../ui/components/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { cn } from '../../../../ui/lib/utils';
 import { MediaFilter, emptyMediaFilter, normalizeMediaFolder } from './MediaFilter';
@@ -75,7 +81,7 @@ function MenuChoice({
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" size="icon" aria-label={name}>
+						<Button variant="secondary" size="icon-md" aria-label={name}>
 							<Current />
 						</Button>
 					</DropdownMenuTrigger>
@@ -93,11 +99,15 @@ function MenuChoice({
 		</DropdownMenu>
 	);
 }
-function ToolbarIcon({ label, children, ...props }: { label: string } & Omit<React.ComponentProps<typeof Button>, 'children'> & { children: React.ReactNode }) {
+function ToolbarIcon({
+	label,
+	children,
+	...props
+}: { label: string } & Omit<React.ComponentProps<typeof Button>, 'children'> & { children: React.ReactNode }) {
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button variant="outline" size="icon" aria-label={label} {...props}>
+				<Button variant="secondary" size="icon-md" aria-label={label} {...props}>
 					{children}
 				</Button>
 			</TooltipTrigger>
@@ -133,8 +143,9 @@ export function MediaPanel({
 		[pageSize, setPageSize] = useState(20),
 		[, revise] = useState(0);
 	const refresh = () => revise((n) => n + 1);
-	const focus = useFocusReturn();
-	useEffect(() => contentFiles(app).subscribe(refresh), [app]);
+	const focus = useFocusReturn(),
+		visible = useVisible();
+	useEffect(() => (visible ? contentFiles(app).subscribe(refresh) : undefined), [app, visible]);
 	const kind = column.sectionType === 'videos' ? 'video' : 'image';
 	const exts = extsFor(column.sectionType ?? '');
 	const all = exts
@@ -237,12 +248,7 @@ export function MediaPanel({
 	};
 	const chip = 'max-w-40 gap-0.5 pr-0.5';
 	const empty = !exts ? (
-		<EmptyState
-			size="sm"
-			className="h-full"
-			icon={<ImageIcon />}
-			title={t('media.unsupported')}
-		/>
+		<EmptyState size="sm" className="h-full" icon={<ImageIcon />} title={t('media.unsupported')} />
 	) : all.length === 0 ? (
 		<EmptyState
 			size="sm"
@@ -258,7 +264,7 @@ export function MediaPanel({
 			title={t('media.noResults')}
 			action={
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						setQuery('');
 						updateFilter(emptyMediaFilter);
@@ -307,16 +313,27 @@ export function MediaPanel({
 					onSave={() => void remove(deleting)}
 					busy={deleteState.busy}
 					danger
-					confirmLabel={deleteState.busy ? t('media.deleting') : deleteState.error ? t('media.retry') : t('common.delete')}
+					confirmLabel={
+						deleteState.busy
+							? t('media.deleting')
+							: deleteState.error
+								? t('media.retry')
+								: t('common.delete')
+					}
 				>
-					<p className="m-0 [overflow-wrap:anywhere]">{t('media.confirmDelete', { name: deleting.basename })}</p>
+					<p className="m-0 [overflow-wrap:anywhere]">
+						{t('media.confirmDelete', { name: deleting.basename })}
+					</p>
 					{deleteState.busy && (
 						<p role="status" className="m-0 text-sm text-muted-foreground">
 							{t('media.deleting')}
 						</p>
 					)}
 					{deleteState.error && (
-						<p role="alert" className="m-0 border-l-2 border-destructive pl-2 text-sm text-foreground [overflow-wrap:anywhere]">
+						<p
+							role="alert"
+							className="m-0 border-l-2 border-destructive pl-2 text-sm text-foreground [overflow-wrap:anywhere]"
+						>
 							{deleteState.error}
 						</p>
 					)}
@@ -335,7 +352,7 @@ export function MediaPanel({
 				/>
 				<Choice
 					label={t('library.sortName')}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={sort}
 					onChange={(value) => {
 						setSort(value);
@@ -358,7 +375,7 @@ export function MediaPanel({
 				</ToolbarIcon>
 				<Choice
 					label={t('media.groupBy')}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={groupBy}
 					onChange={(value) => {
 						setGroupBy(value as MediaGroupMode);
@@ -414,7 +431,7 @@ export function MediaPanel({
 					<Filter />
 				</ToolbarIcon>
 				{filter.tags.map((tag) => (
-					<Badge key={tag} variant="secondary" className={chip}>
+					<Badge key={tag} variant="neutral" className={chip}>
 						<span className="truncate">#{tag}</span>
 						<IconButton
 							label={t('media.removeFilter', { name: `#${tag}` })}
@@ -426,12 +443,14 @@ export function MediaPanel({
 					</Badge>
 				))}
 				{(filter.start || filter.end) && (
-					<Badge variant="secondary" className="max-w-56 gap-0.5 pr-0.5">
+					<Badge variant="neutral" className="max-w-56 gap-0.5 pr-0.5">
 						<span className="truncate">
 							{filter.property}: {filter.start || '...'} ~ {filter.end || '...'}
 						</span>
 						<IconButton
-							label={t('media.removeFilter', { name: `${filter.start || '...'} ~ ${filter.end || '...'}` })}
+							label={t('media.removeFilter', {
+								name: `${filter.start || '...'} ~ ${filter.end || '...'}`,
+							})}
 							className="size-4"
 							onClick={() => updateFilter({ ...filter, start: '', end: '' })}
 						>
@@ -440,12 +459,14 @@ export function MediaPanel({
 					</Badge>
 				)}
 				{filter.folders.map((folder) => (
-					<Badge key={folder} variant="secondary" className={chip}>
+					<Badge key={folder} variant="neutral" className={chip}>
 						<span className="truncate">{folder.split('/').pop()}</span>
 						<IconButton
 							label={t('media.removeFilter', { name: folder })}
 							className="size-4"
-							onClick={() => updateFilter({ ...filter, folders: filter.folders.filter((v) => v !== folder) })}
+							onClick={() =>
+								updateFilter({ ...filter, folders: filter.folders.filter((v) => v !== folder) })
+							}
 						>
 							<X />
 						</IconButton>
@@ -453,40 +474,45 @@ export function MediaPanel({
 				))}
 			</div>
 			<div className="min-h-0 flex-1 overflow-y-auto">
-				{!results.length ? (
-					empty
-				) : groupBy === 'none' ? (
-					renderItems(results.slice(start, start + pageSize), start)
-				) : (
-					groups.map((group) => {
-						const closed = collapsed.has(group.key);
-						return (
-							<section key={group.key} data-group-key={group.key}>
-								<button
-									type="button"
-									aria-expanded={!closed}
-									data-hit-control
-									className="my-1.5 flex min-h-8 w-full cursor-pointer items-center gap-1.5 rounded-md border-0 border-b border-border bg-transparent px-1 py-1.5 text-left text-foreground outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
-									onClick={() =>
-										setCollapsed((old) => {
-											const next = new Set(old);
-											if (next.has(group.key)) next.delete(group.key);
-											else next.add(group.key);
-											return next;
-										})
-									}
-								>
-									{closed ? <ChevronRight className="size-3 shrink-0" aria-hidden /> : <ChevronDown className="size-3 shrink-0" aria-hidden />}
-									<span className="min-w-0 flex-1 text-xs font-semibold [overflow-wrap:anywhere]">{group.key}</span>
-									<span className="shrink-0 rounded-full bg-secondary px-2 text-xs text-secondary-foreground">
-										{group.items.length}
-									</span>
-								</button>
-								{!closed && renderItems(group.items, group.offset)}
-							</section>
-						);
-					})
-				)}
+				{!results.length
+					? empty
+					: groupBy === 'none'
+						? renderItems(results.slice(start, start + pageSize), start)
+						: groups.map((group) => {
+								const closed = collapsed.has(group.key);
+								return (
+									<section key={group.key} data-group-key={group.key}>
+										<Button
+											variant="ghost"
+											type="button"
+											aria-expanded={!closed}
+											data-hit-control
+											className="my-1.5 flex min-h-8 w-full cursor-pointer items-center gap-1.5 rounded-md border-0 border-b border-border bg-transparent px-1 py-1.5 text-left text-foreground outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+											onClick={() =>
+												setCollapsed((old) => {
+													const next = new Set(old);
+													if (next.has(group.key)) next.delete(group.key);
+													else next.add(group.key);
+													return next;
+												})
+											}
+										>
+											{closed ? (
+												<ChevronRight className="size-3 shrink-0" aria-hidden />
+											) : (
+												<ChevronDown className="size-3 shrink-0" aria-hidden />
+											)}
+											<span className="min-w-0 flex-1 text-xs font-semibold [overflow-wrap:anywhere]">
+												{group.key}
+											</span>
+											<span className="shrink-0 rounded-full bg-secondary px-2 text-xs text-secondary-foreground">
+												{group.items.length}
+											</span>
+										</Button>
+										{!closed && renderItems(group.items, group.offset)}
+									</section>
+								);
+							})}
 			</div>
 			<div data-footer className="flex shrink-0 flex-wrap items-center justify-between gap-2">
 				<span className="text-xs text-muted-foreground tabular-nums">
@@ -495,7 +521,7 @@ export function MediaPanel({
 				{groupBy === 'none' && pages > 1 && <Pagination page={current} pages={pages} change={setPage} />}
 				<Choice
 					label={t('library.pageSize', { count: pageSize })}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={String(pageSize)}
 					onChange={(value) => {
 						setPageSize(Number(value));

@@ -60,7 +60,7 @@ const files = {
 if (minimalDir) {
 	for (const file of ['theme.css', 'manifest.json']) files[`.obsidian/themes/Minimal/${file}`] = await fs.readFile(path.join(minimalDir, file), 'utf8');
 }
-const modules = { home: true, agent: true, automations: false, notifications: false, archives: false, comments: false, icons: false, sync: false, navigator: false };
+const modules = { home: true, agent: true, automations: false, notifications: false, archives: false, comments: false, icons: false, versioning: false, navigator: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_FD_PORT || 19731),

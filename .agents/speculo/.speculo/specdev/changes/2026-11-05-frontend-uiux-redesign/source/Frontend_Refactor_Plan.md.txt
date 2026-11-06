@@ -1,0 +1,521 @@
+# HUHU 前端完整重构技术方案
+
+> 交付性质：可评审、可拆分实施的生产重构方案。配套 HTML 是交互原型，不是已经接入 Obsidian 的插件构建。
+>
+> 调研日期：2026-11-05（Asia/Taipei）。生产代码基线：`NAMEWTA/obsidian-huhu` 的 `main@37fcede4210a19bcc2a74809e7fdd301e5717957`，版本 `0.0.3`。本次查询原来的 `dev` 分支返回不存在；旧原型使用过的 `dev@29644dc5833bb209e6282f84fa71441a5a1b99d4` 只作为历史原型来源。后续实施须重新固定实际起始提交，不能把两者混称为当前 dev。
+>
+> 本方案中的“无兼容”指直接替换旧前端实现、旧 UI 状态合同、旧入口和旧样式，不建设双轨 UI、旧数据读取回退、版本转换器或兼容适配层。必要的 Obsidian 宿主适配仍是产品架构的一部分。
+
+## 1. 结论与重构边界
+
+HUHU 应继续作为 **Obsidian 内的高密度个人工作台**：左侧功能图标轨、按模块提供的二级导航、主工作区，以及按需出现的右侧详情。重点是建立稳定的空间、字体、控件和交互规则，让用户在任务、档案、自动化、智能体和看板之间切换时沿用同一种操作习惯。
+
+当前项目已经采用 React 19、TypeScript、Tailwind 4、shadcn 风格组件和 Radix 行为原语，并拥有共享 Tree、Switch、Popover、Sheet、Dialog、虚拟列表及主题系统。技术栈足以完成这次重构；增加第二套大型 UI 库或重新设计一套底层交互原语没有必要。生产侧唯一优先考虑的新 UI 依赖是 `@daypicker/react`，用于补齐统一的日期字段。[依赖清单][h-package]、[设计系统][h-design]、[组件规则][h-ui-rules]
+
+本次产品决策明确以下四项：
+
+1. 日期输入使用与工作台相同字体、边界、圆角、主题和焦点样式的日历弹层；日期范围共享一个规范，所有业务表单复用。
+2. 自动化列表点击实例后在右侧展开详情，保留列表、搜索、筛选和滚动位置；启停使用真正的滑动开关。
+3. 档案二级栏使用“类型目录 → 记录”的树结构，支持独立展开、键盘导航和搜索后定位。
+4. 完成任务时，复选框、标题删除线、说明删除线及“已完成”状态共同表达结果；日期、关联资料等仍保持可读。
+
+范围覆盖全部现有前端入口及其公共组件、CSS、主题与 UI 状态。业务模型、模块 API、文件事务、任务重复规则、自动化执行、PTY、加密和 Git 恢复服务继续由原有领域负责；只有发现明确阻碍目标交互的接口缺口时，才提交最小的领域 API 调整。全量前端重构不意味着重写所有领域服务。[架构][h-architecture]
+
+### 1.1 原型与生产实现的对应关系
+
+| 层面 | 本次 HTML 原型 | 正式插件重构 |
+|---|---|---|
+| 用途 | 展示布局、操作路径和状态反馈；使用演示数据 | 对接现有真实模块、事务与宿主生命周期 |
+| 日期实现 | 离线嵌入 Air Datepicker 3.6.0 官方分发代码及主题样式 | `@daypicker/react` v10 与现有 Radix Popover 组合 |
+| 选择原因 | 本次环境无法正常安装 npm 构建依赖，采用可离线分发、无运行时依赖的成熟组件 | 与既有 React、Portal、状态订阅及测试体系一致 |
+| 树与开关 | 原型现有组件和数据模型上的交互演示 | 直接复用项目已有 Headless Tree 包装及 Radix Switch |
+| 数据 | 浏览器内的演示状态 | 原有模块 API、Vault/隐藏根、设备与加密规则 |
+| 验证边界 | 原型的浏览器验证见随包验收记录 | 必须另外完成真实 Obsidian、多窗口和持久化验收 |
+
+不把 Air Datepicker 引入正式插件，也不编写 Air 与 DayPicker 之间的转换层。原型是视觉和行为规格，生产端直接按本方案的受控 DateField 合同实现。完整选型证据、版本与许可证见 [复用调研](Reuse_Research.md)。
+
+### 1.2 本次阅读范围
+
+已核对仓库目录树、依赖、架构、UI/主题/工作台规范、研究复用合同、测试规则，以及四项问题直接涉及的实现文件。其他模块按当前目录、架构职责及公共组件调用边界纳入重构清单。本方案不声称逐行阅读了仓库全部 5,000 余项文件，也不声称旧原型已经覆盖当前 main 新加入的全部业务能力。
+
+## 2. 当前实现审计：已有能力与真实缺口
+
+| 区域 | 当前证据 | 需要的变化 |
+|---|---|---|
+| 前端栈 | React/ReactDOM 19.2.8；TS ^5.8.3；Tailwind 4.1.13；radix-ui 1.6.7；esbuild 0.25.5；pnpm 11.1.3 | 沿用现有工具链与 CSS 生成流程 |
+| 共享控件 | `src/ui/components` 已有 Button、Input、Switch、Tree、Dialog、Sheet、Popover、Select、Tabs、Table 等 | 统一变体、尺寸和调用规则，补缺口 |
+| 内容 token | `tokens.css` 已定义 4/8/12/16/20/24/32 间距、20/16/14/13/12 字号和 32/36/40 控件高度 | 收敛所有模块到同一组 token，删除局部偏差 |
+| 日期 | `TaskPage.tsx` 使用 `Input type="date"`，会显示浏览器原生日历 | 统一 DateField/DateRangeField，扩大到所有日期表单 |
+| 自动化启停 | `AutomationRow.tsx` 已使用共享 Switch，并隔离行点击事件 | 原型与生产行为对齐；统一 pending、失败和状态反馈 |
+| 自动化详情 | `AutomationsPage.tsx` 的 selectedDefinition 分支替换列表主体 | 改为列表与详情共存，保留原有编辑与运行服务 |
+| 档案树 | `services/generic/workbench.ts` 已返回 `PanelModel.tree`；SidePanel 已接共享 Tree | 延续真实类型/记录结构，改进展开状态、搜索和大规模完整性 |
+| 任务完成 | 共享日历 TaskRow 已为标题设置 line-through；主 TaskPage 标题未统一 | 抽取统一任务内容表现，覆盖主列表与看板 |
+| 新模块 | 当前 main 还包括 health、归物/年度统计、人物纪事、统一反馈与领域事件 | 纳入正式重构覆盖，不以旧原型的模块数量作为完成依据 |
+
+依据：[包版本][h-package]、[token 源码][h-tokens]、[自动化行][h-auto-row]、[自动化页面][h-auto-page]、[档案树来源][h-archive-workbench]、[侧栏][h-sidepanel]、[共享任务行][h-task-row]、[任务页][h-task-page]。
+
+当前 UI 规范曾规定自动化详情为独立页面。本次用户明确要求右侧详情，因此正式实施时同步修改对应规范及测试；不为保留旧规范而维持两套跳转路径。[现有工作台规则][h-shell-rules]
+
+## 3. 技术架构与公共组件组织
+
+### 3.1 保持已有分层
+
+| 目录 | 重构后职责 | 禁止越界 |
+|---|---|---|
+| `app` | 模块装配、命令、工作台贡献、设置入口 | 不在页面里重新注册插件或增加应用启动器 |
+| `shell` | 图标轨、二级栏、页面框、导航、宽度响应与宿主状态栏 | 不读取档案、任务或自动化私有存储 |
+| `ui/components` | 可复用的行为原语和无业务状态的组合组件 | 不依赖任一业务模块实现 |
+| `theme` / `ui/styles` | 主题映射、语义 token、字体、作用域与生成样式 | 不让模块拥有另一套主题 |
+| `modules/*/ui` | 订阅本域服务、组装页面、发出领域命令 | 不直接改别的模块的 store 或文件 |
+| `modules/*/api.ts` | 模块间公开能力和类型 | 不通过深层路径跨模块引用 |
+| `host` / `shared` | 宿主适配、纯工具、路径、反馈及事件合同 | 不由共享 UI 控件调用 Vault/PTY/加密 |
+
+保持一个工作台承载业务页面；批注、导航器沿用已有宿主叶子。智能体的终端标签与分屏仍归智能体模块。无需引入 React Router、Next.js、Vite 应用壳，也不把 Obsidian 插件改成独立网站。[架构][h-architecture]、[工作台合同][h-contract]
+
+### 3.2 “共享 package”的落地方式
+
+先把现有 `src/ui` 当作项目内部的共享组件包治理。它已经具备依赖边界、主题和公共实现，当前没有独立多应用消费需求，不额外拆 monorepo 或发布 npm 包。
+
+复用顺序固定为：
+
+1. 已有 HUHU 组件及业务组合。
+2. 同栈 shadcn 模式与现有 Radix 原语。
+3. 经调研确认的单一专项库。
+4. 仅实现业务组合和样式衔接，不重写库提供的焦点、日历算法、树键盘模型或虚拟列表。
+
+组件 props 使用受控值、事件和展示状态。控件不隐含保存、不发 toast、不推导业务权限；页面/服务决定何时提交以及如何反馈。现有 `cva`、`cn`、`clsx` 和 `tailwind-merge` 继续负责变体与类合并。[组件规则][h-ui-rules]
+
+建议增加的文件为本方案目标，不代表已经存在：
+
+| 新组合 | 建议目标路径 | 基于已有能力 |
+|---|---|---|
+| 日期与范围 | `src/ui/components/huhu/date/DateField.tsx`、`DateRangeField.tsx`、`DateTimeField.tsx` | Input/Button、Popover、DayPicker |
+| 日期解析/格式 | `src/ui/components/huhu/date/date-value.ts` | 纯函数；使用项目现有日期语义 |
+| 有标题的字段容器 | `src/ui/components/huhu/FormField.tsx` | 标签、说明、错误关联；保留 SettingsRow 专用布局 |
+| 页面内详情区 | `src/ui/components/huhu/DetailPane.tsx` | 桌面内联 aside；窄宽度 Sheet |
+| 任务文字内容 | `src/ui/components/huhu/task/TaskContent.tsx` | 从现有 TaskRow 抽取标题、说明与完成表现 |
+
+现有 Select、Tree、Switch、Tooltip、Command、ConfirmDialog、EmptyState、SettingsRow、SettingsSection 等保持唯一实现。无需另造一个“基础按钮包”再包裹所有控件。
+
+## 4. 布局、信息密度与 token 规格
+
+### 4.1 工作台空间规则
+
+沿用当前宿主布局基准：图标轨 52px；二级栏默认 280px、允许 220–500px；标准页面页头 44px。保持用户可调整宽度，拖动松手后保存；双击复位，方向键步进 8px。不要把全局浏览器宽度当成 Obsidian 叶子的可用宽度。[当前 shell 规则][h-shell-rules]
+
+| 所属叶子宽度 | 二级导航 | 主区与右详情 |
+|---|---|---|
+| ≥960px | 有内容时内联，无内容时完全移除该列 | 按主区实际余宽决定详情是否并列 |
+| 600–959px | 覆盖侧栏，关闭后归还焦点 | 详情使用右侧 Sheet；主区保持原宽度 |
+| <600px 或手机 | 图标轨与二级栏合并到左侧 Sheet | 详情接近全宽 Sheet，保留明确返回/关闭入口 |
+
+右详情默认 **360px**，最大 `min(440px, 可用主区宽度)`。当“主区宽度 − 详情宽度”不足 **640px** 时改用覆盖 Sheet；不能仅判断视口大于 960px 就强行排成四列。此 640px 是本次方案的可读性设计阈值，实施时用实际列表列宽和中文长文本验证。桌面并列详情是非模态 `aside`，列表可继续操作；覆盖 Sheet 使用已有 Dialog/Sheet 的模态焦点管理。
+
+列表与详情各自有唯一滚动区；页头、筛选和详情操作区按需固定。避免 body、页面、卡片、表格四层同时滚动。大表格允许自身必要的横向滚动，但页头、表单与侧栏不得溢出。
+
+无二级导航的看板、保险箱、自动化不放空白占位栏。桌面状态继续贡献到 Obsidian 原生状态栏；原型内的状态区域不直接复制为生产的第二个底栏。手机在页面头部显示最多三个状态芯片。[shell 规则][h-shell-rules]
+
+### 4.2 字体与字号
+
+复用现有字体规则：优先尊重 Obsidian 界面字体和用户设置，随后使用项目既有 Geist/中文系统 fallback；代码区域使用已有等宽字体链。不要为了界面统一，覆盖笔记正文的编辑器配色与字体偏好。[token 源码][h-tokens]、[主题规则][h-theme-rules]
+
+| 语义 | 规范 | 用途 |
+|---|---|---|
+| 页面标题 | 20px / 600，行高约 1.4 | “自动化”“任务待办”等唯一页级标题 |
+| 区块标题 | 16px / 600 | 详情区、设置分组、表单章节 |
+| 默认正文 | 14px / 400，行高 1.5 | 表单、主要内容和说明 |
+| 紧凑正文 | 13px / 400–500，行高 1.5 | 树、表格、次级列表 |
+| 元信息 | 12px / 400，行高 1.5 | 日期、记录数、辅助状态 |
+| 数值 | 对齐所处字号 + tabular-nums | 金额、统计、时间列 |
+| 代码 | 保留模块等宽设定 | PTY、diff、脚本，不跟随表格强制缩小 |
+
+信息密度由行高、间距、列宽和内容层级控制。中文表单正文不降到 11px；完整操作不能依赖悬浮提示。重要长名称最多两行并提供完整 title/可访问名称，次要路径可单行省略。
+
+### 4.3 尺寸与间距
+
+继续使用已存在的 `--ui-space-*`、`--ui-text-*`、`--ui-control-*`，把局部硬编码映射到已有语义。以下是目标使用规则：
+
+| 项目 | 统一值 |
+|---|---|
+| 间距阶梯 | 4、8、12、16、20、24、32px |
+| 控件 | 紧凑 32px，默认 36px，大号 40px |
+| 点击区域 | 桌面至少 32px；触控至少 44px |
+| 表单字段 | 标签到控件 8px；控件到帮助文字 4px；字段间 16px；章节间 24px |
+| 页面内边距 | 宽屏 24px，中等 20px，窄屏 16px |
+| 常规列表行 | 单行约 40px；标题+元信息约 56–64px |
+| 树行 | 32px 交互高度，层级缩进 14px；触控放大到 44px |
+| 卡片 | 内边距 16px；卡片间 16px；标题区与主体 12px |
+| 圆角 | 标签 6px、控件 8px、面板 12px、对话框 14px |
+| 焦点 | 3px 可见焦点环，1px 偏移 |
+
+树当前内部虚拟行高是 28px。如果改为 32px，必须同步虚拟器估算、滚动定位与实际 CSS；不能只增大 padding 导致焦点行和滚动位置错位。[Tree 实现][h-tree]
+
+密度提供“舒适/紧凑”两个内容层变体即可，默认紧凑。二者保持相同字阶和按钮语义，主要改变行高、表单段落与卡片内距。触控下不因紧凑模式缩小命中区。实现前先核对当前外观设置是否已有相同概念；如果没有，新增一个统一设置，不让各模块各存一份。
+
+### 4.4 色彩与主题
+
+生产组件只消费语义 token，例如 `background`、`foreground`、`muted`、`border`、`primary`、`destructive`、`ring`、`sidebar` 和状态色。页内不能写固定蓝色按钮、固定白底抽屉或固定灰色日期弹层。
+
+当前主题通过 `theme/settings.ts`、`runtime.ts`、`custom.ts` 和预设样式配置，并映射到 Obsidian 与 `--nt-*`。看板 `--db-*` 是派生消费者。沿用该单一来源；外观页面切换主题后，树、日期、表单、抽屉、toast 和弹出窗口必须同时更新。[主题规则][h-theme-rules]
+
+颜色职责固定：主色用于主操作、选中与焦点；绿/橙/红用于状态语义；普通目录图标和次级按钮用中性色。完成任务不依靠“变灰”单独传意，错误不依靠“变红”单独传意。保持当前主题规则中正文主背景 7:1、卡片/侧栏正文及重要次级文字 4.5:1 的验收目标；非必要淡化装饰才可使用更低层级。主按钮必须成对验证主色和前景色，不假设白字天然满足对比。
+
+### 4.5 CSS 收敛
+
+保留 `.huhu-ui` 作用域、主题映射和现有 Tailwind 生成管线。将内容 token 从选择性试用收敛为所有正式页面统一使用的合同，删除只为旧内容布局服务的选择器和重复变体。类合并保持调用方最后覆盖的既有规则。
+
+不增加 CSS-in-JS、全局 reset、新的独立颜色表或成批 `!important`。自写 CSS 不用无作用域选择器、不使用裸 z-index 数字；层级通过既有层级 token 管理。组件间状态用 Radix/data 属性或显式 props，避免依赖页面 DOM 层级的脆弱后代选择器。[设计系统规则][h-design-rules]
+
+## 5. 四项重点交互合同
+
+### 5.1 统一日期字段
+
+正式实现采用 **DayPicker v10 + 现有 Popover + Input/Button**。shadcn 官方 Date Picker 本身就是 Calendar 与 Popover 的组合思路，可以借鉴其结构；v10 应优先使用 `@daypicker/react`，不要照搬旧示例中的 v9 classNames 或为旧别名加转换代码。[shadcn 日期组合][r-shadcn-date]、[DayPicker v10 升级说明][r-daypicker]
+
+日期字段有三种清晰用途：
+
+| 类型 | 行为 | 数据边界 |
+|---|---|---|
+| DateField | 单日期、可清空、可手输、年月导航、今天定位 | 本地日历日，不隐式加时区 |
+| DateRangeField | 一个范围入口；已选起止摘要；清空/应用/取消 | 未应用草稿不改变列表过滤 |
+| DateTimeField | 日期和时间分组，明确所在时区与全天选项 | 由领域 API 定义时区及时间戳，控件不擅自推断 |
+
+中文显示使用完整年月日或 `yyyy-MM-dd`，不出现混杂的 `mm/dd/yyyy`、英文月份和浏览器系统按钮。月份标题、星期、今天、清除及读屏标签均走现有 `t()` 国际化。周起始日遵循统一设置/locale。
+
+日历弹层只包裹日期选择；既有日历看板、日程汇总和农历能力不替换为 DatePicker。组件宽度围绕一个月内容设置，在窄屏缩为单月；范围宽屏可并列两个月。控件高度 36px、内容 14px，日期单元使用清晰选中、今天描边、禁用和范围中间态，不用巨大阴影。
+
+行为验收：
+
+- 打开时焦点落在已有选中日或当前月可选日；库负责方向键与月份导航。Esc 取消弹层，返回仍存在的触发器。
+- 手输保留暂时不完整的草稿；失焦/确认时严格校验，不把 `2026-02-31` 自动变成三月。错误文字与字段通过 `aria-describedby` 关联。
+- 清空值用唯一空值合同；不能把空串、undefined、null 混作三个业务状态。
+- 范围结束日早于开始日时显示错误并禁止应用；选中行为可重新起选，但不能静默交换用户手输的两个值。
+- 单日期 `YYYY-MM-DD` 不用 `new Date(value)` 再 `toISOString()` 来回转换，避免 UTC 导致跨日。转换到日历组件的 Date 时按年/月/日构造本地日期，跨时区行为由测试锁定。
+- min/max、只读、禁用、必填、错误、提交中具有统一样式和语义。
+- 日期 Popover 挂到元素所属 Document 的既有 Portal，离开页面或窗口关闭时释放；触发元素属于哪个窗口，弹层就属于哪个窗口。
+- 不实现一份手写日期网格、闰年算法或全局 document 点击监听来替代成熟库。
+
+替换范围至少包括 TaskPage 筛选、TaskEditor/TaskEditorForm、自动化 SchedulePicker、档案日期字段、归物时间、人物纪事、看板配置与相关记录表单。T03 阶段通过源码检索建立精确清单，逐个删除原生 `type="date"` / `datetime-local` 日期弹层入口；时间输入是否替换按 DateTimeField 实际职责确认。
+
+### 5.2 自动化：列表 + 右侧详情 + 滑动启停
+
+页面主结构固定为页头、工具栏、列表和按需出现的右详情。点击名称或行空白设置选中的 definitionId；列表持续挂载，筛选词、状态筛选、排序和 scrollTop 不变。连续点不同实例只更新详情内容与选中行。
+
+详情默认 360px，包含标题、启停、触发计划、操作类型、设备/工作目录等当前定义已有字段，以及“概览 / 运行记录”标签。下方提供真实存在的运行、编辑等动作。详情读取与运行记录查询分离，切换 tab 才加载较重内容。
+
+| 操作 | 预期结果 |
+|---|---|
+| 点实例 | 右侧详情打开；URL/WorkbenchTarget 的 resourceId 对应当前实例 |
+| 点关闭 / Esc | 详情关闭；列表筛选与位置保留；焦点返回来源行 |
+| 点运行按钮 | 执行现有服务动作；运行详情在右侧呈现，不丢失列表上下文 |
+| 点历史记录 | 右侧展示该次运行；可返回定义概览 |
+| 点“全部运行记录” | 显式进入完整运行历史页面；这是独立入口，保留 |
+| 点编辑 | 现有字段编辑器以弹层呈现；保存/取消回到同一实例详情 |
+| 新建自动化 | 保留较宽的完整编辑页面；成功后回列表并打开新实例详情 |
+| 深链直接打开实例 | 先建立列表上下文，再打开对应详情；不存在时显示明确的缺失状态 |
+
+**启停使用已有 Radix Switch。** 用户所说“左右滑动的状态按钮”对应二元开关；“全部/启用/停用”筛选可以使用已有 SegmentedControl，不能混成一个用途。Switch 保留滑块位移、开/关文字、`aria-checked`、唯一可访问名称、键盘 Space；点击开关、运行和菜单不触发行点击。[现有 Switch][h-switch]、[Radix 官方][r-radix-switch]
+
+启停提交中显示 pending 并暂时禁止重复提交。可采用乐观显示，但失败必须恢复服务真实值并展示错误；不能 toast 已成功却未持久化，也不能把 UI 的 bool 当成领域状态源。启停只改变定义启用状态，不代表立即运行，也不取消已经开始的运行，除非现有领域命令明确提供该行为。
+
+右侧详情容器不能监听整个页面所有业务数据。列表和详情按 id 订阅；切换选择时中止旧请求，忽略已卸载实例的迟到结果。大屏非模态详情不困住焦点，窄屏 Sheet 按现有 Radix 处理焦点循环与背景 inert。[当前自动化页面][h-auto-page]、[所有窗口 Portal][h-portal]
+
+### 5.3 档案：复用真实目录树
+
+复用 `PanelModel.tree → SidePanel → ui/components/tree.tsx` 路径。档案服务现有实现已经按启用的类型产生目录节点，并按记录产生叶节点。继续用真实类型/记录 id，不用标题充当稳定身份，也不为原型观感虚构实际不存在的物理文件夹。[档案工作台服务][h-archive-workbench]、[Tree][h-tree]
+
+目标结构为类型目录下的记录；已有保存视图可以作为类型下的明确“视图”分组。定义设计器、恢复中心和归物相关入口保留管理分组。树表示逻辑目录投影，展开/排序不会重命名 Vault 文件或调整实际存储路径。
+
+交互规则：
+
+- 小箭头只展开/收起；点击类型名称选择该类型列表并展开；点击记录切到记录详情。
+- 当前选中记录与其祖先明确可见；关闭后重新进入保留受控展开状态。
+- 搜索匹配记录或类型时保留祖先，临时展开匹配路径；清空搜索恢复原展开偏好，不能把搜索副作用永久写回展开状态。
+- 方向键、Home/End、类型首字定位、焦点和 ARIA 角色交给现有 Headless Tree。不要再实现另一套树键盘系统。
+- 显示已加载数量与总量差异。现有查询 `limit: 500` 不能成为静默截断；增加明确的“继续加载”或按类型分页/按需读取，保证大目录能找到其余记录。
+- 保留 Tree 现有可见行超过 200 时的虚拟化；记录高度改变时同步虚拟器。性能测试分别检查“加载了哪些数据”和“渲染了多少行”，不能用虚拟化掩盖数据遗漏。
+- 记录改名保持选中 id；删除选中记录后回到所属类型并明确反馈；恢复中心仍执行原领域恢复流程。
+- 树控件已支持 `expandedIds/onExpandedChange`，但 PanelTree 合同目前只传默认展开。需要持久展开状态时，向现有合同增加这对受控参数并落在有界叶子状态，不另建全局树 store。
+
+### 5.4 任务：完成反馈与一致呈现
+
+从现有共享日历 TaskRow 的完成表现抽取 TaskContent，让主 TaskPage、看板任务和日历任务使用同一完成态。任务标题和说明在完成后显示 `text-decoration-line: line-through`，颜色降到可读的次级文本；复选框同时勾选。删除线不穿过日期、关联资料、菜单或整行容器。[共享任务行][h-task-row]、[任务页][h-task-page]
+
+| 场景 | 行为 |
+|---|---|
+| “全部”或“已完成”列表中完成 | 原行立即可识别，提交结果与 store 同步 |
+| “未完成”筛选中完成 | pending 期间仍可理解正在提交；成功后按过滤规则移除；失败保留并恢复 |
+| 取消完成 | 删除线移除，完成信息按领域规则更新 |
+| 连续点击 | 行 pending 或命令去重，不能生成重复历史 |
+| 重复任务 | 调用现有完成命令，由任务域产生后续实例；UI 不自行复制任务 |
+| 新建、编辑、日期筛选 | 复用统一字段；输入错误时保留草稿并聚焦错误字段 |
+| 撤销 | 仅在领域 API 具备相应逆操作时提供；不以视觉恢复冒充持久撤销 |
+
+已有 completedAt、due/处理日期、提醒和关联资料语义保持原定义。任务完成后的动态反馈用统一反馈系统；不弹出阻断式确认，不额外改变整个列表排序来制造跳动。
+
+## 6. 表单、反馈与可访问性
+
+### 6.1 表单统一
+
+普通表单采用顶部标签；标签、必填标识、控件、帮助和错误固定排列。字段容器可复用，设置页面继续使用既有 SettingsRow / SettingsSection，不把每一行设置改成长表单。
+
+单列编辑区建议最大 640px；复杂宽屏表单可两列，但同组字段宽度一致。长文本、文件路径、命令和脚本占整行。短日期、次数等不拉到整页宽度；搜索框可弹性增长，筛选与排序维持明确最小宽度。窄屏按阅读顺序回到单列。
+
+每个区域最多一个视觉主按钮。弹层底部统一“取消 / 保存”，主按钮在右；保存失败保留输入，显示字段级或表单级错误。未修改时不制造虚假成功反馈。危险操作复用 ConfirmDialog，并以真实动作说明后果；只对存在实际不可逆影响的动作确认。
+
+### 6.2 反馈与状态
+
+复用现有 `shared/feedback` 与 `host/obsidian/feedback.ts`，保持操作 ID、已提交回执及 owner window。进度原位收束为结果；失败、取消、部分成功、锁定、不可用是不同状态。临时 toast 不替代持久通知收件箱。[架构中的统一反馈][h-architecture]
+
+列表共有状态：初次加载、刷新、空数据、无搜索结果、读取失败、权限/能力不可用。刷新时保留旧内容并标记更新，避免闪成空白。空状态给出与当前筛选相关的下一步；失败不能当成空列表覆盖存储。
+
+### 6.3 键盘、焦点与宿主窗口
+
+沿用 F6 区域循环；Tab 顺序与视觉阅读顺序一致；图标按钮有可访问名称，Tooltip 不能代替名称。中文输入法组合阶段不把 Enter 当成保存/搜索/新建。
+
+所有 Portal 来自元素所属 Document。现有 `src/ui/react/portal.ts` 按 Document 引用计数管理容器，日期弹层和右详情继续复用。禁止在模块顶层缓存全局 window/document，避免 Obsidian 弹出窗口里的弹层开到主窗口。[Portal 源码][h-portal]、[动效与无障碍规则][h-a11y]
+
+页面隐藏时保留页面实例但设置 hidden + inert，并暂停昂贵刷新；关闭/停用时解除订阅、计时器、观察器和 Portal 引用。焦点回归前检查元素仍连接且所属页面仍可见，不能抢走新叶子的焦点。Switch、树与菜单的动效只使用 transform/opacity，遵循宿主时长和 reduced-motion。
+
+## 7. 全模块替换范围
+
+下表是正式实施清单。路径均来自固定基线目录；“目标变化”是计划，不表示本次 HTML 已实现真实功能。跨模块页面优先完成公共组件后逐项替换，避免每个模块独立发明外观。
+
+| 功能与现有入口 | 目标变化 | 必须保留的领域边界 |
+|---|---|---|
+| 工作台：`src/shell/ShellRoot.tsx`、`layout.ts`、`page/PageFrame.tsx`、`panel/SidePanel.tsx` | 统一区域间距、叶子响应式、详情并列/覆盖规则、空状态和焦点返回 | 同一工作台叶子、lastTargets、有界状态与宿主状态栏 |
+| 首页：`modules/home/ui/DashboardPage.tsx` 与 canvas/widgets | 统一卡片头、操作菜单、尺寸、日期字段、统计数字、编辑面板 | 现有 react-grid-layout / resizable / dnd-kit；不重写拖拽网格 |
+| 日历与任务：`home/ui/calendar`、`task/ui/TaskPage.tsx`、`TaskEditor.tsx`、`ui/components/huhu/calendar` | 日期与范围、完成态、列表/日历切换与关联资料表单一致 | task API、重复实例与幂等回执；日历消费任务域 |
+| 档案：`archives/ui/generic/ArchivePage.tsx`、`RecordEditor.tsx`、`FieldRenderer.tsx`、`RelationPanel.tsx` | 类型/记录树、详情、日期/关系/多选字段、布局与错误说明统一 | catalog/query/commands；不得直接写别域 store |
+| 档案设计：`DefinitionStudio.tsx`、`FieldDesigner.tsx`、`QueryBuilder.tsx`、`RecoveryPanel.tsx` | 编辑章节、预览、草稿、验证、恢复计划的可理解性 | 修订、恢复事务及 schema 约束；不静默改数据 |
+| 归物与人物：`archives/ui/belongings/BelongingsPage.tsx`、`report/BelongingsReport.tsx`、`person/PersonJournal.tsx`、`PersonOverview.tsx`、`PersonReadingPage.tsx` | 年度/日期筛选、统计、记录表单和目录定位一致 | 当前 main 真实领域能力；不借 UI 重构增加新的推断数据 |
+| 自动化：`automations/ui/AutomationsPage.tsx`、`list/AutomationRow.tsx`、`detail`、`runs`、`editor` | 列表保留+详情、共享启停、运行详情、日期/计划编辑、统一状态 | 原调度、预检、投递、设备归属、失败与取消语义 |
+| 智能体：`agent/ui/AgentWorkspacePage.tsx`、`pages/PageTabView.tsx`、`control/TerminalControlPanel.tsx` | 标签、会话目录、工具栏、表单、分屏间距、详情与菜单一致 | xterm、PTY、CLI、账号服务；渲染不启动进程 |
+| 智能体附页：`history/SessionHistoryPanel.tsx`、`inbox/InboxPanel.tsx`、`usage/UsageStatsPage.tsx` | 时间范围、数据层级、空状态、列表密度与数字格式 | 服务租约、账号隔离；敏感内容不进叶子状态 |
+| 通知：`notifications/ui/InboxPanel.tsx`、`workbench-page.tsx` | 未读/全部、详情、来源链接、已读与错误状态统一 | 收件箱、渠道、openers 与发送回执分离 |
+| 保险箱：`safe/ui/SafePage.tsx`、`EntryList.tsx`、`AccountDetail.tsx`、`EntryDialog.tsx` | 列表/详情、字段显隐、锁定反馈、表单与按钮统一 | 原认证密文仓库、锁定会话、多窗口规则；不自动解密 |
+| 版本管理：`versioning/ui/history/NoteHistoryPanel.tsx`、`NoteReviewPage.tsx`、`workbench-page.tsx` | 历史列表、比较操作、恢复确认与状态一致 | CodeMirror 比较、owner 恢复队列、检查点与冲突处理 |
+| 批注：`comments/ui/panel/CommentsPanel.tsx` 与相关浮层 | 字号、密度、编辑状态、焦点和动作菜单一致 | 宿主编辑器锚点及旁路数据；不改写笔记正文 |
+| 导航/日记：`navigator/ui/NavigatorRoot.tsx`、`diary/SearchWritePanel.tsx`、`diary/workbench-page.tsx` | 树/搜索、日期选择、写作面板、窄屏布局一致 | 导航器 API 与既有周期笔记合同 |
+| 图标：`icons/ui/settings-page.tsx` | 图标搜索、选择器、预览与设置分组统一 | 当前设置入口；清除旧图标页面重定向合同 |
+| 内容：app 的 content 贡献与受管文件入口 | 列表密度、搜索、缺失/错误、打开与返回规则统一 | 可见/隐藏根权限及受管文件边界 |
+| 体检：`health/ui/HealthPage.tsx`、`workbench-page.tsx` | 扫描进度、问题列表、计划预览、部分成功与取消统一 | 按需只读扫描、有限 owner 修复；无集中跨域写入 |
+| 外观与设置：`app/settings/react/SettingsPage.tsx`、`appearance/AppearanceSettings.tsx`、`Typography.tsx`、`CustomColors.tsx`，各模块 settings-page | 全站搜索、主题/字体/密度预览、表单和状态对齐 | 现有命名空间与库/设备范围，所有文案中英双语 |
+
+模块职责来源：[架构][h-architecture]。完整路径以 [固定提交源码目录][h-src] 为核对依据；实施票开工时必须补齐实际受影响调用点，不用表中代表入口代替真实依赖审计。
+
+## 8. 建议接口与状态流
+
+以下示例是接口设计，不是可直接粘贴完成构建的生产代码；字段类型与领域桥接必须在实现时使用当前项目的实际类型。
+
+### 8.1 日期：只负责输入和呈现
+
+```ts
+// 新 UI 合同。值表达本地日历日；解析器执行实际合法性校验。
+type DateOnly = string & { readonly __dateOnly: unique symbol };
+
+interface DateFieldProps {
+  id: string;
+  value: DateOnly | null;
+  onValueChange(value: DateOnly | null): void;
+  min?: DateOnly;
+  max?: DateOnly;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  invalid?: boolean;
+  describedBy?: string;
+}
+
+interface DateRangeValue {
+  from: DateOnly | null;
+  to: DateOnly | null;
+}
+
+interface DateRangeFieldProps {
+  value: DateRangeValue;
+  onApply(value: DateRangeValue): void;
+  disabled?: boolean;
+}
+```
+
+日期字段内部持有文字/范围草稿；已提交 value 仍来自父组件。业务必须持有时区时，通过专门 DateTimeField 合同传入，不把 date-only 偷换为时间戳。实现使用当前 v10 API 与 locale，而不是建立兼容 v8/v9/v10 的包装分支。
+
+### 8.2 自动化：路由与选择状态
+
+```ts
+type AutomationInspector =
+  | { kind: "definition"; definitionId: string; tab: "overview" | "runs" }
+  | { kind: "run"; runId: string; returnDefinitionId?: string }
+  | null;
+
+interface AutomationListViewState {
+  search: string;
+  filter: "all" | "enabled" | "disabled";
+  sort: string; // 实施时收窄为当前已有排序联合类型
+  inspector: AutomationInspector;
+}
+```
+
+实际 selected id 以 WorkbenchTarget 与页面状态合同约定的单一来源为准，不能同时在 URL、局部 React state 和 Zustand 复制三份互相同步的选择值。滚动位置与展开 tab 是叶子 UI 状态；定义启停、运行结果属于服务。详情替换不更换列表 key；关闭页面才卸载列表根。
+
+### 8.3 树：扩展现有合同
+
+```ts
+// 直接增加到当前 PanelTree；不是新建平行的 TreeModel API。
+interface ControlledExpansion {
+  expandedIds?: readonly string[];
+  onExpandedChange?: (ids: string[]) => void;
+}
+```
+
+展开 id 限制数量与长度，过滤已经删除的节点。当前节点本身使用稳定领域 id；用户名称是显示文本。搜索临时展开通过衍生状态计算，不覆盖用户偏好。
+
+## 9. 无兼容重构与删除清单
+
+### 9.1 发布形态
+
+采用一个正式 UI 路径、一个组件合同、一套主题来源。实施可以分票完成，但交付不留下“旧版/新版切换”、旧 CSS 回退、两份组件、页面适配器或长期特性开关。每个替换票必须同时删除已失效调用和对应旧测试选择器。
+
+版本历史、档案修订与恢复、用户操作撤销、任务重复与幂等保护是产品功能和数据正确性机制，必须保留；它们不属于待删除的旧版本兼容层。右详情复用现有 AutomationDetail / RunDetail 内容和编辑字段，不建立第二套业务编辑器。
+
+“保持当前未变化的领域数据合同”不构成兼容层。前端没有必要为了彻底重构而改任务存储格式或密文协议；如果某个真实需求确实改变 schema，则直接声明新合同、新测试数据和新初始化策略，不增加双版本解析器。
+
+### 9.2 明确删除或替换项
+
+| 对象 | 处理方式 | 删除前的可验证条件 |
+|---|---|---|
+| 各页原生日期弹层 | 统一 DateField/Range/Time 替换后删除旧 date 输入分支 | 日期检索清单无遗漏；范围/时区行为通过 |
+| 自动化 selectedDefinition 替换列表分支 | 删除主区切换式详情渲染，改为列表旁 DetailPane | 深链、编辑返回、关闭/重开及滚动保持均通过 |
+| 启停的文字模拟/重复开关 | 只留共享 Switch 调用 | 状态、pending、失败与键盘行为一致 |
+| 档案旧平铺分类渲染 | SidePanel 使用既有 tree；旧原型 flat nav 不进入生产 | 目录/记录/管理项均可定位，500 以上记录可达 |
+| 任务多套完成态 class | 抽为同一 TaskContent；移除各页局部样式 | 主列表、看板、日历全覆盖 |
+| 页面局部颜色、字号、间距 | 替换成语义 token/统一变体并删除重复 CSS | 主题矩阵与 CSS 作用域检查通过 |
+| 旧图标页入口兼容映射 | 更新全部当前调用到 settings/iconic 后删除 `iconSettingsTarget` 及旧路由回退 | 所有菜单、命令、深链和状态恢复写入新目标 |
+| 旧 UI 状态字段、旧设置别名 | 直接采用唯一新状态 schema；删除解码回退和别名 | 新状态保存/恢复测试使用唯一 schema |
+| 旧主题导入格式分支 | `app/settings/appearance.ts` 的 `parseExport` 仅接受当前导出格式；删除已确认的 v1 导入分支，保留当前 v2 闭环；若另行更新 schema 则直接采用唯一新格式 | 当前格式往返通过，旧格式明确拒绝，无自动转换 |
+| 旧注释、截图、测试探针 | 同票更新/删除，避免选择器失效后被“跳过” | docs 与真实页面一致；探针实际找到目标 |
+
+已确认 `iconSettingsTarget` 的源码注释明确称为旧图标页兼容映射，因此应纳入清理；具体调用点须实施前检索，不能只删函数导致命令失效。[工作台合同源码][h-contract]
+
+另已确认外观导入器当前同时接受 v1/v2，而当前导出为 v2。T11/T12 直接删除 v1 读取分支及对应旧版本测试，保留导入校验、当前格式导出与恢复默认功能。[外观导入源码][h-appearance]
+
+### 9.3 数据与初始化政策
+
+生产数据仍位于现有根：用户内容使用可见 `huhu/`；配置、受管看板/自动化文档和运行资料按当前约定进入 `.huhu/`；普通笔记、Git、保险箱各遵循原有边界。路径规则和密文仓库不能被 UI 清理替换成浏览器 localStorage。[架构][h-architecture]、[数据文档][h-data]
+
+实施和验收使用新建的一次性测试库。若新版选择使用新 UI 状态 schema，旧布局/筛选偏好按新默认初始化，不读取旧字段。不兼容的业务 schema 必须明确“新库初始化、旧文件不导入”的范围与文件清单；方案不包含自动迁移脚本。
+
+**本次交付没有授权或执行任何用户真实库清空。** 真正需要重置生产数据时，实施者须先给出精确目录、数据类型、备份位置和结果供用户审阅，再执行明确授权的重置。前端重构不能静默删除 `huhu/`、`.huhu/` 或保险箱。代码回退使用代码版本；一旦采用新且不兼容的数据合同，不能声称旧二进制仍可读取新数据。
+
+## 10. 实施票、依赖与退出条件
+
+不预设一个缺乏团队容量依据的工期。按以下依赖顺序推进，每票提交代码、对应截图/测试证据和删除记录；最终合并只保留新实现。
+
+| 票号 | 工作及主要文件 | 依赖 | 完成标准 |
+|---|---|---|---|
+| T01 基线与入口清单 | package、模块 UI、工作台贡献、日期/颜色/旧路由检索 | 无 | 固定提交、全部模块入口与待删列表可追溯；明确当前 main 与历史原型差异 |
+| T02 共享视觉合同 | tokens.css、现有 Button/Input/Switch/Tree、FormField | T01 | 字阶/间距/密度/焦点统一；既有控件调用只留一套；无新 UI 套件 |
+| T03 日期组件 | 新 date 目录、Popover、任务和通用表单 | T02 | DayPicker v10 锁定；单日/范围/时区/键盘/ownerDocument 测试；删除原生日期路径 |
+| T04 自动化详情 | AutomationsPage、detail、runs、编辑器 | T02、T03 | 列表不卸载；360px/覆盖布局；深链、编辑返回、run 详情、启停失败恢复 |
+| T05 档案树 | PanelTree、SidePanel、Tree、archives workbench | T02 | 展开/选择/搜索/重命名稳定；大目录不截断；无新树实现 |
+| T06 任务呈现 | TaskContent、TaskRow、TaskPage、TaskEditor | T03 | 所有入口完成线一致；重复任务、pending、失败与筛选语义正确 |
+| T07 档案表单 | FieldRenderer、RecordEditor、设计器、关系、恢复、归物/人物 | T03、T05 | 各字段状态统一；草稿/错误/恢复与定义版本保持正确 |
+| T08 看板与日历 | DashboardPage、canvas、widgets、calendar | T02、T03、T06 | 网格/拖拽库沿用；小组件尺寸和详情统一；隐藏页暂停昂贵工作 |
+| T09 智能体工作区 | AgentWorkspacePage、标签、历史、收件、用量、设置 | T02 | 输入法、PTY焦点、标签/分屏、表单与状态统一；无渲染启动进程 |
+| T10 其他业务页 | 通知、保险箱、版本、批注、导航、内容、体检 | T02、T03 | 完成清单逐项验收；保密/恢复/owner 边界不变；新增 main 模块不漏 |
+| T11 外观与设置 | app/settings/react、theme、各 settings-page | T02、T03 | 字体/颜色/密度统一预览；弹层和弹出窗口同步；中英文本完整 |
+| T12 一次性清理 | 旧入口/状态/样式、iconSettingsTarget、文档与测试选择器 | T04–T11 | 无旧/新双轨、无旧 schema fallback、无死代码或失效探针 |
+| T13 集成与交付 | 构建、定向测试、必要广泛回归、Obsidian 证据 | T12 | 实际通过项与未验证项逐项记录；最终包只含新生产实现及必要许可 |
+
+T03 与 T05 可以并行；T08/T09/T10 可在共享合同稳定后并行。公共组件改变后，不要求每票机械重跑所有模块；根据影响范围选择测试，集成票再执行跨模块矩阵。
+
+## 11. 验证策略与验收矩阵
+
+验证分成纯逻辑、React DOM、真实样式和 Obsidian 宿主四层。构建成功不能证明点击和焦点正确；HTML 原型测试不能证明插件持久化或多窗口正确；happy-dom 不能证明视觉无溢出。[仓库测试选择表][h-testing]
+
+### 11.1 必须证明的行为
+
+| 对象 | 输入/场景 | 验收证据 |
+|---|---|---|
+| 日期值 | 闰年、无效日、月底、空值、min/max、反向范围 | 纯函数测试，不自动校正非法日期 |
+| 日期时间 | Asia/Shanghai、UTC、含夏令时地区；全天/定时区分 | 日期不跨日；领域时区语义保留 |
+| 日期弹层 | 键盘、手输、中文 locale、清空、取消、弹出窗口 | DOM + 真实宿主截图/操作 |
+| 自动化详情 | 打开/换选/关闭、搜索和滚动保持、深链与缺失资源 | 列表 DOM 未卸载；焦点与选择正确 |
+| 启停 | 服务成功/失败/迟到结果、连续点击、Space、行事件隔离 | 只提交一次；失败恢复；不误导航 |
+| 树 | 方向键、chevron、过滤恢复、改名/删除、超过500记录 | ARIA/稳定 id、数据完整性、虚拟滚动证据 |
+| 任务完成 | 全部/未完成/已完成、取消完成、失败、重复任务 | 完成线与实际 store 一致；不误改其他记录 |
+| 全局视觉 | 亮/暗、默认与代表性自定义主题、中文/英文、长名称 | 同类控件同尺寸；无页级溢出；对比度达标 |
+| 生命周期 | 页切换、模块停用、窗口关闭、重开、迟到异步结果 | 无泄漏、无焦点抢夺、无重复订阅 |
+| 状态恢复 | 新 schema 保存/重启；旧状态无读取回退 | 新布局可恢复，旧合同被明确拒绝/重置 |
+| 领域边界 | safe锁定、versioning恢复、health取消/部分提交 | UI 不绕过 owner 命令；不谎报成功 |
+| 包体与加载 | 开启插件但未打开业务页、首次打开日期页面 | React/Radix 仍不进入启动闭包；通过现有预算 |
+
+桌面代表尺寸建议按叶子宽度取 390、600、820、960、1440px；覆盖分界点两侧，不能只在1920px截图。对每个组件选最可能暴露问题的组合，不进行无意义的全笛卡尔积。手机/触控命中区、中文长文本和 200% 缩放补充验收。
+
+### 11.2 生产仓库执行入口
+
+以下为实施时应使用的现有入口，不表示本次已经执行：
+
+```sh
+pnpm run build
+pnpm run lint
+pnpm run lint:css
+pnpm test:styles
+pnpm test:architecture
+pnpm run check:bundle
+pnpm test:i18n
+pnpm test:docs
+pnpm run check:notices
+```
+
+按票选择 `pnpm exec vitest run --project dom <受影响测试>`、任务/自动化/档案定向测试；引入共享基础设施或跨域行为风险时再扩大回归。样式管线沿用 `build:css`、`build-tailwind.mjs` 和 `build-styles.mjs`。原生 helper 本次没有计划变化，因此不为 UI 修改机械要求 Rust 重编；如果实际触及协议或 PTY，再补对应原生门禁。[package scripts][h-package]、[测试规则][h-testing]
+
+真实宿主沿用 `scripts/obsidian-acceptance/workbench-probe.mjs`、`overflow-audit.mjs`、`theme-matrix.mjs` 及所涉模块探针。所有探针使用一次性库；环境不具备时明确标记待验收，不能把 skipped/退出码0写成已通过。
+
+## 12. 最终完成定义
+
+正式重构只有同时满足以下条件才算结束：
+
+- 全模块入口按第7节逐项关闭；新增的 health、归物与人物入口有明确验收记录。
+- 四项重点交互在真实插件中成立，所有相同控件使用同一实现。
+- CSS 与 token 没有模块自建的颜色/字号体系，主题在所有所属窗口同步。
+- 数据命令、服务租约、隐私和恢复语义未被视觉改版绕过。
+- 旧组件、旧路由、旧 UI 状态读取和旧样式已经删除；没有“下一期再清理”的兼容尾巴。
+- 构建、必要测试、许可清单和实际 Obsidian 验收结果可追溯；未验证平台明确列出。
+- 生产 README、设计规范、工作台规范与测试选择器描述的是新行为。
+- 原型演示、生产实现和未来建议三个层次在交付说明中分清。
+
+本方案的核心工作是收敛已有成熟能力并把页面组织改好。当前栈无需整体替换；新代码集中在共享日期输入、详情容器、字段组合和少量状态合同，最大化复用已有 Tree、Switch、网格、分屏、编辑器、反馈和领域服务。
+
+## 参考来源
+
+下列 HUHU 文件均固定到上述 main 提交；外部文档访问日期为 2026-11-05。候选比较、许可证与维护快照详见 [Reuse_Research.md](Reuse_Research.md)。
+
+[h-package]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/package.json
+[h-src]: https://github.com/NAMEWTA/obsidian-huhu/tree/37fcede4210a19bcc2a74809e7fdd301e5717957/src
+[h-architecture]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/docs/architecture.md
+[h-design]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/docs/design-system.md
+[h-data]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/docs/data.md
+[h-ui-rules]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/SKILL.md
+[h-design-rules]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/references/design-system.md
+[h-shell-rules]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/references/shell.md
+[h-theme-rules]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/references/theme.md
+[h-a11y]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/ui/references/motion-a11y.md
+[h-testing]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/.agents/skills/dev/references/testing.md
+[h-tokens]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/styles/tokens.css
+[h-switch]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/switch.tsx
+[h-tree]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/tree.tsx
+[h-sidepanel]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/shell/panel/SidePanel.tsx
+[h-contract]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/app/contracts/workbench.ts
+[h-appearance]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/app/settings/appearance.ts
+[h-portal]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/react/portal.ts
+[h-auto-page]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/automations/ui/AutomationsPage.tsx
+[h-auto-row]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/automations/ui/list/AutomationRow.tsx
+[h-archive-workbench]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/archives/services/generic/workbench.ts
+[h-task-row]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/ui/components/huhu/calendar/TaskRow.tsx
+[h-task-page]: https://github.com/NAMEWTA/obsidian-huhu/blob/37fcede4210a19bcc2a74809e7fdd301e5717957/src/modules/task/ui/TaskPage.tsx
+[r-shadcn-date]: https://ui.shadcn.com/docs/components/radix/date-picker
+[r-daypicker]: https://daypicker.dev/upgrading
+[r-radix-switch]: https://www.radix-ui.com/primitives/docs/components/switch
+

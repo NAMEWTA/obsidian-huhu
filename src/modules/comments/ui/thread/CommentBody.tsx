@@ -25,5 +25,5 @@ export function CommentBody({ app, path, text, onEdit }: { app: App; path: strin
 		el.addEventListener('click', onLink);
 		return () => { alive = false; el.removeEventListener('click', onLink); owner.unload(); el.empty(); };
 	}, [app, path, text]);
-	return <><div ref={target} className={`huhu-native markdown-rendered break-words text-[13px] ${expanded ? '' : 'max-h-[150px] overflow-hidden'}`} onDoubleClick={onEdit} />{long && <Button variant="link" size="xs" onClick={() => setExpanded(!expanded)}>{t(expanded ? 'editor.comments.lessText' : 'editor.comments.moreText')}</Button>}</>;
+	return <><div ref={target} className={`huhu-native markdown-rendered break-words text-sm ${expanded ? '' : 'max-h-[150px] overflow-hidden'}`} onDoubleClick={onEdit} />{long && <Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="ghost" size="sm" onClick={() => setExpanded(!expanded)}>{t(expanded ? 'editor.comments.lessText' : 'editor.comments.moreText')}</Button>}</>;
 }

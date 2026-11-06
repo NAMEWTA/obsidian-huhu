@@ -4,6 +4,7 @@ import { HuhuProviders } from '../../../ui/react/providers';
 import { setLanguage } from '../../../shared/i18n';
 import { Composer } from './popover/Composer';
 import { CommentPopover } from './popover/CommentPopover';
+import { mountCommentsPanel } from './panel/mount';
 import { CommentsPanel } from './panel/CommentsPanel';
 import { createOverlayChannel } from '../services/overlay';
 import { createCommentsService } from '../services/comments';
@@ -37,7 +38,7 @@ function fixture() {
 	const service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
 	const channel = createOverlayChannel();
 	const env = { app: { workspace: { containerEl: document.body }, vault: { getFileByPath: (path: string) => ({ path }) } }, service, editors: new Set(), alive: () => true, overlay: () => channel, open: (request: Parameters<typeof channel.open>[0]) => channel.open(request), openSettings: () => {}, exportHighlights: async () => 'huhu/导出/高亮/dummy.md' } as unknown as CommentsEnv;
-	return { store, service, channel, env, dispose: async () => { service.dispose(); channel.dispose(); await store.close(); } };
+	return { store, service, channel, env, fs, dispose: async () => { service.dispose(); channel.dispose(); await store.close(); } };
 }
 test('composer: whitespace, IME, Ctrl+Enter, pending duplicate, failed save retains draft and retries', async () => {
 	setLanguage('en'); let finish!: () => void;
@@ -261,4 +262,67 @@ test('panel storage failure is persistent and retry reloads the list', async () 
 	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 	expect(refresh).toHaveBeenCalled();
 	view.unmount(); await f.dispose();
+});
+
+test('an accepted highlight result cannot close a later request in the same window', async () => {
+ const f = fixture();
+ let release!: (id: string) => void;
+ vi.spyOn(f.service, 'highlight').mockImplementationOnce(() => new Promise(resolve => { release = resolve; }));
+ f.channel.open({ path: 'a.md', ownerDocument: document, rect: () => new DOMRect(30, 30, 1, 20), mode: 'selection', anchor: createAnchor('alpha', 0, 5), pinned: false });
+ const view = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
+ fireEvent.click(await screen.findByRole('button', { name: 'Yellow' }));
+ const later = { path: 'b.md', ownerDocument: document, rect: () => new DOMRect(60, 60, 1, 20), mode: 'threads' as const, threadIds: [], pinned: true };
+ act(() => { f.channel.close(false); f.channel.open(later); });
+ await act(async () => release('new-highlight'));
+ expect(f.channel.state.getState().request).toBe(later);
+ view.unmount(); await f.dispose();
+});
+
+test.each([true,false])('note acknowledgement preserves edits made during durable write, changed=%s',async changed=>{
+ const f=fixture();let release=()=>{};let unmount=()=>{};try{
+ const thread=await f.store.highlight('a.md',{anchor:createAnchor('alpha',0,5),color:'yellow'});await f.store.flush();await f.service.refresh();f.service.setPath('a.md');
+ const view=render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env}/></HuhuProviders>);unmount=view.unmount;
+ fireEvent.click(await screen.findByRole('button',{name:'Edit note'}));const input=screen.getByRole('textbox',{name:'Highlight note'});fireEvent.change(input,{target:{value:'First note'}});
+ let begin=()=>{};const started=new Promise<void>(r=>{begin=r}),gate=new Promise<void>(r=>{release=r});const write=f.fs.write;f.fs.write=async(...args)=>{begin();await gate;await write(...args);};
+ fireEvent.click(screen.getByRole('button',{name:'Save'}));await started;if(changed)fireEvent.change(screen.getByRole('textbox',{name:'Highlight note'}),{target:{value:'Latest note draft'}});
+ await act(async()=>{release();await f.store.flush();});
+ const editor=screen.queryByRole('textbox',{name:'Highlight note'})as HTMLTextAreaElement|null;console.log('NOTE_ACK',JSON.stringify({changed,editor:editor?.value??null,persisted:f.store.threadsFor('a.md')[0]?.note}));
+ if(changed)expect(editor?.value).toBe('Latest note draft');else{expect(editor).toBeNull();expect(f.store.threadsFor('a.md')[0]?.note).toBe('First note');}
+ }finally{release();unmount();await f.dispose();}
+});
+
+test.each([true,false])('highlight idempotency belongs to each selection request, overlap=%s',async overlap=>{
+ const f=fixture();let release=()=>{};let unmount=()=>{};try{
+ let begin=()=>{};const started=new Promise<void>(r=>{begin=r}),gate=new Promise<void>(r=>{release=r});const write=f.fs.write;f.fs.write=async(...args)=>{begin();await gate;await write(...args);};
+ const request=(path:string)=>({path,ownerDocument:document,rect:()=>new DOMRect(20,20,50,20),mode:'selection' as const,anchor:createAnchor('alpha',0,5),pinned:false});f.channel.open(request('a.md'));
+ const v=render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel}/></HuhuProviders>);unmount=v.unmount;fireEvent.click(await screen.findByRole('button',{name:'Yellow'}));await started;
+ if(!overlap)await act(async()=>{release();await f.store.flush();});
+ act(()=>f.channel.open(request('b.md')));fireEvent.click(await screen.findByRole('button',{name:'Yellow'}));
+ await act(async()=>{release();await f.store.flush();});
+ console.log('HIGHLIGHT_REQUEST',JSON.stringify({overlap,a:f.store.threadsFor('a.md').length,b:f.store.threadsFor('b.md').length,request:f.channel.state.getState().request?.path??null}));expect(f.store.threadsFor('b.md')).toHaveLength(1);
+ }finally{release();unmount();await f.dispose();}
+});
+
+
+test('the independent comments root pauses lazy file loads while hidden and resumes the same filters', async () => {
+ const f = fixture();
+ await f.store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'needle in A' });
+ await f.store.flush(); await f.service.refresh(); f.service.setPath('a.md');
+ const container = document.createElement('div'); document.body.append(container);
+ Object.assign(container, { addClass: (...names: string[]) => container.classList.add(...names), removeClass: (...names: string[]) => container.classList.remove(...names) });
+ const docs: EditorContextAccess = { current: () => ({ id: 'a', path: 'a.md', leafId: 'a', ownerWindow: window, generation: 0 }), get: () => undefined, capture: () => { throw Error('No editor'); }, resolveLeaf: () => undefined, resolveView: () => undefined, returnTo: async () => {}, subscribe: () => () => {} };
+ const load = vi.spyOn(f.service, 'load');
+ let handle!: ReturnType<typeof mountCommentsPanel>;
+ try {
+  await act(async () => { handle = mountCommentsPanel(container, f.env, docs, true); });
+  fireEvent.click(await screen.findByRole('radio', { name: 'Vault' }));
+  fireEvent.change(screen.getByRole('textbox', { name: 'Search highlights and notes' }), { target: { value: 'needle' } });
+  await waitFor(() => expect(load).toHaveBeenCalledWith('a.md'));
+  await act(async () => handle.setVisible(false)); load.mockClear();
+  await act(async () => { await f.store.add('b.md', { anchor: createAnchor('beta', 0, 4), text: 'needle in B' }); await f.store.flush(); await f.service.refresh(); });
+  expect(load).not.toHaveBeenCalled();
+  await act(async () => handle.setVisible(true));
+  await waitFor(() => expect(load).toHaveBeenCalledWith('b.md'));
+  expect(screen.getByRole('textbox', { name: 'Search highlights and notes' })).toHaveProperty('value', 'needle');
+ } finally { await act(async () => handle?.dispose()); container.remove(); await f.dispose(); }
 });

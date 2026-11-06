@@ -30,9 +30,9 @@ const Textarea = React.forwardRef<
 			// so it escapes the scrollbar lint rule and paints Chromium's default
 			// light scrollbar on dark surfaces.
 			className={cn(
-				'scrollbar-sleek min-h-16 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[transform,opacity] outline-none placeholder:text-muted-foreground/60 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
-				'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-				'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+				'scrollbar-sleek min-h-16 w-full min-w-0 rounded-md border border-[var(--hu-control-line)] bg-[var(--hu-raised)] px-3 py-2 text-base transition-[transform,opacity] outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+				'hover:border-[var(--hu-fg-2)] focus-visible:border-[var(--hu-accent)] focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent-soft)]',
+				'aria-invalid:border-[var(--hu-danger)] aria-invalid:ring-[3px] aria-invalid:ring-[var(--hu-danger-soft)]',
 				textareaVariants({ variant }),
 				className,
 			)}

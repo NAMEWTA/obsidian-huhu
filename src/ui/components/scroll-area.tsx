@@ -27,7 +27,7 @@ function ScrollArea({
 				tabIndex={viewportTabIndex}
 				data-slot="scroll-area-viewport"
 				className={cn(
-					'size-full pr-[var(--nd-hit-size)] rounded-[inherit] transition-[transform,opacity] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1',
+					'size-full pr-[var(--hu-hit)] rounded-[inherit] transition-[transform,opacity] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]',
 					viewportClassName,
 				)}
 				{...viewportProps}
@@ -51,8 +51,8 @@ function ScrollBar({
 			orientation={orientation}
 			className={cn(
 				'flex touch-none p-px transition-[transform,opacity] select-none bg-transparent',
-				orientation === 'vertical' && 'h-full w-[var(--nd-hit-size)] py-2',
-				orientation === 'horizontal' && 'h-[var(--nd-hit-size)] px-2 flex-col',
+				orientation === 'vertical' && 'h-full w-[var(--hu-hit)] py-2',
+				orientation === 'horizontal' && 'h-[var(--hu-hit)] px-2 flex-col',
 				className,
 			)}
 			{...props}

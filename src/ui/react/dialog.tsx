@@ -1,8 +1,15 @@
-import { useId, useState, type ReactNode } from 'react';
+import { useId, useLayoutEffect, useState, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { View, type App } from 'obsidian';
 import { ContainerProviders } from './providers';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/dialog';
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	useDialogClose,
+} from '../components/dialog';
 
 /** Follow the initiating view and its React surface, including an Obsidian popout. */
 export function dialogOwner(app: App): HTMLElement {
@@ -22,6 +29,8 @@ export function openReactDialog(
 		content: (close: () => void) => ReactNode;
 		onClose?: () => void;
 		canClose?: () => boolean;
+		isDirty?: () => boolean;
+		onDiscard?: () => void;
 	},
 ): { close: () => void } {
 	const doc = owner.ownerDocument;
@@ -35,14 +44,14 @@ export function openReactDialog(
 	const Observer = (win as (Window & { MutationObserver?: typeof MutationObserver }) | null)?.MutationObserver;
 	const observer = Observer
 		? new Observer(() => {
-				if (!owner.isConnected || owner.ownerDocument !== doc) close();
+				if (!owner.isConnected || owner.ownerDocument !== doc) dispose();
 			})
 		: undefined;
-	const close = () => {
+	const dispose = () => {
 		if (disposed) return;
 		disposed = true;
 		observer?.disconnect();
-		win?.removeEventListener('unload', close);
+		win?.removeEventListener('unload', dispose);
 		// Event handlers may close their own root; unmount after the current React dispatch.
 		queueMicrotask(() => {
 			root.unmount();
@@ -52,17 +61,39 @@ export function openReactDialog(
 		});
 	};
 	observer?.observe(doc.body, { childList: true, subtree: true });
-	win?.addEventListener('unload', close, { once: true });
+	win?.addEventListener('unload', dispose, { once: true });
+	let pendingClose = false;
+	let requestClose = () => {
+		pendingClose = true;
+	};
+	function Body() {
+		const close = useDialogClose();
+		useLayoutEffect(() => {
+			requestClose = close;
+			if (pendingClose) {
+				pendingClose = false;
+				close();
+			}
+			return () => {
+				requestClose = () => {
+					pendingClose = true;
+				};
+			};
+		}, [close]);
+		return options.content(close);
+	}
 	function Content() {
 		const [open, setOpen] = useState(true);
 		const descriptionId = useId();
 		return (
 			<Dialog
 				open={open}
+				dirty={options.isDirty}
+				onDiscard={options.onDiscard}
 				onOpenChange={(next) => {
 					if (!next && options.canClose?.() !== false) {
 						setOpen(false);
-						close();
+						dispose();
 					}
 				}}
 			>
@@ -77,7 +108,7 @@ export function openReactDialog(
 							<DialogDescription id={descriptionId}>{options.description}</DialogDescription>
 						)}
 					</DialogHeader>
-					{options.content(close)}
+					<Body />
 				</DialogContent>
 			</Dialog>
 		);
@@ -87,5 +118,5 @@ export function openReactDialog(
 			<Content />
 		</ContainerProviders>,
 	);
-	return { close };
+	return { close: () => requestClose() };
 }

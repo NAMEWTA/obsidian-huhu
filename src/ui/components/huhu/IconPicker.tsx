@@ -25,7 +25,7 @@ export function IconPicker({
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<Button variant="outline" aria-label={label ?? t('ui.chooseIcon')}>
+				<Button variant="secondary" aria-label={label ?? t('ui.chooseIcon')}>
 					<ObsidianIcon name={value} />
 					<span>{value || t('ui.chooseIcon')}</span>
 				</Button>

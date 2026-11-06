@@ -3,6 +3,7 @@ import { t } from '../../shared/i18n';
 import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from '../contracts/workbench';
 import type { WorkbenchHost, WorkbenchLeafView, WorkbenchSurface } from '../contracts/workbench-host';
 import type { NativeSurface } from '../../ui/native-surface';
+import { normalizeWorkbenchState } from '../contracts/workbench-state';
 
 export const WORKBENCH_VIEW_TYPE = 'huhu-workbench-view';
 
@@ -14,7 +15,7 @@ export const WORKBENCH_VIEW_TYPE = 'huhu-workbench-view';
 export class WorkbenchView extends ItemView implements WorkbenchLeafView {
 	private surface?: WorkbenchSurface;
 	private loading?: Promise<WorkbenchSurface | undefined>;
-	private saved: Record<string, unknown> = {};
+	private saved: Record<string, unknown> = normalizeWorkbenchState(null);
 	lastActivatedAt = 0;
 
 	constructor(leaf: WorkspaceLeaf, private readonly host: WorkbenchHost) {
@@ -31,7 +32,7 @@ export class WorkbenchView extends ItemView implements WorkbenchLeafView {
 	}
 
 	get focusMode(): boolean {
-		return this.surface?.focusMode ?? this.saved.focus === true;
+		return this.surface?.focusMode ?? normalizeWorkbenchState(this.saved).mode === 'focus';
 	}
 	async ensureActivePage(): Promise<void> {
 		await (await this.loading)?.ensureActivePage();
@@ -49,9 +50,9 @@ export class WorkbenchView extends ItemView implements WorkbenchLeafView {
 		return this.surface?.getState() ?? this.saved;
 	}
 	async setState(raw: Record<string, unknown>, result: ViewStateResult): Promise<void> {
-		this.saved = raw;
-		await (await this.loading)?.setState(raw);
-		await super.setState(raw, result);
+		this.saved = normalizeWorkbenchState(raw);
+		await (await this.loading)?.setState(this.saved);
+		await super.setState(this.saved, result);
 	}
 	async onOpen(): Promise<void> {
 		this.registerEvent(this.app.workspace.on('active-leaf-change', (leaf) => {

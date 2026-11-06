@@ -1,14 +1,11 @@
 // Independently implemented against Notebook Navigator's calendar behaviour; no upstream code copied.
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useId, useState, useRef, useLayoutEffect, type ReactNode } from 'react';
+import { useOwnerWindow } from '../../../react/hooks';
+import { DateLib } from '@daypicker/react';
+import { toPickerDate } from '../date/date-value';
+import { ProductCalendar } from './ProductCalendar';
 import { BookOpen, Check, ChevronLeft, ChevronRight, LocateFixed, MoreHorizontal } from 'lucide-react';
-import {
-	addDays,
-	addMonths,
-	startOfWeek,
-	weekOfYear,
-	type Period,
-	type WeekStart,
-} from '../../../../shared/periodic-paths';
+import { addDays, addMonths, type Period, type WeekStart } from '../../../../shared/periodic-paths';
 import { getLanguage, t } from '../../../../shared/i18n';
 import { Button } from '../../button';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '../../context-menu';
@@ -32,22 +29,15 @@ export const calendarDate = (iso: string) => {
 	return date;
 };
 export function calendarRows(anchor: Date, weekStart: WeekStart, weeks = 6): Date[][] {
-	const first =
-		weeks < 6
-			? startOfWeek(anchor, weekStart)
-			: startOfWeek(new Date(anchor.getFullYear(), anchor.getMonth(), 1), weekStart);
-	const count =
-		weeks < 6
-			? Math.max(1, weeks)
-			: Math.ceil(
-					(new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0).getDate() +
-						((new Date(anchor.getFullYear(), anchor.getMonth(), 1).getDay() - weekStart + 7) % 7)) /
-						7,
-				);
-	return Array.from({ length: count }, (_, row) =>
-		Array.from({ length: 7 }, (_, column) => addDays(first, row * 7 + column)),
+	const lib = new DateLib({ timeZone: 'UTC', weekStartsOn: weekStart });
+	const value = toPickerDate(calendarIso(anchor));
+	const start = lib.startOfWeek(weeks < 6 ? value : lib.startOfMonth(value));
+	const end = weeks < 6 ? lib.addDays(start, Math.max(1, weeks) * 7 - 1) : lib.endOfWeek(lib.endOfMonth(value));
+	return Array.from({ length: Math.ceil((lib.differenceInCalendarDays(end, start) + 1) / 7) }, (_, row) =>
+		Array.from({ length: 7 }, (_, column) => lib.addDays(start, row * 7 + column)),
 	);
 }
+
 export interface CalendarDayState {
 	note: 'existing' | 'missing' | 'disabled' | 'unavailable';
 	active?: boolean;
@@ -173,7 +163,9 @@ export function CalendarDateMenu({
 }) {
 	return (
 		<ContextMenu onOpenChange={onOpen}>
-			<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+			<ContextMenuTrigger asChild>
+				<div className="min-w-0">{children}</div>
+			</ContextMenuTrigger>
 			<ContextMenuContent>
 				<ContextMenuItem onSelect={onAgenda}>{t('calendarUnified.view')}</ContextMenuItem>
 				{status === 'existing' ? (
@@ -226,48 +218,101 @@ export function CalendarMonth(props: CalendarMonthProps) {
 	} = props;
 	const [yearOpen, setYearOpen] = useState(false);
 	const [year, setYear] = useState(anchor.getFullYear());
-	const [focused, setFocused] = useState(selected);
-	const grid = useRef<HTMLDivElement>(null);
 	const title = useId();
-	const rows = calendarRows(anchor, weekStart, weeks);
-	const today = calendarIso(new Date());
-	const shown = rows.flat().map(calendarIso);
-	const focusDay = shown.includes(focused)
-		? focused
-		: shown.includes(selected)
-			? selected
-			: shown.includes(today)
-				? today
-				: (shown.find((iso) => calendarDate(iso).getMonth() === anchor.getMonth()) ?? shown[0]);
 	const shift = (delta: number) =>
 		onAnchor(weeks < 6 ? addDays(anchor, delta * weeks * 7) : addMonths(anchor, delta));
-	const key = (event: KeyboardEvent<HTMLButtonElement>, date: Date) => {
-		const delta = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 } as Record<string, number>)[
-			event.key
-		];
-		let next: Date | undefined;
-		if (delta !== undefined) next = addDays(date, delta);
-		else if (event.key === 'Home') next = startOfWeek(date, weekStart);
-		else if (event.key === 'End') next = addDays(startOfWeek(date, weekStart), 6);
-		else if (event.key === 'PageUp' || event.key === 'PageDown') {
-			const direction = event.key === 'PageUp' ? -1 : 1;
-			next = weeks < 6 ? addDays(date, direction * weeks * 7) : addMonths(date, direction);
-		}
-		if (!next) return;
-		event.preventDefault();
-		event.stopPropagation();
-		onLeave?.();
-		const iso = calendarIso(next);
-		setFocused(iso);
-		if (!shown.includes(iso)) onAnchor(next);
-		const win = event.currentTarget.ownerDocument.defaultView;
-		win?.requestAnimationFrame(() =>
-			grid.current?.querySelector<HTMLButtonElement>(`[data-date="${iso}"]`)?.focus(),
-		);
-	};
-	const columnClass = weekNumbers ? 'grid-cols-[1.75rem_repeat(7,minmax(0,1fr))]' : 'grid-cols-7';
+	const ownerWindow = useOwnerWindow(),
+		container = useRef<HTMLElement>(null);
+	const [available, setAvailable] = useState(0),
+		[hit, setHit] = useState(32),
+		[fullOpen, setFullOpen] = useState(false);
+	useLayoutEffect(() => {
+		const node = container.current;
+		if (!node) return;
+		const measure = () => {
+			setAvailable(node.getBoundingClientRect().width);
+			setHit(
+				Number.parseFloat(ownerWindow.getComputedStyle(node).getPropertyValue('--hu-hit')) ||
+					(ownerWindow.matchMedia('(pointer:coarse)').matches ? 44 : 32),
+			);
+		};
+		measure();
+		const Observer = (ownerWindow as Window & { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+		const observer = Observer ? new Observer(measure) : null;
+		observer?.observe(node);
+		const media = ownerWindow.matchMedia('(pointer:coarse)');
+		media.addEventListener('change', measure);
+		return () => {
+			observer?.disconnect();
+			media.removeEventListener('change', measure);
+		};
+	}, [ownerWindow]);
+	const needsPopup = available > 0 && available < 7 * hit + (weekNumbers ? 24 : 0);
+	const calendar = (
+		<ProductCalendar
+			month={anchor}
+			onMonthChange={onAnchor}
+			selected={selected}
+			onSelectDate={onSelect}
+			weekStart={weekStart}
+			weeks={weeks}
+			weekNumbers={weekNumbers}
+			weekNumberLayout={needsPopup ? 'caption' : 'column'}
+			compact={!needsPopup}
+			onDayHover={onHover}
+			onDayLeave={onLeave}
+			onDayClick={(iso, event) => {
+				onLeave?.();
+				if (event.metaKey || event.ctrlKey || event.button === 1) {
+					if (day(iso).note === 'existing') onNote?.('day', iso, 'tab');
+					else onSelect(iso);
+				}
+			}}
+			dayLabel={(iso) => {
+				const state = day(iso);
+				return [
+					iso,
+					t('calendarUnified.view'),
+					state.active && t('calendarUnified.currentNote'),
+					state.note === 'existing' && t('calendarUnified.hasNote'),
+					state.tasks > 0 &&
+						t(state.openTasks ? 'calendarUnified.openTasks' : 'calendarUnified.doneTasks', {
+							count: state.openTasks || state.tasks,
+						}),
+				]
+					.filter(Boolean)
+					.join(' · ');
+			}}
+			decorateDayButton={(iso, button) => (
+				<CalendarDateMenu
+					onAgenda={() => onSelect(iso)}
+					onOpen={onLeave}
+					status={day(iso).note}
+					canSplit={canSplit}
+					onNote={(action) => onNote?.('day', iso, action)}
+				>
+					{button}
+				</CalendarDateMenu>
+			)}
+			renderDayContent={(iso) => {
+				const state = day(iso);
+				return (
+					<span aria-hidden className="pointer-events-none flex h-2 items-center justify-center gap-1">
+						{state.note === 'existing' && <span className="h-1 w-2 rounded-sm bg-[var(--hu-fg-3)]" />}
+						{state.tasks > 0 &&
+							(state.openTasks ? (
+								<span className="size-1.5 rounded-full bg-[var(--hu-accent)]" />
+							) : (
+								<Check className="size-2.5" />
+							))}
+					</span>
+				);
+			}}
+		/>
+	);
 	return (
 		<section
+			ref={container}
 			className={cn('flex min-w-0 flex-col gap-1 text-foreground', props.className)}
 			aria-labelledby={title}
 			data-calendar-month={`${anchor.getFullYear()}-${anchor.getMonth() + 1}`}
@@ -351,11 +396,17 @@ export function CalendarMonth(props: CalendarMonthProps) {
 									}
 									className="min-h-8 [@media(pointer:coarse)]:min-h-11"
 									onClick={() => {
-										onAnchor(new Date(year, month, 1));
+										onAnchor(
+											calendarDate(
+												`${String(year).padStart(4, '0')}-${String(month + 1).padStart(2, '0')}-01`,
+											),
+										);
 										setYearOpen(false);
 									}}
 								>
-									{new Date(year, month, 1).toLocaleDateString(locale(), { month: 'short' })}
+									{calendarDate(
+										`${String(year).padStart(4, '0')}-${String(month + 1).padStart(2, '0')}-01`,
+									).toLocaleDateString(locale(), { month: 'short' })}
 								</Button>
 							))}
 						</div>
@@ -385,154 +436,25 @@ export function CalendarMonth(props: CalendarMonthProps) {
 					<ChevronRight className="size-4" />
 				</Button>
 			</header>
-			<div
-				role="grid"
-				ref={grid}
-				aria-label={anchor.toLocaleDateString(locale(), { year: 'numeric', month: 'long' })}
-				className="grid gap-0.5"
-			>
-				<div
-					role="row"
-					className={cn('grid gap-px text-center text-[11px] text-muted-foreground', columnClass)}
-				>
-					{weekNumbers && <span role="columnheader" aria-label={periodLabel('week')} />}
-					{rows[0]!.map((date) => (
-						<span role="columnheader" key={date.getDay()} className="py-1">
-							{date.toLocaleDateString(locale(), { weekday: 'narrow' })}
-						</span>
-					))}
-				</div>
-				{rows.map((row) => {
-					const week = weekOfYear(row[3]!, weekStart);
-					return (
-						<div role="row" key={calendarIso(row[0]!)} className={cn('grid gap-px', columnClass)}>
-							{weekNumbers && (
-								<span
-									role="rowheader"
-									className="flex items-center justify-center text-[10px] tabular-nums text-muted-foreground"
-									title={t('calendarUnified.week', { week: week.week, year: week.year })}
-								>
-									{week.week}
-								</span>
-							)}
-							{row.map((date) => {
-								const iso = calendarIso(date),
-									state = day(iso),
-									current = iso === today,
-									chosen = iso === selected,
-									outside = date.getMonth() !== anchor.getMonth();
-								const label = [
-									date.toLocaleDateString(locale(), { dateStyle: 'full' }),
-									current && t('calendarUnified.today'),
-									state.active && t('calendarUnified.currentNote'),
-									state.note === 'existing' && t('calendarUnified.hasNote'),
-									state.tasks > 0 &&
-										t(state.openTasks ? 'calendarUnified.openTasks' : 'calendarUnified.doneTasks', {
-											count: state.openTasks || state.tasks,
-										}),
-								]
-									.filter(Boolean)
-									.join(' · ');
-								return (
-									<CalendarDateMenu
-										key={iso}
-										status={state.note}
-										canSplit={canSplit}
-										onOpen={onLeave}
-										onAgenda={() => onSelect(iso)}
-										onNote={(action) => onNote?.('day', iso, action)}
-									>
-										<button
-											type="button"
-											role="gridcell"
-											tabIndex={iso === focusDay ? 0 : -1}
-											aria-label={label}
-											title={t(
-												state.note === 'existing'
-													? 'calendarUnified.dateShortcuts'
-													: 'calendarUnified.view',
-											)}
-											aria-selected={chosen}
-											aria-current={current ? 'date' : undefined}
-											data-date={iso}
-											data-day={iso}
-											data-today={current || undefined}
-											data-selected={chosen || undefined}
-											data-has-note={state.note === 'existing' || undefined}
-											data-active-note={state.active || undefined}
-											className={cn(
-												'relative flex min-h-8 min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-md border border-transparent bg-transparent px-0 py-0.5 text-xs tabular-nums outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring [@media(pointer:coarse)]:min-h-11',
-												outside && 'text-muted-foreground',
-												(date.getDay() === 0 || date.getDay() === 6) && 'bg-muted/35',
-												chosen && 'border-primary/60 bg-accent font-semibold',
-												current && 'font-bold',
-												state.active && 'border-dashed border-foreground/60',
-											)}
-											onFocus={() => setFocused(iso)}
-											onClick={(event) => {
-												onLeave?.();
-												if (
-													(event.ctrlKey || event.metaKey) &&
-													state.note === 'existing' &&
-													onNote
-												)
-													onNote('day', iso, 'tab');
-												else onSelect(iso);
-											}}
-											onAuxClick={(event) => {
-												if (event.button === 1) {
-													event.preventDefault();
-													onLeave?.();
-													if (state.note === 'existing') onNote?.('day', iso, 'tab');
-													else onSelect(iso);
-												}
-											}}
-											onKeyDown={(event) => key(event, date)}
-											onMouseEnter={(event) => onHover?.(iso, event.currentTarget)}
-											onMouseLeave={onLeave}
-											onBlur={onLeave}
-										>
-											{state.image && (
-												<img
-													key={state.image}
-													src={state.image}
-													alt=""
-													className="pointer-events-none absolute inset-0 size-full object-cover opacity-20"
-													onError={(event) => {
-														event.currentTarget.hidden = true;
-													}}
-												/>
-											)}
-											<span
-												className={cn(
-													'relative flex size-5 items-center justify-center rounded-full',
-													current && 'bg-primary text-primary-foreground',
-												)}
-											>
-												{date.getDate()}
-											</span>
-											<span
-												aria-hidden
-												className="relative flex h-2 items-center justify-center gap-1"
-											>
-												{state.note === 'existing' && (
-													<span className="h-1 w-2 rounded-sm bg-muted-foreground" />
-												)}
-												{state.tasks > 0 &&
-													(state.openTasks ? (
-														<span className="size-1.5 rounded-full bg-primary" />
-													) : (
-														<Check className="size-2.5 text-muted-foreground" />
-													))}
-											</span>
-										</button>
-									</CalendarDateMenu>
-								);
-							})}
-						</div>
-					);
-				})}
-			</div>
+			{needsPopup ? (
+				<Popover open={fullOpen} onOpenChange={setFullOpen}>
+					<PopoverTrigger asChild>
+						<Button variant="secondary" aria-label={t('calendarUnified.view')}>
+							{t('calendarUnified.view')}
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent
+						side="bottom"
+						align="center"
+						collisionPadding={4}
+						className="w-[312px] max-w-[calc(100vw-8px)] p-px"
+					>
+						{calendar}
+					</PopoverContent>
+				</Popover>
+			) : (
+				calendar
+			)}
 			{props.showPeriodActions !== false && (
 				<div className="flex shrink-0 flex-wrap items-center justify-center gap-px border-t border-border/50 pt-0.5">
 					{periods

@@ -1,3 +1,4 @@
+import './i18n';
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
 import { useState, useSyncExternalStore } from 'react';
 import { Platform, type App } from 'obsidian';
@@ -143,7 +144,7 @@ export function navigatorSettingsPage(settings: SettingsHandle<NavigatorSettings
 					<SettingsRow
 						label={t('navigator.cmd.rebuildCache')}
 						description={t('navigator.setting.rebuildDesc')}
-						control={<Button variant="outline" disabled={!runtime()} onClick={() => { void runtime()?.rebuildCache().catch(() => toast.error(t('settings.writeFailed'))); }}>{t('navigator.rebuild')}</Button>}
+						control={<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="secondary" disabled={!runtime()} onClick={() => { void runtime()?.rebuildCache().catch(() => toast.error(t('settings.writeFailed'))); }}>{t('navigator.rebuild')}</Button>}
 					/>
 				</SettingsSection>
 			</>
@@ -177,7 +178,7 @@ function KeyRow({ action, custom, fallback, onChange }: { action: NavAction; cus
 							setDraft(null);
 						}}
 					/>
-					<Button variant="ghost" size="sm" disabled={custom === undefined} onClick={() => { setDraft(null); onChange(undefined); }}>{t('navigator.reset')}</Button>
+					<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="ghost" size="sm" disabled={custom === undefined} onClick={() => { setDraft(null); onChange(undefined); }}>{t('navigator.reset')}</Button>
 				</div>
 			}
 		/>

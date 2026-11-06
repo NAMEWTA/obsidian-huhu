@@ -1,13 +1,14 @@
 import { createRoot } from 'react-dom/client';
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { ServiceAccess } from '../contracts/module';
-import type { EditorContextAccess } from '../contracts/editor-context';
+import type { EditorContextAccess, EditorPanelHandle } from '../contracts/editor-context';
 import { COMMENTS_PANEL } from '../../modules/comments/api';
 import { NOTE_HISTORY_PANEL } from '../../modules/versioning/api';
 import { registerMessages } from '../../shared/i18n';
 import { ContainerProviders } from '../../ui/react/providers';
 import { useT } from '../../ui/react/hooks';
 import { Button } from '../../ui/components/button';
+import { VisibilityContext } from '../../ui/react/contexts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/components/tabs';
 
 registerMessages({
@@ -42,9 +43,12 @@ function MountedPanel({
 	services,
 	documents,
 	openSettings,
-}: Pick<HostProps, 'services' | 'documents' | 'openSettings'> & { tab: EditorPanelTab }) {
+	visible,
+}: Pick<HostProps, 'services' | 'documents' | 'openSettings'> & { tab: EditorPanelTab; visible: boolean }) {
 	const t = useT(),
 		container = useRef<HTMLDivElement>(null);
+	const handle = useRef<EditorPanelHandle | undefined>(undefined), currentVisible = useRef(visible);
+	useLayoutEffect(() => { currentVisible.current = visible; }, [visible]);
 	const panel = useSyncExternalStore(
 		useCallback(
 			(listener) =>
@@ -58,16 +62,19 @@ function MountedPanel({
 			[services, tab],
 		),
 	);
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const element = container.current;
 		if (!element || !panel) return;
-		return panel.mount(element, documents);
+		const mounted = panel.mount(element, documents, currentVisible.current);
+		handle.current = mounted;
+		return () => { if (handle.current === mounted) handle.current = undefined; mounted.dispose(); };
 	}, [panel, documents, tab]);
+	useLayoutEffect(() => handle.current?.setVisible(visible), [visible, panel]);
 	if (!panel)
 		return (
-			<div className="flex flex-col gap-3 p-4 text-sm text-muted-foreground">
+			<div className="flex flex-col gap-3 p-4 text-sm text-[var(--hu-fg-3)]">
 				<p>{t('editorPanel.unavailable')}</p>
-				<Button variant="outline" onClick={openSettings}>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="secondary" onClick={openSettings}>
 					{t('editorPanel.settings')}
 				</Button>
 			</div>
@@ -78,15 +85,17 @@ function MountedPanel({
 function EditorPanelHost(props: HostProps) {
 	const t = useT(),
 		[tab, setTab] = useState(props.initialTab);
+	const [visited, setVisited] = useState<Set<EditorPanelTab>>(() => new Set([props.initialTab]));
 	return (
 		<Tabs
 			value={tab}
 			onValueChange={(value) => {
 				const next = value === 'history' ? 'history' : 'comments';
 				setTab(next);
+				setVisited(previous => new Set([...previous, next]));
 				props.select(next);
 			}}
-			className="flex h-full min-h-0 flex-col gap-0"
+			className="flex h-full min-h-0 flex-col gap-0 bg-[var(--hu-surface)] text-[var(--hu-fg)]"
 			aria-label={t('editorPanel.title')}
 		>
 			<div className="shrink-0 border-b p-2">
@@ -95,11 +104,11 @@ function EditorPanelHost(props: HostProps) {
 					<TabsTrigger value="history">{t('editorPanel.history')}</TabsTrigger>
 				</TabsList>
 			</div>
-			<TabsContent value="comments" className="m-0 min-h-0 flex-1">
-				<MountedPanel {...props} tab="comments" />
+			<TabsContent value="comments" forceMount hidden={tab !== 'comments'} inert={tab !== 'comments'} className="m-0 min-h-0 flex-1 data-[state=inactive]:hidden">
+				{visited.has('comments') && <VisibilityContext.Provider value={tab === 'comments'}><MountedPanel {...props} tab="comments" visible={tab === 'comments'} /></VisibilityContext.Provider>}
 			</TabsContent>
-			<TabsContent value="history" className="m-0 min-h-0 flex-1">
-				<MountedPanel {...props} tab="history" />
+			<TabsContent value="history" forceMount hidden={tab !== 'history'} inert={tab !== 'history'} className="m-0 min-h-0 flex-1 data-[state=inactive]:hidden">
+				{visited.has('history') && <VisibilityContext.Provider value={tab === 'history'}><MountedPanel {...props} tab="history" visible={tab === 'history'} /></VisibilityContext.Provider>}
 			</TabsContent>
 		</Tabs>
 	);

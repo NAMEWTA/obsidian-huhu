@@ -18,11 +18,11 @@ export function confirmAction(
 			description: options.message,
 			content: (close) => (
 				<div className="flex justify-end gap-2">
-					<Button variant="outline" onClick={close}>
+					<Button variant="secondary" onClick={close}>
 						{t('common.cancel')}
 					</Button>
 					<Button
-						variant={options.danger ? 'destructive' : 'default'}
+						variant={options.danger ? 'danger' : 'primary'}
 						onClick={() => {
 							confirmed = true;
 							close();
@@ -65,7 +65,7 @@ function Prompt({
 				<Input autoFocus value={value} placeholder={placeholder} onChange={(e) => setValue(e.target.value)} />
 			</Label>
 			<div className="flex justify-end gap-2">
-				<Button type="button" variant="outline" onClick={close}>
+				<Button type="button" variant="secondary" onClick={close}>
 					{t('common.cancel')}
 				</Button>
 				<Button type="submit">{t('common.confirm')}</Button>

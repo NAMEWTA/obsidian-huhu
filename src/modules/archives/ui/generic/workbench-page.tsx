@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type CSSProperties } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import { BELONGING_TYPE_ID } from '../../api';
 import { BelongingsPage, bt } from '../belongings/BelongingsPage';
 import { Button } from '../../../../ui/components/button';
@@ -14,6 +14,8 @@ import { ArchivePage } from './ArchivePage';
 import { DefinitionStudio } from './DefinitionStudio';
 import { RecoveryPanel } from './RecoveryPanel';
 import { restoreArchivePageState, type ArchivePageState } from './page-state';
+
+const BelongingsReport = lazy(() => import('../belongings/report/BelongingsReport'));
 
 /** The archives content leaf: list, record editor, designer or recovery, in one design scope. */
 export function ArchivesContent({
@@ -38,29 +40,68 @@ export function ArchivesContent({
 	const [genericTarget, setGenericTarget] = useState<string>();
 	const generic = genericTarget === target;
 	const genericLeave = useRef<(() => Promise<boolean>) | undefined>(undefined);
-	const genericGuard = useCallback((callback: (() => Promise<boolean>) | undefined) => { guard(callback); genericLeave.current = callback; }, [guard]);
+	const genericGuard = useCallback(
+		(callback: (() => Promise<boolean>) | undefined) => {
+			guard(callback);
+			genericLeave.current = callback;
+		},
+		[guard],
+	);
 	const belonging = state.section === BELONGING_TYPE_ID;
 	return (
-		<DesignScope style={belonging ? { '--nd-hit-size': '44px' } as CSSProperties : undefined} className={`mx-auto w-full min-w-0 max-w-6xl space-y-4 ${belonging && !generic ? 'py-4' : 'p-4 md:p-6'} [&_button]:h-auto [&_button]:max-w-full [&_button]:whitespace-normal`}>
-			{state.section === 'archive-designer' ? (
+		<DesignScope className="@container mx-auto w-full min-w-0 max-w-[1440px] space-y-5 p-4">
+			{state.section === 'archive-belongings-report' ? (
+				<Suspense fallback={<p role="status">{t('contacts.loading')}</p>}>
+					<BelongingsReport
+						application={host.application}
+						back={() => {
+							void open(BELONGING_TYPE_ID);
+						}}
+					/>
+				</Suspense>
+			) : state.section === 'archive-designer' ? (
 				<DefinitionStudio {...props} guard={guard} />
 			) : state.section === 'archive-recovery' ? (
 				<RecoveryPanel {...props} />
 			) : belonging && !generic ? (
-				<BelongingsPage key={target} application={host.application} owner={owner} selectedId={state.selectedId} search={state.search}
-					setSearch={search => updateState({ search, offset: 0 })} select={id => { void open(undefined, id); }} edit={() => setGenericTarget(target)} />
+				<BelongingsPage
+					key={target}
+					application={host.application}
+					owner={owner}
+					selectedId={state.selectedId}
+					search={state.search}
+					setSearch={(search) => updateState({ search, offset: 0 })}
+					select={(id) => {
+						void open(undefined, id);
+					}}
+					edit={() => setGenericTarget(target)}
+				/>
 			) : (
 				<>
-				{belonging && <Button variant="outline" className="min-h-11" onClick={() => { void (async () => { if (genericLeave.current && !await genericLeave.current()) return; guard(undefined); setGenericTarget(undefined); })(); }}>{bt('backSpecial')}</Button>}
-				<ArchivePage
-					host={host}
-					app={app}
-					owner={owner}
-					state={state}
-					updateState={updateState}
-					navigate={open}
-					guard={genericGuard}
-				/>
+					{belonging && (
+						<Button
+							variant="secondary"
+
+							onClick={() => {
+								void (async () => {
+									if (genericLeave.current && !(await genericLeave.current())) return;
+									guard(undefined);
+									setGenericTarget(undefined);
+								})();
+							}}
+						>
+							{bt('backSpecial')}
+						</Button>
+					)}
+					<ArchivePage
+						host={host}
+						app={app}
+						owner={owner}
+						state={state}
+						updateState={updateState}
+						navigate={open}
+						guard={genericGuard}
+					/>
 				</>
 			)}
 		</DesignScope>

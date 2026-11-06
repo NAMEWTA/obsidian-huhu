@@ -1,4 +1,4 @@
-import { useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
+import { useContext, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { DesignScope, useDesignNotice } from '../../../../ui/react/design-scope';
 import type DashboardPlugin from '../../../main';
 import { registerMessages } from '../../../../shared/i18n';
@@ -7,14 +7,15 @@ import { useOwnerWindow, useT } from '../../../../ui/react/hooks';
 import { SettingsRow } from '../../../../ui/components/huhu/SettingsRow';
 import { SettingsSwitchRow } from '../../../../ui/components/huhu/SettingsSwitchRow';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
+import { SegmentedControl } from '../../../../ui/components/huhu/SegmentedControl';
 import { Choice } from '../../../../ui/components/huhu/Choice';
 import { Button } from '../../../../ui/components/button';
+import { SettingsIndexingContext } from '../../../../ui/react/settings-search';
 import { SearchableSetting } from '../SearchableSetting';
-import { deriveCustomTokens } from '../../../../theme/custom';
 import {
 	ADDITIONAL_EDITOR_SCHEMES,
-	ADDITIONAL_THEME_PRESETS,
 	CYCLE_THEME_PRESETS,
+	THEME_ACCENTS,
 	FEATURED_EDITOR_SCHEMES,
 	EMPHASIS_STYLES,
 	HEADING_STYLES,
@@ -30,6 +31,7 @@ import { CustomColorsEditor } from './CustomColors';
 import { SchemeSwatch, SwatchGrid, ThemeSwatch } from './swatches';
 import { Typography } from './Typography';
 import { StylePreview } from './StylePreview';
+import { InterfacePreview } from './InterfacePreview';
 
 registerMessages(messages);
 
@@ -60,22 +62,33 @@ export function AppearanceSettings({ plugin }: { plugin: DashboardPlugin }) {
 function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 	const t = useT();
 	const owner = useOwnerWindow();
+	const indexing = useContext(SettingsIndexingContext);
 	const notice = useDesignNotice();
 	const [pending, setPending] = useState(false);
 	const [error, setError] = useState('');
 	const [retry, setRetry] = useState<(() => Promise<void>) | undefined>();
+	const alive = useRef(true);
 	const operations = useRef(0);
-	const latestOperation = useRef(0);
+	const latest = useRef(0);
+	useEffect(() => {
+		alive.current = true;
+		return () => {
+			alive.current = false;
+		};
+	}, []);
 	const perform = (action: () => Promise<void>): Promise<void> => {
-		const sequence = ++latestOperation.current;
+		const sequence = ++latest.current;
 		operations.current++;
 		setPending(true);
 		setError('');
 		setRetry(undefined);
 		const completion = Promise.resolve()
-			.then(action)
+			.then(() => {
+				if (alive.current) return action();
+				return undefined;
+			})
 			.catch((cause: unknown) => {
-				if (sequence === latestOperation.current) {
+				if (alive.current && sequence === latest.current) {
 					setError(t('settings.writeFailed'));
 					setRetry(() => action);
 				}
@@ -83,7 +96,7 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 			})
 			.finally(() => {
 				operations.current--;
-				if (operations.current === 0) setPending(false);
+				if (alive.current && operations.current === 0) setPending(false);
 			});
 		return completion;
 	};
@@ -95,7 +108,7 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 		(listener) => handle.subscribe(listener),
 		() => handle.get(),
 	);
-	const fail = () => setError(t('settings.writeFailed'));
+	const fail = () => undefined;
 	const set = <K extends keyof ThemeSettings>(key: K, value: ThemeSettings[K]) =>
 		void handle
 			.update((draft) => {
@@ -103,10 +116,6 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 			})
 			.catch(fail);
 	const mode = owner.document.body.classList.contains('theme-dark') ? 'dark' : 'light';
-	const customStyles = {
-		light: deriveCustomTokens(settings.custom.light, 'light') as CSSProperties,
-		dark: deriveCustomTokens(settings.custom.dark, 'dark') as CSSProperties,
-	};
 	const sample = {
 		heading: t('appearance.sample.heading'),
 		subheading: t('appearance.sample.subheading'),
@@ -117,7 +126,9 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 		quote: t('appearance.sample.quote'),
 	};
 	const styleOptions = (ids: readonly string[]) => ids.map((id) => [id, t(`appearance.option.${id}`)] as const);
-	const notify = (key: string) => notice(t(key));
+	const notify = (key: string) => {
+		if (alive.current) notice(t(key));
+	};
 	const resolved = resolveTheme(settings);
 	return (
 		<div className="space-y-5 min-w-0">
@@ -125,7 +136,7 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 				<div role="alert" className="flex flex-wrap items-center gap-2 text-sm text-destructive">
 					<span>{error}</span>
 					{retry && (
-						<Button variant="outline" disabled={pending} onClick={() => void perform(retry).catch(fail)}>
+						<Button variant="secondary" disabled={pending} onClick={() => void perform(retry).catch(fail)}>
 							{t('workbench.retry')}
 						</Button>
 					)}
@@ -135,88 +146,78 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 				<p className="text-sm text-muted-foreground">{t('appearance.description')}</p>
 
 				<SettingsSection title={t('appearance.theme')} description={t('appearance.themeDesc')}>
-					<Block title={t('appearance.theme')} description={t('appearance.themeDesc')}>
-						<SwatchGrid label={t('appearance.theme')}>
-							{CYCLE_THEME_PRESETS.map((id) => (
-								<ThemeSwatch
-									variant={settings.suliworldVariant}
-									key={id}
-									id={id}
-									selected={settings.preset === id}
-									label={t(`appearance.preset.${id}`)}
-									hint={id === 'default' ? t('appearance.preset.default.hint') : undefined}
-									onSelect={() => set('preset', id)}
-									customStyles={id === 'custom' ? customStyles : undefined}
-								/>
-							))}
-						</SwatchGrid>
-					</Block>
-					<SettingsRow
-						label={t('appearance.additionalThemes')}
-						description={t('appearance.additionalThemesDesc')}
-						control={
-							<Choice
-								label={t('appearance.additionalThemes')}
-								className="w-64 max-w-full"
-								value={ADDITIONAL_THEME_PRESETS.includes(settings.preset) ? settings.preset : ''}
-								options={[
-									['', t('appearance.additionalPlaceholder')],
-									...ADDITIONAL_THEME_PRESETS.map((id) => [id, t(`appearance.preset.${id}`)] as const),
-								]}
-								onChange={(value) => {
-									if (value) set('preset', value as ThemeSettings['preset']);
-								}}
-							/>
-						}
-					/>
-					{settings.preset === 'suliworld' && (
-						<>
-							<SettingsRow
-								label={t('appearance.suliworldVariant')}
-								description={t('appearance.suliworldVariantDesc')}
-								control={
-									<Choice
-										label={t('appearance.suliworldVariant')}
-										className="w-52 max-w-full"
-										value={settings.suliworldVariant}
-										options={SULIWORLD_VARIANTS.map(
-											(id) => [id, t(`appearance.variant.${id}`)] as const,
-										)}
-										onChange={(value) =>
-											set('suliworldVariant', value as ThemeSettings['suliworldVariant'])
+					<div className="grid min-w-0 gap-6 @min-[760px]:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
+						<div className="min-w-0 space-y-4">
+							<Block title={t('appearance.theme')} description={t('appearance.themeDesc')}>
+								<SwatchGrid label={t('appearance.theme')}>
+									{CYCLE_THEME_PRESETS.map((id) => (
+										<ThemeSwatch
+											variant={settings.suliworldVariant}
+											key={id}
+											id={id}
+											selected={settings.preset === id}
+											label={t(`appearance.preset.${id}`)}
+											onSelect={() => set('preset', id)}
+										/>
+									))}
+								</SwatchGrid>
+							</Block>
+							{(['source', 'accent', 'uiSize', 'density'] as const).map((key) => {
+								const choices =
+									key === 'source'
+										? ['huhu', 'obsidian']
+										: key === 'accent'
+											? THEME_ACCENTS
+											: key === 'uiSize'
+												? ['13', '14', '15']
+												: ['compact', 'comfortable'];
+								const options = choices.map((value) => ({
+									value,
+									label: key === 'uiSize' ? value : t(`appearance.${key}.${value}`),
+								}));
+								return (
+									<SettingsRow
+										key={key}
+										label={t(`appearance.${key}`)}
+										description={t(`appearance.${key}Desc`)}
+										control={
+											key === 'accent' ? (
+												<Choice
+													disabled={settings.source === 'obsidian'}
+													label={t(`appearance.${key}`)}
+													value={settings[key]}
+													options={options.map((option) => [option.value, option.label])}
+													onChange={(value) => set(key, value as ThemeSettings[typeof key])}
+												/>
+											) : (
+												<SegmentedControl
+													ariaLabel={t(`appearance.${key}`)}
+													value={settings[key]}
+													options={options}
+													onChange={(value) => set(key, value as ThemeSettings[typeof key])}
+												/>
+											)
 										}
 									/>
-								}
-							/>
-							<SettingsRow
-								label={t('appearance.suliworldCards')}
-								description={t('appearance.suliworldCardsDesc')}
-								control={
-									<Choice
-										label={t('appearance.suliworldCards')}
-										className="w-52 max-w-full"
-										value={settings.suliworldCards}
-										options={SULIWORLD_CARDS.map((id) => [id, t(`appearance.cards.${id}`)] as const)}
-										onChange={(value) =>
-											set('suliworldCards', value as ThemeSettings['suliworldCards'])
-										}
-									/>
-								}
-							/>
-						</>
-					)}
-					{settings.preset === 'custom' && (
-						<div className="rounded-lg border border-border p-3">
-							<p className="mb-2 text-xs text-muted-foreground">{t('appearance.customDesc')}</p>
-							<CustomColorsEditor
-								onError={fail}
-								handle={handle}
-								settings={settings}
-								initialMode={mode}
-								ownerDocument={owner.document}
+								);
+							})}
+							<Typography handle={handle} settings={settings} onError={fail} interfaceOnly />
+							<SettingsSwitchRow
+								label={t('appearance.reduceMotion')}
+								description={t('appearance.reduceMotionDesc')}
+								checked={settings.motion === 'reduce'}
+								onChange={() => set('motion', settings.motion === 'reduce' ? 'system' : 'reduce')}
 							/>
 						</div>
-					)}
+						<aside className="min-w-0">
+							<SettingsSection
+								title={t('appearance.interfacePreview')}
+								description={t('appearance.interfacePreviewDesc')}
+							>
+								{!indexing && <InterfacePreview settings={settings} />}
+							</SettingsSection>
+						</aside>
+					</div>
 				</SettingsSection>
 
 				<SettingsSection title={t('appearance.editor')} description={t('appearance.editorDesc')}>
@@ -245,7 +246,9 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 								value={ADDITIONAL_EDITOR_SCHEMES.includes(settings.editor) ? settings.editor : ''}
 								options={[
 									['', t('appearance.additionalPlaceholder')],
-									...ADDITIONAL_EDITOR_SCHEMES.map((id) => [id, t(`appearance.scheme.${id}`)] as const),
+									...ADDITIONAL_EDITOR_SCHEMES.map(
+										(id) => [id, t(`appearance.scheme.${id}`)] as const,
+									),
 								]}
 								onChange={(value) => {
 									if (value) set('editor', value as ThemeSettings['editor']);
@@ -253,10 +256,12 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 							/>
 						}
 					/>
-					<p className="text-xs text-muted-foreground" role="status">
+					<p className="text-sm text-muted-foreground" role="status">
 						{settings.editor === 'follow'
 							? t('appearance.effectiveFollow', { style: t(`appearance.preset.${settings.preset}`) })
-							: t('appearance.effectiveIndependent', { style: t(`appearance.scheme.${settings.editor}`) })}
+							: t('appearance.effectiveIndependent', {
+									style: t(`appearance.scheme.${settings.editor}`),
+								})}
 					</p>
 					{resolved.effectiveEditor === 'suliworld' && (
 						<>
@@ -274,6 +279,43 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 							/>
 						</>
 					)}
+					{settings.editor === 'custom' && (
+						<CustomColorsEditor
+							onError={fail}
+							handle={handle}
+							settings={settings}
+							initialMode={mode}
+							ownerDocument={owner.document}
+						/>
+					)}
+					{settings.editor === 'suliworld' &&
+						(['suliworldVariant', 'suliworldCards'] as const).map((key) => (
+							<SettingsRow
+								key={key}
+								label={t(`appearance.${key}`)}
+								description={t(`appearance.${key}Desc`)}
+								control={
+									<Choice
+										label={t(`appearance.${key}`)}
+										value={settings[key]}
+										options={(key === 'suliworldVariant'
+											? SULIWORLD_VARIANTS
+											: SULIWORLD_CARDS
+										).map(
+											(id) =>
+												[
+													id,
+													t(
+														`appearance.${key === 'suliworldVariant' ? 'variant' : 'cards'}.${id}`,
+													),
+												] as const,
+										)}
+										onChange={(value) => set(key, value as ThemeSettings[typeof key])}
+									/>
+								}
+							/>
+						))}
+
 					<SettingsRow
 						label={t('appearance.headings')}
 						description={t('appearance.headingsDesc')}
@@ -305,7 +347,7 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 						description={t('appearance.resetStyleDesc')}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() =>
 									void handle
 										.update((draft) => resetCurrentStyle(draft), { persist: 'immediate' })
@@ -319,7 +361,7 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 				</SettingsSection>
 
 				<SettingsSection title={t('appearance.previewTitle')} description={t('appearance.previewIntro')}>
-					<StylePreview app={plugin.app} settings={settings} />
+					{!indexing && <StylePreview app={plugin.app} settings={settings} />}
 				</SettingsSection>
 
 				<SettingsSection title={t('appearance.fonts')} description={t('appearance.fontsDesc')}>
@@ -332,17 +374,17 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 						description={t('appearance.exportDesc')}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() =>
-									void perform(() => owner.navigator.clipboard
-										.writeText(
+									void perform(() =>
+										owner.navigator.clipboard.writeText(
 											JSON.stringify(
 												{ kind: EXPORT_KIND, version: EXPORT_VERSION, settings: handle.get() },
 												null,
 												2,
 											),
-										)
-										).then(() => notify('appearance.exported'), fail)
+										),
+									).then(() => notify('appearance.exported'), fail)
 								}
 							>
 								{t('appearance.export')}
@@ -354,11 +396,11 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 						description={t('appearance.importDesc')}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() =>
-									void perform(() => owner.navigator.clipboard
-										.readText()
-										.then(async (text) => {
+									void perform(() =>
+										owner.navigator.clipboard.readText().then(async (text) => {
+											if (!alive.current) return;
 											const imported = parseExport(text);
 											if (!imported) {
 												setError(t('appearance.importFailed'));
@@ -366,8 +408,8 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 											}
 											await plugin.theme.update(() => imported, { persist: 'immediate' });
 											notify('appearance.imported');
-										}))
-										.catch(fail)
+										}),
+									).catch(fail)
 								}
 							>
 								{t('appearance.import')}
@@ -379,9 +421,11 @@ function AppearanceContent({ plugin }: { plugin: DashboardPlugin }) {
 						description={t('appearance.resetDesc')}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() =>
-									void handle.update(() => themeSettings.defaults(), { persist: 'immediate' }).catch(fail)
+									void handle
+										.update(() => themeSettings.defaults(), { persist: 'immediate' })
+										.catch(fail)
 								}
 							>
 								{t('appearance.reset')}

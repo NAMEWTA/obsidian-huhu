@@ -13,7 +13,7 @@ export function DashboardIconPicker({ value, onChange }: { value: string; onChan
 		[query, setQuery] = useState('');
 	return (
 		<>
-			<Button variant="outline" size="xs" aria-label={t('quickNote.pickIcon')} onClick={() => setOpen(true)}>
+			<Button variant="secondary" size="sm" aria-label={t('quickNote.pickIcon')} onClick={() => setOpen(true)}>
 				<ObsidianIcon name={value} />
 			</Button>
 			{open && (
@@ -32,7 +32,7 @@ export function DashboardIconPicker({ value, onChange }: { value: string; onChan
 								<Button
 									key={name}
 									variant="ghost"
-									size="icon"
+									size="icon-md"
 									aria-label={name}
 									title={name}
 									onClick={() => {

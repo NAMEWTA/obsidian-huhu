@@ -22,7 +22,7 @@ export function iconsSettingsPage(getController: () => IconicController | undefi
 		if (!controller?.isActive()) return <p role="status">{t('workbench.notReady')}</p>;
 		const selected = ICONIC_SETTINGS_PAGES.find((id) => id === resourceId) ?? 'iconic-general';
 		return (
-			<DesignScope className="huhu-settings-stack min-w-0 px-1 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:break-all [&_button]:h-auto">
+			<DesignScope className="huhu-settings-stack min-w-0 px-1 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:break-all">
 				<Tabs defaultValue={selected} className="space-y-5">
 					<TabsList className="flex h-auto w-full flex-wrap">
 						{ICONIC_SETTINGS_PAGES.map((id, index) => (

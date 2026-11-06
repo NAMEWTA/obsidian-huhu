@@ -61,31 +61,54 @@ export function MediaLightboxPanel({
 						<MediaUnavailable name={file.basename} missing={!src} />
 					</div>
 				) : kind === 'image' ? (
-					<img className="block max-h-[60vh] max-w-full object-contain" src={src} alt={file.basename} onError={() => setFailedSrc(src)} />
+					<img
+						className="block max-h-[60vh] max-w-full object-contain"
+						src={src}
+						alt={file.basename}
+						onError={() => setFailedSrc(src)}
+					/>
 				) : (
-					<MediaVideo key={src} src={src} className="block max-h-[60vh] max-w-full object-contain" play onError={() => setFailedSrc(src)} />
+					<MediaVideo
+						key={src}
+						src={src}
+						className="block max-h-[60vh] max-w-full object-contain"
+						play
+						onError={() => setFailedSrc(src)}
+					/>
 				)}
 			</div>
 			<div role="group" aria-label={t('media.lightboxNav')} className="flex items-center justify-between gap-2">
-				<Button variant="outline" size="icon" aria-label={t('home.p1.previous')} disabled={index <= 0} onClick={() => show(index - 1)}>
+				<Button
+					variant="secondary"
+					size="icon-md"
+					aria-label={t('home.p1.previous')}
+					disabled={index <= 0}
+					onClick={() => show(index - 1)}
+				>
 					<ChevronLeft />
 				</Button>
 				<div role="status" className="min-w-0 text-center text-sm text-foreground [overflow-wrap:anywhere]">
 					{file.basename} ({index + 1} / {files.length})
 				</div>
-				<Button variant="outline" size="icon" aria-label={t('home.p1.next')} disabled={index >= files.length - 1} onClick={() => show(index + 1)}>
+				<Button
+					variant="secondary"
+					size="icon-md"
+					aria-label={t('home.p1.next')}
+					disabled={index >= files.length - 1}
+					onClick={() => show(index + 1)}
+				>
 					<ChevronRight />
 				</Button>
 			</div>
 			{tagHooks && (
 				<div className="flex flex-wrap items-center justify-center gap-1.5">
 					{tagHooks.getTags(file).map((tag) => (
-						<Badge key={tag} variant="secondary" className="max-w-40">
+						<Badge key={tag} variant="neutral" className="max-w-40">
 							<span className="truncate">{tag}</span>
 						</Badge>
 					))}
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						onClick={() => {
 							focus.remember();

@@ -5,7 +5,7 @@ export function AgentWorkingSpinner({ className }: { className?: string }) {
 		<span
 			data-agent-spinner=""
 			className={cn(
-				'block rounded-full border-2 border-foreground border-t-transparent animate-spin motion-reduce:animate-none motion-reduce:border-t-foreground',
+				'block rounded-full border-2 border-[var(--hu-warning)] border-t-transparent animate-spin motion-reduce:animate-none motion-reduce:border-t-[var(--hu-warning)]',
 				className,
 			)}
 		/>

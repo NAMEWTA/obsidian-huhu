@@ -44,7 +44,12 @@ export function fixture(definitions = [definition('Alpha'), definition('Beta')],
 			listeners.add(fn);
 			return () => listeners.delete(fn);
 		},
-		save: vi.fn(async () => {}),
+		save: vi.fn(async (saved: AutomationDefinition) => {
+			const index = definitions.findIndex((row) => row.id === saved.id);
+			if (index < 0) definitions.push(structuredClone(saved));
+			else definitions[index] = structuredClone(saved);
+			listeners.forEach((listener) => listener());
+		}),
 		remove: vi.fn(async () => {}),
 		clearHistory: async () => {},
 		tick: async () => {},
@@ -67,25 +72,32 @@ export function fixture(definitions = [definition('Alpha'), definition('Beta')],
 		commands: () => [{ id: 'app:test', name: 'Test command' }],
 	};
 	const navigate = vi.fn();
-	function Page({ visible = true }: { visible?: boolean }) {
+	function Page({
+		visible = true,
+		onGuard,
+	}: {
+		visible?: boolean;
+		onGuard?: (guard: (() => Promise<boolean>) | null) => void;
+	}) {
 		const [target, setTarget] = useState<WorkbenchTarget>({ feature: 'automations' });
 		return (
 			<TestProviders>
 				<VisibilityContext.Provider value={visible}>
 					<DesignScope>
-					<AutomationsPage
-						host={host}
-						target={target}
-						initialState={initialPageState({})}
-						onState={() => {}}
-						onNavigate={(next) => {
-							setTarget(next);
-							navigate(next);
-						}}
-						onPageMenu={() => {}}
-						onNavigation={() => {}}
-						onEditConsumed={() => {}}
-					/>
+						<AutomationsPage
+							host={host}
+							onLeaveGuard={onGuard}
+							target={target}
+							initialState={initialPageState({})}
+							onState={() => {}}
+							onNavigate={(next) => {
+								setTarget(next);
+								navigate(next);
+							}}
+							onPageMenu={() => {}}
+							onNavigation={() => {}}
+							onEditConsumed={() => {}}
+						/>
 					</DesignScope>
 				</VisibilityContext.Provider>
 			</TestProviders>

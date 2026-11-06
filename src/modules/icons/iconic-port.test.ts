@@ -123,6 +123,7 @@ test('defaults, all locale values, command ids and resource bytes match pinned u
 			'iconic.openSettings': 'Open icon settings',
 			'iconic.ruleEditor.enabled.name': 'Enable rule',
 			'iconic.ruleEditor.enabled.desc': 'Apply this rule to matching items.',
+			'iconic.ruleEditor.invalidDateTime': 'Enter a valid date and time.',
 		},
 		zh: {
 			...locales.zh,
@@ -130,6 +131,7 @@ test('defaults, all locale values, command ids and resource bytes match pinned u
 			'iconic.openSettings': '打开图标设置',
 			'iconic.ruleEditor.enabled.name': '启用规则',
 			'iconic.ruleEditor.enabled.desc': '将此规则应用到匹配的项目。',
+			'iconic.ruleEditor.invalidDateTime': '请输入有效的日期和时间。',
 		},
 	});
 	for (const [name, hash] of Object.entries(fixture.hashes)) {

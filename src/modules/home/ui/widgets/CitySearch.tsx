@@ -72,7 +72,7 @@ export function CitySearch({
 					disabled={saving}
 				/>
 				{query && (
-					<Button type="button" variant="outline" disabled={saving} onClick={() => setQuery('')}>
+					<Button type="button" variant="secondary" disabled={saving} onClick={() => setQuery('')}>
 						{t('weather.clearSearch')}
 					</Button>
 				)}
@@ -82,7 +82,7 @@ export function CitySearch({
 			{enough && status === 'error' && (
 				<div role="alert" className="space-y-2 text-sm text-destructive">
 					<p>{t('weather.searchFailed')}</p>
-					<Button type="button" variant="outline" onClick={() => setRetry((value) => value + 1)}>
+					<Button type="button" variant="secondary" onClick={() => setRetry((value) => value + 1)}>
 						{t('weather.retry')}
 					</Button>
 				</div>
@@ -134,7 +134,7 @@ export function CitySearch({
 						/>
 					))}
 					<Button
-						variant="outline"
+						variant="secondary"
 						disabled={saving}
 						onClick={() => {
 							const latitude = Number(manual.latitude),

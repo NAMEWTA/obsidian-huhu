@@ -18,7 +18,7 @@ export interface RailItem {
 export interface RailProps {
 	items: readonly RailItem[];
 	current: WorkbenchFeature;
-	panelOpen: boolean;
+	panelOpen?: boolean;
 	onSelect: (id: WorkbenchFeature) => void;
 	onOpen: (id: WorkbenchFeature, placement: 'tab' | 'split') => void;
 }
@@ -41,7 +41,7 @@ export function Rail({ items, current, panelOpen, onSelect, onOpen }: RailProps)
 						<ContextMenuTrigger asChild>
 							<Button
 								variant="ghost"
-								size="icon"
+								size="icon-md"
 								data-rail-button
 								data-feature={item.id}
 								aria-label={item.label}
@@ -51,7 +51,7 @@ export function Rail({ items, current, panelOpen, onSelect, onOpen }: RailProps)
 								className={cn(
 									'relative size-9 rounded-md hover:bg-sidebar-accent/70',
 									active &&
-										'bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:-left-2 before:inset-y-2 before:w-0.5 before:bg-foreground',
+										'bg-[var(--hu-raised)] text-[var(--hu-accent)] shadow-[var(--hu-shadow-card),0_0_0_1px_var(--hu-line)] hover:bg-[var(--hu-raised)] hover:text-[var(--hu-accent)] after:absolute after:-left-2 after:inset-y-[9px] after:w-[3px] after:rounded-r-[3px] after:bg-[var(--hu-accent)]',
 								)}
 								onClick={() => onSelect(item.id)}
 								onKeyDown={(e) => move(e, ordered.indexOf(item))}
@@ -63,7 +63,7 @@ export function Rail({ items, current, panelOpen, onSelect, onOpen }: RailProps)
 								/>
 								{!!item.badge && (
 									<span
-										className="pointer-events-none absolute -right-1 top-0 h-4 min-w-4 rounded-full bg-destructive px-1 text-3xs text-destructive-foreground"
+										className="pointer-events-none absolute -right-1 top-0 h-5 min-w-5 rounded-full bg-destructive px-1 text-xs text-destructive-foreground"
 										aria-label={t('workbench.unreadCount', { count: item.badge })}
 									>
 										{item.badge > 99 ? '99+' : item.badge}
@@ -97,10 +97,10 @@ export function Rail({ items, current, panelOpen, onSelect, onOpen }: RailProps)
 			aria-label={t('workbench.navigation')}
 			className="huhu-rail flex w-[52px] shrink-0 flex-col items-center justify-between gap-2 border-r border-sidebar-border bg-sidebar py-2"
 		>
-			<div className="flex min-h-0 flex-col items-center gap-1 overflow-y-auto scrollbar-none">
+			<div className="flex min-h-0 w-full flex-col items-center gap-3 overflow-y-auto py-1 scrollbar-none">
 				{ordered.filter((i) => i.slot === 'top').map(button)}
 			</div>
-			<div className="flex flex-col items-center gap-1">
+			<div className="flex w-full flex-col items-center gap-3 py-1">
 				{ordered.filter((i) => i.slot === 'bottom').map(button)}
 			</div>
 		</nav>

@@ -198,6 +198,8 @@ export interface AutomationTaskExecution {
 	checkpoint(this: void, delivery: AutomationTaskDelivery): Promise<void>;
 }
 export interface AutomationUiPort {
+	/** Earliest future trigger on this device; null means none, undefined means execution/read unavailable. */
+	nextScheduled?(): { name: string; at: number } | null | undefined;
 	actions?(): Array<{ id: string; name: string; status?: string; running: boolean; unavailable?: string }>;
 	subscribe?(listener: () => void): () => void;
 	runAction?(id: string): Promise<void>;

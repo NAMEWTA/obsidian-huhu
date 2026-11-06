@@ -50,7 +50,7 @@ export function Toolbar({
 				</IconButton>
 			</div>
 			<div className="ml-auto flex flex-wrap items-center gap-2">
-				<Button variant="outline" size="sm" onClick={onRuns}>
+				<Button variant="secondary" size="sm" onClick={onRuns}>
 					<History className="size-4" />
 					{t('automation.history')}
 				</Button>

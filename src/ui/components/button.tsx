@@ -3,46 +3,35 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as Slot from 'radix-ui/slot';
+import { LoaderCircle } from 'lucide-react';
 
 import { cn } from '../lib/utils';
 
 const buttonVariants = cva(
-	"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+	"relative inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[var(--hu-radius-md)] cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] duration-[var(--hu-dur-fast)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-[var(--hu-danger)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 	{
 		variants: {
 			variant: {
-				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-				destructive:
-					'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:text-white dark:focus-visible:ring-destructive/40',
-				outline:
-					'border border-border bg-background text-foreground shadow-xs hover:border-muted-foreground/35 hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
-				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-				ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-				link: 'text-primary underline-offset-4 hover:underline',
+				primary:
+					'border border-transparent bg-[var(--hu-accent)] text-[var(--hu-accent-fg)] shadow-[inset_0_1px_0_color-mix(in_srgb,var(--hu-raised)_12%,transparent),var(--hu-shadow-card)] dark:shadow-[inset_0_1px_0_color-mix(in_srgb,var(--hu-fg)_12%,transparent),var(--hu-shadow-card)] hover:opacity-90',
+				secondary:
+					'border border-[var(--hu-line-strong)] bg-[var(--hu-raised)] text-[var(--hu-fg)] hover:bg-[var(--hu-hover)]',
+				ghost: 'border border-transparent bg-transparent text-[var(--hu-fg-2)] hover:bg-[var(--hu-hover)] hover:text-[var(--hu-fg)]',
+				danger: 'border border-transparent bg-[var(--hu-danger)] text-[var(--hu-danger-fg)] hover:opacity-90',
+				'danger-ghost':
+					'border border-transparent bg-transparent text-[var(--hu-danger)] hover:bg-[var(--hu-danger-soft)]',
 			},
 			size: {
-				default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-				xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-				sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
-				lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-				icon: 'size-9',
-				'icon-xs': "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
-				'icon-sm': 'size-8',
-				'icon-lg': 'size-10',
+				sm: 'h-[var(--hu-ctl-h)] px-2',
+				md: 'h-[var(--hu-ctl-h)] px-3',
+				lg: 'h-[var(--hu-ctl-h-lg)] px-4',
+				'icon-sm': 'size-[var(--hu-ctl-h)]',
+				'icon-md': 'size-[var(--hu-ctl-h)]',
+				'icon-lg': 'size-[var(--hu-ctl-h-lg)]',
 			},
-			// A text button never outgrows its container: the label gets the ellipsis, not the border. It keeps its
-			// natural width in a row (a shrinking button would truncate next to a `w-full` input); a button without
-			// text (an icon or a slotted element) keeps its exact box.
-			content: {
-				text: 'min-w-0 max-w-full',
-				fixed: '',
-			},
+			content: { text: 'min-w-0 max-w-full', fixed: '' },
 		},
-		defaultVariants: {
-			variant: 'default',
-			size: 'default',
-			content: 'fixed',
-		},
+		defaultVariants: { variant: 'primary', size: 'md', content: 'fixed' },
 	},
 );
 
@@ -78,28 +67,89 @@ function labelled(children: React.ReactNode): { children: React.ReactNode; text:
 	return { children: out, text: runs > 0 };
 }
 
+function busyContent(children: React.ReactNode): React.ReactNode {
+	return (
+		<>
+			<span data-slot="button-content" className="inline-flex min-w-0 items-center gap-1.5 opacity-0">
+				{children}
+			</span>
+			<LoaderCircle
+				data-slot="button-spinner"
+				aria-hidden="true"
+				className="absolute size-4 animate-spin motion-reduce:animate-none"
+			/>
+		</>
+	);
+}
+
+type ButtonChildProps = {
+	children?: React.ReactNode;
+	disabled?: boolean;
+	'aria-disabled'?: boolean;
+	onClick?: React.MouseEventHandler;
+};
+
 const Button = React.forwardRef<
 	HTMLButtonElement,
 	React.ComponentProps<'button'> &
 		VariantProps<typeof buttonVariants> & {
 			asChild?: boolean;
+			busy?: boolean;
 		}
->(function Button({ className, variant = 'default', size = 'default', asChild = false, children, ...props }, ref) {
+>(function Button(
+	{
+		className,
+		variant = 'primary',
+		size = 'md',
+		asChild = false,
+		busy = false,
+		disabled,
+		type,
+		children,
+		onClick,
+		...props
+	},
+	ref,
+) {
 	const Comp = asChild ? Slot.Root : 'button';
-	const compact = size === 'xs' || size === 'icon-xs';
-	const label = asChild ? { children, text: false } : labelled(children);
+	const child = asChild && React.isValidElement<ButtonChildProps>(children) ? children : null;
+	const slottedChild =
+		child && (disabled || busy)
+			? React.cloneElement(child, {
+					disabled: true,
+					'aria-disabled': true,
+					onClick: (event) => {
+						event.preventDefault();
+						event.stopPropagation();
+					},
+					...(busy ? { children: busyContent(child.props.children) } : {}),
+				})
+			: children;
+	const label = asChild ? { children: slottedChild, text: false } : labelled(children);
 
 	return (
 		<Comp
 			ref={ref}
 			data-slot="button"
-			data-hit-control={compact || undefined}
+			data-hit-control
 			data-variant={variant}
 			data-size={size}
 			className={cn(buttonVariants({ variant, size, content: label.text ? 'text' : 'fixed', className }))}
 			{...props}
+			type={type}
+			disabled={disabled || busy}
+			aria-disabled={asChild && (disabled || busy) ? true : props['aria-disabled']}
+			aria-busy={busy || props['aria-busy']}
+			onClick={(event) => {
+				if (disabled || busy) {
+					event.preventDefault();
+					event.stopPropagation();
+					return;
+				}
+				onClick?.(event);
+			}}
 		>
-			{label.children}
+			{asChild ? label.children : busy ? busyContent(label.children) : label.children}
 		</Comp>
 	);
 });

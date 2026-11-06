@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-11-05-frontend-uiux-redesign",
+  "status": "consensus",
+  "round": 4,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "重构范围与兼容策略",
+      "question": "前端重构是否保留旧 UI、旧 UI 状态读取、旧样式或双轨切换？",
+      "depends_on": [],
+      "recommendation": "彻底替换全部前端组件、CSS、布局与 UI 状态合同；不建兼容层；领域服务、文件事务与数据根不因视觉改版改写。",
+      "status": "answered",
+      "round": 1,
+      "answer": "彻底重构前端，无需与当前有任何兼容；领域服务与数据根边界保持原 owner。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "工作台定位与骨架",
+      "question": "重构后的工作台采用什么信息架构骨架？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "Obsidian 内高密度个人工作台：图标轨 + 按模块二级栏 + 主区 + 按需右详情；笔记/批注/导航沿用宿主叶子。",
+      "status": "answered",
+      "round": 1,
+      "answer": "按交付包方案：图标轨、二级导航、主工作区与按需右侧详情；宽度按所属叶子判断。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "技术栈与复用边界",
+      "question": "重构使用什么技术栈，允许引入哪些新依赖？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "沿用 React 19、TS、Tailwind 4、shadcn/Radix、Headless Tree、TanStack Virtual、lucide、cmdk、sonner；只新增 @daypicker/react 10。",
+      "status": "answered",
+      "round": 1,
+      "answer": "沿用现有栈与 src/ui 唯一组件实现；日期统一使用 @daypicker/react 10 与现有 Radix Popover；不引入第二套 UI 库。",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-004",
+      "title": "四项重点交互",
+      "question": "日期、自动化详情、档案目录、任务完成态采用什么交互合同？",
+      "depends_on": [
+        "D-002",
+        "D-003"
+      ],
+      "recommendation": "统一 DateField/DateRangeField；自动化列表保留并在右侧打开详情、Switch 启停；档案类型→记录树；完成任务标题与说明删除线。",
+      "status": "answered",
+      "round": 1,
+      "answer": "采用交付包 Frontend_Refactor_Plan §5 的四项合同。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "原型交付形式",
+      "question": "原型给几个候选方向？",
+      "depends_on": [],
+      "recommendation": "一个终版，不做对比。",
+      "status": "answered",
+      "round": 1,
+      "answer": "直接给终版，不需要对比。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-006",
+      "title": "主题与配色归属",
+      "question": "工作台颜色由 HUHU 自有主题决定，还是完全跟随 Obsidian 主题变量？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "HUHU 自有主题为主，提供“跟随 Obsidian”可选模式。",
+      "status": "answered",
+      "round": 1,
+      "answer": "HUHU 自有主题为主，可选跟随 Obsidian。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-007",
+      "title": "默认审美基调",
+      "question": "默认主题采用哪种视觉气质？",
+      "depends_on": [
+        "D-006"
+      ],
+      "recommendation": "暖中性·纸感：米白/暖灰底、深墨文字、单一墨青强调色、细线、低阴影；深色为暖炭灰。",
+      "status": "answered",
+      "round": 1,
+      "answer": "暖中性·纸感。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-008",
+      "title": "原型覆盖深度",
+      "question": "终版原型覆盖哪些模块、做到多深？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "全模块可操作；首页、任务、档案、自动化、智能体、设置外观六页深度交互。",
+      "status": "answered",
+      "round": 1,
+      "answer": "全模块可操作，核心六页深度交互。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-009",
+      "title": "审查缺口直接修订",
+      "question": "如何处理全面审查发现的冲突与遗漏？",
+      "depends_on": [
+        "D-001",
+        "D-003",
+        "D-008"
+      ],
+      "recommendation": "按真实领域补齐全表面、采用受支持的最新稳定组合、明确验证与 UI 技能唯一 owner。",
+      "status": "answered",
+      "round": 3,
+      "answer": "用户授权直接按最新审查修改，具体选择见 ADR-005。",
+      "log_ref": "LOG-012"
+    },
+    {
+      "id": "D-010",
+      "title": "Git 差异技术栈",
+      "question": "版本页的差异与历史比较用什么实现？",
+      "depends_on": [
+        "D-003",
+        "D-009"
+      ],
+      "recommendation": "采用 @pierre/diffs 1.6.4，替换 CodeMirror merge 与自写折叠/改动块/Worker；主题经 --diffs-* 从 --hu-* 映射。",
+      "status": "answered",
+      "round": 4,
+      "answer": "用户指定学习并使用 diffs.com 的 diff 技术栈，具体取舍见 ADR-006。",
+      "log_ref": "LOG-013"
+    }
+  ]
+}

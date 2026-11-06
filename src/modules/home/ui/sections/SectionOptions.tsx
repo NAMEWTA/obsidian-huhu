@@ -23,7 +23,6 @@ export function SectionOptions({
 	const t = useT(),
 		[cover, setCover] = useState(column.showCover !== false),
 		[template, setTemplate] = useState(column.libraryConfig?.templatePaths?.[0] ?? ''),
-
 		[tasks, setTasks] = useState<TaskTemplate[]>(() => structuredClone(store.host.settings.taskTemplates));
 	const project = column.sectionType === 'projects' || column.sectionType === 'notes';
 	return (
@@ -31,8 +30,8 @@ export function SectionOptions({
 			title={t('home.dashboard.settings')}
 			onClose={onClose}
 			onSave={() => {
-				void observeBoardAction((
-					project
+				void observeBoardAction(
+					(project
 						? store.edit((data) => {
 								const col = data.columns.find((c) => c.name === column.name);
 								if (col) {
@@ -50,7 +49,8 @@ export function SectionOptions({
 						: store.settings((s) => {
 								s.taskTemplates = tasks;
 							})
-				).then(onClose));
+					).then(onClose),
+				);
 			}}
 		>
 			{project ? (
@@ -61,7 +61,13 @@ export function SectionOptions({
 					</Label>
 					<Label className="grid gap-2">
 						{t('home.dashboard.template')}
-						<VaultPathField app={store.host.app} kind="file" value={template} label={t('home.dashboard.template')} onChange={setTemplate} />
+						<VaultPathField
+							app={store.host.app}
+							kind="file"
+							value={template}
+							label={t('home.dashboard.template')}
+							onChange={setTemplate}
+						/>
 					</Label>
 				</>
 			) : (
@@ -88,17 +94,19 @@ export function SectionOptions({
 							/>
 							<div className="flex gap-2">
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() => {
-										void observeBoardAction(store.sync
-											.addCard(column.name, {
-												title: task.name,
-												type: 'task',
-												tasks: task.tasks
-													.filter(Boolean)
-													.map((text) => ({ text, checked: false })),
-											})
-											.then(onClose));
+										void observeBoardAction(
+											store.sync
+												.addCard(column.name, {
+													title: task.name,
+													type: 'task',
+													tasks: task.tasks
+														.filter(Boolean)
+														.map((text) => ({ text, checked: false })),
+												})
+												.then(onClose),
+										);
 									}}
 								>
 									{t('home.dashboard.useTemplate')}
@@ -110,7 +118,7 @@ export function SectionOptions({
 						</div>
 					))}
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => setTasks([...tasks, { id: crypto.randomUUID(), name: '', tasks: [] }])}
 					>
 						{t('home.dashboard.addTemplate')}

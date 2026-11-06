@@ -10,9 +10,11 @@ export async function addCalendarTask(app: App, iso: string, title: string, time
 		new Notice(t('calendarUnified.unavailable'));
 		return null;
 	}
-	const result = await calendar.createTask({ date: iso, text: title, time: time || undefined });
+	const result = await calendar.createTask({ date: iso, text: title, time: time || undefined, strictTime: true });
 	if ('code' in result) {
-		new Notice(t(`calendarUnified.error.${result.code}`));
+		new Notice(
+			t(result.timeReason ? `calendarUnified.time.${result.timeReason}` : `calendarUnified.error.${result.code}`),
+		);
 		return null;
 	}
 	const file = contentFiles(app).getFileByPath(result.task.path);

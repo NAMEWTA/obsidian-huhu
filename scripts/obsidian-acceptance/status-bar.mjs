@@ -25,7 +25,7 @@ if (minimalDir) {
 	for (const file of ['theme.css', 'manifest.json', 'LICENSE']) await fs.copyFile(path.join(minimalDir, file), path.join(themeDir, file));
 	await fs.writeFile(path.join(vault, '.obsidian/appearance.json'), JSON.stringify({ cssTheme: 'Minimal' }));
 }
-const modules = { home: true, archives: false, comments: false, agent: false, icons: false, sync: false, automations: false, notifications: true };
+const modules = { home: true, archives: false, comments: false, agent: false, icons: false, versioning: false, automations: false, notifications: true };
 await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'en', introSeen: true, modules } } }));
 await fs.writeFile(path.join(vault, 'Welcome.md'), '# HUHU status bar fixture\n');
 await fs.writeFile(path.join(profile, 'obsidian.json'), JSON.stringify({ updateDisabled: true, vaults: { abcdef1234567890: { path: vault, ts: Date.now(), open: true } } }));
@@ -175,14 +175,14 @@ try {
 	results.push({ registrations: { before, after } });
 	// 2. A status entry opens its page, even with no workbench leaf.
 	await click(c, '.status-bar [data-status-segment=notifications] button');
-	await waitFor(() => c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().target.feature === 'notifications'`), 'segment click navigates');
+	await waitFor(() => c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().route.feature === 'notifications'`), 'segment click navigates');
 	await c.evaluate(`app.workspace.detachLeavesOfType('huhu-workbench-view'); true`);
 	await delay(300);
 	// 2. The panel can open the workbench on the usage page.
 	await click(c, '.status-bar .huhu-status-usage button');
 	await click(c, '[data-slot=dropdown-menu-content] [role=menuitem]', 'Usage details and history');
 	await waitFor(() => c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view').length === 1`), 'workbench opened from usage');
-	assert.equal(await c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().target.feature`), 'terminal');
+	assert.equal(await c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().route.feature`), 'terminal');
 	await c.evaluate(`app.workspace.detachLeavesOfType('huhu-workbench-view'); true`);
 	await delay(300);
 	s = await state(c);

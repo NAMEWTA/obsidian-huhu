@@ -45,7 +45,7 @@ export function AgentBoard({ controller, select }: { controller: AgentController
 	};
 	return (
 		<div className="flex h-full min-h-0 flex-1 flex-col" data-agent-board="">
-			<div className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-3">
+			<div className="flex flex-wrap items-center gap-2 border-b border-[var(--hu-line)] px-4 py-3">
 				<h2 className="mr-auto text-sm font-semibold">{t('agent.workspace.nav.board')}</h2>
 				<Input
 					value={query}
@@ -103,7 +103,7 @@ export function AgentBoard({ controller, select }: { controller: AgentController
 			<div className="flex min-h-0 flex-1 gap-3 overflow-auto p-4">
 				{['attention', 'working', 'done', ...(idle ? ['idle'] : [])].map((key) => (
 					<section key={key} className="flex min-w-52 flex-1 flex-col gap-2">
-						<h3 className="text-xs font-semibold text-muted-foreground">
+						<h3 className="text-xs font-semibold text-[var(--hu-fg-2)]">
 							{t(`agent.workspace.bucket.${key}`)} · {tabs.filter((tab) => bucket(tab) === key).length}
 						</h3>
 						{tabs
@@ -151,21 +151,21 @@ function BoardCard({
 	return (
 		<article
 			className={cn(
-				'relative rounded-lg border border-border/50 bg-card p-3',
+				'relative rounded-lg border border-[var(--hu-line)]/50 bg-[var(--hu-raised)] p-3',
 				['waiting', 'permission'].includes(tab.state) && 'bg-agent-question/8',
-				tab.state === 'done' && 'bg-status-success/5',
+				tab.state === 'done' && 'bg-[var(--hu-success)]/5',
 			)}
 		>
 			<button type="button" className="flex w-full flex-col gap-2 text-left" onClick={select}>
 				<span className="flex w-full items-center gap-2">
 					<AgentIcon agent={tab.agentId!} size={14} />
-					<span className="min-w-0 flex-1 truncate text-[13px] font-medium">
+					<span className="min-w-0 flex-1 truncate text-sm font-medium">
 						{tab.customTitle || tab.title}
 					</span>
 					<StatusDot state={tab.state} />
 				</span>
-				<span className="line-clamp-2 text-xs text-muted-foreground">{preview || tab.title}</span>
-				<span className="block w-full truncate text-[11px] text-muted-foreground">
+				<span className="line-clamp-2 text-xs text-[var(--hu-fg-2)]">{preview || tab.title}</span>
+				<span className="block w-full truncate text-sm text-[var(--hu-fg-2)]">
 					{shortPath(tab.panes[tab.focusedSessionId]?.cwd || '')} ·{' '}
 					{now - tab.createdAt < 60000
 						? t('agent.justNow')
@@ -190,7 +190,7 @@ function BoardCard({
 					disabled={!session?.running}
 					className="h-7 min-w-0 text-xs"
 				/>
-				<Button variant="ghost" size="xs" disabled={!session?.running || !text.trim()}>
+				<Button variant="ghost" size="sm" disabled={!session?.running || !text.trim()}>
 					{t('agent.board.send')}
 				</Button>
 			</form>

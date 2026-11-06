@@ -1,6 +1,6 @@
 /* Adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: styles.css (layout effects). */
 .huhu-dashboard-root {
-	font-family: var(--nd-font-sans);
+	font-family: var(--hu-font-ui);
 	position: relative;
 	isolation: isolate;
 	contain: paint;
@@ -12,4 +12,12 @@
 .huhu-dashboard-root[data-dashboard-layout='mobile'] * {
 	backdrop-filter: none;
 	-webkit-backdrop-filter: none;
+}
+
+/* Controls retain their own physical hit partitions at either pointer density. */
+.huhu-dashboard-root :is(button, input:not([type='hidden'], [type='checkbox'], [type='radio']), [role='combobox']) {
+	min-height: var(--hu-hit);
+}
+.huhu-dashboard-root button {
+	min-width: var(--hu-hit);
 }

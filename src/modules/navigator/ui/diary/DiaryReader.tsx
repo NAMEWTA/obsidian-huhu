@@ -4,7 +4,10 @@ import { registerMessages } from '../../../../shared/i18n';
 import { messages } from './i18n';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Button } from '../../../../ui/components/button';
-import { Input } from '../../../../ui/components/input';
+import { DateField } from '../../../../ui/components/huhu/date/DateField';
+import { Choice } from '../../../../ui/components/huhu/Choice';
+import { CalendarMonth, calendarDate, type CalendarNoteAction } from '../../../../ui/components/huhu/calendar/CalendarMonth';
+import { startOfPeriod, type Period } from '../../../../shared/periodic-paths';
 import { Label } from '../../../../ui/components/label';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { DesignScope } from '../../../../ui/react/design-scope';
@@ -30,18 +33,23 @@ export function DiaryReader({ port, initialDate, engineLoader = loadTurnEngine, 
 	const transition = useRef<AbortController | null>(null);
 	const [width, setWidth] = useState(0), [reduced, setReduced] = useState(false);
 	const [selected, setSelected] = useState(initialDate ?? ''), [jump, setJump] = useState(initialDate ?? iso(new Date()));
+	const [calendarAnchor, setCalendarAnchor] = useState(() => calendarDate(initialDate ?? iso(new Date())));
+	const [period, setPeriod] = useState<Period>('day');
 	const [year, setYear] = useState(initialDate ? Number(initialDate.slice(0, 4)) : new Date().getFullYear());
 	const [entries, setEntries] = useState<PeriodicNoteListEntry[]>([]), [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false), [retry, setRetry] = useState(0), [months, setMonths] = useState(false);
 	const [fallback, setFallback] = useState(false), [turning, setTurning] = useState(false);
 	const [paused, setPaused] = useState(false);
 	const epoch = useRef(0), stale = useRef(false);
+	const alive = useRef(true), position = useRef(''); position.current = `${period}:${selected}`;
+	useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
 	const [revision, setRevision] = useState(0);
 	const cache = useRef(new Map<string, string>());
 	const [bodies, setBodies] = useState(new Map<string, string>()), [bodyError, setBodyError] = useState(false);
 	const narrow = width < 600, step = narrow ? 1 : 2;
 	const volumes = useMemo(() => splitVolumes(entries.map((entry) => entry.date), 50), [entries]);
-	const index = entries.findIndex((entry) => entry.date === selected);
+	const selectedNote = selected ? port.periodic.inspect(period, localDate(selected)) : undefined;
+	const index = entries.findIndex(entry => selectedNote?.status === 'existing' && entry.path === selectedNote.path);
 	const spans = useMemo(() => monthSpans(entries.map((entry) => entry.date), volumes), [entries, volumes]);
 	const pages = index < 0 ? [] : entries.slice(index, index + step);
 	const first = `${year}-01-01`, last = `${year}-12-31`;
@@ -71,7 +79,7 @@ export function DiaryReader({ port, initialDate, engineLoader = loadTurnEngine, 
 		let active = true;
 		const generation = epoch.current;
 		setLoading(true); setError(false);
-		void port.periodic.list('day', localDate(first), localDate(last)).then((notes) => {
+		void port.periodic.list(period, localDate(first), localDate(last)).then((notes) => {
 			if (!active || generation !== epoch.current) return;
 			stale.current = false;
 			const ordered = [...notes].sort((a, b) => b.date.localeCompare(a.date));
@@ -79,7 +87,7 @@ export function DiaryReader({ port, initialDate, engineLoader = loadTurnEngine, 
 			setSelected((previous) => previous || ordered[0]?.date || iso(new Date()));
 		}, () => { if (active && generation === epoch.current) setError(true); }).finally(() => { if (active && generation === epoch.current) setLoading(false); });
 		return () => { active = false; };
-	}, [port, first, last, retry, visible, paused, revision]);
+	}, [port, period, first, last, retry, visible, paused, revision]);
 	useEffect(() => {
 		if (!visible || index < 0 || stale.current) return;
 		let active = true;
@@ -109,7 +117,7 @@ export function DiaryReader({ port, initialDate, engineLoader = loadTurnEngine, 
 		const date = localDate(value);
 		if (!Number.isFinite(date.getTime()) || iso(date) !== value) return;
 		transition.current?.abort(); transition.current = null; setTurning(false);
-		setSelected(value); setJump(value); setYear(date.getFullYear());
+		setSelected(value); setJump(value); setYear(date.getFullYear()); setCalendarAnchor(date);
 	};
 	const go = async (direction: number) => {
 		if (transition.current || stale.current || loading || !visible || !entries.length) return;
@@ -127,41 +135,53 @@ export function DiaryReader({ port, initialDate, engineLoader = loadTurnEngine, 
 		} finally { if (transition.current === controller) { transition.current = null; setTurning(false); } }
 	};
 	const open = () => {
-		const entry = entries[index], current = port.periodic.inspect('day', localDate(selected));
+		const entry = entries[index], current = port.periodic.inspect(period, localDate(selected));
 		if (stale.current || loading || !entry || current.status !== 'existing' || current.path !== entry.path) return;
-		void port.periodic.open('day', localDate(selected), { create: false }).then((opened) => { if (!opened) setBodyError(true); }, () => setBodyError(true)); };
-	const actionClass = 'min-h-9 @max-[600px]:min-h-11';
-	return <DesignScope className="h-full min-w-0 overflow-auto bg-background text-foreground">
-		<div ref={attachRoot} style={narrow ? { '--nd-hit-size': '44px' } as CSSProperties : undefined} data-diary-reader data-layout={narrow ? 'single' : 'double'} className="@container min-w-0 space-y-5 p-6 @max-[600px]:p-4" onKeyDown={(event) => {
+		const identity = position.current;
+		void port.periodic.open(period, localDate(selected), { create: false }).then((opened) => { if (alive.current && identity === position.current && !opened) setBodyError(true); }, () => { if (alive.current && identity === position.current) setBodyError(true); }); };
+	const openPeriodic = (value: Period, date: string, action: CalendarNoteAction) => {
+		const identity = position.current;
+		void port.periodic.open(value, calendarDate(date), { create: action === 'create' || action === 'diary', newTab: action === 'tab' || action === 'diary', split: action === 'split', ownerWindow: win }).then(opened => { if (alive.current && identity === position.current && !opened) setBodyError(true); }, () => { if (alive.current && identity === position.current) setBodyError(true); });
+	};
+	const actionClass = 'min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]';
+	return <DesignScope className="h-full min-w-0 overflow-auto bg-[var(--hu-canvas)] text-[var(--hu-fg)]">
+		<div ref={attachRoot} style={narrow ? { '--hu-hit': '44px' } as CSSProperties : undefined} data-diary-reader data-layout={narrow ? 'single' : 'double'} className="@container min-w-0 space-y-4 p-6 @max-[600px]:p-4" onKeyDown={(event) => {
 			if (event.nativeEvent.isComposing || event.altKey || event.ctrlKey || event.metaKey || (event.target as HTMLElement).closest('input,textarea,select,[contenteditable=true]')) return;
 			if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); void go(event.key === 'ArrowRight' ? 1 : -1); }
 		}}>
-			<header className="flex flex-wrap items-start justify-between gap-3"><div><h1 className="m-0 text-xl font-semibold">{t('navigator.diary.title')}</h1><p className="mt-2 text-sm text-muted-foreground">{t('navigator.diary.subtitle')}</p></div><span className="text-xs text-muted-foreground">{t('navigator.diary.volume', { volume: Math.max(1, volumeOf(volumes, index)), total: Math.max(1, volumes.length) })}</span>{actions}</header>
+			<header className="flex flex-wrap items-start justify-between gap-3"><div><h1 className="m-0 text-xl font-semibold">{t('navigator.diary.title')}</h1><p className="mt-2 text-sm text-[var(--hu-fg-3)]">{t('navigator.diary.subtitle')}</p></div><span className="text-xs text-[var(--hu-fg-3)]">{t('navigator.diary.volume', { volume: Math.max(1, volumeOf(volumes, index)), total: Math.max(1, volumes.length) })}</span>{period === 'day' ? actions : <Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="secondary" onClick={() => openPeriodic(period, selected || jump, index < 0 ? 'create' : 'open')}>{t(index < 0 ? 'calendarUnified.createNote' : 'calendarUnified.openNote')}</Button>}</header>
 			{!visible ? <EmptyState title={t('navigator.diary.hidden')} description={t('navigator.diary.hiddenDetail')} /> : <>
 				<form className="flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); selectDate(jump); }}>
-					<Button className={actionClass} type="button" variant="outline" aria-expanded={months} onClick={() => setMonths(!months)}>{t('navigator.diary.months')}</Button>
-					<div className="min-w-0 space-y-1"><Label htmlFor={inputId}>{t('navigator.diary.date')}</Label><Input id={inputId} type="date" required value={jump} onChange={(event) => setJump(event.target.value)} /></div>
+					<Choice label={t('navigator.diary.title')} value={period} options={(['day', 'week', 'month', 'quarter', 'year'] as const).map(value => [value, t(`calendarUnified.period.${value}`)] as const)} onChange={value => { transition.current?.abort(); cache.current.clear(); setBodies(new Map()); setEntries([]); const next = value as Period; setPeriod(next); const normalized = iso(startOfPeriod(next, localDate(selected || jump), port.periodic.weekStart?.() ?? 1)); setSelected(normalized); setJump(normalized); }} /><Button className={actionClass} type="button" variant="secondary" aria-expanded={months} onClick={() => setMonths(!months)}>{t('navigator.diary.months')}</Button>
+					<div className="min-w-0 space-y-1"><Label htmlFor={inputId}>{t('navigator.diary.date')}</Label><DateField id={inputId} required clearable={false} collisionBoundary={element} value={jump} onDraftChange={setJump} onChange={value => { if (value) setJump(value); }} /></div>
 					<Button className={actionClass} type="submit">{t('navigator.diary.go')}</Button>
-					<Button className={actionClass} type="button" variant="outline" disabled={index < 0 || loading} onClick={open}>{t('navigator.diary.open')}</Button>
+					<Button className={actionClass} type="button" variant="secondary" disabled={index < 0 || loading} onClick={open}>{t('navigator.diary.open')}</Button>
 					<Button className={actionClass} type="button" variant="ghost" onClick={() => { setPaused(false); setRetry(retry + 1); }}>{t('navigator.diary.retry')}</Button>
 				</form>
-				<p className="text-xs text-muted-foreground">{t('navigator.diary.range', { from: first, to: last })}</p>
-				{months && <nav aria-label={t('navigator.diary.months')} className="flex flex-wrap gap-2">{spans.map((span) => <Button key={span.key} className={actionClass} variant="outline" aria-pressed={selected.startsWith(span.key)} onClick={() => selectDate(entries[span.first]!.date)}>{span.key}</Button>)}</nav>}
-				{error && <div role="alert" className="rounded-lg border border-border bg-muted p-4 text-sm">{t('navigator.diary.error')}</div>}
-				{bodyError && <div role="alert" className="rounded-lg border border-border bg-muted p-4 text-sm">{t('navigator.diary.readError')}</div>}
-				{fallback && <p role="status" className="rounded-lg border border-border bg-muted p-4 text-sm">{t('navigator.diary.fallbackDetail')}</p>}
-				{loading && <div role="status" aria-busy="true" className="flex flex-wrap items-center gap-3 rounded-lg bg-muted p-6 text-sm">{t('navigator.diary.loading')}<Button variant="outline" className={actionClass} onClick={() => { setPaused(true); setLoading(false); }}>{t('navigator.diary.cancel')}</Button></div>}
+				<p className="text-xs text-[var(--hu-fg-3)]">{t('navigator.diary.range', { from: first, to: last })}</p>
+				<div className="grid min-w-0 grid-cols-[272px_minmax(0,1fr)] gap-4 @max-[960px]:grid-cols-1">
+				<aside className="min-w-0 space-y-3 rounded-lg border border-[var(--hu-line)] bg-[var(--hu-surface)] p-3">
+					<CalendarMonth anchor={calendarAnchor} selected={selected || jump} weekStart={port.periodic.weekStart?.() ?? 1} weekNumbers={port.periodic.display?.().weekNumbers ?? true} onAnchor={setCalendarAnchor} onSelect={selectDate} onToday={() => selectDate(iso(new Date()))} onNote={openPeriodic} periods={(['day','week','month','quarter','year'] as const).map(value => ({period:value,status:port.periodic.inspect(value, calendarDate(selected || jump)).status}))} day={date => ({note:port.periodic.inspect('day',calendarDate(date)).status,tasks:0,openTasks:0})} />
+				{months && <nav aria-label={t('navigator.diary.months')} className="flex flex-wrap gap-2">{spans.map((span) => <Button key={span.key} className={actionClass} variant="secondary" aria-pressed={selected.startsWith(span.key)} onClick={() => selectDate(entries[span.first]!.date)}>{span.key}</Button>)}</nav>}
+					<nav aria-label={t('navigator.diary.months')} className="flex max-h-64 flex-col gap-1 overflow-auto">{entries.filter(entry => entry.date.startsWith(iso(calendarAnchor).slice(0,7))).map(entry => <Button key={entry.path} variant={entry.path === selectedNote?.path ? 'secondary' : 'ghost'} className="w-full justify-start min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" aria-current={entry.path === selectedNote?.path ? 'date' : undefined} onClick={() => selectDate(entry.date)}>{entry.date}</Button>)}</nav>
+				</aside><div className="min-w-0">
+
+				{error && <div role="alert" className="rounded-lg border border-[var(--hu-line)] bg-[var(--hu-sunken)] p-4 text-sm">{t('navigator.diary.error')}</div>}
+				{bodyError && <div role="alert" className="rounded-lg border border-[var(--hu-line)] bg-[var(--hu-sunken)] p-4 text-sm">{t('navigator.diary.readError')}</div>}
+				{fallback && <p role="status" className="rounded-lg border border-[var(--hu-line)] bg-[var(--hu-sunken)] p-4 text-sm">{t('navigator.diary.fallbackDetail')}</p>}
+				{loading && <div role="status" aria-busy="true" className="flex flex-wrap items-center gap-3 rounded-lg bg-[var(--hu-sunken)] p-6 text-sm">{t('navigator.diary.loading')}<Button variant="secondary" className={actionClass} onClick={() => { setPaused(true); setLoading(false); }}>{t('navigator.diary.cancel')}</Button></div>}
 				{paused && <p role="status">{t('navigator.diary.hidden')}</p>}
-				<section aria-label={t('navigator.diary.pages')} aria-busy={turning} className="relative rounded-xl bg-muted p-8 @max-[600px]:p-3">
-					<div data-diary-book className={narrow ? 'min-w-0 rounded-xl border border-border bg-card' : 'grid min-h-[440px] min-w-0 grid-cols-2 rounded-xl border border-border bg-card'}>
-						{!loading && !pages.length ? <EmptyState title={t('navigator.diary.empty')} description={t('navigator.diary.emptyDetail')} /> : pages.map((entry) => <article key={entry.path} data-diary-page className="min-w-0 overflow-auto border-border p-8 text-sm leading-8 text-card-foreground @max-[600px]:p-5 [&+article]:border-l">
-							<p className="font-mono text-xs text-muted-foreground">{entry.date.slice(0, 7)}</p><h2 className="my-6 text-3xl font-medium"><time dateTime={entry.date}>{entry.date}</time></h2>
-							{bodies.has(entry.path) ? <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{bodies.get(entry.path)}</div> : <p role={bodyError ? 'alert' : 'status'}>{t(bodyError ? 'navigator.diary.readError' : 'navigator.diary.loading')}</p>}
+				<section aria-label={t('navigator.diary.pages')} aria-busy={turning} className="relative mx-auto max-w-[1440px] px-6 pb-12 pt-7 @max-[600px]:px-0 @max-[600px]:pt-4">
+					<div data-diary-book className={narrow ? 'mx-auto min-w-0 max-w-[680px]' : 'mx-auto grid min-h-[440px] min-w-0 grid-cols-2 gap-4'}>
+						{!loading && !pages.length ? <EmptyState title={t('navigator.diary.empty')} description={t('navigator.diary.emptyDetail')} /> : pages.map((entry) => <article key={entry.path} data-diary-page className="relative flex min-h-[min(640px,70vh)] min-w-0 flex-col overflow-auto rounded-[6px_14px_14px_6px] border border-[var(--hu-line)] bg-[var(--hu-raised)] bg-[linear-gradient(90deg,color-mix(in_srgb,var(--hu-raised)_92%,var(--hu-fg))_0,var(--hu-raised)_14px)] px-14 pb-7 pt-11 text-[var(--hu-fg)] shadow-[var(--hu-shadow-card)] @max-[600px]:px-6 @max-[600px]:pb-5 @max-[600px]:pt-7">
+							<p className="font-mono text-xs text-[var(--hu-fg-3)]">{entry.date.slice(0, 7)}</p><h2 className="mb-6 mt-2 border-b border-[var(--hu-line)] pb-4 font-[family-name:var(--hu-font-read)] text-3xl font-medium"><time dateTime={entry.date}>{entry.date}</time></h2>
+							{bodies.has(entry.path) ? <div className="flex-1 whitespace-pre-wrap break-words font-[family-name:var(--hu-font-read)] text-[17px] leading-[1.95] [overflow-wrap:anywhere]">{bodies.get(entry.path)}</div> : <p role={bodyError ? 'alert' : 'status'}>{t(bodyError ? 'navigator.diary.readError' : 'navigator.diary.loading')}</p>}<footer className="mt-8 border-t border-[var(--hu-line)] pt-3 text-xs text-[var(--hu-fg-3)] [overflow-wrap:anywhere]">{entry.path}</footer>
 						</article>)}
 					</div>
-					<div ref={overlay} aria-hidden="true" inert className="pointer-events-none absolute inset-8 overflow-hidden [&_.stf__parent]:relative [&_.stf__wrapper]:relative [&_.stf__wrapper]:h-full [&_.stf__wrapper]:w-full [&_.stf__block]:absolute [&_.stf__block]:inset-0 [&_.stf__block]:h-full [&_.stf__block]:w-full [&_.stf__block]:[perspective:2000px] [&_.stf__item]:absolute [&_.stf__item]:hidden [&_.stf__item]:bg-card [&_.stf__item]:[transform-style:preserve-3d]" />
-					<footer className="mt-5 flex flex-wrap justify-between gap-2"><Button className={actionClass} variant="outline" disabled={loading || turning || index <= 0} onClick={() => { void go(-1); }}>{t('navigator.diary.previous')}</Button><Button className={actionClass} variant="outline" disabled={loading || turning || index + step >= entries.length} onClick={() => { void go(1); }}>{t('navigator.diary.next')}</Button></footer>
+					<div ref={overlay} aria-hidden="true" inert className="pointer-events-none absolute inset-8 overflow-hidden [&_.stf__parent]:relative [&_.stf__wrapper]:relative [&_.stf__wrapper]:h-full [&_.stf__wrapper]:w-full [&_.stf__block]:absolute [&_.stf__block]:inset-0 [&_.stf__block]:h-full [&_.stf__block]:w-full [&_.stf__block]:[perspective:2000px] [&_.stf__item]:absolute [&_.stf__item]:hidden [&_.stf__item]:bg-[var(--hu-surface)] [&_.stf__item]:[transform-style:preserve-3d]" />
+					<footer className="mt-5 flex flex-wrap justify-between gap-2"><Button className={actionClass} variant="secondary" disabled={loading || turning || index <= 0} onClick={() => { void go(-1); }}>{t('navigator.diary.previous')}</Button><Button className={actionClass} variant="secondary" disabled={loading || turning || index + step >= entries.length} onClick={() => { void go(1); }}>{t('navigator.diary.next')}</Button></footer>
 				</section>
+				</div></div>
 			</>}
 		</div>
 	</DesignScope>;

@@ -16,16 +16,14 @@ function overviewFolder(path?: string): string {
 
 class ContentSurface extends ReactSurface {
 	private folder: string;
-	constructor(
-		context: NativeSurfaceContext,
-		path?: string,
-	) {
+	private limit = 200;
+	constructor(context: NativeSurfaceContext, path?: string) {
 		super(context);
 		this.folder = overviewFolder(path);
 	}
 	protected renderContent() {
 		const { files } = huhuVaultSnapshot(this.app.vault);
-		const { rows, total } = folderOverview(files, this.folder);
+		const { rows, total } = folderOverview(files, this.folder, this.limit);
 		return h(
 			'div',
 			{ className: 'flex h-full min-h-0 flex-col gap-3 overflow-auto p-6' },
@@ -33,8 +31,19 @@ class ContentSurface extends ReactSurface {
 				folder: this.folder,
 				rows,
 				total,
+				onLoadMore: () => {
+					this.limit += 200;
+					this.rerender();
+				},
 				onOpen: (path: string) => {
-					void openInNativeTab(this.app, path, undefined, this.contentEl.ownerDocument.defaultView ?? undefined).catch((error: unknown) => new Notice(String(error)));
+					return openInNativeTab(
+						this.app,
+						path,
+						undefined,
+						this.contentEl.ownerDocument.defaultView ?? undefined,
+					).catch((error: unknown) => {
+						new Notice(String(error));
+					});
 				},
 			}),
 		);
@@ -61,8 +70,15 @@ class ContentSurface extends ReactSurface {
 		this.registerEvent(vault.on('rename', refresh));
 	}
 	async show(path: string | undefined, signal: AbortSignal, fragment?: string): Promise<void> {
-		const folder = await openContentLocation(this.app, path, signal, fragment, this.contentEl.ownerDocument.defaultView ?? undefined);
+		const folder = await openContentLocation(
+			this.app,
+			path,
+			signal,
+			fragment,
+			this.contentEl.ownerDocument.defaultView ?? undefined,
+		);
 		if (signal.aborted) return;
+		if (this.folder !== folder) this.limit = 200;
 		this.folder = folder;
 		this.rerender();
 	}
@@ -72,7 +88,10 @@ export const createContentPage: PageCreate = async (context, target) => {
 	const surface = new ContentSurface(context, target.resourceId);
 	return {
 		surface,
-		getTarget: () => ({ feature: 'content', ...(surface.current !== HUHU_VISIBLE_ROOT ? { resourceId: surface.current } : {}) }),
+		getTarget: () => ({
+			feature: 'content',
+			...(surface.current !== HUHU_VISIBLE_ROOT ? { resourceId: surface.current } : {}),
+		}),
 		navigate: (next, signal) => surface.show(next.resourceId, signal, next.focusId),
 	};
 };

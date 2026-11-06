@@ -386,7 +386,3 @@ body:where(.huhu-iconic-enabled)[data-huhu-iconic-theme="Terminal"] .workspace-l
 body:where(.huhu-iconic-enabled)[data-huhu-iconic-theme="Ukiyo"] .workspace-leaf > .workspace-leaf-content[data-type="file-explorer"] > .nav-files-container.node-insert-event {
 	padding: var(--size-4-1) var(--size-4-3) var(--size-4-6) var(--size-4-3);
 }
-
-
-/* A settings label keeps a readable measure; its control wraps below it in a narrow container. */
-.huhu-settings-stack [data-slot="settings-row"] > div:first-child:not(#\#):not(#\#) { flex: 1 1 10rem; }

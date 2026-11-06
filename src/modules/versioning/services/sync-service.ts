@@ -1,4 +1,7 @@
-import { moment } from 'obsidian';
+import type { ConflictRestoreAdmission } from '../core/restore';
+import { applySelectedHunks } from '../core/hunk-restore';
+import type { IndexHunkRequest } from '../core/history';
+import { nowMoment } from '../../../host/obsidian/datetime';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { SyncSettings } from '../settings';
 import type { CloneProgress, CloneResult } from '../core/clone';
@@ -101,7 +104,6 @@ export interface SyncDependencies {
 	};
 	now?: () => number;
 }
-
 
 /**
  * Git sync for one vault: finds git and the repository, keeps their status, and runs every git operation
@@ -358,7 +360,7 @@ export class SyncService {
 		return formatCommitMessage(
 			template,
 			{
-				date: moment().format(settings.commitDateFormat || 'YYYY-MM-DD HH:mm:ss'),
+				date: nowMoment().format(settings.commitDateFormat || 'YYYY-MM-DD HH:mm:ss'),
 				hostname: this.deps.host.hostname(),
 				files,
 			},
@@ -570,11 +572,49 @@ export class SyncService {
 			return { repo, place };
 		};
 		return {
-			run: (operationId, work) =>
+			run: (operationId, work, conflict, gitHunks) =>
 				this.queue.enqueue('restore:' + operationId, 'refresh', async () => {
 					const { repo } = await access();
 					const [state, status] = await Promise.all([repo.state(), repo.status()]);
-					if (state.operation || state.locked || status.conflicted.length)
+					if (gitHunks) {
+						if (
+							gitHunks.indexPath &&
+							gitHunks.indexPath !== gitHunks.path &&
+							!status.unstaged.some(
+								(file) =>
+									file.path === gitHunks.path &&
+									file.from === gitHunks.indexPath &&
+									file.worktree === 'R',
+							)
+						)
+							throw new GitError('local-changes', 'rename source changed');
+						const access = await this.versionAccess();
+						const [index, worktree] = await Promise.all([
+							access.reader.resolve({ kind: 'index', path: gitHunks.indexPath ?? gitHunks.path }),
+							access.reader.resolve({ kind: 'worktree', path: gitHunks.path }),
+						]);
+						if (
+							access.repositoryId !== gitHunks.repositoryId ||
+							this.snapshot.place?.toVault(gitHunks.path) !== gitHunks.targetPath ||
+							index.id !== gitHunks.indexId ||
+							worktree.id !== gitHunks.worktreeId ||
+							!['text', 'missing'].includes(index.status) ||
+							!['text', 'missing'].includes(worktree.status) ||
+							(index.status === 'text' ? index.snapshot.text : null) !== gitHunks.indexText ||
+							(worktree.status === 'text' ? worktree.snapshot.text : null) !== gitHunks.worktreeText
+						)
+							throw new GitError('local-changes', 'hunk source changed');
+					}
+
+					if (conflict) {
+						const verified = await this.conflictAdmission(conflict.path);
+						if (
+							verified.repositoryId !== conflict.repositoryId ||
+							verified.worktreeId !== conflict.worktreeId ||
+							verified.targetPath !== conflict.targetPath
+						)
+							throw new GitError('local-changes', 'conflict source changed');
+					} else if (state.operation || state.locked || status.conflicted.length)
 						throw new GitError(state.locked ? 'index-failed' : 'conflict');
 					try {
 						return await work();
@@ -611,6 +651,146 @@ export class SyncService {
 					.join('');
 			},
 		};
+	}
+
+	async openWorktreeInSystem(path: string, repositoryId: string): Promise<void> {
+		const access = await this.versionAccess();
+		if (access.repositoryId !== repositoryId || !this.snapshot.place?.toVault(path))
+			throw new GitError('outside-index');
+		const { openWorktreeInSystem } = await import('../platform/desktop/system-files');
+		await openWorktreeInSystem(access.repositoryId, path);
+	}
+
+	/** A narrow, read-only token for an unresolved ordinary file. It never stages or continues a merge. */
+	async conflictAdmission(path: string): Promise<ConflictRestoreAdmission> {
+		const access = await this.versionAccess();
+		const [state, status, endpoint] = await Promise.all([
+			access.repo.state(),
+			access.repo.status(),
+			access.reader.resolve({ kind: 'worktree', path }),
+		]);
+		if (
+			state.locked ||
+			(state.operation && state.operation !== 'merge') ||
+			!status.conflicted.some((file) => file.path === path) ||
+			endpoint.status !== 'text'
+		)
+			throw new GitError(state.locked ? 'index-failed' : 'conflict');
+		const targetPath = this.snapshot.place?.toVault(path);
+		if (!targetPath) throw new GitError('outside-index');
+		return { repositoryId: access.repositoryId, targetPath, path, worktreeId: endpoint.id };
+	}
+
+	/** Hunk writes use the same serial queue, with immutable endpoint and raw projection proofs. */
+	applyIndexHunks(request: IndexHunkRequest): Promise<void> {
+		return this.queue.enqueue(`hunks:${request.path}:${crypto.randomUUID()}`, 'stage', async () => {
+			const access = await this.versionAccess();
+			const { repo, reader } = access;
+			if (access.repositoryId !== request.repositoryId || (await repo.head()) !== request.head)
+				throw new GitError('local-changes', 'repository source changed');
+			const state = await repo.state(),
+				status = await repo.status();
+			if (state.locked || state.operation || status.conflicted.length)
+				throw new GitError(state.locked ? 'index-failed' : 'conflict');
+			const comparison = request.comparison;
+			const indexPath = request.direction === 'stage' ? comparison.left.path : request.path;
+			const renamed = comparison.left.path !== request.path;
+			if (
+				renamed &&
+				!(request.direction === 'stage' ? status.unstaged : status.staged).some(
+					(file) =>
+						file.path === request.path &&
+						file.from === comparison.left.path &&
+						(request.direction === 'stage' ? file.worktree : file.index) === 'R',
+				)
+			)
+				throw new GitError('local-changes', 'rename source changed');
+			const [index, worktree] = await Promise.all([
+				reader.resolve({ kind: 'index', path: indexPath }),
+				reader.resolve({ kind: 'worktree', path: request.path }),
+			]);
+			if (
+				index.id !== request.indexId ||
+				worktree.id !== request.worktreeId ||
+				!['text', 'missing'].includes(index.status)
+			)
+				throw new GitError('local-changes', 'hunk source changed');
+			const expectedIntent = request.direction === 'stage' ? 'unstaged' : 'staged';
+			if (
+				request.direction === 'stage'
+					? !['index', 'empty'].includes(comparison.left.ref.kind) || comparison.right.ref.kind !== 'worktree'
+					: comparison.right.ref.kind !== 'index' ||
+						(request.head === null
+							? comparison.left.ref.kind !== 'empty'
+							: comparison.left.ref.kind !== 'commit' || comparison.left.commitOid !== request.head)
+			)
+				throw new GitError('local-changes', 'invalid hunk direction');
+			if (
+				comparison.repositoryId !== access.repositoryId ||
+				comparison.intent !== expectedIntent ||
+				comparison.right.path !== request.path
+			)
+				throw new GitError('local-changes', 'invalid hunk comparison');
+			const [left, right] = await Promise.all([
+				reader.resolve(comparison.left.ref),
+				reader.resolve(comparison.right.ref),
+			]);
+			if (
+				left.id !== comparison.left.id ||
+				left.path !== comparison.left.path ||
+				right.id !== comparison.right.id ||
+				right.path !== request.path ||
+				!['text', 'missing'].includes(left.status) ||
+				!['text', 'missing'].includes(right.status) ||
+				((request.direction === 'stage' ? left : right).status === 'missing'
+					? index.status !== 'missing'
+					: (request.direction === 'stage' ? left.id : right.id) !== index.id)
+			)
+				throw new GitError('local-changes', 'hunk endpoints changed');
+			const leftText = left.status === 'text' ? left.snapshot.text : '',
+				rightText = right.status === 'text' ? right.snapshot.text : '';
+			const candidateText =
+				request.direction === 'unstage'
+					? applySelectedHunks(leftText, rightText, request.diff, request.selected)
+					: applySelectedHunks(
+							rightText,
+							leftText,
+							{
+								left: request.diff.right,
+								right: request.diff.left,
+								precise: request.diff.precise,
+								chunks: request.diff.chunks.map((chunk) => ({
+									fromA: chunk.fromB,
+									toA: chunk.toB,
+									fromB: chunk.fromA,
+									toB: chunk.toA,
+									precise: chunk.precise,
+								})),
+							},
+							request.selected.map((id) => {
+								const chunk = request.diff.chunks.find(
+									(item) => `${item.fromA}:${item.toA}:${item.fromB}:${item.toB}` === id,
+								);
+								if (!chunk) throw new GitError('local-changes', 'invalid hunk');
+								return `${chunk.fromB}:${chunk.toB}:${chunk.fromA}:${chunk.toA}`;
+							}),
+						);
+			const destination = request.direction === 'stage' ? right : left;
+			const candidate = destination.status === 'missing' && candidateText === '' ? null : candidateText;
+			if (candidate !== request.candidate) throw new GitError('local-changes', 'hunk candidate changed');
+			try {
+				await repo.replaceIndexContent(
+					indexPath,
+					index.blobOid ?? null,
+					candidate,
+					undefined,
+					destination.fileMode,
+				);
+			} finally {
+				this.gitWriteAt = this.now();
+				await this.load(false);
+			}
+		});
 	}
 
 	stage(paths: readonly string[]): Promise<void> {

@@ -58,7 +58,12 @@ export function RssConfigDialog({
 			.finally(() => setBusy(false));
 	};
 	return (
-		<DashboardDialog title={t('rss.configTitle')} onClose={onClose} busy={busy || invalid || duplicate} onSave={save}>
+		<DashboardDialog
+			title={t('rss.configTitle')}
+			onClose={onClose}
+			busy={busy || invalid || duplicate}
+			onSave={save}
+		>
 			<div className={c('dashboard-library-config-section')}>
 				<div className={c('dashboard-library-config-section-title')}>{t('rss.configFeeds')}</div>
 				<div className={c('dashboard-rss-cfg-list')}>
@@ -114,15 +119,15 @@ export function RssConfigDialog({
 				</div>
 				<div className={c('dashboard-rss-cfg-opml-row')}>
 					<Button
-						size="xs"
+						size="sm"
 						className={c('dashboard-modal-btn dashboard-modal-btn--confirm dashboard-rss-cfg-add')}
 						onClick={() => setDraft({ ...draft, feeds: [...draft.feeds, { url: '' }] })}
 					>
 						{t('rss.configAddFeed')}
 					</Button>
 					<Button
-						size="xs"
-						variant="outline"
+						size="sm"
+						variant="secondary"
 						className={c('dashboard-modal-btn dashboard-rss-cfg-opml-btn')}
 						onClick={() => file.current?.click()}
 					>
@@ -162,8 +167,8 @@ export function RssConfigDialog({
 						}}
 					/>
 					<Button
-						size="xs"
-						variant="outline"
+						size="sm"
+						variant="secondary"
 						className={c('dashboard-modal-btn dashboard-rss-cfg-opml-btn')}
 						disabled={invalid || duplicate}
 						onClick={() => {

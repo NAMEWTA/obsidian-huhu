@@ -131,7 +131,8 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 				{weather && (
 					<div className="hidden grid-cols-7 gap-1 text-center text-xs [@container(min-height:14rem)]:grid">
 						{weather.dailyDates.map((day, i) => (
-							<button
+							<Button
+								variant="ghost"
 								key={day}
 								type="button"
 								onClick={() => setDetails(true)}
@@ -144,7 +145,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 									{getWeatherEmoji(weather.dailyCodes[i] ?? -1)}
 								</span>
 								<span className="tabular-nums">{degrees(weather.dailyMax[i])}</span>
-							</button>
+							</Button>
 						))}
 					</div>
 				)}
@@ -158,10 +159,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 						onSelect={async (next) => {
 							await store.edit((draft) => {
 								const member = draft.widgets?.find(
-									(m) =>
-										m.provider === 'home' &&
-										m.kind === 'clock' &&
-										m.instanceId === entryId,
+									(m) => m.provider === 'home' && m.kind === 'clock' && m.instanceId === entryId,
 								);
 								if (!member) throw new Error(t('home.widget.instanceMissing'));
 								member.weather = next;

@@ -1,7 +1,17 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/rss-section.ts, src/rss-article-modal.ts
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
-import { Rss, RefreshCw, Settings, CheckCheck, Download, FileText, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+	Rss,
+	RefreshCw,
+	Settings,
+	CheckCheck,
+	Download,
+	FileText,
+	ExternalLink,
+	ChevronLeft,
+	ChevronRight,
+} from 'lucide-react';
 import { Component, MarkdownRenderer } from 'obsidian';
 import { toast } from 'sonner';
 import type { BoardStore } from '../../services/board-store';
@@ -216,13 +226,7 @@ export function RssSection({
 			</WidgetActions>
 			{(error || failedFeeds.length > 0 || rss.saveState.error) && (
 				<div role="alert" data-rss-problems className="flex shrink-0 flex-col gap-1.5">
-					{error && (
-						<Problem
-							message={error.message}
-							retry={error.retry}
-							dismiss={() => setError(null)}
-						/>
-					)}
+					{error && <Problem message={error.message} retry={error.retry} dismiss={() => setError(null)} />}
 					{failedFeeds.length > 0 && (
 						<Problem
 							message={t('rss.feedsFailed', {
@@ -235,9 +239,7 @@ export function RssSection({
 							}}
 						/>
 					)}
-					{rss.saveState.error && (
-						<Problem message={rss.saveState.error} retry={() => rss.retry()} />
-					)}
+					{rss.saveState.error && <Problem message={rss.saveState.error} retry={() => rss.retry()} />}
 				</div>
 			)}
 			{!config.feeds.length ? (
@@ -264,8 +266,8 @@ export function RssSection({
 						<Tooltip>
 							<TooltipTrigger asChild>
 								<Button
-									variant="outline"
-									size="icon"
+									variant="secondary"
+									size="icon-md"
 									aria-label={t('rss.markAllRead')}
 									disabled={!unread}
 									onClick={() => rss.markAllRead(filtered.map((r) => r.item.guid))}
@@ -281,7 +283,7 @@ export function RssSection({
 							</span>
 						)}
 						<Choice
-							className="ml-auto w-32 data-[size=sm]:h-9"
+							className="ml-auto w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 							label={t('rss.pageSize')}
 							value={String(size)}
 							options={[10, 20, 50, 100].map((n) => ({
@@ -314,7 +316,7 @@ export function RssSection({
 									icon={<Rss />}
 									title={t('rss.noMatch')}
 									action={
-										<Button variant="outline" size="sm" onClick={() => setFilter('all')}>
+										<Button variant="secondary" size="sm" onClick={() => setFilter('all')}>
 											{t('rss.all')}
 										</Button>
 									}
@@ -327,7 +329,7 @@ export function RssSection({
 									title={t('rss.noItems')}
 									action={
 										<Button
-											variant="outline"
+											variant="secondary"
 											size="sm"
 											onClick={() => {
 												requests.current.clear();
@@ -398,7 +400,7 @@ export function RssSection({
 						<div className="flex shrink-0 items-center justify-center gap-2">
 							<Button
 								variant="ghost"
-								size="icon"
+								size="icon-md"
 								disabled={current === 1}
 								aria-label={t('home.p2.prev')}
 								onClick={() => setPage(current - 1)}
@@ -410,7 +412,7 @@ export function RssSection({
 							</span>
 							<Button
 								variant="ghost"
-								size="icon"
+								size="icon-md"
 								disabled={current === pages}
 								aria-label={t('home.p2.next')}
 								onClick={() => setPage(current + 1)}
@@ -497,7 +499,9 @@ function ArticleReader({
 					<DialogDescription className="flex flex-wrap gap-x-3 gap-y-0.5 break-words">
 						<span>{row.feedTitle}</span>
 						{row.item.author && <span>{row.item.author}</span>}
-						{row.item.pubDate && <span>{new Date(row.item.pubDate).toLocaleString('sv').slice(0, 16)}</span>}
+						{row.item.pubDate && (
+							<span>{new Date(row.item.pubDate).toLocaleString('sv').slice(0, 16)}</span>
+						)}
 					</DialogDescription>
 				</DialogHeader>
 				<div
@@ -514,7 +518,7 @@ function ArticleReader({
 							<span>{t('rss.articleFailed')}</span>
 							<Button
 								size="sm"
-								variant="outline"
+								variant="secondary"
 								onClick={() => {
 									setMarkdown(undefined);
 									setAttempt((n) => n + 1);
@@ -527,7 +531,7 @@ function ArticleReader({
 				</div>
 				<DialogFooter>
 					<Button
-						variant={saved ? 'outline' : 'default'}
+						variant={saved ? 'secondary' : 'primary'}
 						disabled={busy}
 						aria-busy={busy || undefined}
 						onClick={() => void onSave()}
@@ -536,7 +540,7 @@ function ArticleReader({
 						{t(saved ? 'rss.openNote' : 'rss.saveToVault')}
 					</Button>
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							store.host.openExternal(row.item.link, store.ownerWindow);
 						}}
@@ -559,12 +563,12 @@ function Problem({ message, retry, dismiss }: { message: string; retry?: () => v
 		<div className="flex flex-wrap items-center gap-2 border-l-2 border-destructive bg-muted px-2 py-1.5 text-xs">
 			<span className="min-w-0 flex-1 break-words">{message}</span>
 			{retry && (
-				<Button size="xs" variant="outline" onClick={retry}>
+				<Button size="sm" variant="secondary" onClick={retry}>
 					{t('home.content.retry')}
 				</Button>
 			)}
 			{dismiss && (
-				<Button size="xs" variant="ghost" onClick={dismiss}>
+				<Button size="sm" variant="ghost" onClick={dismiss}>
 					{t('home.content.dismiss')}
 				</Button>
 			)}

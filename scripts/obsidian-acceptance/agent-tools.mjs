@@ -36,7 +36,7 @@ if (minimalDir) {
 	for (const file of ['theme.css', 'manifest.json']) files[`.obsidian/themes/Minimal/${file}`] = await fs.readFile(path.join(minimalDir, file), 'utf8');
 	files['.obsidian/appearance.json'] = JSON.stringify({ cssTheme: 'Minimal' });
 }
-const modules = { home: false, agent: true, automations: false, notifications: false, archives: false, comments: false, icons: false, sync: false, navigator: false };
+const modules = { home: false, agent: true, automations: false, notifications: false, archives: false, comments: false, icons: false, versioning: false, navigator: false };
 const runtime = await launchFreshVault({ root, port: Number(process.env.HUHU_TOOLS_PORT || 19621), files, settings: { version: 1, namespaces: { app: { language, introSeen: true, modules } } } });
 const c = runtime.connection;
 const results = [];

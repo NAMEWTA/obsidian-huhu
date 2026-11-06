@@ -1,3 +1,4 @@
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../../../ui/components/select';
 import { useEffect, useState } from 'react';
 import {
 	AnalyticsChart,
@@ -18,7 +19,6 @@ import { ExpenseEntryPanel } from './ExpenseEntryPanel';
 import { ledgerCsv } from './ledger-csv';
 import { RecordSaveStatus } from '../dialogs/RecordSaveStatus';
 import { RecordConfirm } from '../dialogs/RecordConfirm';
-
 export function ExpenseStatsPanel({ service, close }: { service: ExpenseService; close?: () => void }) {
 	const t = useT();
 	const [, refresh] = useState(0),
@@ -60,7 +60,7 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 				<>
 					<AnalyticsRangeControl state={range} />
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						disabled={!detail.length}
 						onClick={() => {
@@ -83,49 +83,67 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 			) : (
 				<>
 					<div className="flex flex-wrap gap-2">
-						<select
-							className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-							aria-label={t('analytics.allTypes')}
-							value={type}
-							onChange={(e) => {
-								setType(e.target.value as ExpenseType | '');
+						<Select
+							value={type || '__none__'}
+							onValueChange={(e) => {
+								setType((e === '__none__' ? '' : e) as ExpenseType | '');
 								setCategory('');
 							}}
 						>
-							<option value="">{t('analytics.allTypes')}</option>
-							{(['income', 'expense'] as const).map((kind) => (
-								<option key={kind} value={kind}>
-									{t(`expense.${kind}Label`)}
-								</option>
-							))}
-						</select>
-						<select
-							className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-							aria-label={t('analytics.primary')}
-							value={level}
-							onChange={(e) => {
-								setLevel(e.target.value as typeof level);
-								setCategory('');
-							}}
-						>
-							<option value="secondary">{t('analytics.secondary')}</option>
-							<option value="primary">{t('analytics.primary')}</option>
-						</select>
-						<select
-							className="h-9 max-w-52 rounded-md border border-input bg-background px-3 text-sm"
-							aria-label={t('analytics.allCategories')}
-							value={category}
-							onChange={(e) => setCategory(e.target.value)}
-						>
-							<option value="">{t('analytics.allCategories')}</option>
-							{[...new Set(records.filter((r) => !type || r.type === type).map(keyOf))]
-								.sort()
-								.map((c) => (
-									<option key={c} value={c}>
-										{label(c)}
-									</option>
+							<SelectTrigger
+								className="h-[var(--hu-ctl-h)] rounded-md border border-input bg-background px-3 text-sm"
+								aria-label={t('analytics.allTypes')}
+							>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="__none__">{t('analytics.allTypes')}</SelectItem>
+								{(['income', 'expense'] as const).map((kind) => (
+									<SelectItem key={kind} value={kind || '__none__'}>
+										{t(`expense.${kind}Label`)}
+									</SelectItem>
 								))}
-						</select>
+							</SelectContent>
+						</Select>
+						<Select
+							value={level || '__none__'}
+							onValueChange={(e) => {
+								setLevel((e === '__none__' ? '' : e) as typeof level);
+								setCategory('');
+							}}
+						>
+							<SelectTrigger
+								className="h-[var(--hu-ctl-h)] rounded-md border border-input bg-background px-3 text-sm"
+								aria-label={t('analytics.primary')}
+							>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="secondary">{t('analytics.secondary')}</SelectItem>
+								<SelectItem value="primary">{t('analytics.primary')}</SelectItem>
+							</SelectContent>
+						</Select>
+						<Select
+							value={category || '__none__'}
+							onValueChange={(e) => setCategory(e === '__none__' ? '' : e)}
+						>
+							<SelectTrigger
+								className="h-[var(--hu-ctl-h)] max-w-52 rounded-md border border-input bg-background px-3 text-sm"
+								aria-label={t('analytics.allCategories')}
+							>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="__none__">{t('analytics.allCategories')}</SelectItem>
+								{[...new Set(records.filter((r) => !type || r.type === type).map(keyOf))]
+									.sort()
+									.map((c) => (
+										<SelectItem key={c} value={c || '__none__'}>
+											{label(c)}
+										</SelectItem>
+									))}
+							</SelectContent>
+						</Select>
 						<RecordSaveStatus source={service} />
 					</div>
 					<p
@@ -153,7 +171,7 @@ export function ExpenseStatsPanel({ service, close }: { service: ExpenseService;
 							action={
 								(type || category) && (
 									<Button
-										variant="outline"
+										variant="secondary"
 										size="sm"
 										onClick={() => {
 											setType('');

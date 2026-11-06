@@ -1,7 +1,20 @@
+import { useDiffPreferences } from './diff/use-diff-preferences';
 import { type App, TFile } from 'obsidian';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Check, CheckCheck, Ellipsis, Minus, PanelLeft, Plus, RefreshCw, Undo2 } from 'lucide-react';
+import {
+	Check,
+	CheckCheck,
+	Ellipsis,
+	Minus,
+	PanelLeft,
+	Plus,
+	RefreshCw,
+	Undo2,
+	ArrowDown,
+	ArrowUp,
+} from 'lucide-react';
 import { t } from '../../../shared/i18n';
+import { Badge } from '../../../ui/components/badge';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Textarea } from '../../../ui/components/textarea';
@@ -17,21 +30,34 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/components/select';
 import { cn } from '../../../ui/lib/utils';
 import { useVisible } from '../../../ui/react/contexts';
-import type { ComparisonRequest, ResolvedComparison, RevisionFileChange, VersioningQueries } from '../core/history';
+import type {
+	ComparisonRequest,
+	RepositoryEndpoint,
+	ResolvedComparison,
+	RevisionFileChange,
+	VersioningQueries,
+} from '../core/history';
 import type { GraphCommit } from '../core/repo';
-import type { RefEntry } from '../core/refs';
+import { buildRefBadges, type RefEntry } from '../core/refs';
 import type { RunReport, SyncService, SyncSnapshot } from '../services/sync-service';
 import { hasConflictBlocks } from '../core/conflict-blocks';
 import { layoutGraph } from '../core/graph';
 import { AsyncDiffSurface, DiffMessage } from './DiffSurface';
-import { DEFAULT_DIFF_PREFERENCES, isCancelled, type DiffLayout, type DiffPreferences } from './diff-model';
+import { isCancelled, type DiffLayout, type DiffPreferences } from './diff/preferences';
 import { ChoiceList, FileNavigator, type NavigationFile } from './VersioningNavigator';
 import { confirmAction } from './dialogs';
 import { GraphCell, graphWidth } from './GraphCell';
 
 export type WorkbenchMode = 'changes' | 'history' | 'compare';
 
+import type { RestoreReceipt } from '../core/restore';
+import type { RestoreService } from '../services/restore-service';
+import { ConflictDiffView } from './diff/ConflictDiffView';
+import { CompareEndpoints } from './diff/CompareEndpoints';
+import { MultiDiffView } from './diff/MultiDiffView';
+
 export interface GitWorkbenchProps {
+	restores?: RestoreService;
 	app: App;
 	service: SyncService;
 	queries?: VersioningQueries;
@@ -51,6 +77,10 @@ interface SharedWorkspaceProps extends GitWorkbenchProps {
 	statusRevision: number;
 	layout?: DiffLayout;
 	onLayoutChange: (layout: DiffLayout) => void;
+	onRestoreReceipt: (receipt: RestoreReceipt, conflictPath?: string) => void;
+	comparePair: { a: string; b: string };
+	setComparePair: (pair: { a: string; b: string }) => void;
+	selectEndpoint: (side: 'a' | 'b', value: string) => void;
 	preferences: DiffPreferences;
 	onPreferencesChange: (preferences: DiffPreferences) => void;
 }
@@ -61,7 +91,11 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 	const [selection, setSelection] = useState({ requestId, mode: requestedMode });
 	const [navigationOpen, setNavigationOpen] = useState(true);
 	const [layout, setLayout] = useState<DiffLayout>();
-	const [preferences, setPreferences] = useState(DEFAULT_DIFF_PREFERENCES);
+	const [preferences, setPreferences] = useDiffPreferences();
+	const [restoreResult, setRestoreResult] = useState<{ receipt: RestoreReceipt; conflictPath?: string }>();
+	const [undoBusy, setUndoBusy] = useState(false);
+	const [undoError, setUndoError] = useState('');
+	const [comparePair, setComparePair] = useState({ a: snapshot.status?.head ?? 'HEAD', b: 'WORKTREE' });
 	const [statusVersion, setStatusVersion] = useState({ status: snapshot.status, revision: 0 });
 	const root = useRef<HTMLDivElement>(null);
 	if (selection.requestId !== requestId) setSelection({ requestId, mode: requestedMode });
@@ -70,6 +104,14 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 	const mode = selection.requestId === requestId ? selection.mode : requestedMode;
 	const shared: SharedWorkspaceProps = {
 		...props,
+		onRestoreReceipt: (receipt, conflictPath) => setRestoreResult({ receipt, conflictPath }),
+		comparePair,
+		setComparePair,
+		selectEndpoint: (side, value) => {
+			setComparePair((pair) => ({ ...pair, [preferences.swapped ? (side === 'a' ? 'b' : 'a') : side]: value }));
+			setSelection({ requestId, mode: 'compare' });
+			props.onModeChange?.('compare');
+		},
 		navigationOpen,
 		layout,
 		onLayoutChange: setLayout,
@@ -87,6 +129,41 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 			data-versioning-workbench
 			data-mode={mode}
 		>
+			{restoreResult && (
+				<div role="status" className="flex shrink-0 flex-wrap items-center gap-2 border-b px-3 py-2 text-xs">
+					<span>
+						{t(restoreResult.receipt.undoOf ? 'review.undoDone' : 'review.restored')} ·{' '}
+						{restoreResult.receipt.path}
+					</span>
+					<Button
+						size="sm"
+						variant="secondary"
+						disabled={
+							undoBusy ||
+							!!restoreResult.receipt.undoOf ||
+							!!restoreResult.receipt.undoneBy ||
+							!props.restores
+						}
+						onClick={() => {
+							if (!props.restores) return;
+							setUndoBusy(true);
+							setUndoError('');
+							void (async () => {
+								const admission = restoreResult.conflictPath
+									? await props.service.conflictAdmission(restoreResult.conflictPath)
+									: undefined;
+								const receipt = await props.restores!.undo(restoreResult.receipt.id, admission);
+								setRestoreResult({ receipt, conflictPath: restoreResult.conflictPath });
+							})()
+								.catch((error) => setUndoError(errorMessage(error)))
+								.finally(() => setUndoBusy(false));
+						}}
+					>
+						{t('review.undo')}
+					</Button>
+					{undoError && <span role="alert">{t(undoError)}</span>}
+				</div>
+			)}
 			{snapshot.device.restoreHold && (
 				<div
 					role="status"
@@ -95,7 +172,7 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 					<span className="min-w-0 flex-1">{t('versioning.restoreHold')}</span>
 					<Button
 						size="sm"
-						variant="outline"
+						variant="secondary"
 						disabled={!!snapshot.running}
 						onClick={() => void props.service.acknowledgeRestore().catch(props.report)}
 					>
@@ -133,10 +210,8 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 			</div>
 			{mode === 'changes' ? (
 				<ChangesWorkspace {...shared} />
-			) : mode === 'history' ? (
-				<HistoryWorkspace {...shared} />
 			) : (
-				<CompareWorkspace {...shared} />
+				<HistoryWorkspace {...shared} comparing={mode === 'compare'} />
 			)}
 		</div>
 	);
@@ -240,7 +315,9 @@ export function changeComparison(file: ChangedFile, head: string | null): Compar
 		};
 	return {
 		intent: 'unstaged',
-		left: file.untracked ? { kind: 'empty', path: file.path } : { kind: 'index', path: file.from ?? file.path },
+		left: file.untracked
+			? { kind: 'empty', path: file.path }
+			: { kind: 'index', path: file.status === 'R' ? (file.from ?? file.path) : file.path },
 		right: { kind: 'worktree', path: file.path },
 	};
 }
@@ -249,9 +326,37 @@ function ChangesWorkspace(props: SharedWorkspaceProps) {
 	const { snapshot, service, queries, app, report, statusRevision } = props;
 	const [group, setGroup] = useState<ChangeGroup>('unstaged');
 	const [selectedKey, setSelectedKey] = useState<string | null>(null);
-	const allFiles = changeFiles(snapshot);
-	const files = allFiles.filter((file) => file.group === group);
-	const selected = files.find((file) => file.key === selectedKey) ?? null;
+	const [statistics, setStatistics] = useState<{
+		id: number;
+		unstaged: readonly RevisionFileChange[];
+		staged: readonly RevisionFileChange[];
+	}>();
+	useEffect(() => {
+		if (!queries?.compareFiles) return;
+		const controller = new AbortController();
+		const left: RepositoryEndpoint = snapshot.status?.head
+			? { kind: 'commit', commit: snapshot.status.head }
+			: { kind: 'empty' };
+		void Promise.all([
+			queries.compareFiles({ kind: 'index' }, { kind: 'worktree' }, controller.signal),
+			queries.compareFiles(left, { kind: 'index' }, controller.signal),
+		]).then(
+			([unstaged, staged]) => {
+				if (!controller.signal.aborted) setStatistics({ id: statusRevision, unstaged, staged });
+			},
+			() => {
+				/* Source errors stay in the selected endpoint surface; absent statistics are never invented. */
+			},
+		);
+		return () => controller.abort();
+	}, [queries, statusRevision, snapshot.status?.head]);
+	const allFiles = changeFiles(snapshot).map((file) => ({
+		...file,
+		...(statistics?.id === statusRevision && file.group !== 'conflicts'
+			? statistics[file.group].find((stat) => stat.path === file.path)
+			: undefined),
+	}));
+	const selected = allFiles.find((file) => file.key === selectedKey) ?? null;
 	const busy = (!!snapshot.running && snapshot.running !== 'refresh') || snapshot.locked;
 	const selectedPath = selected?.path;
 	const selectedFrom = selected?.from;
@@ -313,67 +418,73 @@ function ChangesWorkspace(props: SharedWorkspaceProps) {
 			navigationOpen={props.navigationOpen}
 			navigation={
 				<>
-					<div className="space-y-2 border-b border-border p-2">
-						<SegmentedControl<ChangeGroup>
-							size="sm"
-							ariaLabel={t('versioning.changes.group')}
-							value={group}
-							onChange={(next) => {
-								setGroup(next);
-								setSelectedKey(null);
-							}}
-							options={[
-								{
-									value: 'unstaged',
-									label: t('versioning.changes.unstaged', {
-										count: allFiles.filter((file) => file.group === 'unstaged').length,
-									}),
-								},
-								{
-									value: 'staged',
-									label: t('versioning.changes.staged', {
-										count: allFiles.filter((file) => file.group === 'staged').length,
-									}),
-								},
-								...(allFiles.some((file) => file.group === 'conflicts')
-									? [{ value: 'conflicts' as const, label: t('versioning.changes.conflicts') }]
-									: []),
-							]}
-						/>
-						<p className="px-1 text-xs text-muted-foreground">
-							{t(
-								group === 'staged'
-									? 'versioning.changes.stagedBase'
-									: group === 'unstaged'
-										? 'versioning.changes.unstagedBase'
-										: 'versioning.changes.conflictBase',
-							)}
-						</p>
+					<div className="min-h-0 flex-1 overflow-auto">
+						{allFiles.length === 0 ? (
+							<DiffMessage message={t('sync.clean')} />
+						) : (
+							(['conflicts', 'unstaged', 'staged'] as const).map((sectionGroup) => {
+								const groupFiles = allFiles.filter((file) => file.group === sectionGroup);
+								if (sectionGroup === 'conflicts' && !groupFiles.length) return null;
+								const label = t(
+									sectionGroup === 'staged'
+										? 'versioning.changes.staged'
+										: sectionGroup === 'unstaged'
+											? 'versioning.changes.unstaged'
+											: 'versioning.changes.conflicts',
+									{ count: groupFiles.length },
+								);
+								return (
+									<section
+										key={sectionGroup}
+										aria-label={label}
+										data-change-group={sectionGroup}
+										className="flex min-h-0 flex-col border-b border-border"
+									>
+										<div className="flex min-h-9 shrink-0 items-center gap-2 bg-muted px-3 py-1 text-xs">
+											<h3 className="min-w-0 flex-1 font-medium">{label}</h3>
+											{sectionGroup !== 'conflicts' && (
+												<ActionButton
+													size="icon-sm"
+													label={t(
+														sectionGroup === 'staged' ? 'sync.unstageAll' : 'sync.stageAll',
+													)}
+													disabled={busy || !groupFiles.length}
+													onClick={() =>
+														void (
+															sectionGroup === 'staged'
+																? service.unstage(groupFiles.map((file) => file.path))
+																: service.stage(groupFiles.map((file) => file.path))
+														).catch(report)
+													}
+												>
+													{sectionGroup === 'staged' ? <Minus /> : <Plus />}
+												</ActionButton>
+											)}
+										</div>
+										<div
+											className="flex min-h-0 max-h-72 flex-col"
+											style={{
+												minHeight: groupFiles.length
+													? Math.min(groupFiles.length * 52 + 44, 288)
+													: 88,
+											}}
+										>
+											<FileNavigator
+												files={groupFiles}
+												selected={selected?.group === sectionGroup ? selected.key : null}
+												onSelect={(file) => {
+													setGroup(sectionGroup);
+													setSelectedKey(file.key);
+													props.onFileSelected();
+												}}
+												label={t('versioning.files.title')}
+											/>
+										</div>
+									</section>
+								);
+							})
+						)}
 					</div>
-					<FileNavigator
-						files={files}
-						selected={selected?.key ?? null}
-						onSelect={(file) => {
-							setSelectedKey(file.key);
-							props.onFileSelected();
-						}}
-						label={t('versioning.files.title')}
-					/>
-					{group !== 'conflicts' && (
-						<div className="flex shrink-0 flex-wrap gap-1 border-t border-border p-2">
-							<Button
-								size="sm"
-								variant="ghost"
-								disabled={busy || !files.length}
-								onClick={() =>
-									void (group === 'staged' ? service.unstageAll() : service.stageAll()).catch(report)
-								}
-							>
-								{group === 'staged' ? <Minus /> : <Plus />}
-								{t(group === 'staged' ? 'sync.unstageAll' : 'sync.stageAll')}
-							</Button>
-						</div>
-					)}
 					<CommitComposer {...props} />
 				</>
 			}
@@ -424,16 +535,31 @@ function ChangesWorkspace(props: SharedWorkspaceProps) {
 				</div>
 			)}
 			{selected && group === 'conflicts' ? (
-				<DiffMessage
-					message={t('versioning.changes.conflictHelp')}
-					action={
-						<Button size="sm" onClick={() => void openFile().catch(report)}>
-							{t('versioning.openNote')}
-						</Button>
-					}
-				/>
+				queries && props.restores ? (
+					<ConflictDiffView
+						app={app}
+						path={selected.path}
+						revision={statusRevision}
+						queries={queries}
+						service={service}
+						restores={props.restores}
+						onReceipt={(receipt) => props.onRestoreReceipt(receipt, selected.path)}
+					/>
+				) : (
+					<DiffMessage message={t('versioning.unavailable')} />
+				)
 			) : selected && queries ? (
 				<AsyncDiffSurface
+					openWorktree={(path, repositoryId) => service.openWorktreeInSystem(path, repositoryId)}
+					gitHunks={{
+						app,
+						service,
+						queries,
+						restores: props.restores,
+						direction: group === 'staged' ? 'unstage' : 'stage',
+						head: snapshot.status?.head ?? null,
+						onReceipt: props.onRestoreReceipt,
+					}}
 					identity={`${selected.key}:${statusRevision}`}
 					load={load}
 					initialLayout={props.layout}
@@ -550,11 +676,11 @@ function CommitComposer({ app, service, snapshot, message, setMessage, report }:
 			<div className="flex flex-wrap gap-1">
 				<Button
 					size="sm"
-					disabled={busy || blocked || !pending}
-					onClick={() => complete(service.commit('smart', options()))}
+					disabled={busy || blocked || !snapshot.status?.staged.length}
+					onClick={() => complete(service.commit('staged', options()))}
 				>
 					<Check />
-					{t('sync.commit')}
+					{t('sync.commitStaged')} · {snapshot.status?.staged.length ?? 0}
 				</Button>
 				<Button
 					size="sm"
@@ -565,6 +691,22 @@ function CommitComposer({ app, service, snapshot, message, setMessage, report }:
 					<RefreshCw />
 					{t('sync.commitAndSync')}
 				</Button>
+				<ActionButton
+					size="icon-sm"
+					label={t('sync.action.pull')}
+					disabled={busy || blocked}
+					onClick={() => void service.pull().catch(report)}
+				>
+					<ArrowDown />
+				</ActionButton>
+				<ActionButton
+					size="icon-sm"
+					label={t('sync.action.push')}
+					disabled={busy || blocked}
+					onClick={() => void service.push().catch(report)}
+				>
+					<ArrowUp />
+				</ActionButton>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
@@ -577,6 +719,13 @@ function CommitComposer({ app, service, snapshot, message, setMessage, report }:
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
+						<DropdownMenuItem
+							disabled={!pending}
+							onSelect={() => complete(service.commit('smart', options()))}
+						>
+							<Check />
+							{t('sync.commit')}
+						</DropdownMenuItem>
 						<DropdownMenuItem
 							disabled={!snapshot.status?.staged.length}
 							onSelect={() => complete(service.commit('staged', options()))}
@@ -715,7 +864,7 @@ function useRevisionFiles(queries: VersioningQueries | undefined, left: string |
 	return { state: state?.key === key ? state : null, retry: () => setAttempt((value) => value + 1) };
 }
 
-function HistoryWorkspace(props: SharedWorkspaceProps) {
+function HistoryWorkspace(props: SharedWorkspaceProps & { comparing?: boolean }) {
 	const { service, queries, snapshot } = props;
 	const [branch, setBranch] = useState('');
 	const [search, setSearch] = useState('');
@@ -738,6 +887,10 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 	);
 	const refs = history.data?.refs ?? [];
 	const graph = useMemo(() => layoutGraph(history.data?.commits ?? []), [history.data?.commits]);
+	const refBadges = buildRefBadges(refs, {
+		branch: snapshot.status?.branch ?? null,
+		hash: snapshot.status?.head ?? null,
+	});
 	const graphRows = new Map(graph.map((row) => [row.hash, row]));
 	const width = graphWidth(Math.min(4, Math.max(1, ...graph.map((row) => row.width))));
 	return (
@@ -766,6 +919,21 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 							onChange={(event) => setSearch(event.currentTarget.value)}
 						/>
 					</div>
+					<div className="flex h-[var(--hu-list-row-h)] shrink-0 items-center gap-2 border-b px-3 text-xs">
+						<GraphCell width={width} hollow below worktree />
+						<span className="min-w-0 flex-1 truncate">{t('versioning.diff.worktree')}</span>
+						<Button
+							size="sm"
+							variant="ghost"
+							aria-label={t('versioning.compare.currentB')}
+							aria-pressed={
+								(props.preferences.swapped ? props.comparePair.a : props.comparePair.b) === 'WORKTREE'
+							}
+							onClick={() => props.selectEndpoint('b', 'WORKTREE')}
+						>
+							B
+						</Button>
+					</div>
 					{!history.data ? (
 						<DiffMessage busy message={t('versioning.history.loading')} />
 					) : history.data.error ? (
@@ -788,6 +956,34 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 								setSelectedPath(null);
 							}}
 							itemLabel={(commit) => `${commit.subject} · ${commit.short} · ${commit.author}`}
+							actions={(commit) => (
+								<>
+									<Button
+										size="sm"
+										variant="ghost"
+										aria-label={t('versioning.compare.setA', { oid: commit.short })}
+										aria-pressed={
+											(props.preferences.swapped ? props.comparePair.b : props.comparePair.a) ===
+											commit.hash
+										}
+										onClick={() => props.selectEndpoint('a', commit.hash)}
+									>
+										A
+									</Button>
+									<Button
+										size="sm"
+										variant="ghost"
+										aria-label={t('versioning.compare.setB', { oid: commit.short })}
+										aria-pressed={
+											(props.preferences.swapped ? props.comparePair.a : props.comparePair.b) ===
+											commit.hash
+										}
+										onClick={() => props.selectEndpoint('b', commit.hash)}
+									>
+										B
+									</Button>
+								</>
+							)}
 							label={t('versioning.history.commits')}
 							renderItem={(commit) => (
 								<>
@@ -795,8 +991,20 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 										row={graphRows.get(commit.hash)}
 										width={width}
 										head={commit.hash === snapshot.status?.head}
+										merge={commit.parents.length > 1}
+										above={commit.hash === snapshot.status?.head}
 									/>
 									<span className="min-w-0 flex-1 truncate">{commit.subject}</span>
+									{commit.hash === snapshot.status?.head && <Badge variant="accent">HEAD</Badge>}
+									{refBadges.get(commit.hash)?.map((badge) => (
+										<Badge
+											key={`${badge.kind}:${badge.name}`}
+											variant={badge.current ? 'accent' : 'neutral'}
+											title={[badge.name, ...(badge.remotes ?? [])].join(' · ')}
+										>
+											{badge.name}
+										</Badge>
+									))}
 									<span className="shrink-0 font-mono text-xs text-muted-foreground">
 										{commit.short}
 									</span>
@@ -815,81 +1023,87 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 				</>
 			}
 			files={
-				<>
-					{selectedCommit && (
-						<div className="shrink-0 space-y-1 border-b border-border p-3 text-xs">
-							<p className="line-clamp-2 font-medium" title={selectedCommit.subject}>
-								{selectedCommit.subject}
-							</p>
-							<p className="truncate text-muted-foreground" title={selectedCommit.author}>
-								{selectedCommit.author} · {new Date(selectedCommit.time * 1000).toLocaleDateString()}
-							</p>
-							{selectedCommit.parents.length > 1 ? (
-								<Select
-									value={parent ?? ''}
-									onValueChange={(value) => {
-										setSelectedParent(value);
-										setSelectedPath(null);
-									}}
-								>
-									<SelectTrigger
-										size="sm"
-										className="w-full"
-										aria-label={t('versioning.history.parent')}
-									>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										{selectedCommit.parents.map((oid, index) => (
-											<SelectItem key={oid} value={oid}>
-												{t('versioning.history.parentItem', {
-													number: index + 1,
-													oid: oid.slice(0, 8),
-												})}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							) : (
-								<p className="text-muted-foreground">
-									{parent
-										? t('versioning.history.parentBase', { oid: parent.slice(0, 8) })
-										: t('versioning.history.rootBase')}
+				!props.comparing && (
+					<>
+						{selectedCommit && (
+							<div className="shrink-0 space-y-1 border-b border-border p-3 text-xs">
+								<p className="line-clamp-2 font-medium" title={selectedCommit.subject}>
+									{selectedCommit.subject}
 								</p>
-							)}
-						</div>
-					)}
-					{!selectedCommit ? (
-						<DiffMessage message={t('versioning.selectCommit')} />
-					) : !queries ? (
-						<DiffMessage message={t('versioning.unavailable')} />
-					) : !revisionFiles.state ? (
-						<DiffMessage busy message={t('versioning.files.loading')} />
-					) : revisionFiles.state.error ? (
-						<DiffMessage
-							message={errorMessage(revisionFiles.state.error)}
-							action={
-								<Button size="sm" onClick={revisionFiles.retry}>
-									{t('versioning.retry')}
-								</Button>
-							}
-						/>
-					) : (
-						<FileNavigator
-							files={files}
-							selected={selected?.key ?? null}
-							onSelect={(file) => {
-								setSelectedPath(file.path);
-								props.onFileSelected();
-							}}
-							label={t('versioning.files.title')}
-						/>
-					)}
-				</>
+								<p className="truncate text-muted-foreground" title={selectedCommit.author}>
+									{selectedCommit.author} ·{' '}
+									{new Date(selectedCommit.time * 1000).toLocaleDateString()}
+								</p>
+								{selectedCommit.parents.length > 1 ? (
+									<Select
+										value={parent ?? ''}
+										onValueChange={(value) => {
+											setSelectedParent(value);
+											setSelectedPath(null);
+										}}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-full"
+											aria-label={t('versioning.history.parent')}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{selectedCommit.parents.map((oid, index) => (
+												<SelectItem key={oid} value={oid}>
+													{t('versioning.history.parentItem', {
+														number: index + 1,
+														oid: oid.slice(0, 8),
+													})}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								) : (
+									<p className="text-muted-foreground">
+										{parent
+											? t('versioning.history.parentBase', { oid: parent.slice(0, 8) })
+											: t('versioning.history.rootBase')}
+									</p>
+								)}
+							</div>
+						)}
+						{!selectedCommit ? (
+							<DiffMessage message={t('versioning.selectCommit')} />
+						) : !queries ? (
+							<DiffMessage message={t('versioning.unavailable')} />
+						) : !revisionFiles.state ? (
+							<DiffMessage busy message={t('versioning.files.loading')} />
+						) : revisionFiles.state.error ? (
+							<DiffMessage
+								message={errorMessage(revisionFiles.state.error)}
+								action={
+									<Button size="sm" onClick={revisionFiles.retry}>
+										{t('versioning.retry')}
+									</Button>
+								}
+							/>
+						) : (
+							<FileNavigator
+								files={files}
+								selected={selected?.key ?? null}
+								onSelect={(file) => {
+									setSelectedPath(file.path);
+									props.onFileSelected();
+								}}
+								label={t('versioning.files.title')}
+							/>
+						)}
+					</>
+				)
 			}
 		>
-			{selected && queries && commitOid ? (
+			{props.comparing ? (
+				<CompareWorkspace {...props} />
+			) : selected && queries && commitOid ? (
 				<AsyncDiffSurface
+					openWorktree={(path, repositoryId) => service.openWorktreeInSystem(path, repositoryId)}
 					identity={`${commitOid}:${parent ?? 'root'}:${selected.path}`}
 					load={load}
 					initialLayout={props.layout}
@@ -906,107 +1120,89 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 }
 
 function CompareWorkspace(props: SharedWorkspaceProps) {
-	const { queries, service, snapshot } = props;
-	const [left, setLeft] = useState(snapshot.status?.head ?? '');
-	const [right, setRight] = useState('');
-	const [selectedPath, setSelectedPath] = useState<string | null>(null);
-	const repository = useRepositoryHistory(
-		service,
-		`${snapshot.status?.head ?? ''}:${snapshot.last?.at ?? ''}`,
-		'',
-		'',
-	);
-	const revisionFiles = useRevisionFiles(queries, left || null, left && right ? right : null);
-	const files = (revisionFiles.state?.files ?? []).map((file) => ({ ...file, key: file.path }));
-	const selected = files.find((file) => file.path === selectedPath) ?? null;
-	const from = selected?.from;
-	const load = useCallback(
-		(signal: AbortSignal) => {
-			if (!queries || !left || !right || !selectedPath)
-				return Promise.reject(new Error(t('versioning.unavailable')));
-			return queries.compare(
-				{
-					intent: 'branches',
-					left: { kind: 'commit', commit: left, path: from ?? selectedPath },
-					right: { kind: 'commit', commit: right, path: selectedPath },
-				},
-				signal,
-			);
-		},
-		[queries, left, right, selectedPath, from],
-	);
-	const refs = repository.data?.refs ?? [];
+	const { queries, comparePair, setComparePair } = props;
+	const visible = useVisible();
+	const { a, b } = props.preferences.swapped ? { a: comparePair.b, b: comparePair.a } : comparePair;
+	const [state, setState] = useState<{
+		id: string;
+		files?: readonly RevisionFileChange[];
+		left?: RepositoryEndpoint;
+		right?: RepositoryEndpoint;
+		error?: string;
+	}>();
+	const [attempt, setAttempt] = useState(0);
+	const identity = JSON.stringify([a, b, attempt, props.statusRevision]);
+	const endpoint = (value: string): RepositoryEndpoint =>
+		value === 'WORKTREE'
+			? { kind: 'worktree' }
+			: value === 'INDEX'
+				? { kind: 'index' }
+				: value === 'EMPTY'
+					? { kind: 'empty' }
+					: { kind: 'commit', commit: value };
+	const left = useMemo(() => endpoint(a), [a]),
+		right = useMemo(() => endpoint(b), [b]);
+	useEffect(() => {
+		if (!visible || !queries?.compareFiles || !a || !b) return;
+		const controller = new AbortController();
+		void (async () => {
+			const pin = async (endpoint: RepositoryEndpoint): Promise<RepositoryEndpoint> => {
+				if (endpoint.kind !== 'commit') return endpoint;
+				const commit = await queries.resolveCommit(endpoint.commit, controller.signal);
+				if (!commit) throw new Error(t('versioning.compare.invalidRef'));
+				return { kind: 'commit', commit };
+			};
+			const [pinnedLeft, pinnedRight] = await Promise.all([pin(left), pin(right)]);
+			if (controller.signal.aborted) return;
+			const files = await queries.compareFiles!(pinnedLeft, pinnedRight, controller.signal);
+			if (!controller.signal.aborted) setState({ id: identity, files, left: pinnedLeft, right: pinnedRight });
+		})().catch((error) => {
+			if (!controller.signal.aborted) setState({ id: identity, error: errorMessage(error) });
+		});
+		return () => controller.abort();
+	}, [queries, a, b, left, right, identity, visible]);
+	const current = state?.id === identity ? state : undefined;
 	return (
-		<WorkspaceFrame
-			navigationOpen={props.navigationOpen}
-			navigation={
-				<>
-					<div className="space-y-3 border-b border-border p-3">
-						<RefSelect
-							label={t('versioning.compare.base')}
-							value={left}
-							onChange={(value) => {
-								setLeft(value);
-								setSelectedPath(null);
-							}}
-							refs={refs}
-							head={snapshot.status?.head}
-						/>
-						<RefSelect
-							label={t('versioning.compare.target')}
-							value={right}
-							onChange={(value) => {
-								setRight(value);
-								setSelectedPath(null);
-							}}
-							refs={refs}
-							head={snapshot.status?.head}
-						/>
-						<p className="text-xs text-muted-foreground">{t('versioning.compare.hint')}</p>
-					</div>
-					{!queries ? (
-						<DiffMessage message={t('versioning.unavailable')} />
-					) : !left || !right ? (
-						<DiffMessage message={t('versioning.compare.choose')} />
-					) : !revisionFiles.state ? (
-						<DiffMessage busy message={t('versioning.files.loading')} />
-					) : revisionFiles.state.error ? (
-						<DiffMessage
-							message={errorMessage(revisionFiles.state.error)}
-							action={
-								<Button size="sm" onClick={revisionFiles.retry}>
-									{t('versioning.retry')}
-								</Button>
-							}
-						/>
-					) : (
-						<FileNavigator
-							files={files}
-							selected={selected?.key ?? null}
-							onSelect={(file) => {
-								setSelectedPath(file.path);
-								props.onFileSelected();
-							}}
-							label={t('versioning.files.title')}
-						/>
-					)}
-				</>
-			}
-		>
-			{selected && queries ? (
-				<AsyncDiffSurface
-					identity={`${left}:${right}:${selected.path}`}
-					load={load}
-					initialLayout={props.layout}
-					onLayoutChange={props.onLayoutChange}
+		<div className="flex min-h-0 min-w-0 flex-1 flex-col">
+			<CompareEndpoints
+				a={a}
+				b={b}
+				files={current?.files}
+				fixedA={current?.left?.kind === 'commit' ? current.left.commit.slice(0, 8) : undefined}
+				fixedB={current?.right?.kind === 'commit' ? current.right.commit.slice(0, 8) : undefined}
+				error={current?.error}
+				onSwap={() => props.onPreferencesChange({ ...props.preferences, swapped: !props.preferences.swapped })}
+				onChange={(a, b) => setComparePair(props.preferences.swapped ? { a: b, b: a } : { a, b })}
+			/>
+			{!queries?.compareFiles ? (
+				<DiffMessage message={t('versioning.unavailable')} />
+			) : !a || !b ? (
+				<DiffMessage message={t('versioning.compare.choose')} />
+			) : current?.error ? (
+				<DiffMessage
+					message={current.error}
+					action={
+						<Button size="sm" onClick={() => setAttempt((value) => value + 1)}>
+							{t('versioning.retry')}
+						</Button>
+					}
+				/>
+			) : !current?.files ? (
+				<DiffMessage busy message={t('versioning.files.loading')} />
+			) : (
+				<MultiDiffView
+					queries={queries}
+					a={current.left!}
+					b={current.right!}
+					files={current.files}
+					identity={identity}
+					createWorker={props.createWorker}
 					preferences={props.preferences}
 					onPreferencesChange={props.onPreferencesChange}
-					createWorker={props.createWorker}
+					openWorktree={(path, repositoryId) => props.service.openWorktreeInSystem(path, repositoryId)}
 				/>
-			) : (
-				<DiffMessage message={t(left && right ? 'versioning.selectFile' : 'versioning.compare.choose')} />
 			)}
-		</WorkspaceFrame>
+		</div>
 	);
 }
 

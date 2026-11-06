@@ -15,7 +15,8 @@ export const messages = {
 		'archives.report.purchased': 'Purchased',
 		'archives.report.overview': 'Purchased / Exited',
 		'archives.report.purchaseCost': 'Purchase cost',
-		'archives.report.cycles': 'Exits count completed holding cycles; returning and exiting again counts another cycle.',
+		'archives.report.cycles':
+			'Exits count completed holding cycles; returning and exiting again counts another cycle.',
 		'archives.report.exited': 'Exited holding cycles',
 		'archives.report.recovered': 'Recovered',
 		'archives.report.median': 'Median holding days',

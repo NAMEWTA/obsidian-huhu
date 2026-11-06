@@ -6,15 +6,14 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Command as CommandPrimitive } from 'cmdk';
 import { SearchIcon } from 'lucide-react';
-import * as DialogPrimitive from 'radix-ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from './dialog';
+import type { DirtyModalProps } from '../react/dirty-modal';
 
-import { usePortalContainer } from '../react/contexts';
 import { useT } from '../react/hooks';
 import { cn } from '../lib/utils';
-import { handleImeOverlayEscape } from '../react/ime';
 import { useImeTextFieldProps } from '../react/ime';
 
-const commandVariants = cva('flex h-full w-full flex-col overflow-hidden rounded-md', {
+const commandVariants = cva('flex h-full w-full flex-col overflow-hidden rounded-[var(--hu-radius-sm)]', {
 	variants: {
 		surface: {
 			default: 'bg-popover text-popover-foreground',
@@ -23,7 +22,7 @@ const commandVariants = cva('flex h-full w-full flex-col overflow-hidden rounded
 		density: {
 			default: '',
 			// Why: matches DropdownMenuItem type so a searchable picker reads like its sibling menus.
-			menu: '[&_[cmdk-empty]]:text-[12px] [&_[cmdk-input-wrapper]_svg]:size-3.5 [&_[cmdk-input]]:h-8 [&_[cmdk-input]]:text-[12px] [&_[cmdk-item]]:rounded-md [&_[cmdk-item]]:py-[4px] [&_[cmdk-item]]:text-[12px] [&_[cmdk-item]]:leading-[17px] [&_[cmdk-item]]:font-[450]',
+			menu: '[&_[cmdk-empty]]:text-[12px] [&_[cmdk-input-wrapper]_svg]:size-3.5 [&_[cmdk-input]]:h-[var(--hu-ctl-h)] [&_[cmdk-input]]:text-[12px] [&_[cmdk-item]]:rounded-[var(--hu-radius-sm)] [&_[cmdk-item]]:py-[4px] [&_[cmdk-item]]:text-[12px] [&_[cmdk-item]]:leading-[18px] [&_[cmdk-item]]:font-medium',
 		},
 	},
 	defaultVariants: { surface: 'default', density: 'default' },
@@ -55,64 +54,42 @@ function CommandDialog({
 	overlayClassName,
 	commandProps,
 	...props
-}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+}: DirtyModalProps & {
 	title?: string;
 	description?: string;
 	shouldFilter?: boolean;
-	onOpenAutoFocus?: (e: Event) => void;
-	onCloseAutoFocus?: (e: Event) => void;
+	onOpenAutoFocus?: (event: Event) => void;
+	onCloseAutoFocus?: (event: Event) => void;
 	contentClassName?: string;
 	overlayClassName?: string;
 	commandProps?: React.ComponentProps<typeof CommandPrimitive>;
 }) {
 	const t = useT();
-	const { className: commandClassName, ...commandRootProps } = commandProps ?? {};
-
+	const { className, ...commandRootProps } = commandProps ?? {};
 	return (
-		<DialogPrimitive.Root {...props}>
-			<DialogPrimitive.Portal container={usePortalContainer()}>
-				<DialogPrimitive.Overlay
-					// HUHU semantic surface tokens follow the host theme and the optional Orca palette.
-					className={cn(
-						'fixed inset-0 z-[var(--layer-modal)] bg-black/55 md:backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
-						overlayClassName,
-					)}
-				/>
-				<DialogPrimitive.Content
-					// HUHU semantic surface tokens follow the host theme and the optional Orca palette.
-					className={cn(
-						'fixed top-[20%] left-[50%] z-[var(--layer-modal)] w-[660px] max-w-[90vw] translate-x-[-50%] rounded-lg border border-border bg-background text-foreground shadow-floating md:backdrop-blur-2xl outline-none    data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
-						contentClassName,
-					)}
-					onEscapeKeyDown={(event) => handleImeOverlayEscape(event)}
-					onOpenAutoFocus={onOpenAutoFocus}
-					onCloseAutoFocus={onCloseAutoFocus}
-				>
-					<DialogPrimitive.Title className="sr-only">{title ?? t('ui.commandTitle')}</DialogPrimitive.Title>
-					<DialogPrimitive.Description className="sr-only">
-						{description ?? t('ui.commandDescription')}
-					</DialogPrimitive.Description>
-					<Command
-						shouldFilter={shouldFilter}
-						className={cn(
-							'[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3',
-							commandClassName,
-						)}
-						{...commandRootProps}
-					>
-						{children}
-					</Command>
-				</DialogPrimitive.Content>
-			</DialogPrimitive.Portal>
-		</DialogPrimitive.Root>
+		<Dialog {...props}>
+			<DialogContent
+				showCloseButton={false}
+				overlayClassName={overlayClassName}
+				className={cn('w-[min(620px,calc(100%-32px))] gap-0 p-0', contentClassName)}
+				onOpenAutoFocus={onOpenAutoFocus}
+				onCloseAutoFocus={onCloseAutoFocus}
+			>
+				<DialogTitle className="sr-only">{title ?? t('ui.commandTitle')}</DialogTitle>
+				<DialogDescription className="sr-only">{description ?? t('ui.commandDescription')}</DialogDescription>
+				<Command shouldFilter={shouldFilter} className={className} {...commandRootProps}>
+					{children}
+				</Command>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
-const commandInputVariants = cva('flex items-center bg-muted/30 px-3 py-1', {
+const commandInputVariants = cva('flex items-center bg-[var(--hu-raised)] px-3 py-1', {
 	variants: {
 		variant: {
 			default: 'border-b border-border',
-			framed: 'rounded-md border border-input',
+			framed: 'rounded-[var(--hu-radius-sm)] border border-input',
 		},
 	},
 	defaultVariants: { variant: 'default' },
@@ -141,7 +118,7 @@ function CommandInput({
 				ref={ref}
 				data-slot="command-input"
 				className={cn(
-					'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+					'flex h-10 w-full rounded-[var(--hu-radius-sm)] bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
 					className,
 				)}
 				{...props}
@@ -234,24 +211,13 @@ function CommandGroup({ className, ...props }: React.ComponentProps<typeof Comma
 	);
 }
 
-const commandItemVariants = cva('', {
-	variants: { selection: { default: '', palette: 'data-[selected=true]:text-foreground' } },
-	defaultVariants: { selection: 'default' },
-});
-
-function CommandItem({
-	className,
-	selection,
-	ref,
-	...props
-}: React.ComponentProps<typeof CommandPrimitive.Item> & VariantProps<typeof commandItemVariants>) {
+function CommandItem({ className, ref, ...props }: React.ComponentProps<typeof CommandPrimitive.Item>) {
 	return (
 		<CommandPrimitive.Item
 			ref={ref}
 			data-slot="command-item"
 			className={cn(
-				'relative flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[selected=true]:bg-[color-mix(in_srgb,var(--foreground)_12%,var(--background))] data-[selected=true]:ring-1 data-[selected=true]:ring-inset data-[selected=true]:ring-border data-[selected=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
-				commandItemVariants({ selection }),
+				'relative flex min-h-[var(--hu-ctl-h)] cursor-default gap-1.5 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[selected=true]:bg-[var(--hu-accent-soft)] data-[selected=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
 				className,
 			)}
 			{...props}

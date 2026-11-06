@@ -31,11 +31,22 @@ export function EmptyState({
 			)}
 		>
 			{(icon || !small) && (
-				<div className={cn('text-muted-foreground', small ? '[&_svg]:size-5' : '[&_svg]:size-7')}>{icon}</div>
+				<div
+					aria-hidden="true"
+					className="flex size-[52px] items-center justify-center rounded-lg bg-[var(--hu-sunken)] text-[var(--hu-fg-3)] [&_svg]:size-6"
+				>
+					{icon}
+				</div>
 			)}
-			<h3 className={small ? 'm-0 text-sm font-medium' : 'text-base font-semibold'}>{title}</h3>
+			<h3 className="m-0 text-base font-semibold">{title}</h3>
 			{description && (
-				<p className={cn('max-w-sm text-muted-foreground', small ? 'm-0 text-xs' : 'text-sm', descriptionClassName)}>
+				<p
+					className={cn(
+						'max-w-sm text-muted-foreground',
+						small ? 'm-0 text-xs' : 'text-sm',
+						descriptionClassName,
+					)}
+				>
 					{description}
 				</p>
 			)}

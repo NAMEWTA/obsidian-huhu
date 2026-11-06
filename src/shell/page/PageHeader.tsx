@@ -15,7 +15,7 @@ export interface PageHeaderProps {
 }
 export function PageHeader({ title, busy, panelToggle, statuses, openStatus, openInWorkbench, more }: PageHeaderProps) {
 	return (
-		<header className="huhu-page-header flex h-11 shrink-0 items-center gap-2 border-b border-border px-3">
+		<header className="huhu-page-header flex h-[var(--hu-header-h)] shrink-0 items-center gap-2 border-b border-border px-3">
 			{panelToggle && (
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -36,7 +36,7 @@ export function PageHeader({ title, busy, panelToggle, statuses, openStatus, ope
 			<h1
 				tabIndex={-1}
 				data-workbench-focus="title"
-				className="min-w-0 truncate rounded-sm text-sm font-semibold focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				className="min-w-0 truncate rounded-sm text-lg font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]"
 			>
 				{title}
 			</h1>
@@ -49,7 +49,7 @@ export function PageHeader({ title, busy, panelToggle, statuses, openStatus, ope
 			)}
 			<div className="flex-1" />
 			{statuses.slice(0, 3).map((s) => (
-				<Button key={s.id} variant="ghost" size="xs" onClick={() => openStatus(s)} aria-label={s.label}>
+				<Button key={s.id} variant="ghost" size="sm" onClick={() => openStatus(s)} aria-label={s.label}>
 					<ShellIcon name={s.icon} />
 					{s.count ?? s.label}
 				</Button>

@@ -1,4 +1,4 @@
-import { widgetClasses } from '../theme/widget-classes';
+import { calendarClasses as widgetClasses } from './calendar-styles';
 import { Notice, Platform, type App } from 'obsidian';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
 import { useLayoutEffect, useState } from 'react';
@@ -126,6 +126,7 @@ export function CalendarPanel({
 				: new Date(value.getFullYear(), value.getMonth() + delta, 1),
 		);
 	const gridOptions = {
+		onAnchor: setDate,
 		compact: false,
 		app,
 		weekStart,
@@ -232,7 +233,7 @@ export function CalendarPanel({
 				{snapshot.status === 'error' || snapshot.status === 'unavailable' ? (
 					<div role="alert" className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
 						{t(snapshot.status === 'error' ? 'calendarUnified.failed' : 'calendarUnified.unavailable')}
-						<Button variant="outline" size="sm" onClick={load}>
+						<Button variant="secondary" size="sm" onClick={load}>
 							{t('calendarUnified.retry')}
 						</Button>
 					</div>

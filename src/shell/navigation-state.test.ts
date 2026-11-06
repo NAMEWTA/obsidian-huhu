@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'vitest';
-import { normalizeTarget, normalizeWorkbenchState, targetKey, panelWidth } from './navigation-state';
+import {
+	WORKBENCH_UI_SCHEMA,
+	normalizeTarget,
+	normalizeWorkbenchState,
+	targetKey,
+	panelWidth,
+} from './navigation-state';
 import { NavigationTransition } from './navigation-transition';
 import { dashboardSaveStatuses } from '../app/workbench/status-policy';
 import { focusLeafState as splitLeafState } from '../app/workbench/focus-state';
@@ -30,29 +36,21 @@ test('restoration accepts known sections and excludes unrelated or secret fields
 	});
 });
 test('panel width and open state are bounded and deterministic', () => {
-	assert.equal(panelWidth(NaN), 280);
+	assert.equal(panelWidth(NaN), 272);
 	assert.equal(panelWidth(100), 220);
-	assert.equal(panelWidth(600), 500);
-	assert.equal(normalizeWorkbenchState({ panelOpen: false }).panelOpen, false);
-	assert.equal(normalizeWorkbenchState({}).panelOpen, true);
+	assert.equal(panelWidth(600), 480);
+	assert.equal(
+		normalizeWorkbenchState({ schema: WORKBENCH_UI_SCHEMA, navigation: { open: false } }).navigation.open,
+		false,
+	);
+	assert.equal(normalizeWorkbenchState({}).navigation.open, true);
 });
 
-test('old icon bookmarks and restored routes go to the single settings location', () => {
-	assert.deepEqual(normalizeTarget({ feature: 'icons', section: 'iconic-sidebars', focusId: 'file-icons' }), {
-		feature: 'settings',
-		section: 'iconic',
-		resourceId: 'iconic-sidebars',
-		focusId: 'file-icons',
-	});
-	assert.deepEqual(normalizeWorkbenchState({ target: { feature: 'icons', section: 'iconic-picker' } }).target, {
-		feature: 'settings',
-		section: 'iconic',
-		resourceId: 'iconic-picker',
-	});
-	assert.deepEqual(normalizeTarget({ feature: 'icons', section: 'invalid/<script>' }), {
-		feature: 'settings',
-		section: 'iconic',
-	});
+test('icon settings use their current route and reject the removed feature', () => {
+ const target = { feature: 'settings', section: 'iconic', resourceId: 'iconic-sidebars', focusId: 'file-icons' };
+ assert.deepEqual(normalizeTarget(target), target);
+ assert.deepEqual(normalizeWorkbenchState({ schema: WORKBENCH_UI_SCHEMA, route: target }).route, target);
+ assert.deepEqual(normalizeTarget({ feature: 'icons', section: 'iconic-picker' }), { feature: 'dashboard' });
 });
 test('resource identities cannot collide through separators', () => {
 	assert.notEqual(
@@ -205,8 +203,8 @@ test('a focus leaf retains the selected resource', () => {
 		{ feature: 'contacts', section: 'person', resourceId: 'person-a' },
 		{ selectedId: 'person-a', query: { kind: 'person' } },
 	);
-	assert.equal(contacts.target.resourceId, 'person-a');
-	assert.equal((contacts.pages[0]?.state as { selectedId: string }).selectedId, 'person-a');
+	assert.equal(contacts.route.resourceId, 'person-a');
+	assert.equal((contacts.pageViews[0]?.state as { selectedId: string }).selectedId, 'person-a');
 });
 
 test('save errors stay on their board', () => {

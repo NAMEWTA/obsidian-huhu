@@ -95,7 +95,10 @@ export function ProjectCard({ store, card, fill = false }: { store: BoardStore; 
 		cover = useImage(store, card.coverImage);
 	const column = useStore(store.state, (s) => s.data?.columns.find((c) => c.name === card.column));
 	const folder = card.folder?.trim().replace(/\/+$/, '') ?? '';
-	const inFolder = useMemo(() => (folder ? files.filter((file) => file.path.startsWith(`${folder}/`)) : []), [files, folder]);
+	const inFolder = useMemo(
+		() => (folder ? files.filter((file) => file.path.startsWith(`${folder}/`)) : []),
+		[files, folder],
+	);
 	const pinned = useMemo(() => new Set(docPaths(card.docs)), [card.docs]);
 	const recent = useMemo(() => inFolder.filter((file) => !pinned.has(file.path)).slice(0, 50), [inFolder, pinned]);
 	const matches = useMemo(
@@ -104,7 +107,11 @@ export function ProjectCard({ store, card, fill = false }: { store: BoardStore; 
 	);
 	const create = () =>
 		store
-			.newNote(folder, search.trim() || t('home.dashboard.newNote'), column?.libraryConfig?.templatePaths?.[0] ?? '')
+			.newNote(
+				folder,
+				search.trim() || t('home.dashboard.newNote'),
+				column?.libraryConfig?.templatePaths?.[0] ?? '',
+			)
 			.then(() => setSearch(''))
 			.catch((error: unknown) => toast(error instanceof Error ? error.message : t('home.project.createFailed')));
 	if (!folder)
@@ -160,7 +167,9 @@ export function ProjectCard({ store, card, fill = false }: { store: BoardStore; 
 					))}
 				</ul>
 				{!card.docs.length && !recent.length && (
-					<p className="m-0 p-3 text-center text-xs text-muted-foreground">{t('home.project.empty', { folder })}</p>
+					<p className="m-0 p-3 text-center text-xs text-muted-foreground">
+						{t('home.project.empty', { folder })}
+					</p>
 				)}
 			</div>
 			<div className="mt-2 flex items-center gap-2">
@@ -171,7 +180,7 @@ export function ProjectCard({ store, card, fill = false }: { store: BoardStore; 
 					onChange={(e) => setSearch(e.target.value)}
 					className="min-w-0 flex-1"
 				/>
-				<Button variant="outline" onClick={() => void create()}>
+				<Button variant="secondary" onClick={() => void create()}>
 					<Plus />
 					{t('home.dashboard.newNote')}
 				</Button>
@@ -194,7 +203,9 @@ export function ProjectCard({ store, card, fill = false }: { store: BoardStore; 
 							</RowButton>
 						))
 					) : (
-						<p className="m-0 p-2 text-center text-xs text-muted-foreground">{t('quickActions.noResults')}</p>
+						<p className="m-0 p-2 text-center text-xs text-muted-foreground">
+							{t('quickActions.noResults')}
+						</p>
 					)}
 				</div>
 			)}

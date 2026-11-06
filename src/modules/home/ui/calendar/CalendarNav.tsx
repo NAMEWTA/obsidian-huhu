@@ -5,7 +5,8 @@ import { ToggleGroup, ToggleGroupItem } from '../../../../ui/components/toggle-g
 import { t } from '../../../../shared/i18n/index';
 import type { CalendarTaskFilter } from '../../../task/api';
 import { CALENDAR_TASK_FILTERS } from '../../platform/calendar/alltasks-scan';
-import { Choice, IconButton } from '../board/controls';
+import { IconButton } from './calendar-controls';
+import { Choice } from '../../../../ui/components/huhu/Choice';
 
 /** The navigation row of the calendar section and of the full-screen calendar: period, month/week, today, filter. */
 export function CalendarNav({
@@ -66,7 +67,7 @@ export function CalendarNav({
 			</div>
 			<ToggleGroup
 				type="single"
-				variant="outline"
+				variant="segmented"
 				size="sm"
 				value={view}
 				onValueChange={(next) => next && onView(next as 'month' | 'week')}
@@ -79,14 +80,14 @@ export function CalendarNav({
 					<CalendarRange />
 				</ToggleGroupItem>
 			</ToggleGroup>
-			<Button variant="outline" size="sm" onClick={onToday}>
+			<Button variant="secondary" size="sm" onClick={onToday}>
 				{t('calendar.today')}
 			</Button>
 			<Choice
 				className="h-8 w-auto min-w-24 text-sm data-[size=sm]:h-8"
 				label={t('calendar.filter')}
 				value={filter}
-				options={CALENDAR_TASK_FILTERS.map((value) => ({ value, label: t(`calendar.filter.${value}`) }))}
+				options={CALENDAR_TASK_FILTERS.map((value) => [value, t(`calendar.filter.${value}`)] as const)}
 				onChange={(value) => onFilter(value as CalendarTaskFilter)}
 			/>
 			{end && <div className="ml-auto flex items-center gap-1">{end}</div>}

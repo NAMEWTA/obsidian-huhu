@@ -57,7 +57,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 				</TabsList>
 				<TabsContent value="general" className="space-y-8">
 					<SettingsSection title={t('home.dashboard.tab.general')}>
-						<Button variant="outline" onClick={() => setStudio(true)}>
+						<Button variant="secondary" onClick={() => setStudio(true)}>
 							{t('themeStudio.modalTitle')}
 						</Button>
 						<SettingsSwitchRow
@@ -112,7 +112,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 							)}
 						</DraftList>
 						<Button
-							variant="outline"
+							variant="secondary"
 							onClick={() =>
 								setNewWorkspace(t('workspace.defaultName', { n: settings.workspaces.files.length + 1 }))
 							}
@@ -185,7 +185,10 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 										label={config.label || t('anniversary.unnamed')}
 										control={
 											<div className="flex gap-2">
-												<Button variant="outline" onClick={() => setAnniversary({ ...config })}>
+												<Button
+													variant="secondary"
+													onClick={() => setAnniversary({ ...config })}
+												>
 													{t('common.edit')}
 												</Button>
 												<Button variant="ghost" onClick={() => setRemoveAnniversary(config)}>
@@ -196,7 +199,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 									/>
 								))}
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() =>
 										setAnniversary({
 											id: crypto.randomUUID(),
@@ -273,7 +276,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 					<SettingsSection title="HUHU">
 						<p className="text-sm">{t('home.dashboard.credit')}</p>
 						<p>{t('home.p1.version', { version: host.manifest.version })}</p>
-						<Button variant="link" asChild>
+						<Button variant="ghost" asChild>
 							<a href="https://github.com/PandoraReads/apex-dashboard">
 								PandoraReads/apex-dashboard · ac4d2c7 · MIT
 							</a>
@@ -285,7 +288,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 				<DashboardDialog title={t('common.delete')} onClose={() => setRemoveAnniversary(null)}>
 					<p>{removeAnniversary.label}</p>
 					<Button
-						variant="destructive"
+						variant="danger"
 						onClick={() => {
 							void observeBoardAction(
 								store
@@ -336,7 +339,7 @@ export function DashboardSettings({ host }: { host: HomeHost }) {
 						})}
 					</p>
 					<Button
-						variant="destructive"
+						variant="danger"
 						onClick={() => {
 							void observeBoardAction(
 								host.removeWorkspace(removeWorkspace).then(() => setRemoveWorkspace(null)),

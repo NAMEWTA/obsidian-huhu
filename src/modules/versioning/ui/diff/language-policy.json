@@ -1,0 +1,19 @@
+{
+	"languages": ["markdown", "yaml", "json", "css", "javascript", "typescript", "html", "shellscript"],
+	"extensions": {
+		"md": "markdown",
+		"markdown": "markdown",
+		"yaml": "yaml",
+		"yml": "yaml",
+		"json": "json",
+		"css": "css",
+		"js": "javascript",
+		"mjs": "javascript",
+		"cjs": "javascript",
+		"ts": "typescript",
+		"html": "html",
+		"htm": "html",
+		"sh": "shellscript",
+		"bash": "shellscript"
+	}
+}

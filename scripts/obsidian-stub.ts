@@ -443,3 +443,20 @@ export function prepareFuzzySearch(query: string): (text: string) => { score: nu
 		return index < 0 ? null : { score: 0, matches: [[index, index + needle.length]] };
 	};
 }
+
+
+/** Public SDK markers needed to link unactivated modules in the settings manifest graph. */
+export class MarkdownRenderChild extends Component {}
+export class Plugin extends Component {}
+export class WorkspaceLeaf {}
+export class WorkspaceFloating {}
+export class WorkspaceRoot {}
+export class AbstractInputSuggest<T> { declare protected fixtureValue: T; }
+export class EditorSuggest<T> { declare protected fixtureValue: T; }
+/** The settings fixture does not execute note creation or frontmatter parsing. */
+export function getFrontMatterInfo(_text: string): never {
+ throw new Error('Obsidian frontmatter parsing is not implemented by this UI fixture');
+}
+export function parseYaml(_text: string): never {
+ throw new Error('Obsidian YAML parsing is not implemented by this UI fixture');
+}

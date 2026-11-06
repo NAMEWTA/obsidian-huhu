@@ -70,7 +70,7 @@ export function CaptureComposer({
 			<div
 				data-capture-composer
 				aria-busy={busy || undefined}
-				className="flex shrink-0 items-end gap-1.5 rounded-lg border border-input bg-background p-[3px] pl-3 shadow-xs transition-[transform,opacity] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
+				className="flex shrink-0 items-end gap-1.5 rounded-lg border border-input bg-background p-[3px] pl-3 shadow-[var(--hu-shadow-card)] transition-[transform,opacity] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
 			>
 				<PencilLine
 					aria-hidden
@@ -96,7 +96,7 @@ export function CaptureComposer({
 					<Button
 						type="button"
 						variant="ghost"
-						size="xs"
+						size="sm"
 						className={cn(
 							'mb-1.5 hidden shrink-0 px-1.5 text-muted-foreground tabular-nums [@container(min-width:20rem)]:inline-flex',
 							countClassName,

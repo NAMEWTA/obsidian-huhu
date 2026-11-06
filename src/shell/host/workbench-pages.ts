@@ -25,7 +25,7 @@ export class WorkbenchPages {
 	private readonly entries = new Map<string, PageEntry>();
 	private readonly saved = new Map<string, SavedPage>();
 	private readonly last = new Map<WorkbenchFeature, string>();
-	private readonly closes = new Map<string, Promise<void>>();
+	private readonly closes = new Map<string, { entry: PageEntry; promise: Promise<void> }>();
 	private disposed = false;
 	private visible = true;
 	private visits = 0;
@@ -236,15 +236,17 @@ export class WorkbenchPages {
 	}
 	/** Concurrent closes of one page share a single removal and a single follow-up navigation. */
 	close(key: string): Promise<void> {
+		const entry = this.entries.get(key);
 		const pending = this.closes.get(key);
-		if (pending) return pending;
-		const next = this.closeOnce(key).finally(() => this.closes.delete(key));
-		this.closes.set(key, next);
+		if (pending && (!entry || pending.entry === entry)) return pending.promise;
+		if (!entry) return Promise.resolve();
+		const next = this.closeOnce(entry, key).finally(() => {
+			if (this.closes.get(key)?.promise === next) this.closes.delete(key);
+		});
+		this.closes.set(key, { entry, promise: next });
 		return next;
 	}
-	private async closeOnce(key: string): Promise<void> {
-		const entry = this.entries.get(key);
-		if (!entry) return;
+	private async closeOnce(entry: PageEntry, key: string): Promise<void> {
 		// A page still opening has no binding yet; let it settle so it is torn down cleanly (the module may not even be active).
 		if (!entry.binding) {
 			try {
@@ -253,6 +255,10 @@ export class WorkbenchPages {
 				/* Close it regardless. */
 			}
 		}
+		if (this.disposed || !entry.alive || this.entries.get(entry.key) !== entry) return;
+		if (entry.binding?.canClose && !(await entry.binding.canClose())) return;
+		// The decision may outlive a forced close or a replacement page with the same key.
+		if (this.disposed || !entry.alive || this.entries.get(entry.key) !== entry) return;
 		// Read after the page settled: the page may have been shown, hidden or retained meanwhile.
 		const wasActive = this.active === entry;
 		const wasLatest = this.last.get(entry.target.feature) === entry.key;

@@ -143,7 +143,7 @@ export function TerminalSettings({ controller }: { controller: AgentController }
 					description={helper}
 					control={
 						<Button
-							variant="outline"
+							variant="secondary"
 							disabled={checking}
 							onClick={() => {
 								setChecking(true);
@@ -163,7 +163,7 @@ export function TerminalSettings({ controller }: { controller: AgentController }
 					description={cli || t('agent.settings.cliCheckDesc')}
 					control={
 						<Button
-							variant="outline"
+							variant="secondary"
 							disabled={checkingCli}
 							onClick={() => {
 								setCheckingCli(true);

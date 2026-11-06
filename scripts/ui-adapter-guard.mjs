@@ -6,7 +6,16 @@ const inputs = JSON.parse(readFileSync(new URL('./ui-adapter-inputs.json', impor
 /** Fail closed both when source text changes and when an entry stops matching onLoad.
  * The manifest records the actual production graph, not just the installed packages.
  * State lives inside setup and resets onStart, including watch rebuilds. */
-export function guardedAdapter(name, transforms) {
+export function guardedAdapter(name, transforms, graphCounts) {
+	// Fixtures may intentionally omit a production-only dependency copy. Require
+	// an explicit, complete graph contract; source validation never changes.
+	const suffixes = Object.keys(transforms);
+	const counts = graphCounts === undefined
+		? Object.fromEntries(suffixes.map(suffix => [suffix, inputs[suffix]?.files]))
+		: { ...graphCounts };
+	if (Object.keys(counts).length !== suffixes.length || suffixes.some(suffix => !Object.hasOwn(counts, suffix) || !Number.isSafeInteger(counts[suffix]) || counts[suffix] < 0)) {
+		throw new Error(`${name}: graph contract must give an exact nonnegative file count for every adapter input`);
+	}
 	return {
 		name,
 		setup(build) {
@@ -31,7 +40,7 @@ export function guardedAdapter(name, transforms) {
 				const errors = [];
 				for (const suffix of Object.keys(transforms)) {
 					const actual = seen.get(suffix)?.size ?? 0;
-					if (actual !== inputs[suffix].files) errors.push({ text: `${name}: ${suffix}: expected ${inputs[suffix].files} matched files, got ${actual}; review entry paths/exports and the dependency graph` });
+					if (actual !== counts[suffix]) errors.push({ text: `${name}: ${suffix}: expected ${counts[suffix]} matched files, got ${actual}; review entry paths/exports and the dependency graph` });
 				}
 				return { errors };
 			});

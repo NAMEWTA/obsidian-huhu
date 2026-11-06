@@ -62,6 +62,7 @@ export function SuggestInput({
 						setOpen(true);
 					}}
 					onKeyDown={(event) => {
+						if (event.nativeEvent.isComposing) return;
 						if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 							event.preventDefault();
 							setOpen(true);

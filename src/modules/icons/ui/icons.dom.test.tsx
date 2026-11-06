@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { TestProviders } from '../../../ui/react/test-providers';
 import { setLanguage, t } from '../../../shared/i18n';
+import { compareDatetimes } from '../core/rule-operators';
 import { DEFAULT_ICONIC_SETTINGS } from '../core/settings/model';
 import type IconicController from '../platform/host/controller';
 import type { RuleItem } from '../platform/managers/rule-manager';
@@ -276,7 +277,77 @@ test('a failed preference write stays visible in the settings leaf and clears on
 		</TestProviders>,
 	);
 	await user.click(screen.getByRole('switch', { name: t('iconic.settings.showAllFolderIcons.name') }));
-	expect((await screen.findByRole('alert')).textContent).toBe(t('settings.writeFailed'));
+	expect((await screen.findByRole('alert')).textContent).toContain(t('settings.writeFailed'));
 	await user.click(screen.getByRole('switch', { name: t('iconic.settings.showAllFolderIcons.name') }));
 	await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
 });
+
+test('rule local date fields reject incomplete values without changing datetime semantics or allowing IME submit', async () => {
+	setLanguage('en');
+	const plugin = controller(),
+		accept = vi.fn(),
+		close = vi.fn();
+	const initial: RuleItem = {
+		id: 'local',
+		category: 'rule',
+		name: 'Local',
+		icon: null,
+		color: null,
+		iconDefault: 'lucide-file',
+		match: 'all',
+		enabled: true,
+		conditions: [{ source: 'created', operator: 'dateIs', value: '2026-11-06' }],
+	};
+	const view = render(
+		<TestProviders>
+			<RuleEditorContent plugin={plugin} page="file" initial={initial} accept={accept} close={close} />
+		</TestProviders>,
+	);
+	expect(view.container.querySelector('input[type=date],input[type=datetime-local]')).toBeNull();
+	const date = screen.getByRole('textbox', { name: t('iconic.ruleEditor.enterValue') });
+	fireEvent.change(date, { target: { value: '2026-02-30' } });
+	fireEvent.blur(date);
+	expect((screen.getByRole('button', { name: t('iconic.iconPicker.save') }) as HTMLButtonElement).disabled).toBe(
+		true,
+	);
+	expect(screen.getByRole('alert')).not.toBeNull();
+	fireEvent.keyDown(screen.getByRole('combobox', { name: t('iconic.ruleEditor.enterName') }), {
+		key: 'Enter',
+		isComposing: true,
+	});
+	expect(accept).not.toHaveBeenCalled();
+	fireEvent.change(date, { target: { value: '2026-11-07' } });
+	fireEvent.blur(date);
+	fireEvent.click(screen.getByRole('button', { name: t('iconic.iconPicker.save') }));
+	expect(accept).toHaveBeenCalledWith(
+		expect.objectContaining({ conditions: [{ source: 'created', operator: 'dateIs', value: '2026-11-07' }] }),
+	);
+});
+
+
+test.each(['2026-11-06T12:34', '2026-11-06T12:34:56', '2026-11-06T12:34:56.123'])(
+	'existing local datetime %s keeps its precision through name and date edits', (value) => {
+		setLanguage('en');
+		const accept = vi.fn();
+		const initial: RuleItem = { id: 'precision', category: 'rule', name: 'Existing', enabled: true,
+			match: 'all', icon: null, color: null, iconDefault: null,
+			conditions: [{ source: 'created', operator: 'datetimeIs', value }] };
+		expect(compareDatetimes(value, 'datetimeIs', '2026-11-06T12:34')).toBe(true);
+		render(<TestProviders><RuleEditorContent plugin={controller()} page="file" initial={initial} accept={accept} close={vi.fn()} /></TestProviders>);
+		const save = screen.getByRole('button', { name: t('iconic.iconPicker.save') }) as HTMLButtonElement;
+		expect(save.disabled).toBe(false);
+		fireEvent.change(screen.getByRole('combobox', { name: t('iconic.ruleEditor.enterName') }), { target: { value: 'Renamed' } });
+		fireEvent.click(save);
+		expect(accept.mock.calls[0]?.[0]).toMatchObject({ name: 'Renamed', conditions: [{ source: 'created', operator: 'datetimeIs', value }] });
+		const [date, time] = screen.getAllByRole('textbox', { name: t('iconic.ruleEditor.enterValue') });
+		fireEvent.change(date!, { target: { value: '2026-11-07' } });
+		fireEvent.blur(date!);
+		fireEvent.click(save);
+		expect(accept.mock.calls[1]?.[0].conditions[0].value).toBe(`2026-11-07T${value.split('T')[1]}`);
+		fireEvent.change(time!, { target: { value: '12:34:99' } });
+		expect(save.disabled).toBe(true);
+		fireEvent.click(save);
+		expect(accept).toHaveBeenCalledTimes(2);
+		expect(initial.conditions[0]?.value).toBe(value);
+	},
+);

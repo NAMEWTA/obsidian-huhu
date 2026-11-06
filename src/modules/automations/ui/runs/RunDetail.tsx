@@ -31,20 +31,18 @@ export function RunDetail({
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-4">
 					<div className="min-w-0 flex-1 space-y-2">
-						<h2 className="m-0 break-words text-lg font-semibold">
-							{run.title}
-						</h2>
+						<h2 className="m-0 break-words text-lg font-semibold">{run.title}</h2>
 						<LastRunCell run={run} showTime={false} />
 					</div>
 					<div className="flex shrink-0 flex-wrap items-center gap-2">
 						{run.terminalId && (
-							<Button variant="outline" size="sm" onClick={() => onTerminal(run)}>
+							<Button variant="secondary" size="sm" onClick={() => onTerminal(run)}>
 								<Terminal className="size-4" />
 								{t('automation.openTerminal')}
 							</Button>
 						)}
 						{isActiveRun(run) ? (
-							<Button variant="outline" size="sm" disabled={disabled} onClick={() => onStop(run)}>
+							<Button variant="secondary" size="sm" disabled={disabled} onClick={() => onStop(run)}>
 								<Square className="size-4" />
 								{t('automation.stop')}
 							</Button>
@@ -63,7 +61,7 @@ export function RunDetail({
 						['tokenCount', tokenLabel(run)],
 					].map(([key, value]) => (
 						<div key={key}>
-							<div className="text-[11px] font-medium uppercase text-muted-foreground">
+							<div className="text-xs font-medium uppercase text-muted-foreground">
 								{t(`automation.${key}`)}
 							</div>
 							<div className="mt-1 text-sm font-medium">{value}</div>
@@ -89,7 +87,7 @@ export function RunDetail({
 									{run.taskDelivery.receipt.taskId}
 								</span>
 								{onSource && (
-									<Button size="sm" variant="outline" onClick={() => onSource(run)}>
+									<Button size="sm" variant="secondary" onClick={() => onSource(run)}>
 										<FileText className="size-4" />
 										{t('automation.calendarOpenSource')}
 									</Button>

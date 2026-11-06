@@ -28,7 +28,7 @@ export function WidgetBackgroundEditor({
 				onChange={(e) => onChange({ ...bg, image: e.target.value })}
 			/>
 			{app && (
-				<Button variant="outline" onClick={() => setPicking(true)}>
+				<Button variant="secondary" onClick={() => setPicking(true)}>
 					{t('pathPicker.pickFile')}
 				</Button>
 			)}
@@ -61,7 +61,7 @@ export function WidgetBackgroundEditor({
 				</Label>
 			))}
 			<Choice
-				label={t('home.p1.foreground')}
+				label={t('wbg.foreground')}
 				value={
 					bg.foreground === 'light' || bg.foreground === 'dark'
 						? bg.foreground
@@ -71,7 +71,11 @@ export function WidgetBackgroundEditor({
 				}
 				options={['theme', 'light', 'dark', 'custom'].map((value) => ({
 					value,
-					label: t(`home.p1.color.${value}`),
+					label: t(
+						{ theme: 'wbg.fgTheme', light: 'wbg.fgLight', dark: 'wbg.fgDark', custom: 'wbg.fgCustom' }[
+							value
+						]!,
+					),
 				}))}
 				onChange={(value) =>
 					onChange({
@@ -83,7 +87,7 @@ export function WidgetBackgroundEditor({
 			{bg.foreground?.startsWith('#') && (
 				<Input
 					type="color"
-					aria-label={t('home.p1.foreground')}
+					aria-label={t('wbg.fgCustom')}
 					value={bg.foreground}
 					onChange={(e) => onChange({ ...bg, foreground: e.target.value })}
 				/>

@@ -5,8 +5,8 @@
    tokens only (headings H1-H6, bold, italic, highlight, inline code, links, quotes, list
    markers, tags, rules, checkboxes and code-block syntax). The mapping rule at the end turns
    them into Obsidian's variables, which Reading view, Live Preview and Source mode share.
-   With "Follow theme" the --ne-* tokens come from the interface theme (presets.css); with the
-   "Default" interface theme and "Follow theme" nothing is overridden.
+   With "Follow Obsidian" no Markdown palette is overridden. Custom colors are supplied
+   only as --ne-* values; the HUHU interface keeps its own approved palette.
 
    Colour values follow the published palettes named below; accents were deepened or brightened
    where a published value fails WCAG AA on common backgrounds (src/theme/presets.test.ts checks
@@ -628,4 +628,15 @@ body.huhu-themed.theme-dark {
 	--hr-color: var(--ne-hr);
 	--checkbox-color: var(--ne-check);
 	--checkbox-color-hover: var(--ne-check);
+}
+
+
+/* Custom colors affect Markdown content, without changing host chrome or HUHU controls. */
+body.huhu-editor--custom :is(.markdown-preview-view, .markdown-source-view.mod-cm6) {
+ --background-primary: var(--ne-preview-bg);
+ --background-secondary: var(--ne-code-bg);
+ --background-modifier-border: var(--ne-hr);
+ --text-normal: var(--ne-preview-fg);
+ background-color: var(--ne-preview-bg);
+ color: var(--ne-preview-fg);
 }

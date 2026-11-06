@@ -58,7 +58,7 @@ test('countdown editor displays an existing date-only target and preserves it wh
 			/>
 		</TestProviders>,
 	);
-	expect((screen.getByLabelText(t('home.dashboard.date')) as HTMLInputElement).value).toBe('2030-01-01T00:00');
+	expect((screen.getByLabelText(t('home.dashboard.date')) as HTMLInputElement).value).toBe('2030-01-01');
 	fireEvent.change(screen.getByLabelText(t('home.dashboard.name')), { target: { value: 'Renamed' } });
 	fireEvent.click(screen.getByRole('button', { name: t('common.save') }));
 	expect(save).toHaveBeenCalledWith(

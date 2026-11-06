@@ -13,7 +13,8 @@ import { RelationPanel } from '../generic/RelationPanel';
 import { Diagnostics } from '../generic/RecoveryPanel';
 import { PersonJournal } from './PersonJournal';
 import { PersonOverview } from './PersonOverview';
-import { personHitSize, type Leave } from './common';
+import { type Leave } from './common';
+import { SegmentedControl } from '../../../../ui/components/huhu/SegmentedControl';
 
 const views = ['overview', 'profile', 'relations', 'journal'] as const;
 export default function PersonReadingPage({
@@ -64,7 +65,7 @@ export default function PersonReadingPage({
 		<article
 			data-person-id={entity.id}
 			className="min-w-0 space-y-4 break-words"
-			style={personHitSize}
+
 			aria-busy={application.runtime.loading}
 		>
 			{application.runtime.loading && <p role="status">{ct('loading')}</p>}
@@ -73,7 +74,7 @@ export default function PersonReadingPage({
 					{at('person.readUnavailable')}
 				</p>
 			)}
-			<Button variant="outline" onClick={back}>
+			<Button variant="secondary" onClick={back}>
 				{ct('back')}
 			</Button>
 			<header className="flex min-w-0 flex-wrap items-start gap-3">
@@ -101,29 +102,19 @@ export default function PersonReadingPage({
 				>
 					{ct('edit')}
 				</Button>
-				<Button variant="outline" onClick={source}>
+				<Button variant="secondary" onClick={source}>
 					{at('openRaw')}
 				</Button>
 				{actions}
 			</div>
-			<nav
-				aria-label={at('person.views')}
-				className="grid min-w-0 grid-cols-1 gap-1 min-[360px]:grid-cols-2 rounded-lg bg-muted p-1 sm:flex sm:flex-wrap"
-			>
-				{views.map((item) => (
-					<Button
-						key={item}
-						variant={view === item ? 'secondary' : 'ghost'}
-						aria-pressed={view === item}
-						className="min-w-0 whitespace-normal px-1"
-						onClick={() => {
-							void switchView(item);
-						}}
-					>
-						{at(`person.${item}`)}
-					</Button>
-				))}
-			</nav>
+			<SegmentedControl
+				ariaLabel={at('person.views')}
+				value={view}
+				options={views.map((item) => ({ value: item, label: at(`person.${item}`) }))}
+				onChange={(value) => {
+					void switchView(value);
+				}}
+			/>
 			<fieldset disabled={unavailable} className="m-0 min-w-0 space-y-4 border-0 p-0">
 				<section aria-label={at(`person.${view}`)} className="min-w-0 space-y-4">
 					{view === 'overview' && (

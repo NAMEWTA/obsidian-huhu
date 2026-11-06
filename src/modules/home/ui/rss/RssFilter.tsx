@@ -15,7 +15,7 @@ export function RssFilter({
 	return (
 		<Choice
 			label={label}
-			className="w-48 min-w-0 data-[size=sm]:h-9"
+			className="w-48 min-w-0 data-[size=sm]:h-[var(--hu-ctl-h)]"
 			value={value}
 			options={options}
 			onChange={onChange}

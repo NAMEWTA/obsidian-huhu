@@ -150,7 +150,7 @@ test('navigator, board and full calendar share source updates and filters while 
 		expect(full.textContent).not.toContain('From another note');
 		fireEvent.click(dialog.querySelector('[data-slot=dialog-close]')!);
 		fireEvent.click(within(board).getByLabelText(t('calendarUnified.next')));
-		expect(nav.querySelector(`[data-date="${iso}"][data-selected]`)).toBeTruthy();
+		expect(nav.querySelector(`[data-date="${iso}"][aria-pressed="true"]`)).toBeTruthy();
 		view.unmount();
 	} finally {
 		await domain.dispose();

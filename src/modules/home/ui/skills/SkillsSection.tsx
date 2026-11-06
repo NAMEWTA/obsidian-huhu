@@ -174,8 +174,8 @@ export function SkillsSection({
 					}}
 				/>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="secondary"
+					size="icon-md"
 					aria-label={t('home.p1.groups')}
 					title={t('home.p1.groups')}
 					aria-pressed={config.groupView === 'groups'}
@@ -188,8 +188,8 @@ export function SkillsSection({
 					<Layers />
 				</Button>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="secondary"
+					size="icon-md"
 					aria-label={t('home.p1.kanban')}
 					title={t('home.p1.kanban')}
 					aria-pressed={config.groupView === 'kanban'}
@@ -202,7 +202,7 @@ export function SkillsSection({
 					<Columns3 />
 				</Button>
 				<Choice
-					className="ml-auto w-32 data-[size=sm]:h-9"
+					className="ml-auto w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					label={t('dataview.pageSize', { count: size })}
 					value={String(size)}
 					options={[10, 20, 50, 100].map((value) => ({
@@ -351,7 +351,7 @@ export function SkillsSection({
 						</div>
 					))}
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => setGroups([...groups, { id: crypto.randomUUID(), name: '', keywords: '' }])}
 					>
 						{t('common.add')}

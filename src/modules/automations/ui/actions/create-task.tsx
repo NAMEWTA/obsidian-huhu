@@ -1,12 +1,17 @@
 import { CheckSquare } from 'lucide-react';
 import { t as translate } from '../../../../shared/i18n';
 import { useT } from '../../../../ui/react/hooks';
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
+import { AutomationTimeField } from '../editor/AutomationTimeField';
+import { useDraftIssue, useEditorBoundary } from '../editor/draft-issues';
 import { Input } from '../../../../ui/components/input';
 import { Field } from '../parts';
 import { TextContent } from './text-form';
 import type { ActionFormProps, ActionView } from './types';
 function Content({ action, update, showErrors, onTouch }: ActionFormProps<'create-task'>) {
-	const t = useT();
+	const t = useT(),
+		reportDate = useDraftIssue('task-date'),
+		boundary = useEditorBoundary();
 	return (
 		<div className="grid gap-4">
 			<p className="text-sm text-muted-foreground">{t('automation.taskDomainHelp')}</p>
@@ -23,26 +28,33 @@ function Content({ action, update, showErrors, onTouch }: ActionFormProps<'creat
 				onTouch={onTouch}
 			/>
 			<div className="grid grid-cols-2 gap-3">
-				<Field label={t('automation.taskDueDate')} help={t('automation.taskDueDateHelp')}>
-					{(id) => (
-						<Input
-							id={id}
-							type="date"
-							value={action.date ?? ''}
-							onChange={(event) => {
-								const value = event.currentTarget.value;
-								update((next) => {
-									next.date = value || undefined;
-								});
-							}}
-						/>
-					)}
-				</Field>
+				<DateField
+					label={t('automation.taskDueDate')}
+					description={t('automation.taskDueDateHelp')}
+					value={action.date ?? null}
+					collisionBoundary={boundary}
+					onDraftChange={(raw) =>
+						reportDate(
+							raw && !parseDate(raw)
+								? { dirty: true, error: t('automation.time.invalid-date-time') }
+								: raw !== (action.date ?? '')
+									? { dirty: true }
+									: null,
+						)
+					}
+					onChange={(value) => {
+						reportDate(null);
+						update((next) => {
+							next.date = value ?? undefined;
+						});
+					}}
+				/>
 				<Field label={t('automation.calendarTaskTime')}>
 					{(id) => (
 						<Input
 							id={id}
-							type="time"
+							placeholder="HH:mm"
+							inputMode="numeric"
 							value={action.time ?? ''}
 							onChange={(event) => {
 								const value = event.currentTarget.value;
@@ -68,6 +80,18 @@ function Content({ action, update, showErrors, onTouch }: ActionFormProps<'creat
 					/>
 				)}
 			</Field>
+			<AutomationTimeField
+				id="task-reminder"
+				label={t('automation.taskReminder')}
+				description={t('automation.taskReminderHelp')}
+				value={action.reminderAt}
+				zone={action.timezone}
+				onChange={(at) =>
+					update((next) => {
+						next.reminderAt = at;
+					})
+				}
+			/>
 		</div>
 	);
 }

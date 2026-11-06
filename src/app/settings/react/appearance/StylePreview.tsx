@@ -12,7 +12,9 @@ export function StylePreview({ app, settings }: { app: App; settings: ThemeSetti
 	const language = useLanguage();
 	const owner = useOwnerWindow();
 	const frame = useRef<HTMLIFrameElement>(null);
-	const [mode, setMode] = useState<'light' | 'dark'>(() => owner.document.body.classList.contains('theme-dark') ? 'dark' : 'light');
+	const [mode, setMode] = useState<'light' | 'dark'>(() =>
+		owner.document.body.classList.contains('theme-dark') ? 'dark' : 'light',
+	);
 	const [narrow, setNarrow] = useState(false);
 	const [revision, setRevision] = useState(0);
 	useEffect(() => {
@@ -31,9 +33,19 @@ export function StylePreview({ app, settings }: { app: App; settings: ThemeSetti
 					ariaLabel={t('appearance.previewMode')}
 					value={mode}
 					onChange={setMode}
-					options={(['light', 'dark'] as const).map((value) => ({ value, label: t(`appearance.mode.${value}`) }))}
+					options={(['light', 'dark'] as const).map((value) => ({
+						value,
+						label: t(`appearance.mode.${value}`),
+					}))}
 				/>
-				<Button variant="outline" size="sm" aria-pressed={narrow} onClick={() => setNarrow((value) => !value)}>{t('appearance.previewNarrow')}</Button>
+				<Button
+					variant="secondary"
+					size="sm"
+					aria-pressed={narrow}
+					onClick={() => setNarrow((value) => !value)}
+				>
+					{t('appearance.previewNarrow')}
+				</Button>
 			</div>
 			<iframe
 				ref={frame}
@@ -44,7 +56,7 @@ export function StylePreview({ app, settings }: { app: App; settings: ThemeSetti
 				onLoad={() => setRevision((value) => value + 1)}
 				className={`mx-auto block h-[560px] max-w-full rounded-lg border border-border bg-background ${narrow ? 'w-80' : 'w-full'}`}
 			/>
-			<p className="text-xs text-muted-foreground">{t('appearance.previewDesc')}</p>
+			<p className="text-sm text-muted-foreground">{t('appearance.previewDesc')}</p>
 		</div>
 	);
 }

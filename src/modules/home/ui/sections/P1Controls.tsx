@@ -1,3 +1,4 @@
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/toolbar-dropdown.ts, src/library-section.ts
 import {
 	DropdownMenu,
@@ -42,7 +43,7 @@ export function Pagination({ page, pages, change }: { page: number; pages: numbe
 		<div className="flex items-center justify-center gap-2">
 			<Button
 				variant="ghost"
-				size="icon"
+				size="icon-md"
 				aria-label={t('home.p1.previous')}
 				disabled={page <= 1}
 				onClick={() => change(page - 1)}
@@ -54,7 +55,7 @@ export function Pagination({ page, pages, change }: { page: number; pages: numbe
 			</span>
 			<Button
 				variant="ghost"
-				size="icon"
+				size="icon-md"
 				aria-label={t('home.p1.next')}
 				disabled={page >= pages}
 				onClick={() => change(page + 1)}
@@ -70,14 +71,34 @@ export function TextField({
 	multiline,
 	onInput,
 	onKeyDown,
+	onDraftChange,
+	draftValue,
 	...props
 }: Omit<ComponentProps<typeof Input>, 'onInput' | 'onKeyDown'> & {
 	label: string;
 	hint?: string;
 	multiline?: boolean;
+	onDraftChange?: (raw: string) => void;
+	draftValue?: string;
 	onInput: (value: string) => void;
 	onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
 }) {
+	if (props.type === 'date')
+		return (
+			<DateField
+				label={label}
+				description={hint}
+				draftValue={draftValue}
+				onDraftChange={onDraftChange}
+				value={parseDate(String(props.value ?? ''))}
+				onChange={(day) => onInput(day ?? '')}
+				required={props.required}
+				disabled={props.disabled}
+				readOnly={props.readOnly}
+				min={parseDate(String(props.min ?? '')) ?? undefined}
+				max={parseDate(String(props.max ?? '')) ?? undefined}
+			/>
+		);
 	return (
 		<Label className="grid gap-2">
 			{label}
@@ -143,7 +164,7 @@ export function FolderListField({
 							<span className="min-w-0 truncate">{path}</span>
 							<Button
 								variant="ghost"
-								size="icon-xs"
+								size="icon-sm"
 								aria-label={`${t('common.delete')} ${path}`}
 								onClick={() => onChange(folders.filter((folder) => folder !== path))}
 							>
@@ -186,7 +207,7 @@ export function IconChoice({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" aria-label={label} title={label}>
+				<Button variant="secondary" size="icon-md" aria-label={label} title={label}>
 					<ObsidianIcon name={icon} className="size-4" />
 				</Button>
 			</DropdownMenuTrigger>

@@ -34,13 +34,21 @@ export function editTask(
 	if (signal.aborted) return Promise.resolve();
 	return new Promise((resolve) => {
 		const controller = new AbortController();
+		let dirty = false;
 		const dialog = openReactDialog(request.owner, {
 			title: t(request.id ? 'task.edit' : 'task.new'),
+			isDirty: () => dirty,
+			onDiscard: () => {
+				dirty = false;
+			},
 			className: 'sm:max-w-2xl',
 			content: (close) => (
 				<TaskEditor
 					tasks={tasks}
 					resources={resources}
+					onDirtyChange={(value) => {
+						dirty = value;
+					}}
 					id={request.id}
 					initial={request.draft}
 					close={close}
@@ -55,6 +63,7 @@ export function editTask(
 			},
 		});
 		const abort = () => {
+			dirty = false;
 			controller.abort();
 			dialog.close();
 		};

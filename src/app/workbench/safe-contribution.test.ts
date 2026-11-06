@@ -101,7 +101,9 @@ test('safe page state and all normalized routes discard record identifiers and d
 	expect(cleanPageState(draft, f.safe.stateKeys)).toEqual({});
 	const raw = { feature: 'safe', section: 'trash', resourceId: 'private@example.test', focusId: 'private-password' };
 	expect(normalizeTarget(raw)).toEqual({ feature: 'safe' });
-	const restored = normalizeWorkbenchState({ target: raw, lastTargets: { safe: raw } });
-	expect(restored.target).toEqual({ feature: 'safe' });
-	expect(restored.lastTargets.safe).toEqual({ feature: 'safe' });
+	const restored = normalizeWorkbenchState({ schema: 'huhu-workbench-ui/1', route: raw, navigation: { lastRoutes: { safe: raw } },
+		pageViews: [{ target: raw, state: draft }] });
+	expect(restored.route).toEqual({ feature: 'safe' });
+	expect(restored.navigation.lastRoutes.safe).toEqual({ feature: 'safe' });
+	expect(restored.pageViews).toEqual([{ target: { feature: 'safe' }, state: {} }]);
 });

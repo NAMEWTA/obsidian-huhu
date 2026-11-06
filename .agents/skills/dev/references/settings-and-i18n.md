@@ -56,8 +56,9 @@ context.lifetime.register(settings.subscribe(refresh));
 | 词典 | 内容 | 注册方式 |
 |---|---|---|
 | `src/shared/i18n/*.ts`（启动） | 启动代码读取的键：应用、工作台外壳、设置入口页、图标轨标签、启动时注册的命令、模块标题 | 在 `src/shared/i18n/runtime.ts` 里合并 |
-| `src/shared/i18n/lazy/*.ts` | 多个模块读取、启动代码不读取的键 | 由使用它们的每个模块在 `module.ts` 里注册 |
-| `src/modules/<id>/i18n.ts` | 只有该模块读取的键 | 由它的 `module.ts` 注册 |
+| `src/shared/i18n/lazy/*.ts` | 多个模块读取、启动代码不读取的键 | 在真实使用入口注册；模块层键随 `module.ts`，纯 UI 键随 UI 入口 |
+| `src/modules/<id>/i18n.ts` | 模块、服务、命令及激活期贡献读取的键 | 由它的 `module.ts` 注册 |
+| `src/modules/<id>/ui/i18n.ts` | 仅延迟 UI 读取的键 | 在真实 UI 入口渲染前注册，不能在激活时立即导入规避预算 |
 
 添加文案：
 
@@ -71,3 +72,5 @@ context.lifetime.register(settings.subscribe(refresh));
 语言偏好是 `app.language`（`zh` 或 `en`）。新库跟随 Obsidian 的语言（中文 → `zh`，否则 `en`）。切换语言先保存，再调用 `setLanguage`；保存失败则保持原语言。React 组件用 `HuhuProviders` 中的语言上下文与 `useT()` 订阅语言变化，底层仍走 `t()`，切换不丢草稿；必要的原生入口通过 `onLanguageChanged` 更新并清理订阅。用户内容、路径、标识符、提示词和 CLI 输出从不翻译。
 
 英文界面文字用句首大写。命令名称来自 `nameKey`，因此跟随语言。
+
+词典拆分保持合并后的 en/zh 键、文字与占位符逐项不变，核对动态 key、错误 code、nameKey/titleKey 及所有实际 UI 入口。`scripts/module-strings.ts` 的集中注册只供普通测试；加载时序测试必须去除该预载，实测模块入口前后及 UI 入口前后的可用键。

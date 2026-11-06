@@ -11,9 +11,9 @@ const DEFAULT_DIM = 40;
     banner, sidebar and widget labels proportionally while keeping their
     relative differences. 'medium' clears the override (inherited base size). */
 const FONT_SCALE_SIZES: Readonly<Record<DashboardSettings['fontScale'], string>> = {
-	small: '0.85em',
+	small: 'var(--hu-text-sm)',
 	medium: '',
-	large: '1.15em',
+	large: 'var(--hu-text-lg)',
 };
 
 /** Surface tokens whose alpha surfaceOpacity scales (read computed, re-emit rgba). */
@@ -66,7 +66,7 @@ function applyBackground(container: HTMLElement, app: App, settings: DashboardSe
 	const dim = clampNumber(settings.bgDim, 0, 100, DEFAULT_DIM);
 	if (dim > 0) {
 		const scrim = layer.createDiv({ cls: 'huhu-dashboard-bg-scrim absolute inset-0' });
-		scrim.style.background = `rgba(0,0,0,${dim / 100})`;
+		scrim.style.background = `color-mix(in srgb, var(--scrim) ${dim}%, transparent)`;
 	}
 }
 
@@ -102,7 +102,7 @@ function applyFontScale(root: HTMLElement, scale: DashboardSettings['fontScale']
 
 /** Surface tokens whose alpha surfaceOpacity scales, re-expressed over the global token they derive from. */
 const SURFACE_SOURCES: Readonly<Record<(typeof SURFACE_TOKENS)[number], string>> = {
-	'--board-bg-card': 'var(--card)',
+	'--board-bg-card': 'var(--hu-surface)',
 };
 function applySurfaceOpacity(root: HTMLElement, opacity: number): void {
 	const percent = clampNumber(opacity, 0, 100, 100);

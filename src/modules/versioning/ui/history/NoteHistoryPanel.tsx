@@ -16,6 +16,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '../../../../ui/components/dropdown-menu';
+import { useVisible } from '../../../../ui/react/contexts';
 import { useLanguage, useOwnerWindow, useT } from '../../../../ui/react/hooks';
 import { ChoiceList } from '../VersioningNavigator';
 
@@ -37,7 +38,7 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 }
 
 function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
-	const titleId = useId();
+	const titleId = useId(), visible = useVisible();
 	const t = useT(),
 		locale = useLanguage(),
 		win = useOwnerWindow();
@@ -52,7 +53,7 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 	);
 	const [receiptRevision, setReceiptRevision] = useState(0);
 	const automatic = useSyncExternalStore(
-		useCallback(listener => host.automaticHistory?.subscribe(listener) ?? (() => {}), [host]),
+		useCallback((listener) => host.automaticHistory?.subscribe(listener) ?? (() => {}), [host]),
 		() => host.automaticHistory?.snapshot,
 	);
 	const [, setReviewRevision] = useState(0);
@@ -63,7 +64,8 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 	const [preferredSource, setSource] = useState('git'),
 		[reference, setReference] = useState('HEAD'),
 		[draftReference, setDraftReference] = useState('');
-	const source = preferredSource === 'git' && !host.sync.ready && host.queries.localHistory ? 'local' : preferredSource;
+	const source =
+		preferredSource === 'git' && !host.sync.ready && host.queries.localHistory ? 'local' : preferredSource;
 	const [refresh, setRefresh] = useState(0),
 		[actionError, setActionError] = useState('');
 	const identity = JSON.stringify([
@@ -80,13 +82,71 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 		selection = useRef({ value: 0 });
 	const request = useRef<AbortController | null>(null);
 	const [list, setList] = useState<HistoryListState>({ identity: '', phase: 'loading', entries: [] });
-	const path = document ? source === 'git' ? snapshot.place?.toRepo(document.path) : document.path : null;
+	const path = document ? (source === 'git' ? snapshot.place?.toRepo(document.path) : document.path) : null;
+
+	const [endpointA, setEndpointA] = useState<{ document: string; entry: FileHistoryEntry }>();
+	const endpointDocument = JSON.stringify([documentId, documentPath]);
+	const chooseEndpoint = (entry: FileHistoryEntry, side: 'a' | 'b') => {
+		if (!documentId) return;
+		const token = ++selection.current.value;
+		setActionError('');
+		void (async () => {
+			const revision = entry.id.startsWith('current-editor:') ? entry : await materialize(entry);
+			if (selection.current.value !== token || !host.documents.get(documentId)) return;
+			if (side === 'a') {
+				setEndpointA({ document: endpointDocument, entry: revision });
+				await host.reviews.openVersion(documentId, revision);
+			} else {
+				const baseline =
+					endpointA?.document === endpointDocument
+						? endpointA.entry
+						: host.reviews.forDocument(documentId)?.selected;
+				if (!baseline) return;
+				await host.reviews.openVersion(documentId, baseline);
+				if (selection.current.value !== token) return;
+				const review = host.reviews.forDocument(documentId);
+				if (review) await host.reviews.compareWith(review.id, revision);
+			}
+		})().catch((error) => {
+			if (selection.current.value === token)
+				setActionError(t(error instanceof Error ? error.message : 'history.error'));
+		});
+	};
+	const chooseCurrent = (side: 'a' | 'b', capturedAt: number) => {
+		if (!documentId || !documentPath) return;
+		const existing = host.reviews.forDocument(documentId);
+		const captured = existing
+			? { context: existing.source, text: existing.buffer.text }
+			: host.documents.capture(documentId);
+		const id = `current-editor:${documentId}:${captured.context.generation}`;
+		chooseEndpoint(
+			{
+				id,
+				commitOid: '',
+				parents: [],
+				author: '',
+				time: (existing?.bufferCapturedAt ?? capturedAt) / 1000,
+				subject: t('versioning.diff.currentSnapshot'),
+				pathAtRevision: documentPath,
+				status: 'M',
+				ref: { kind: 'local-snapshot', path: documentPath, snapshotId: id, text: captured.text },
+			},
+			side,
+		);
+	};
 	const materialize = async (entry: FileHistoryEntry): Promise<FileHistoryEntry> =>
 		entry.ref.kind !== 'local-snapshot'
 			? entry
-			: { ...entry, ref: { ...entry.ref, text: source === 'local'
-				? await host.queries.readLocalSnapshot!(entry.ref.snapshotId)
-				: await host.restores.readSnapshot(entry.ref.snapshotId) } };
+			: {
+					...entry,
+					ref: {
+						...entry.ref,
+						text:
+							source === 'local'
+								? await host.queries.readLocalSnapshot!(entry.ref.snapshotId)
+								: await host.restores.readSnapshot(entry.ref.snapshotId),
+					},
+				};
 	useEffect(() => {
 		currentIdentity.current = identity;
 		const selectedRequest = selection.current;
@@ -121,17 +181,19 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 
 	useEffect(() => {
 		request.current?.abort();
-		if (!documentId || !documentPath || (source === 'git' && !host.sync.ready) || path == null) return;
+		if (!visible || !documentId || !documentPath || (source === 'git' && !host.sync.ready) || path == null) return;
 		const controller = new AbortController();
 		request.current = controller;
 		const load = async () => {
 			if (source === 'local') {
-				const entries = await host.queries.localHistory?.(documentPath, controller.signal) ?? [];
+				const entries = (await host.queries.localHistory?.(documentPath, controller.signal)) ?? [];
 				if (!controller.signal.aborted) setList({ identity, phase: 'ready', entries });
 			} else if (source === 'checkpoints') {
 				await host.restores.initialize();
 				const entries: FileHistoryEntry[] = [];
-				for (const receipt of host.restores.receipts().filter((item) => item.path === documentPath && item.objectsReleasedAt === undefined)) {
+				for (const receipt of host.restores
+					.receipts()
+					.filter((item) => item.path === documentPath && item.objectsReleasedAt === undefined)) {
 					if (!receipt.beforeObject) continue;
 					if (controller.signal.aborted) return;
 					// The checkpoint body is loaded only on selection, never for every visible metadata row.
@@ -168,7 +230,7 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 				});
 		});
 		return () => controller.abort();
-	}, [host, identity, documentId, documentPath, path, source, reference, t]);
+	}, [host, identity, documentId, documentPath, path, source, reference, t, visible]);
 
 	const loadMore = () => {
 		if (!list.cursor || path == null || list.identity !== identity) return;
@@ -212,7 +274,7 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 			<div className="space-y-3 p-4 text-sm text-muted-foreground">
 				<p>{t(pinned ? 'history.sourceClosed' : 'history.noNote')}</p>
 				{pinned && (
-					<Button variant="outline" onClick={() => setPinned(undefined)}>
+					<Button variant="secondary" onClick={() => setPinned(undefined)}>
 						{t('history.unpin')}
 					</Button>
 				)}
@@ -222,7 +284,7 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 		return (
 			<div className="flex flex-col gap-3 p-4 text-sm text-muted-foreground">
 				<p>{t('history.noRepository')}</p>
-				<Button variant="outline" onClick={() => host.openSettings()}>
+				<Button variant="secondary" onClick={() => host.openSettings()}>
 					{t('history.settings')}
 				</Button>
 			</div>
@@ -252,7 +314,11 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 				>
 					{pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
 				</ActionButton>
-				<ActionButton className="size-8" label={t('history.refresh')} onClick={() => setRefresh((value) => value + 1)}>
+				<ActionButton
+					className="size-8"
+					label={t('history.refresh')}
+					onClick={() => setRefresh((value) => value + 1)}
+				>
 					<RefreshCw className="size-4" />
 				</ActionButton>
 			</header>
@@ -262,7 +328,9 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="git" disabled={!host.sync.ready}>{t('history.git')}</SelectItem>
+						<SelectItem value="git" disabled={!host.sync.ready}>
+							{t('history.git')}
+						</SelectItem>
 						{host.queries.localHistory && <SelectItem value="local">{t('history.local')}</SelectItem>}
 						<SelectItem value="checkpoints">{t('history.checkpoints')}</SelectItem>
 					</SelectContent>
@@ -281,22 +349,58 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 							placeholder={t('history.currentBranch')}
 							aria-label={t('history.ref')}
 						/>
-						<Button type="submit" variant="ghost" size="icon" aria-label={t('history.loadRef')}>
+						<Button type="submit" variant="ghost" size="icon-md" aria-label={t('history.loadRef')}>
 							<GitCommitHorizontal className="size-4" />
 						</Button>
 					</form>
 				)}
 			</div>
-			{automatic && <div className="space-y-1 border-b px-3 py-2 text-xs" role={automatic.phase === 'error' ? 'alert' : 'status'}>
-				<p>{t(automatic.enabled ? 'history.localEnabled' : 'history.localDisabled')}</p>
-				{automatic.phase === 'error' && <p className="text-destructive">{t(automatic.error ?? 'versioning.localHistory.failed')}</p>}
-				<Button variant="link" size="sm" onClick={() => host.openSettings()}>{t('history.settings')}</Button>
-			</div>}
+			{automatic && (
+				<div
+					className="space-y-1 border-b px-3 py-2 text-xs"
+					role={automatic.phase === 'error' ? 'alert' : 'status'}
+				>
+					<p>{t(automatic.enabled ? 'history.localEnabled' : 'history.localDisabled')}</p>
+					{automatic.phase === 'error' && (
+						<p className="text-destructive">{t(automatic.error ?? 'versioning.localHistory.failed')}</p>
+					)}
+					<Button variant="ghost" size="sm" onClick={() => host.openSettings()}>
+						{t('history.settings')}
+					</Button>
+				</div>
+			)}
 			{actionError && (
 				<p role="alert" className="m-0 px-3 py-2 text-xs text-destructive">
 					{actionError}
 				</p>
 			)}
+			<div className="flex flex-wrap items-center gap-1 border-y px-2 py-1 text-xs">
+				<span className="min-w-0 flex-1 truncate">{t('versioning.diff.currentSnapshot')}</span>
+				<Button
+					size="sm"
+					variant="ghost"
+					aria-label={t('versioning.compare.currentA')}
+					aria-pressed={
+						endpointA?.document === endpointDocument && endpointA.entry.id.startsWith('current-editor:')
+					}
+					onClick={(event) => chooseCurrent('a', win.performance.timeOrigin + event.timeStamp)}
+				>
+					A
+				</Button>
+				<Button
+					size="sm"
+					variant="ghost"
+					aria-label={t('versioning.compare.currentB')}
+					aria-pressed={
+						host.reviews.forDocument(document.id)?.mode === 'pair' &&
+						!!host.reviews.forDocument(document.id)?.selected.id.startsWith('current-editor:')
+					}
+					disabled={!endpointA && !host.reviews.forDocument(document.id)}
+					onClick={(event) => chooseCurrent('b', win.performance.timeOrigin + event.timeStamp)}
+				>
+					B
+				</Button>
+			</div>
 			<ChoiceList
 				key={identity}
 				items={entries}
@@ -313,7 +417,8 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 						<span className="truncate text-[13px]">
 							{source === 'checkpoints'
 								? t('history.checkpoint')
-								: entry.subject || (source === 'local' ? t('history.local') : entry.commitOid.slice(0, 8))}
+								: entry.subject ||
+									(source === 'local' ? t('history.local') : entry.commitOid.slice(0, 8))}
 						</span>
 						<span className="truncate text-xs text-muted-foreground">
 							{date(entry.time)}
@@ -323,33 +428,57 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 					</span>
 				)}
 				actions={(entry) => (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="mr-1 size-8 shrink-0"
-								aria-label={t('history.versionActions')}
-							>
-								<MoreHorizontal className="size-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuItem onSelect={() => openEntry(entry)}>
-								{t('history.compare')}
-							</DropdownMenuItem>
-							{source === 'git' && (
-								<DropdownMenuItem onSelect={() => openEntry(entry, 'change')}>
-									{t('history.change')}
+					<>
+						<Button
+							size="sm"
+							variant="ghost"
+							aria-label={t('versioning.compare.setA', { oid: entry.subject || date(entry.time) })}
+							aria-pressed={endpointA?.document === endpointDocument && endpointA.entry.id === entry.id}
+							onClick={() => chooseEndpoint(entry, 'a')}
+						>
+							A
+						</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							aria-label={t('versioning.compare.setB', { oid: entry.subject || date(entry.time) })}
+							aria-pressed={
+								host.reviews.forDocument(document.id)?.mode === 'pair' &&
+								host.reviews.forDocument(document.id)?.selected.id === entry.id
+							}
+							disabled={!endpointA && !host.reviews.forDocument(document.id)}
+							onClick={() => chooseEndpoint(entry, 'b')}
+						>
+							B
+						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon-md"
+									className="mr-1 size-8 shrink-0"
+									aria-label={t('history.versionActions')}
+								>
+									<MoreHorizontal className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem onSelect={() => openEntry(entry)}>
+									{t('history.compare')}
 								</DropdownMenuItem>
-							)}
-							{host.reviews.forDocument(document.id) && (
-								<DropdownMenuItem onSelect={() => openEntry(entry, 'pair')}>
-									{t('history.pair')}
-								</DropdownMenuItem>
-							)}
-						</DropdownMenuContent>
-					</DropdownMenu>
+								{source === 'git' && (
+									<DropdownMenuItem onSelect={() => openEntry(entry, 'change')}>
+										{t('history.change')}
+									</DropdownMenuItem>
+								)}
+								{host.reviews.forDocument(document.id) && (
+									<DropdownMenuItem onSelect={() => openEntry(entry, 'pair')}>
+										{t('history.pair')}
+									</DropdownMenuItem>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</>
 				)}
 			/>
 			<div className="shrink-0">
@@ -360,14 +489,20 @@ function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
 				)}
 				{list.identity === identity && list.phase === 'ready' && !entries.length && (
 					<p className="px-3 py-4 text-sm text-muted-foreground">
-						{t(source === 'git' ? 'history.empty' : source === 'local' ? 'history.emptyLocal' : 'history.emptyCheckpoints')}
+						{t(
+							source === 'git'
+								? 'history.empty'
+								: source === 'local'
+									? 'history.emptyLocal'
+									: 'history.emptyCheckpoints',
+						)}
 					</p>
 				)}
 				{list.identity === identity && list.phase === 'error' && (
 					<div role="alert" className="flex flex-col gap-2 p-3">
 						<p className="text-sm text-destructive">{t('history.error')}</p>
 						<p className="break-words text-xs text-muted-foreground">{list.error}</p>
-						<Button variant="outline" onClick={() => setRefresh((value) => value + 1)}>
+						<Button variant="secondary" onClick={() => setRefresh((value) => value + 1)}>
 							{t('history.retry')}
 						</Button>
 					</div>

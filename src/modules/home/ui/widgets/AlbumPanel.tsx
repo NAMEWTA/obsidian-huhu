@@ -1,3 +1,4 @@
+import { useVisible } from '../../../../ui/react/contexts';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/album-widget.ts
 import { RecordButton } from '../dialogs/RecordButton';
 import { p2Classes } from '../theme/p2-classes';
@@ -31,6 +32,7 @@ export function AlbumPanel({
 	focal?: { x: number; y: number };
 	onFocal?: (focal: { x: number; y: number }) => void;
 }) {
+	const visible = useVisible();
 	const interval = clampIntervalSec(settings.widgetAlbumIntervalSec) * 1000,
 		transition = normalizeTransition(settings.widgetAlbumTransition);
 	const [images, setImages] = useState(() =>
@@ -87,7 +89,7 @@ export function AlbumPanel({
 		[app],
 	);
 	useLayoutEffect(() => {
-		if (images.length < 2) return;
+		if (!visible || images.length < 2) return;
 		const timer = win.setInterval(() => {
 			if (!root.isConnected) {
 				win.clearInterval(timer);
@@ -96,7 +98,7 @@ export function AlbumPanel({
 			if (!paused.current) advance(1);
 		}, interval);
 		return () => win.clearInterval(timer);
-	}, [win, interval, images, reset, root, advance]);
+	}, [win, interval, images, reset, root, advance, visible]);
 	useLayoutEffect(() => {
 		if (phase === 'idle') return;
 		if (phase === 'start') {
@@ -208,18 +210,19 @@ export function AlbumPanel({
 					data-album-mosaic
 					className="hidden h-full grid-cols-4 grid-rows-2 gap-1 overflow-hidden @3xl:grid"
 				>
-					{Array.from({ length: Math.min(8, images.length) }, (_, k) => images[(index + k) % images.length]!).map(
-						(path) => (
-							<img
-								key={path}
-								src={resolveVaultImage(app, path) ?? undefined}
-								alt={basename(path)}
-								loading="lazy"
-								draggable={false}
-								className="size-full min-h-0 min-w-0 object-cover"
-							/>
-						),
-					)}
+					{Array.from(
+						{ length: Math.min(8, images.length) },
+						(_, k) => images[(index + k) % images.length]!,
+					).map((path) => (
+						<img
+							key={path}
+							src={resolveVaultImage(app, path) ?? undefined}
+							alt={basename(path)}
+							loading="lazy"
+							draggable={false}
+							className="size-full min-h-0 min-w-0 object-cover"
+						/>
+					))}
 				</div>
 			)}
 		</div>

@@ -6,6 +6,7 @@ import type { ConditionItem, RuleItem } from '../../platform/managers/rule-manag
 import { t } from '../../../../shared/i18n';
 import { useT } from '../../../../ui/react/hooks';
 import { Button } from '../../../../ui/components/button';
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 import { Input } from '../../../../ui/components/input';
 import { SuggestInput } from '../SuggestInput';
 import { SettingsRow, SettingsSwitchRow } from '../../../../ui/components/huhu/SettingsFormControls';
@@ -92,6 +93,20 @@ function suggestions(plugin: IconicController, page: Category, source: string) {
 					);
 	return [...new Set(values.filter(Boolean))].sort();
 }
+function validConditionValue(condition: ConditionItem): boolean {
+	const type = OPERATOR_VALUE_TYPES[condition.operator];
+	const value = condition.value;
+	if (!value) return true;
+	if (type === 'date') return parseDate(value) !== null;
+	if (type === 'time') return /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value);
+	if (type === 'datetime') {
+		const [date, time, extra] = value.split('T');
+		return !extra && !!date && parseDate(date) !== null && !!time &&
+			/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?$/.test(time);
+	}
+	return true;
+}
+
 function Condition({
 	plugin,
 	page,
@@ -171,12 +186,43 @@ function Condition({
 					suggestions={suggestions(plugin, page, source)}
 					onValueChange={(value) => change({ ...condition, value })}
 				/>
+			) : type === 'date' ? (
+				<DateField
+					aria-label={placeholder}
+					value={parseDate(value)}
+					onDraftChange={(value) => change({ ...condition, value })}
+					onChange={(date) => change({ ...condition, value: date ?? '' })}
+				/>
+			) : type === 'datetime' ? (
+				<div role="group" aria-label={placeholder} className="flex min-w-0 flex-wrap gap-2">
+					<DateField
+						aria-label={placeholder}
+						value={parseDate(value.split('T')[0] ?? '')}
+						onDraftChange={(date) =>
+							change({ ...condition, value: `${date}T${value.split('T')[1] ?? ''}` })
+						}
+						onChange={(date) =>
+							change({ ...condition, value: date ? `${date}T${value.split('T')[1] ?? ''}` : '' })
+						}
+					/>
+					<Input
+						aria-label={placeholder}
+						placeholder="HH:mm"
+						value={value.split('T')[1] ?? ''}
+						aria-invalid={!validConditionValue(condition)}
+						onChange={(event) =>
+							change({ ...condition, value: `${value.split('T')[0] ?? ''}T${event.target.value}` })
+						}
+					/>
+				</div>
 			) : type ? (
 				<Input
 					className="min-w-36 flex-1"
 					aria-label={placeholder}
 					placeholder={placeholder}
-					type={type === 'datetime' ? 'datetime-local' : type === 'date' || type === 'time' ? type : 'text'}
+					type="text"
+					aria-invalid={!validConditionValue(condition)}
+					inputMode={type === 'time' || type === 'number' ? 'numeric' : undefined}
 					value={value}
 					onChange={(e) => change({ ...condition, value: e.target.value })}
 				/>
@@ -215,6 +261,7 @@ export function RuleEditorContent({
 		() => ({ ...rule, conditions: rows.map((row) => normalizeCondition(plugin, row.condition)) }),
 		[plugin, rule, rows],
 	);
+	const valid = draft.conditions.every(validConditionValue);
 	const matches = useMemo(
 		() =>
 			page === 'folder'
@@ -226,8 +273,8 @@ export function RuleEditorContent({
 		<div className="space-y-4">
 			<div className="flex items-center gap-2">
 				<Button
-					variant="outline"
-					size="icon"
+					variant="secondary"
+					size="icon-md"
 					aria-label={t('iconic.iconPicker.changeIcon')}
 					onClick={() =>
 						IconPicker.openSingle(plugin, draft, (icon, color) =>
@@ -244,7 +291,7 @@ export function RuleEditorContent({
 					onValueChange={(name) => setRule({ ...rule, name })}
 					suggestions={plugin.ruleManager?.getRules(page).map((r) => r.name) ?? []}
 					onKeyDown={(e) => {
-						if (e.key === 'Enter') {
+						if (e.key === 'Enter' && !e.nativeEvent.isComposing && valid) {
 							e.preventDefault();
 							accept({ ...draft, name: rule.name || initial.name });
 							close();
@@ -273,7 +320,7 @@ export function RuleEditorContent({
 			<div className="flex items-center justify-between gap-2">
 				<h3 className="text-sm font-semibold">{t('iconic.ruleEditor.conditions')}</h3>
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						const last = rows.at(-1)?.condition;
 						setRows([
@@ -312,9 +359,14 @@ export function RuleEditorContent({
 					setRows(next);
 				}}
 			/>
+			{!valid && (
+				<p role="alert" className="text-sm text-[var(--hu-danger)]">
+					{t('iconic.ruleEditor.invalidDateTime')}
+				</p>
+			)}
 			<div className="flex flex-wrap items-center gap-2">
 				<Button
-					variant="outline"
+					variant="secondary"
 					disabled={!matches.length}
 					onClick={() => RuleChecker.open(plugin, page, matches)}
 				>
@@ -328,7 +380,7 @@ export function RuleEditorContent({
 					)}
 				</Button>
 				<Button
-					variant="destructive"
+					variant="danger"
 					onClick={() => {
 						accept(null);
 						close();
@@ -337,11 +389,13 @@ export function RuleEditorContent({
 					{t('iconic.ruleEditor.removeRule')}
 				</Button>
 				<span className="flex-1" />
-				<Button variant="outline" onClick={close}>
+				<Button variant="secondary" onClick={close}>
 					{t('iconic.iconPicker.cancel')}
 				</Button>
 				<Button
+					disabled={!valid}
 					onClick={() => {
+						if (!valid) return;
 						accept({ ...draft, name: rule.name || initial.name });
 						close();
 					}}

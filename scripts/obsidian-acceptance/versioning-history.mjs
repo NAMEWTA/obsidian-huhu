@@ -59,23 +59,22 @@ try {
  await until(`!document.querySelector('[data-comments-overlay="compose"]')`);
  check('native-comment-created',(await sidecars()).some(doc=>doc.path==='Note.md'&&doc.threads[0]?.messages[0]?.text==='Preserve this comment'));
  await c.evaluate(`app.commands.executeCommandById('huhu:versioning-note-history');true`);
- await until(`!!document.querySelector('section[aria-label="Note history"] [data-choice-index]')`);
+ await until(`!!document.querySelector('[data-note-history] [data-choice-key]')`);
  const diskBeforePreview = await fs.readFile(path.join(runtime.vault,'Note.md'),'utf8');
- await click(`[...document.querySelectorAll('section[aria-label="Note history"] [data-choice-index]')].find(option=>option.textContent.includes('Historical version'))`);
+ await click(`[...document.querySelectorAll('[data-note-history] [data-choice-key]')].find(option=>option.textContent.includes('Historical version'))`);
  await until(`app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review') && !!document.querySelector('[data-layout]')`);
  await c.evaluate(`(()=>{window.probeSurface=app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).find(surface=>surface.getViewType()==='huhu-version-review');window.probeHost=probeSurface.host;window.probeContext=probeHost.documents.current(window);return true})()`);
  check('preview-keeps-native-source-and-disk',await c.evaluate(`app.workspace.getLeavesOfType('markdown').includes(probeSource)&&probeSource.view.editor.getValue()===${JSON.stringify(current)}&&probeHost.documents.current(window).path==='Note.md'`) && diskBeforePreview===await fs.readFile(path.join(runtime.vault,'Note.md'),'utf8'));
  check('preview-never-replaces-source-markdown-view',await c.evaluate('probeSourceStateChanges===0'));
  check('preview-does-not-change-git',head===git('rev-parse','HEAD')&&index===git('ls-files','--stage','-z'));
- await until(`!!document.querySelector('[data-layout] .cm-content')`);
- check('readonly-diff-has-no-comment-extension',await c.evaluate(`(()=>{const section=document.querySelector('[data-layout]'),editors=[...section.querySelectorAll('.cm-content')];return !section.querySelector('.huhu-comments-editor')&&editors.length>0&&editors.every(el=>el.getAttribute('contenteditable')==='false')})()`));
+ await until(`!!document.querySelector('[data-layout] diffs-container')?.shadowRoot?.querySelector('pre')`);
+ check('readonly-diff-has-no-comment-extension',await c.evaluate(`(()=>{const section=document.querySelector('[data-layout]'),roots=[...section.querySelectorAll('diffs-container')].map(el=>el.shadowRoot);return !section.querySelector('.huhu-comments-editor')&&roots.length>0&&roots.every(root=>root&&root.querySelector('pre')&&!root.querySelector('[contenteditable=true],.huhu-comments-editor'))})()`));
  await click(`[...document.querySelectorAll('[role="radio"]')].find(el=>el.textContent.trim()==='Side by side')`);
  await until(`document.querySelector('[data-layout="side-by-side"]')`); await runtime.shot('history-side-by-side');
  await click(`[...document.querySelectorAll('[role="radio"]')].find(el=>el.textContent.trim()==='Stacked')`);
  await until(`document.querySelector('[data-layout="stacked"]')`); await runtime.shot('history-stacked');
- await click(`[...document.querySelectorAll('[role="radio"]')].find(el=>el.textContent.trim()==='Unified')`);
- await until(`document.querySelector('[data-layout="unified"]')?.querySelectorAll('.cm-editor').length===1`); await runtime.shot('history-unified');
- check('real-host-three-comparison-layouts',true);
+ // DESIGN §3 replaced the former Unified mode with the two approved Pierre layouts.
+ check('real-host-two-approved-comparison-layouts',true,{layouts:['side-by-side','stacked'],replaced:'Unified'});
  await click(button('Restore to current note')); await until(`document.querySelector('[role="alertdialog"]')`);
  await click(button('Cancel',`document.querySelector('[role="alertdialog"]')`)); await until(`!document.querySelector('[role="alertdialog"]')`);
  check('native-restore-dialog-cancel-is-readonly',await c.evaluate(`probeSource.view.editor.getValue()===${JSON.stringify(current)}&&!probeHost.sync.snapshot.device.restoreHold`));
@@ -106,9 +105,11 @@ try {
  const journalFiles=await fs.readdir(path.join(runtime.vault,'.huhu/recovery/versioning'));
  check('durable-private-checkpoints-written',journalFiles.length>0,journalFiles);
  await c.evaluate(`(async()=>{window.probeNativeWorker=window.Worker;window.probeWorkerCount=0;window.Worker=class extends probeNativeWorker{constructor(...args){super(...args);probeWorkerCount++}};window.probeLong=app.workspace.getLeaf('tab');await probeLong.openFile(app.vault.getFileByPath('Long.md'));app.workspace.setActiveLeaf(probeLong,{focus:true});app.commands.executeCommandById('huhu:versioning-note-history');return true})()`);
- await until(`document.querySelector('section[aria-label="Note history"] header')?.textContent.includes('Long.md')&&[...document.querySelectorAll('section[aria-label="Note history"] [data-choice-index]')].some(el=>el.textContent.includes('Historical version'))`);
- await click(`[...document.querySelectorAll('section[aria-label="Note history"] [data-choice-index]')].find(el=>el.textContent.includes('Historical version'))`);
- await until(`window.probeWorkerCount>0&&app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Long.md'&&surface.contentEl.querySelector('[data-layout] .cm-content'))`);
+ await until(`document.querySelector('[data-note-history] header')?.textContent.includes('Long.md')&&[...document.querySelectorAll('[data-note-history] [data-choice-key]')].some(el=>el.textContent.includes('Historical version'))`);
+ await click(`[...document.querySelectorAll('[data-note-history] [data-choice-key]')].find(el=>el.textContent.includes('Historical version'))`);
+ await until(`!!${button('Render anyway')}`);
+ await click(button('Render anyway'));
+ await until(`window.probeWorkerCount>0&&app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Long.md'&&surface.contentEl.querySelector('[data-layout] diffs-container')?.shadowRoot?.querySelector('pre'))`);
  check('large-diff-runs-real-worker',await c.evaluate(`probeWorkerCount>0`),{characters:longBefore.length,workers:await c.evaluate('probeWorkerCount')});
  await runtime.shot('history-large-worker'); await c.evaluate(`window.Worker=probeNativeWorker;true`);
  const held=await c.evaluate(`({hold:probeHost.sync.snapshot.device.restoreHold,receipts:probeHost.restores.receipts().length,panelTab:app.workspace.getLeavesOfType('huhu-comments-view')[0].view.getState().tab,reviewId:app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).find(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Long.md').id})`);
@@ -119,11 +120,12 @@ try {
  // Restored inactive Obsidian leaves can be DeferredView until explicitly loaded/revealed.
  await c.evaluate(`(async()=>{for(const leaf of app.workspace.getLeavesOfType('huhu-workbench-view'))await leaf.loadIfDeferred();const leaf=app.workspace.getLeavesOfType('huhu-workbench-view').find(leaf=>leaf.view.getNativeSurfaces?.().some(surface=>surface.id===${JSON.stringify(held.reviewId)}));if(!leaf)throw Error('Restored comparison leaf missing');await app.workspace.revealLeaf(leaf);await leaf.loadIfDeferred();window.probeRestoredSurface=leaf.view.getNativeSurfaces().find(surface=>surface.id===${JSON.stringify(held.reviewId)});return true})()`);
  await until(`probeRestoredSurface.contentEl.textContent.includes('This comparison session has ended.')`);
- const reopened=await c.evaluate(`(()=>{const surface=probeRestoredSurface;return{hold:surface.host.sync.snapshot.device.restoreHold,receipts:surface.host.restores.receipts().length,panelTab:app.workspace.getLeavesOfType('huhu-comments-view')[0].view.getState().tab,expired:!surface.host.reviews.get(surface.id)&&surface.contentEl.textContent.includes('This comparison session has ended.'),hasOldBody:!!surface.contentEl.querySelector('.cm-content')||surface.contentEl.textContent.includes('Line 100:')}})()`);
+ const reopened=await c.evaluate(`(()=>{const surface=probeRestoredSurface;return{hold:surface.host.sync.snapshot.device.restoreHold,receipts:surface.host.restores.receipts().length,panelTab:app.workspace.getLeavesOfType('huhu-comments-view')[0].view.getState().tab,expired:!surface.host.reviews.get(surface.id)&&surface.contentEl.textContent.includes('This comparison session has ended.'),hasOldBody:!!surface.contentEl.querySelector('diffs-container')||surface.contentEl.textContent.includes('Line 100:')}})()`);
  check('restart-preserves-sync-hold-and-private-receipts',!!held.hold&&reopened.hold===held.hold&&reopened.receipts===held.receipts,{before:held,after:reopened});
  check('restart-persists-selected-history-panel',held.panelTab==='history'&&reopened.panelTab==='history',{before:held.panelTab,after:reopened.panelTab});
  check('restart-expires-temporary-comparison-without-old-body',reopened.expired&&!reopened.hasOldBody,reopened);
  await runtime.shot('history-restart');
+ await c.evaluate(`app.vault.modify(app.vault.getFileByPath('Other.md'),'Other window current draft\\n')`);
  const beforePopTargets=new Set((await (await fetch(process.env.HUHU_CDP_URL+'/json')).json()).map(target=>target.id));
  await c.evaluate(`(async()=>{window.probeMainLeaf=app.workspace.getLeavesOfType('markdown').find(leaf=>leaf.view.file?.path==='Long.md')??app.workspace.getLeaf('tab');await probeMainLeaf.openFile(app.vault.getFileByPath('Long.md'));window.probePop=app.workspace.getLeaf('tab');await probePop.openFile(app.vault.getFileByPath('Other.md'));app.workspace.moveLeafToPopout(probePop,{width:1200,height:900});return true})()`);
  await until(`probePop.view.containerEl.ownerDocument!==document`);
@@ -133,12 +135,12 @@ try {
  // Capture the separate renderer's errors before mounting its history/review surfaces.
  await pop.evaluate(`(()=>{if(window.huhuAcceptanceErrors)return;window.huhuAcceptanceErrors=[];const original=console.error;console.error=(...args)=>{huhuAcceptanceErrors.push(args.map(a=>a?.stack??String(a)).join(' '));original(...args)};window.addEventListener('unhandledrejection',event=>huhuAcceptanceErrors.push(event.reason?.stack??String(event.reason)));})()`);
  await c.evaluate(`(()=>{app.workspace.setActiveLeaf(probeMainLeaf,{focus:true});app.workspace.setActiveLeaf(probePop,{focus:true});app.commands.executeCommandById('huhu:versioning-note-history');return true})()`);
- await until(`app.workspace.getLeavesOfType('huhu-comments-view').some(leaf=>leaf.view.containerEl.ownerDocument===probePop.view.containerEl.ownerDocument&&leaf.view.containerEl.querySelector('section[aria-label="Note history"] header')?.textContent.includes('Other.md'))`);
+ await until(`app.workspace.getLeavesOfType('huhu-comments-view').some(leaf=>leaf.view.containerEl.ownerDocument===probePop.view.containerEl.ownerDocument&&leaf.view.containerEl.querySelector('[data-note-history] header')?.textContent.includes('Other.md'))`);
  const popOwnership=await c.evaluate(`(()=>{window.probePopPanel=app.workspace.getLeavesOfType('huhu-comments-view').find(leaf=>leaf.view.containerEl.ownerDocument===probePop.view.containerEl.ownerDocument);return{popout:probePopPanel.view.containerEl.ownerDocument===probePop.view.containerEl.ownerDocument,source:app.plugins.plugins.huhu.documents.current(probePop.view.containerEl.win)?.path,main:app.plugins.plugins.huhu.documents.current(window)?.path,panelTab:probePopPanel.view.getState().tab}})()`);
  check('popout-history-panel-keeps-window-source',popOwnership.popout&&popOwnership.source==='Other.md'&&popOwnership.main==='Long.md'&&popOwnership.panelTab==='history',popOwnership);
- await until(`probePopPanel.view.containerEl.querySelector('[data-choice-index]')`);
- await click(`probePopPanel.view.containerEl.querySelector('[data-choice-index]')`);
- await until(`app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Other.md'&&surface.contentEl.ownerDocument===probePop.view.containerEl.ownerDocument&&surface.contentEl.querySelector('[data-layout] .cm-content'))`);
+ await until(`probePopPanel.view.containerEl.querySelector('[data-choice-key]')`);
+ await click(`probePopPanel.view.containerEl.querySelector('[data-choice-key]')`);
+ await until(`app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Other.md'&&surface.contentEl.ownerDocument===probePop.view.containerEl.ownerDocument&&surface.contentEl.querySelector('[data-layout] diffs-container')?.shadowRoot?.querySelector('pre'))`);
  await c.evaluate(`(()=>{window.probePopReview=app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).find(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Other.md'&&surface.contentEl.ownerDocument===probePop.view.containerEl.ownerDocument);return true})()`);
  check('popout-history-comparison-keeps-window-source',true);
  const {data}=await pop.send('Page.captureScreenshot',{format:'png'});

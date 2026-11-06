@@ -1,4 +1,4 @@
-// Card structure after the shadcn/ui dashboard blocks and Card examples (MIT): a 40px title bar over a padded body.
+// Card structure after the shadcn/ui dashboard blocks and Card examples (MIT): a persistent title bar over a padded body.
 import {
 	ArrowDown,
 	ArrowLeft,
@@ -10,7 +10,16 @@ import {
 	Settings2,
 	Trash2,
 } from 'lucide-react';
-import { useCallback, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
+import {
+	useCallback,
+	useId,
+	useMemo,
+	useRef,
+	useState,
+	type CSSProperties,
+	type KeyboardEvent,
+	type ReactNode,
+} from 'react';
 import { Button } from '../../../../ui/components/button';
 import { Card } from '../../../../ui/components/card';
 import {
@@ -29,12 +38,6 @@ import { cn } from '../../../../ui/lib/utils';
 import { useT } from '../../../../ui/react/hooks';
 import type { HomeWidgetTier } from '../../core/board/widget-tiers';
 import { WidgetFrameContext, type RegisteredMenu, type WidgetFrameValue } from './widget-frame';
-
-/**
- * `default`: the title bar takes its own row. `minimal`: for views that read as a picture (clock, album) the bar
- * lies over the content, shows on hover or focus and is still the handle.
- */
-export type WidgetChrome = 'default' | 'minimal';
 
 /** The decor a view may ask of its card: an image behind it and the colors that go with it. */
 export interface WidgetCardBackground {
@@ -59,10 +62,10 @@ export interface WidgetMenuProps {
 
 export interface WidgetCardProps extends WidgetMenuProps {
 	title: string;
+	editing?: boolean;
 	/** Id of the title element: the tile's region is named by it (aria-labelledby), so the title needs no tooltip. */
 	titleId?: string;
 	icon?: string;
-	chrome?: WidgetChrome;
 	/** The body reaches the card's edges (charts, pictures); the view lays out its own padding. */
 	bleed?: boolean;
 	background?: WidgetCardBackground;
@@ -85,10 +88,20 @@ const ARROWS: Record<string, readonly [number, number]> = {
  * container, so views adapt to the room they were given with container queries instead of measuring themselves.
  */
 export function WidgetCard(props: WidgetCardProps) {
-	const { title, titleId, icon, chrome = 'default', bleed = false, background, onRename, className, children, ...menu } = props;
+	const {
+		title,
+		titleId,
+		icon,
+		editing = false,
+		bleed = false,
+		background,
+		onRename,
+		className,
+		children,
+		...menu
+	} = props;
 	const [actionsHost, setActionsHost] = useState<HTMLElement | null>(null),
-		[menus, setMenus] = useState<ReadonlyMap<object, RegisteredMenu>>(new Map()),
-		minimal = chrome === 'minimal';
+		[menus, setMenus] = useState<ReadonlyMap<object, RegisteredMenu>>(new Map());
 	const registerMenu = useCallback((owner: object, entry: RegisteredMenu) => {
 		setMenus((previous) => {
 			if (previous.get(owner)?.signature === entry.signature) {
@@ -113,9 +126,9 @@ export function WidgetCard(props: WidgetCardProps) {
 	return (
 		<WidgetFrameContext value={frame}>
 			<Card
-				data-widget-chrome={chrome}
+				data-editing={editing || undefined}
 				className={cn(
-					'dashboard-sidebar-widget huhu-widget-card group/tile relative isolate h-full min-h-0 min-w-0 gap-0 overflow-hidden rounded-xl border-border py-0 shadow-xs transition-shadow hover:shadow-sm',
+					'dashboard-sidebar-widget huhu-widget-card group/tile relative isolate h-full min-h-0 min-w-0 gap-0 overflow-hidden rounded-[var(--hu-radius-lg)] border-border py-0 shadow-[var(--hu-shadow-card)] transition-shadow hover:shadow-sm',
 					background?.className,
 					className,
 				)}
@@ -126,7 +139,7 @@ export function WidgetCard(props: WidgetCardProps) {
 					title={title}
 					titleId={titleId}
 					icon={icon}
-					minimal={minimal}
+					editing={editing}
 					menus={menus}
 					setActionsHost={setActionsHost}
 					onRename={onRename}
@@ -136,8 +149,7 @@ export function WidgetCard(props: WidgetCardProps) {
 					data-slot="widget-body"
 					className={cn(
 						'huhu-widget-body min-h-0 flex-1 [container-type:size] overflow-auto',
-						bleed ? 'overflow-hidden' : 'px-3 pb-3',
-						minimal && !bleed && 'pt-3',
+						bleed ? 'overflow-hidden' : 'p-4',
 					)}
 				>
 					<div className="huhu-widget-content h-full min-h-0">{children}</div>
@@ -151,7 +163,7 @@ function TitleBar({
 	title,
 	titleId,
 	icon,
-	minimal,
+	editing,
 	menus,
 	setActionsHost,
 	onRename,
@@ -160,7 +172,7 @@ function TitleBar({
 	title: string;
 	titleId?: string;
 	icon?: string;
-	minimal: boolean;
+	editing: boolean;
 	menus: ReadonlyMap<object, RegisteredMenu>;
 	setActionsHost(this: void, host: HTMLElement | null): void;
 	onRename?(this: void, title: string): Promise<void>;
@@ -179,23 +191,24 @@ function TitleBar({
 		<header
 			data-slot="widget-header"
 			className={cn(
-				'huhu-widget-handle group/handle flex h-10 shrink-0 cursor-grab items-center gap-2 px-3 active:cursor-grabbing',
-				minimal &&
-					'absolute inset-x-0 top-0 z-[var(--layer-content)] bg-linear-to-b from-card/90 to-transparent opacity-0 transition-opacity focus-within:opacity-100 group-hover/tile:opacity-100 pointer-coarse:opacity-100',
+				'group/handle flex min-h-[52px] shrink-0 items-center gap-2 border-b border-[var(--hu-line)] px-4',
+				editing && 'huhu-widget-handle cursor-grab active:cursor-grabbing',
 			)}
 		>
-			<span
-				role="button"
-				tabIndex={0}
-				aria-label={t('renderer.moveTile', { name: title })}
-				aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
-				data-grid-action="move"
-				data-hit-control
-				className="absolute top-0 left-1/2 inline-flex h-3 -translate-x-1/2 items-center justify-center rounded-sm text-muted-foreground opacity-0 transition-opacity outline-none group-hover/handle:opacity-70 hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 pointer-coarse:opacity-50"
-				onKeyDown={keyboard}
-			>
-				<GripHorizontal className="size-4" />
-			</span>
+			{editing && (
+				<span
+					role="button"
+					tabIndex={0}
+					aria-label={t('renderer.moveTile', { name: title })}
+					aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
+					data-grid-action="move"
+					data-hit-control
+					className="inline-flex size-11 shrink-0 items-center justify-center rounded-[var(--hu-radius-sm)] text-[var(--hu-fg-2)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]"
+					onKeyDown={keyboard}
+				>
+					<GripHorizontal className="size-4" />
+				</span>
+			)}
 			{icon && <ObsidianIcon name={icon} className="size-4 text-muted-foreground" />}
 			{renaming && onRename ? (
 				<TitleField value={title} onRename={onRename} onDone={() => setRenaming(false)} />
@@ -276,7 +289,11 @@ function TitleField({
 				}}
 			/>
 			{error && (
-				<p id={errorId} role="alert" className="m-0 mt-1 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]">
+				<p
+					id={errorId}
+					role="alert"
+					className="m-0 mt-1 border-l-2 border-destructive pl-2 text-xs [overflow-wrap:anywhere]"
+				>
 					{error}
 				</p>
 			)}
@@ -311,7 +328,7 @@ function TileMenu({
 					<DropdownMenuTrigger asChild>
 						<Button
 							variant="ghost"
-							size="icon-xs"
+							size="icon-sm"
 							aria-label={t('canvas.moreActions', { name: title })}
 							className="text-muted-foreground opacity-70 group-hover/handle:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100"
 						>

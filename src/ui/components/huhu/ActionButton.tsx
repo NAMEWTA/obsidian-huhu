@@ -10,7 +10,7 @@ export function ActionButton({
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button variant="ghost" size="icon" {...props} aria-label={label}>
+				<Button variant="ghost" size="icon-md" {...props} aria-label={label}>
 					{children}
 				</Button>
 			</TooltipTrigger>

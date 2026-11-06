@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { Input } from '../input';
 import { Button } from '../button';
 import { useT } from '../../react/hooks';
@@ -14,6 +14,7 @@ export function InlineRename({
 	disabled?: boolean;
 }) {
 	const t = useT();
+	const errorId = useId();
 	const [editing, setEditing] = useState(false);
 	const [draft, setDraft] = useState(value);
 	const [error, setError] = useState('');
@@ -67,6 +68,7 @@ export function InlineRename({
 				value={draft}
 				disabled={busy}
 				aria-invalid={!!error}
+				aria-describedby={error ? errorId : undefined}
 				onChange={(e) => setDraft(e.currentTarget.value)}
 				onBlur={() => {
 					void commit();
@@ -83,7 +85,7 @@ export function InlineRename({
 				}}
 			/>
 			{error && (
-				<p role="alert" className="text-xs text-destructive">
+				<p id={errorId} role="alert" className="text-xs text-destructive">
 					{error}
 				</p>
 			)}

@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { Notice, Platform, type App } from 'obsidian';
 import { TaskComposer } from '../../../../ui/components/huhu/calendar/TaskComposer';
-import { removeTaskDialog } from '../tasks/task-remove-page';
 import { CalendarAgenda } from '../../../../ui/components/huhu/calendar/CalendarAgenda';
 import { calendarDate } from '../../../../ui/components/huhu/calendar/CalendarMonth';
 import { t } from '../../../../shared/i18n';
@@ -129,7 +128,7 @@ export function CalendarDayPanel(props: {
 				onRemove={(id) => {
 					const task = taskOf(id);
 					if (task && root.current && homeServices.calendar)
-						removeTaskDialog(root.current, task, homeServices.calendar);
+						return homeServices.calendar.openRemoval({ owner: root.current, task });
 					else if (task && props.onRemove) return props.onRemove(task);
 					return Promise.resolve();
 				}}

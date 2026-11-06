@@ -6,6 +6,39 @@ import { DesignScope } from '../../../ui/react/design-scope';
 import { t } from '../../../shared/i18n';
 import type { NotificationRecord } from '../api';
 import { InboxPanel } from './InboxPanel';
+
+test('list omits only a body exactly equal to its title and preserves whitespace differences', () => {
+	const records: NotificationRecord[] = [
+		{ id: 'same', title: 'Exact reminder', body: 'Exact reminder' },
+		{ id: 'different', title: 'Different', body: 'Different ' },
+	].map((record) => ({
+		...record,
+		channels: ['in-app'],
+		deliveries: {},
+		createdAt: 1,
+		read: false,
+	}));
+	render(
+		<TestProviders>
+			<DesignScope>
+				<InboxPanel
+					records={records}
+					filter="all"
+					markRead={() => {}}
+					clearRead={() => {}}
+					open={() => {}}
+					openable={new Set()}
+				/>
+			</DesignScope>
+		</TestProviders>,
+	);
+	const rows = screen.getAllByRole('listitem');
+	const same = rows.find((row) => row.textContent?.includes('Exact reminder'))!;
+	const different = rows.find((row) => row.textContent?.includes('Different'))!;
+	expect(same.textContent?.split('Exact reminder').length).toBe(2);
+	expect([...different.querySelectorAll('span')].some((span) => span.textContent === 'Different ')).toBe(true);
+});
+
 test('inbox preserves filtering, opener availability and read/clear actions', async () => {
 	const records: NotificationRecord[] = [
 		{
@@ -34,30 +67,38 @@ test('inbox preserves filtering, opener availability and read/clear actions', as
 	const props = { records, markRead, clearRead, open, openable: new Set(['2']) };
 	const mounted = render(
 		<TestProviders>
-			<DesignScope><InboxPanel {...props} filter="all" /></DesignScope>
+			<DesignScope>
+				<InboxPanel {...props} filter="all" />
+			</DesignScope>
 		</TestProviders>,
 	);
 	expect(screen.getAllByRole('listitem').map((e) => e.textContent)).toEqual([
 		expect.stringContaining('Latest'),
 		expect.stringContaining('Older'),
 	]);
+	await user.click(screen.getByRole('button', { name: /Latest Latest detail/ }));
 	await user.click(screen.getByRole('button', { name: t('automation.open') }));
 	expect(open).toHaveBeenCalledWith(records[1]);
 	await user.click(screen.getByRole('button', { name: t('automation.read') }));
 	expect(markRead).toHaveBeenCalledWith('2');
+	await user.click(screen.getByRole('button', { name: t('ui.close') }));
 	await user.click(screen.getByRole('button', { name: t('automation.readAll') }));
 	expect(markRead).toHaveBeenCalledWith();
 	await user.click(screen.getByRole('button', { name: t('automation.clearRead') }));
 	expect(clearRead).toHaveBeenCalledOnce();
 	mounted.rerender(
 		<TestProviders>
-			<DesignScope><InboxPanel {...props} filter="unread" /></DesignScope>
+			<DesignScope>
+				<InboxPanel {...props} filter="unread" />
+			</DesignScope>
 		</TestProviders>,
 	);
 	expect(screen.queryByText('Older')).toBeNull();
 	mounted.rerender(
 		<TestProviders>
-			<DesignScope><InboxPanel {...props} records={records.map((r) => ({ ...r, read: true }))} filter="unread" /></DesignScope>
+			<DesignScope>
+				<InboxPanel {...props} records={records.map((r) => ({ ...r, read: true }))} filter="unread" />
+			</DesignScope>
 		</TestProviders>,
 	);
 	expect(screen.getByText(t('workbench.noUnread'))).toBeTruthy();
@@ -79,30 +120,66 @@ test('details resolve the current name by stable id, mark deleted targets, copy 
 	render(
 		<TestProviders>
 			<DesignScope>
-				<InboxPanel records={records} filter="all" markRead={vi.fn()} clearRead={vi.fn()} open={vi.fn()} openable={new Set()} names={names} error="disk full" dismissError={dismiss} />
+				<InboxPanel
+					records={records}
+					filter="all"
+					markRead={vi.fn()}
+					clearRead={vi.fn()}
+					open={vi.fn()}
+					openable={new Set()}
+					names={names}
+					error="disk full"
+					dismissError={dismiss}
+				/>
 			</DesignScope>
 		</TestProviders>,
 	);
 	expect(screen.getByRole('alert').textContent).toContain('disk full');
-	for (const button of screen.getAllByRole('button', { name: t('notification.details') })) await user.click(button);
+	await user.click(screen.getByRole('button', { name: /Old name Failed/ }));
 	expect(screen.getByText('New name')).toBeTruthy();
+	await user.click(screen.getByRole('button', { name: t('ui.close') }));
+	await user.click(screen.getByRole('button', { name: /Gone Failed/ }));
 	expect(screen.getByText(t('notification.targetDeleted'))).toBeTruthy();
 	expect(screen.getByText('Old name')).toBeTruthy();
-	await user.click(screen.getAllByRole('button', { name: t('notification.copy', { label: t('notification.automationId') }) })[0]!);
+	await user.click(
+		screen.getAllByRole('button', { name: t('notification.copy', { label: t('notification.automationId') }) })[0]!,
+	);
 	expect(writeText).toHaveBeenCalledWith('auto-b');
+	await user.click(screen.getByRole('button', { name: t('ui.close') }));
 	await user.click(screen.getByRole('button', { name: t('notification.dismissError') }));
 	expect(dismiss).toHaveBeenCalledOnce();
 });
 
 test('health details show the report target and unavailable contributed channel without automation IDs', async () => {
 	const record: NotificationRecord = {
-		id: 'health-report', title: 'Health report', body: 'One warning', createdAt: 1, read: false,
-		source: { kind: 'health', id: 'scan-one' }, target: { kind: 'health', reportId: 'scan-one' },
-		channels: ['test-channel'], deliveries: { 'test-channel': 'unavailable' },
+		id: 'health-report',
+		title: 'Health report',
+		body: 'One warning',
+		createdAt: 1,
+		read: false,
+		source: { kind: 'health', id: 'scan-one' },
+		target: { kind: 'health', reportId: 'scan-one' },
+		channels: ['test-channel'],
+		deliveries: { 'test-channel': 'unavailable' },
 	};
-	render(<TestProviders><DesignScope><InboxPanel records={[record]} filter="all" markRead={() => {}} clearRead={() => {}} open={() => {}} openable={new Set()} /></DesignScope></TestProviders>);
-	expect(screen.getByText(`test-channel${t('automation.colon')}${t('notification.deliveryUnavailable')}`)).toBeTruthy();
-	await userEvent.setup().click(screen.getByRole('button', { name: t('notification.details') }));
+	render(
+		<TestProviders>
+			<DesignScope>
+				<InboxPanel
+					records={[record]}
+					filter="all"
+					markRead={() => {}}
+					clearRead={() => {}}
+					open={() => {}}
+					openable={new Set()}
+				/>
+			</DesignScope>
+		</TestProviders>,
+	);
+	await userEvent.setup().click(screen.getByRole('button', { name: /Health report One warning/ }));
+	expect(
+		screen.getByText(`test-channel${t('automation.colon')}${t('notification.deliveryUnavailable')}`),
+	).toBeTruthy();
 	expect(screen.getByText('scan-one')).toBeTruthy();
 	expect(screen.getByText(t('notification.reportId'))).toBeTruthy();
 	expect(screen.queryByText(t('notification.automationId'))).toBeNull();

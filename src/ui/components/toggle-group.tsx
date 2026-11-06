@@ -14,7 +14,7 @@ const ToggleGroupContext = React.createContext<
 		spacing?: number;
 	}
 >({
-	size: 'default',
+	size: 'md',
 	variant: 'default',
 	spacing: 0,
 });
@@ -32,6 +32,7 @@ function ToggleGroup({
 	}) {
 	const contextValue = React.useMemo(() => ({ variant, size, spacing }), [variant, size, spacing]);
 
+	// Leave a token gap between expanded hit cells, including wrapped rows with raised focus outlines.
 	return (
 		<ToggleGroupPrimitive.Root
 			data-slot="toggle-group"
@@ -41,7 +42,9 @@ function ToggleGroup({
 			data-spacing={spacing}
 			style={{ '--gap': spacing } as React.CSSProperties}
 			className={cn(
-				'group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-md data-[spacing=default]:data-[variant=outline]:shadow-xs',
+				'group/toggle-group flex w-fit max-w-full items-center rounded-md gap-x-[calc(var(--gap)*4px)]',
+				'gap-y-[max(calc(var(--gap)*4px),calc(var(--hu-hit)_-_var(--hu-ctl-h)_+_var(--hu-space-0-5)))] py-[max(0px,calc((var(--hu-hit)_-_var(--hu-ctl-h))/2))]',
+				'data-[variant=segmented]:gap-x-0.5 data-[variant=segmented]:gap-y-[max(2px,calc(var(--hu-hit)_-_var(--hu-ctl-h)_+_var(--hu-space-0-5)))] data-[variant=segmented]:bg-[var(--hu-sunken)] data-[variant=segmented]:px-0.5 data-[variant=segmented]:py-[max(2px,calc((var(--hu-hit)_-_var(--hu-ctl-h))/2))]',
 				className,
 			)}
 			{...props}
@@ -60,12 +63,12 @@ function ToggleGroupItem({
 	...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Item> & VariantProps<typeof toggleVariants>) {
 	const context = React.useContext(ToggleGroupContext);
+	// Inset the required target square from the paint edges of horizontally joined items.
 
-	const compact = (context.size || size) === 'xs';
 	return (
 		<ToggleGroupPrimitive.Item
 			data-slot="toggle-group-item"
-			data-hit-control={compact || undefined}
+			data-hit-control
 			ref={ref}
 			data-variant={context.variant || variant}
 			data-size={context.size || size}
@@ -75,8 +78,9 @@ function ToggleGroupItem({
 					variant: context.variant || variant,
 					size: context.size || size,
 				}),
-				'w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 data-[size=xs]:px-2',
-				'data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:data-[variant=outline]:border-l-0',
+				'w-auto shrink-0 focus:z-10 focus-visible:z-10',
+				'min-w-[max(var(--hu-ctl-h),calc(var(--hu-hit)_+_var(--hu-space-0-5)))] data-[size=lg]:min-w-[max(var(--hu-ctl-h-lg),calc(var(--hu-hit)_+_var(--hu-space-0-5)))]',
+				'data-[spacing=0]:data-[variant=outline]:rounded-none data-[spacing=0]:data-[variant=outline]:border-l-0',
 				'data-[spacing=0]:first:rounded-l-md data-[spacing=0]:last:rounded-r-md data-[spacing=0]:data-[variant=outline]:first:border-l',
 				className,
 			)}

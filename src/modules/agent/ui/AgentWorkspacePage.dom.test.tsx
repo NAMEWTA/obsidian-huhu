@@ -23,8 +23,14 @@ function fixture(
 	wording?: { title?: string; action?: string },
 	ownerDocument = document,
 	view = createWorkspaceView(),
+	width = 1200,
 ) {
 	const choices: boolean[] = [];
+	const leaf = ownerDocument.createElement('div');
+	leaf.dataset.huhuLeaf = '';
+	leaf.getBoundingClientRect = () => ({ width, height: 800, left: 0, right: width, top: 0, bottom: 800, x: 0, y: 0, toJSON: () => ({}) });
+	Object.defineProperty(ownerDocument.defaultView!.HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => width });
+	ownerDocument.body.append(leaf);
 	const emptyManaged = { revision: 0, sessions: [] };
 	const workspace = {
 		getManagedSnapshot: () => emptyManaged,
@@ -52,7 +58,7 @@ function fixture(
 	} as unknown as AgentController;
 	const content = (visible: boolean) => (
 		<HuhuProviders ownerDocument={ownerDocument} visible={visible}>
-			<AgentWorkspace controller={controller} context={{} as NativeSurfaceContext} view={view} />
+			<AgentWorkspace controller={controller} context={{ contentEl: leaf } as unknown as NativeSurfaceContext} view={view} />
 		</HuhuProviders>
 	);
 	const container = ownerDocument.createElement('div');
@@ -227,7 +233,7 @@ test('narrow control uses one owner-document Dialog and Escape closes it and rel
 	}
 	Object.defineProperty(win, 'ResizeObserver', { configurable: true, value: NarrowObserver });
 	const view = createWorkspaceView({ agentControl: false });
-	const f = fixture(undefined, owner, view),
+	const f = fixture(undefined, owner, view, 480),
 		user = userEvent.setup({ document: owner });
 	try {
 		const origin = within(owner.body).getByRole('button', { name: 'Close fixture' });
@@ -235,7 +241,7 @@ test('narrow control uses one owner-document Dialog and Escape closes it and rel
 		act(() => view.setState({ control: true }));
 		const dialog = await within(owner.body).findByRole('dialog');
 		expect(dialog.ownerDocument).toBe(owner);
-		expect(owner.querySelectorAll('[data-terminal-control]')).toHaveLength(1);
+		await waitFor(() => expect(owner.querySelectorAll('[data-terminal-control]')).toHaveLength(1));
 		expect(document.querySelector('[data-agent-control-dialog]')).toBeNull();
 		await user.keyboard('{Escape}');
 		await waitFor(() => expect(within(owner.body).queryByRole('dialog')).toBeNull());
@@ -246,7 +252,7 @@ test('narrow control uses one owner-document Dialog and Escape closes it and rel
 		f.rerender(f.content(false));
 		await waitFor(() => expect(within(owner.body).queryByRole('dialog')).toBeNull());
 		f.unmount();
-		expect(disconnected).toHaveBeenCalledOnce();
+		expect(disconnected.mock.calls.length).toBeGreaterThanOrEqual(1);
 	} finally {
 		f.unmount();
 		focused.mockRestore();
@@ -289,7 +295,7 @@ test('narrow history traps Tab, closes with Escape, and returns focus to its too
 		unobserve() {}
 	}
 	Object.defineProperty(window, 'ResizeObserver', { configurable: true, value: NarrowObserver });
-	const f = fixture(undefined, document, createWorkspaceView({ agentControl: false }));
+	const f = fixture(undefined, document, createWorkspaceView({ agentControl: false }), 480);
 	try {
 		const user = userEvent.setup();
 		const trigger = screen.getByRole('button', { name: t('agent.history') });

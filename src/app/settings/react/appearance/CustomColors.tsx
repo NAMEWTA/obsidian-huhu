@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Input } from '../../../../ui/components/input';
+import { ColorField } from '../../../../ui/components/huhu/ColorField';
 import { Button } from '../../../../ui/components/button';
 import { SettingsRow } from '../../../../ui/components/huhu/SettingsRow';
 import { Choice } from '../../../../ui/components/huhu/Choice';
@@ -7,7 +7,7 @@ import { SegmentedControl } from '../../../../ui/components/huhu/SettingsFormCon
 import { useT } from '../../../../ui/react/hooks';
 import { CUSTOM_COLOR_KEYS, DEFAULT_CUSTOM, type CustomColorKey, type CustomColors } from '../../../../theme/custom';
 import { isHexColor, rgbToHex } from '../../../../theme/color';
-import { PALETTE_THEMES, type ThemeSettings } from '../../../../theme/settings';
+import { PALETTE_SCHEMES, type ThemeSettings } from '../../../../theme/settings';
 import type { SettingsHandle } from '../../../../shared/settings/store';
 
 const LABELS: Record<CustomColorKey, string> = {
@@ -36,36 +36,27 @@ function ColorRow({ label, value, onChange }: { label: string; value: string; on
 		setDraft(value);
 	}
 	return (
-		<SettingsRow
+		<ColorField
 			label={label}
-			control={
-				<div className="flex flex-wrap items-center gap-2">
-					<input
-						type="color"
-						aria-label={label}
-						value={value}
-						onChange={(event) => onChange(event.target.value)}
-						className="h-8 w-10 cursor-pointer rounded-md border border-input bg-transparent p-1"
-					/>
-					<Input
-						aria-label={`${label} (hex)`}
-						className="w-28 max-w-full font-mono text-xs"
-						value={draft}
-						spellCheck={false}
-						onChange={(event) => {
-							setDraft(event.target.value);
-							if (isHexColor(event.target.value)) onChange(event.target.value.toLowerCase());
-						}}
-						onBlur={() => { if (!isHexColor(draft)) setDraft(value); }}
-					/>
-				</div>
-			}
+			description=""
+			value={draft}
+			fallback={value}
+			onChange={(next) => {
+				setDraft(next);
+				if (isHexColor(next)) onChange(next.toLowerCase());
+			}}
 		/>
 	);
 }
 
 /** The custom theme's five colours for light or dark mode, with "start from a theme" and reset. */
-export function CustomColorsEditor({ handle, settings, initialMode, ownerDocument, onError }: {
+export function CustomColorsEditor({
+	handle,
+	settings,
+	initialMode,
+	ownerDocument,
+	onError,
+}: {
 	handle: SettingsHandle<ThemeSettings>;
 	settings: ThemeSettings;
 	initialMode: 'light' | 'dark';
@@ -76,16 +67,22 @@ export function CustomColorsEditor({ handle, settings, initialMode, ownerDocumen
 	const [mode, setMode] = useState<'light' | 'dark'>(initialMode);
 	const colors = settings.custom[mode];
 	const write = (recipe: (draft: CustomColors) => void) =>
-		void handle.update((draft) => recipe(draft.custom[mode])).catch(onError);
+		void handle.update((draft) => {
+			recipe(draft.custom[mode]);
+		}).catch(onError);
 	const copyFrom = (id: string) => {
 		// Read the palette back from a probe carrying its classes; the tokens are the single source of the colours.
 		const probe = ownerDocument.createElement('div');
-		probe.classList.add(`huhu-theme--${id}`, `theme-${mode}`);
+		probe.classList.add(`huhu-editor--${id}`, `theme-${mode}`);
 		ownerDocument.body.appendChild(probe);
-		const read = (token: string) => toHex(ownerDocument.defaultView!.getComputedStyle(probe).getPropertyValue(token));
+		const read = (token: string) =>
+			toHex(ownerDocument.defaultView!.getComputedStyle(probe).getPropertyValue(token));
 		const next: Partial<CustomColors> = {
-			background: read('--nt-background') ?? undefined, foreground: read('--nt-foreground') ?? undefined,
-			primary: read('--nt-primary') ?? undefined, border: read('--nt-border') ?? undefined, sidebar: read('--nt-sidebar') ?? undefined,
+			background: read('--ne-preview-bg') ?? undefined,
+			foreground: read('--ne-preview-fg') ?? undefined,
+			primary: read('--ne-link') ?? undefined,
+			border: read('--ne-quote') ?? undefined,
+			sidebar: read('--ne-code-bg') ?? undefined,
 		};
 		probe.remove();
 		write((draft) => Object.assign(draft, Object.fromEntries(Object.entries(next).filter(([, value]) => value))));
@@ -107,7 +104,16 @@ export function CustomColorsEditor({ handle, settings, initialMode, ownerDocumen
 				}
 			/>
 			{CUSTOM_COLOR_KEYS.map((key) => (
-				<ColorRow key={`${mode}-${key}`} label={t(LABELS[key])} value={colors[key]} onChange={(value) => write((draft) => { draft[key] = value; })} />
+				<ColorRow
+					key={`${mode}-${key}`}
+					label={t(LABELS[key])}
+					value={colors[key]}
+					onChange={(value) =>
+						write((draft) => {
+							draft[key] = value;
+						})
+					}
+				/>
 			))}
 			<SettingsRow
 				label={t('appearance.customFrom')}
@@ -117,7 +123,10 @@ export function CustomColorsEditor({ handle, settings, initialMode, ownerDocumen
 						label={t('appearance.customFrom')}
 						value=""
 						className="w-44 max-w-full"
-						options={[['', t('appearance.customFromPlaceholder')], ...PALETTE_THEMES.map((id) => [id, t(`appearance.preset.${id}`)] as const)]}
+						options={[
+							['', t('appearance.customFromPlaceholder')],
+							...PALETTE_SCHEMES.map((id) => [id, t(`appearance.scheme.${id}`)] as const),
+						]}
 						onChange={(id) => id && copyFrom(id)}
 					/>
 				}
@@ -125,7 +134,11 @@ export function CustomColorsEditor({ handle, settings, initialMode, ownerDocumen
 			<SettingsRow
 				label={t('appearance.customReset')}
 				control={
-					<Button variant="outline" size="sm" onClick={() => write((draft) => Object.assign(draft, DEFAULT_CUSTOM[mode]))}>
+					<Button
+						variant="secondary"
+						size="sm"
+						onClick={() => write((draft) => Object.assign(draft, DEFAULT_CUSTOM[mode]))}
+					>
 						{t('appearance.useDefault')}
 					</Button>
 				}

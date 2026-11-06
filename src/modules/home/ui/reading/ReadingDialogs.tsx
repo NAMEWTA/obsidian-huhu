@@ -101,8 +101,15 @@ export function EditBookPanel({ service, book, close, done }: { book: BookInfo; 
 		<>
 			<Header title="reading.editTitle" close={close} />
 			<RecordSaveStatus source={service} />
-			<RecordConfirm open={removing} onOpenChange={setRemoving} title={t('reading.editDeleteBook')}
-				description={t('reading.removeBookConfirm', { title: book.title })} onConfirm={() => { void save(true); }} />
+			<RecordConfirm
+				open={removing}
+				onOpenChange={setRemoving}
+				title={t('reading.editDeleteBook')}
+				description={t('reading.removeBookConfirm', { title: book.title })}
+				onConfirm={() => {
+					void save(true);
+				}}
+			/>
 			<div className={widgetClasses('dashboard-reading-end-body')}>
 				<div className={widgetClasses('dashboard-reading-end-label')}>{t('reading.editBookName')}</div>
 				<Input
@@ -230,8 +237,8 @@ export function BookSearchPanel({
 					<div role="alert" className={widgetClasses('dashboard-reading-book-no-results')}>
 						<span>{t('reading.searchFailed')}</span>{' '}
 						<Button
-							variant="outline"
-							size="xs"
+							variant="secondary"
+							size="sm"
 							onClick={() => {
 								setFailed(false);
 								setBusy(true);
@@ -488,14 +495,23 @@ export function ReadingStatsPanel({ service, close }: { service: ReadingService;
 	return (
 		<>
 			<RecordSaveStatus source={service} />
-			<RecordConfirm open={deleting !== null} onOpenChange={open => { if (!open) setDeleting(null); }}
+			<RecordConfirm
+				open={deleting !== null}
+				onOpenChange={(open) => {
+					if (!open) setDeleting(null);
+				}}
 				title={t('common.delete')}
-				description={deleting?.title !== undefined ? t('reading.deleteBookRecordsConfirm', { title: deleting.title }) : t('reading.deleteRecordConfirm')}
+				description={
+					deleting?.title !== undefined
+						? t('reading.deleteBookRecordsConfirm', { title: deleting.title })
+						: t('reading.deleteRecordConfirm')
+				}
 				onConfirm={() => {
 					if (deleting?.title !== undefined) void service.deleteBookRecords(deleting.title);
 					else if (deleting?.timestamp) void service.deleteRecord(deleting.timestamp);
 					setDeleting(null);
-				}} />
+				}}
+			/>
 			<div className={widgetClasses('dashboard-pomodoro-stats-header')}>
 				<div className={widgetClasses('dashboard-pomodoro-stats-header-title')}>{t('reading.statsTitle')}</div>
 				{close && (

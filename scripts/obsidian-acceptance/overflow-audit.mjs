@@ -61,7 +61,7 @@ for (const [kind, names] of [['person', ['Alexandria Montgomery-Fitzgerald', 'çŽ
 	}
 }
 
-const modules = { home: false, agent: true, automations: true, notifications: true, archives: true, comments: true, icons: true, sync: true, navigator: true };
+const modules = { home: false, agent: true, automations: true, notifications: true, archives: true, comments: true, icons: true, versioning: true, navigator: true };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_AUDIT_PORT || 19731),
@@ -396,18 +396,18 @@ try {
 		await matrix('content-editor');
 	}
 	if (wants('settings')) {
-		for (const category of ['general', 'appearance', 'editor', 'navigator', 'terminal', 'contacts', 'automation', 'sync', 'about']) {
+		for (const category of ['general', 'appearance', 'editor', 'navigator', 'terminal', 'contacts', 'automation', 'versioning', 'about']) {
 			await openWorkbench({ feature: 'settings', section: category });
 			await delay(900);
 			await matrix(`settings-${category}`);
 		}
 	}
-	for (const feature of ['notifications', 'sync', 'icons']) {
+	for (const feature of ['notifications', 'versioning']) {
 		if (!wants(feature)) continue;
 		if (feature === 'notifications') {
 			await c.evaluate(`(async () => { const inbox = ${p}.services.peek({ owner: 'notifications', id: 'inbox' }); if (!inbox) return false; for (let i = 0; i < 4; i++) await inbox.send({ id: 'audit-' + i, title: 'A notification with a deliberately long title number ' + i, body: 'The body of the notification explains what happened in some detail so it wraps.', channels: [] }); return true; })()`);
 		}
-		if (feature === 'sync') {
+		if (feature === 'versioning') {
 			const git = (...args) => execFileSync('git', args, { cwd: runtime.vault, env: { ...process.env, HOME: home, GIT_CONFIG_GLOBAL: path.join(home, '.gitconfig'), GIT_CONFIG_NOSYSTEM: '1' }, stdio: 'ignore' });
 			git('init', '-q', '-b', 'main');
 			git('config', 'user.email', 'audit@example.com');
@@ -422,7 +422,7 @@ try {
 		await openWorkbench({ feature });
 		await delay(1500);
 		await matrix(feature);
-		if (feature === 'sync') {
+		if (feature === 'versioning') {
 			await openWorkbench({ feature, section: 'history' });
 			await delay(1200);
 			await matrix('sync-history');
@@ -430,7 +430,7 @@ try {
 	}
 	if (wants('icons')) {
 		for (const section of ['iconic-sidebars', 'iconic-editor', 'iconic-menus', 'iconic-picker', 'iconic-advanced']) {
-			await openWorkbench({ feature: 'icons', section });
+			await openWorkbench({ feature: 'settings', section: 'iconic', resourceId: section });
 			await delay(900);
 			await matrix(`icons-${section.replace('iconic-', '')}`);
 		}

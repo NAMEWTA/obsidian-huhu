@@ -13,7 +13,7 @@ const files = [
 	...fs.readdirSync(root).filter((file) => file.endsWith('.ts')).map((file) => `src/shared/i18n/${file}`),
 	...fs.readdirSync(path.join(root, 'lazy')).filter((file) => file.endsWith('.ts')).map((file) => `src/shared/i18n/lazy/${file}`),
 	...fs.readdirSync('src/modules').map((module) => `src/modules/${module}/i18n.ts`).filter((file) => fs.existsSync(file)),
-].filter(isDictionary);
+].concat(fs.readdirSync('src/modules').map((module) => `src/modules/${module}/ui/i18n.ts`).filter((file) => fs.existsSync(file))).filter(isDictionary);
 const outfile = path.resolve('scripts/tmp/i18n-dictionaries.cjs');
 await build({ stdin: { contents: files.map((file, i) => `export * as m${i} from ${JSON.stringify('./' + file)};`).join('\n'), resolveDir: process.cwd() }, bundle: true, platform: 'node', format: 'cjs', outfile, logLevel: 'warning' });
 const modules = require(outfile);

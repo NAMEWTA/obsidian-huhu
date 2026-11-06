@@ -33,7 +33,8 @@ import { InlineEditor } from './InlineEditor';
 import { PaneMenu } from './PaneMenu';
 import { SearchBar } from './SearchBar';
 import { startDrag } from './dnd';
-import { TOUCH_ROW_HEIGHT, useCoarsePointer, useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings, usePreviewVersion } from './hooks';
+import { useDensityRowHeight } from '../../../ui/react/use-density';
+import { useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings, usePreviewVersion } from './hooks';
 import { bucketLabel, contextLabel, folderLabel, uiLocale } from './labels';
 import { focusWhenVisible, handlePaneKey, usePaneKeyScope } from './keys';
 import { noteMenu, type MenuEntry } from './menus';
@@ -77,8 +78,8 @@ export function ListPane() {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [menu, setMenu] = useState<MenuEntry[]>([]);
 	const metrics = metricsOf(settings, appearance);
-	const touch = useCoarsePointer();
-	const rowHeight = Math.max(noteRowHeight(metrics), touch ? TOUCH_ROW_HEIGHT : 0);
+	const densityHeight = useDensityRowHeight(scrollRef);
+	const rowHeight = Math.max(noteRowHeight(metrics) + (!metrics.compact && (metrics.showDate || metrics.showTags || metrics.showParentFolder) ? Math.max(32, densityHeight) - 18 : 0), metrics.compact ? Math.max(44, densityHeight) : densityHeight);
 	const byPath = useMemo(() => new Map(notes.map((note): [string, NoteEntry] => [note.path, note])), [notes]);
 	const indexOfPath = useMemo(() => {
 		const map = new Map<string, number>();
@@ -139,14 +140,14 @@ export function ListPane() {
 	const total = notes.length;
 
 	return (
-		<section aria-labelledby={titleId} className="@container flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground" data-navigator-pane="list">
-			<header className="flex shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-1">
+		<section aria-labelledby={titleId} className="@container flex h-full min-h-0 flex-col bg-[var(--hu-surface)] text-[var(--hu-fg)]" data-navigator-pane="list">
+			<header className="flex shrink-0 items-center gap-1 border-b border-[var(--hu-line)] px-2 py-1">
 				{single && (
 					<ToolbarButton label={t('navigator.back')} onClick={() => service.setSingleView('nav')}><ChevronLeft /></ToolbarButton>
 				)}
 				<div className="min-w-0 flex-1 px-1">
-					<span id={titleId} className="block truncate text-[13px] font-medium">{contextLabel(context)}</span>
-					<span className="block truncate whitespace-nowrap text-[11px] text-muted-foreground">{t('navigator.noteCount', { count: total })}</span>
+					<span id={titleId} className="block truncate text-sm font-medium">{contextLabel(context)}</span>
+					<span className="block truncate whitespace-nowrap text-xs text-[var(--hu-fg-3)]">{t('navigator.noteCount', { count: total })}</span>
 				</div>
 				{/* Narrow panes keep only the menu; everything else is inside it. */}
 				<div className="hidden shrink-0 items-center @min-[16rem]:flex">
@@ -166,7 +167,7 @@ export function ListPane() {
 					tabIndex={0}
 					aria-labelledby={titleId}
 					aria-activedescendant={cursor ? rowId(cursor) : undefined}
-					className="h-full overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50"
+					className="h-full overflow-y-auto outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--hu-accent)]"
 					onKeyDown={onKeyDown}
 					onFocus={(event) => { if (event.target === event.currentTarget) service.setPane('list'); }}
 				>
@@ -180,7 +181,7 @@ export function ListPane() {
 								const placement = { height: virtual.size, transform: `translateY(${virtual.start}px)` };
 								if (item.kind === 'header') {
 									return (
-										<div key={virtual.key} role="presentation" className="absolute left-0 top-0 flex w-full items-end gap-1.5 px-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground" style={placement}>
+										<div key={virtual.key} role="presentation" className="absolute left-0 top-0 flex w-full items-end gap-1.5 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-[var(--hu-fg-3)]" style={placement}>
 											{item.section === 'pinned' && <Pin aria-hidden className="mb-0.5 size-3" />}
 											<span className="truncate">
 												{item.section === 'pinned' ? t('navigator.pinned') : item.section === 'date' && item.bucket ? bucketLabel(item.bucket) : item.section === 'property' ? (item.value ?? t('navigator.none')) : folderLabel(item.folder ?? '/')}
@@ -260,9 +261,9 @@ function NoteRow({ note, pinned, metrics, appearance, hidden, selected, focused,
 			data-note-path={note.path}
 			draggable={!editing}
 			className={cn(
-				'absolute left-0 top-0 flex w-full cursor-default items-start gap-2 border-b border-sidebar-border/40 px-3 py-1.5 text-left',
-				selected ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'hover:bg-sidebar-accent/50',
-				focused && 'ring-[3px] ring-inset ring-ring/50',
+				'absolute left-0 top-0 flex w-full cursor-default items-start gap-2 border-b border-[var(--hu-line)]/40 px-3 py-1.5 text-left',
+				selected ? 'bg-[var(--hu-accent-soft)] text-[var(--hu-accent-text)]' : 'hover:bg-[var(--hu-accent-soft)]/50',
+				focused && 'outline-2 -outline-offset-2 outline-[var(--hu-accent)]',
 				metrics.compact && 'items-center py-0',
 				hidden && 'opacity-50',
 			)}
@@ -276,34 +277,34 @@ function NoteRow({ note, pinned, metrics, appearance, hidden, selected, focused,
 			<span className={cn('flex shrink-0', !metrics.compact && 'mt-0.5')}><EntryIcon env={env} version={iconsVersion} target={{ kind: 'file', key: note.path }} /></span>
 			<div className="min-w-0 flex-1">
 				<div className="flex items-center gap-1.5">
-					{!metrics.compact && pinned && <Pin aria-hidden className="size-3 shrink-0 text-muted-foreground" />}
+					{!metrics.compact && pinned && <Pin aria-hidden className="size-3 shrink-0 text-[var(--hu-fg-3)]" />}
 					{editing ? (
 						<InlineEditor initial={note.name} ariaLabel={t('navigator.rename')} onCommit={(name) => service.commitRename(name)} onCancel={() => service.cancelRename()} />
 					) : (
-						<span className="line-clamp-(--title-rows) min-w-0 flex-1 break-words text-[13px] font-medium leading-5" style={{ ['--title-rows' as string]: appearance.titleRows }}>{note.name}</span>
+						<span className="line-clamp-(--title-rows) min-w-0 flex-1 break-words text-sm font-medium leading-5" style={{ ['--title-rows' as string]: appearance.titleRows }}>{note.name}</span>
 					)}
-					{metrics.compact && date && <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{date}</span>}
+					{metrics.compact && date && <span className="shrink-0 text-xs tabular-nums text-[var(--hu-fg-3)]">{date}</span>}
 				</div>
 				{!metrics.compact && settings.showPreview && (
 					<p
-						className="m-0 line-clamp-(--preview-rows) break-words text-[12px] leading-4 text-muted-foreground"
+						className="m-0 line-clamp-(--preview-rows) break-words text-xs leading-4 text-[var(--hu-fg-3)]"
 						style={{ ['--preview-rows' as string]: appearance.previewRows, height: record ? undefined : appearance.previewRows * 16 }}
 					>
 						{record?.preview}
 					</p>
 				)}
 				{!metrics.compact && hasMeta && (
-					<div className="flex h-[18px] items-center gap-1.5 overflow-hidden text-[11px] text-muted-foreground">
+					<div className="flex min-h-8 items-center gap-1 overflow-x-auto [@media(pointer:coarse)]:min-h-11 text-xs text-[var(--hu-fg-3)]">
 						{date && <span className="shrink-0 tabular-nums">{date}</span>}
 						{settings.showParentFolder && (
 							<span className="flex min-w-0 items-center gap-0.5 truncate"><Folder aria-hidden className="size-3 shrink-0" />{folderLabel(note.folder)}</span>
 						)}
 						{visibleTags.map((tag) => (
-							<button
+							<Button variant="ghost" size="sm"
 								key={tag}
 								type="button"
 								tabIndex={-1}
-								className="shrink-0 rounded-full bg-muted px-1.5 text-[10px] leading-4 text-muted-foreground hover:text-foreground"
+								className="shrink-0 rounded-full bg-[var(--hu-sunken)] px-2 text-xs text-[var(--hu-fg-3)] hover:text-[var(--hu-fg)] min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]"
 								onClick={(event) => {
 									event.stopPropagation();
 									// Mod adds the tag to the search (AND, or OR with Shift); a plain click goes to the tag.
@@ -312,7 +313,7 @@ function NoteRow({ note, pinned, metrics, appearance, hidden, selected, focused,
 								}}
 							>
 								#{tag}
-							</button>
+							</Button>
 						))}
 						{note.tags.length > visibleTags.length && settings.showNoteTags && <span className="shrink-0">+{note.tags.length - visibleTags.length}</span>}
 					</div>
@@ -324,7 +325,7 @@ function NoteRow({ note, pinned, metrics, appearance, hidden, selected, focused,
 					loading="lazy"
 					draggable={false}
 					src={env.imageUrl(record.image)}
-					className="shrink-0 rounded-md bg-muted object-cover"
+					className="shrink-0 rounded-md bg-[var(--hu-sunken)] object-cover"
 					style={{ width: thumb, height: thumb }}
 					onError={() => setBrokenImage(record.image)}
 				/>
@@ -379,7 +380,7 @@ function SortMenu({ appearance, settings, env }: { appearance: ListAppearance; s
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button type="button" variant="ghost" size="icon-sm" aria-label={t('navigator.sort')} className="text-muted-foreground [&_svg]:size-4"><ArrowDownUp /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" aria-label={t('navigator.sort')} className="text-[var(--hu-fg-3)] [&_svg]:size-4 min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]"><ArrowDownUp /></Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent>{t('navigator.sort')}</TooltipContent>
@@ -400,7 +401,7 @@ function MoreMenu({ appearance, settings, env, searchOpen }: { appearance: ListA
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button type="button" variant="ghost" size="icon-sm" aria-label={t('navigator.more')} className="text-muted-foreground [&_svg]:size-4"><Ellipsis /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" aria-label={t('navigator.more')} className="text-[var(--hu-fg-3)] [&_svg]:size-4 min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]"><Ellipsis /></Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent>{t('navigator.more')}</TooltipContent>

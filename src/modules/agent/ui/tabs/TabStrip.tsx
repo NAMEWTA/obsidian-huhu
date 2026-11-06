@@ -43,7 +43,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 	return (
 		<div
 			ref={setNodeRef}
-			className="@container/strip flex min-h-9 min-w-0 shrink-0 items-stretch border-b border-border bg-card"
+			className="@container/strip flex min-h-9 min-w-0 shrink-0 items-stretch border-b border-[var(--hu-line)] bg-[var(--hu-raised)]"
 			data-group-strip={group.id}
 		>
 			{overflow && (
@@ -51,7 +51,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 					<TooltipTrigger asChild>
 						<Button
 							variant="ghost"
-							size="icon-xs"
+							size="icon-sm"
 							className="mx-0.5 my-auto"
 							aria-label={t('agent.workspace.scrollLeft')}
 							data-tab-scroll="left"
@@ -68,7 +68,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 					ref={ref}
 					role="tablist"
 					aria-label={t('agent.workspace.tabs')}
-					className="terminal-tab-strip flex h-full min-w-0 max-w-full flex-1 items-stretch overflow-x-auto overflow-y-hidden border-r border-border/70"
+					className="terminal-tab-strip flex h-full min-w-0 max-w-full flex-1 items-stretch overflow-x-auto overflow-y-hidden border-r border-[var(--hu-line)]/70"
 					onPointerMove={(event) => {
 						if (!event.buttons) return;
 						const el = event.currentTarget,
@@ -90,7 +90,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 					<TooltipTrigger asChild>
 						<Button
 							variant="ghost"
-							size="icon-xs"
+							size="icon-sm"
 							className="mx-0.5 my-auto"
 							aria-label={t('agent.workspace.scrollRight')}
 							data-tab-scroll="right"
@@ -114,7 +114,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="ghost"
-						size="icon-xs"
+						size="icon-sm"
 						className="mx-1 my-auto size-8"
 						aria-label={t('agent.workspace.groupMenu')}
 					>

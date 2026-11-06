@@ -20,14 +20,16 @@ export function VisibleTooltip(props: ComponentProps<typeof Tooltip>) {
 export function IconButton({ label, children, ...props }: ComponentProps<typeof Button> & { label: string }) {
 	const layer = useTransient();
 	return (
-		<VisibleTooltip>
-			<TooltipTrigger asChild>
-				<Button type="button" variant="ghost" size="icon-sm" aria-label={label} {...props}>
-					{children}
-				</Button>
-			</TooltipTrigger>
-			{layer.visible && <TooltipContent>{label}</TooltipContent>}
-		</VisibleTooltip>
+		<span className="inline-flex size-[var(--hu-hit)] shrink-0 items-center justify-center">
+			<VisibleTooltip>
+				<TooltipTrigger asChild>
+					<Button type="button" variant="ghost" size="icon-sm" aria-label={label} {...props}>
+						{children}
+					</Button>
+				</TooltipTrigger>
+				{layer.visible && <TooltipContent>{label}</TooltipContent>}
+			</VisibleTooltip>
+		</span>
 	);
 }
 /** A stable identifier in monospace with a copy control; the value wraps instead of widening the page. */
@@ -38,7 +40,7 @@ export function IdField({ label, value }: { label: string; value: string }) {
 	return (
 		<div className="flex min-w-0 items-center gap-2" data-id-field>
 			<div className="min-w-0 flex-1">
-				<div className="text-[11px] font-medium uppercase text-muted-foreground">{label}</div>
+				<div className="text-xs font-medium uppercase text-muted-foreground">{label}</div>
 				<code className="mt-1 block break-all font-mono text-xs">{value}</code>
 			</div>
 			<IconButton
@@ -69,7 +71,7 @@ export function Field({
 	const id = useId();
 	return (
 		<div className="flex min-w-0 flex-col gap-1.5">
-			<Label htmlFor={id} className="text-xs font-medium leading-4 text-foreground">
+			<Label htmlFor={id} className="text-sm font-medium leading-5 text-[var(--hu-fg)]">
 				{label}
 			</Label>
 			{children(id)}
@@ -115,11 +117,7 @@ export function Choice({
 			onValueChange={onChange}
 			disabled={disabled}
 		>
-			<SelectTrigger
-				id={id}
-				aria-label={label}
-				className="h-9 w-full min-w-0 border-input bg-input/30 shadow-xs hover:bg-accent/60 dark:bg-input/30 dark:hover:bg-input/50"
-			>
+			<SelectTrigger id={id} aria-label={label} className="w-full min-w-0">
 				<SelectValue />
 			</SelectTrigger>
 			{layer.visible && (
@@ -159,12 +157,12 @@ export function SearchChoice({
 			<PopoverTrigger asChild>
 				<Button
 					id={id}
-					variant="outline"
+					variant="secondary"
 					role="combobox"
 					aria-expanded={layer.open}
 					aria-label={label}
 					disabled={disabled}
-					className="h-9 w-full min-w-0 justify-between border-input bg-input/30 shadow-xs hover:bg-accent/60 dark:bg-input/30 dark:hover:bg-input/50"
+					className="w-full min-w-0 justify-between"
 				>
 					<span className="flex min-w-0 items-center gap-2 truncate">
 						{options.find((item) => item.value === value)?.icon}

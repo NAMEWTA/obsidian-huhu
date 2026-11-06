@@ -1,3 +1,4 @@
+import { SettingsStore, type SettingsFile } from '../../../shared/settings/store';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
 import { GeneralSettings } from './GeneralSettings';
@@ -85,4 +86,56 @@ test('visible HUHU content remains reachable from searchable general settings', 
 	expect(browse.closest('[data-searchable-setting]')?.textContent).toContain(t('content.settingsHint'));
 	fireEvent.click(browse);
 	expect(navigate).toHaveBeenCalledExactlyOnceWith({ feature: 'content' });
+});
+
+
+test.each([[false, false], [true, false], [true, true]])('real General failure retries the latest published values without replaying toggles (pending edit=%s, close=%s)', async (pendingEdit, close) => {
+	setLanguage('en');
+	const original = appSchema('en').defaults();
+	const files: Record<string, SettingsFile | null> = { vault: { version: 1, namespaces: { app: structuredClone(original) } }, device: null };
+	let reject!: (error: Error) => void;
+	let release!: () => void;
+	let retryReady = false;
+	const vaultSave = vi.fn(async () => {
+		if (!retryReady) {
+			if (vaultSave.mock.calls.length === 1) await new Promise<void>((_yes, no) => { reject = no; });
+			throw Error('disk full');
+		}
+		await new Promise<void>(yes => { release = yes; });
+	});
+	const save = async (scope: string, file: SettingsFile) => {
+		if (scope === 'vault') await vaultSave();
+		files[scope] = structuredClone(file); return file;
+	};
+	const store = new SettingsStore({ load: async scope => files[scope] ?? null, save }, {
+		timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: timer => window.clearTimeout(timer as number) }, debounceMs: 0,
+	});
+	await store.load();
+	const appSettings = store.bind('app', appSchema('en'));
+	const plugin = { appSettings, moduleManifests: () => [] } as unknown as DashboardPlugin;
+	const view = render(<TestProviders><GeneralSettings plugin={plugin} navigate={vi.fn()} /></TestProviders>);
+	try {
+		fireEvent.click(screen.getByRole('switch', { name: t('shell.showStatusItem', { item: t('shell.usage') }) }));
+		await waitFor(() => expect(vaultSave).toHaveBeenCalledOnce());
+		expect(appSettings.get().statusBar.segments.usage).toBe(false);
+		expect(files.vault!.namespaces.app!.statusBar).toEqual(original.statusBar);
+		if (pendingEdit) {
+			fireEvent.click(screen.getByRole('radio', { name: t('shell.remaining') }));
+			await waitFor(() => expect(appSettings.get().statusBar.usageDisplay).toBe('remaining'));
+		}
+		reject(Error('disk full'));
+		const alert = await screen.findByRole('alert');
+		expect(alert.textContent).toContain(t('settings.writeFailed'));
+		retryReady = true;
+		const failedWrites = pendingEdit ? 2 : 1;
+		fireEvent.click(screen.getByRole('button', { name: t('workbench.retry') }));
+		await waitFor(() => expect(vaultSave).toHaveBeenCalledTimes(failedWrites + 1));
+		expect(appSettings.get().statusBar.segments.usage).toBe(false);
+		if (close) view.unmount();
+		release();
+		await waitFor(() => expect(store.status).toBe('idle'));
+		expect(files.vault!.namespaces.app!.statusBar).toMatchObject({ usageDisplay: pendingEdit ? 'remaining' : original.statusBar.usageDisplay, segments: { usage: false } });
+		expect(screen.queryByRole('alert')).toBeNull();
+		expect(vaultSave).toHaveBeenCalledTimes(failedWrites + 1);
+	} finally { reject?.(Error('cleanup')); release?.(); view.unmount(); await store.dispose(); }
 });

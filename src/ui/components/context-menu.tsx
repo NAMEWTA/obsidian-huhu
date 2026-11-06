@@ -5,11 +5,16 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import * as ContextMenuPrimitive from 'radix-ui/context-menu';
 
 import { usePortalContainer } from '../react/contexts';
+import { useOverlayStyle, FloatingLayer, FloatingOwner } from '../react/modal-layer';
 import { cn } from '../lib/utils';
 import { handleImeOverlayEscape } from '../react/ime';
 
 function ContextMenu({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
-	return <ContextMenuPrimitive.Root data-slot="context-menu" modal={false} {...props} />;
+	return (
+		<FloatingOwner>
+			<ContextMenuPrimitive.Root data-slot="context-menu" modal={false} {...props} />
+		</FloatingOwner>
+	);
 }
 
 function ContextMenuTrigger({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
@@ -54,39 +59,49 @@ function ContextMenuSubContent({
 	...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>) {
 	return (
-		<ContextMenuPrimitive.Portal container={usePortalContainer()}>
-			<ContextMenuPrimitive.SubContent
-				data-slot="context-menu-sub-content"
-				className={cn(
-					'z-[var(--layer-menu)] min-w-[11rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-[11px] border border-border bg-popover p-[4px] text-popover-foreground shadow-floating md:backdrop-blur-2xl    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--anim-duration-fast)] data-[state=open]:zoom-in-[0.98]',
-					className,
-				)}
-				// Why: submenu content must portal out of the scrollable parent menu so
-				// overflow clipping does not hide the cascade on click/hover.
-				style={{ ...style, WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
-			/>
-		</ContextMenuPrimitive.Portal>
+		<FloatingLayer>
+			<ContextMenuPrimitive.Portal container={usePortalContainer()}>
+				<ContextMenuPrimitive.SubContent
+					data-slot="context-menu-sub-content"
+					className={cn(
+						'z-[var(--hu-overlay-layer)] min-w-[11rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-[4px] text-popover-foreground shadow-floating     data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--hu-dur-fast)] data-[state=open]:zoom-in-[0.98]',
+						className,
+					)}
+					// Why: submenu content must portal out of the scrollable parent menu so
+					// overflow clipping does not hide the cascade on click/hover.
+					style={{ ...useOverlayStyle(style, 1), WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+					{...props}
+					onEscapeKeyDown={(event) => {
+						handleImeOverlayEscape(event, props.onEscapeKeyDown);
+						event.stopPropagation();
+					}}
+				/>
+			</ContextMenuPrimitive.Portal>
+		</FloatingLayer>
 	);
 }
 
 function ContextMenuContent({ className, style, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
 	return (
-		<ContextMenuPrimitive.Portal container={usePortalContainer()}>
-			<ContextMenuPrimitive.Content
-				data-slot="context-menu-content"
-				className={cn(
-					'z-[var(--layer-menu)] max-h-(--radix-context-menu-content-available-height) min-w-[11rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto scrollbar-sleek rounded-[11px] border border-border bg-popover p-[4px] text-popover-foreground shadow-floating md:backdrop-blur-2xl    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--anim-duration-fast)] data-[state=open]:zoom-in-[0.98]',
-					className,
-				)}
-				// Why: same no-drag fix as DropdownMenuContent — titlebar drag regions
-				// capture clicks at the OS level when menus overlap them.
-				style={{ ...style, WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
-			/>
-		</ContextMenuPrimitive.Portal>
+		<FloatingLayer>
+			<ContextMenuPrimitive.Portal container={usePortalContainer()}>
+				<ContextMenuPrimitive.Content
+					data-slot="context-menu-content"
+					className={cn(
+						'z-[var(--hu-overlay-layer)] max-h-(--radix-context-menu-content-available-height) min-w-[11rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto scrollbar-sleek rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-[4px] text-popover-foreground shadow-floating     data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--hu-dur-fast)] data-[state=open]:zoom-in-[0.98]',
+						className,
+					)}
+					// Why: same no-drag fix as DropdownMenuContent — titlebar drag regions
+					// capture clicks at the OS level when menus overlap them.
+					style={{ ...useOverlayStyle(style, 1), WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+					{...props}
+					onEscapeKeyDown={(event) => {
+						handleImeOverlayEscape(event, props.onEscapeKeyDown);
+						event.stopPropagation();
+					}}
+				/>
+			</ContextMenuPrimitive.Portal>
+		</FloatingLayer>
 	);
 }
 
@@ -113,10 +128,30 @@ function ContextMenuItem({
 	);
 }
 
-function ContextMenuCheckboxItem({ className, children, checked, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem>) {
- return <ContextMenuPrimitive.CheckboxItem data-slot="context-menu-checkbox-item" checked={checked} className={cn("relative flex cursor-default items-center gap-2 rounded-md py-[4px] pr-2 pl-8 text-[12px] leading-[17px] font-[450] outline-hidden select-none focus:bg-foreground/8 dark:focus:bg-foreground/14 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50", className)} {...props}>
-  <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center"><ContextMenuPrimitive.ItemIndicator><CheckIcon className="size-3.5" /></ContextMenuPrimitive.ItemIndicator></span>{children}
- </ContextMenuPrimitive.CheckboxItem>;
+function ContextMenuCheckboxItem({
+	className,
+	children,
+	checked,
+	...props
+}: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem>) {
+	return (
+		<ContextMenuPrimitive.CheckboxItem
+			data-slot="context-menu-checkbox-item"
+			checked={checked}
+			className={cn(
+				'relative flex cursor-default items-center gap-2 rounded-md py-[4px] pr-2 pl-8 text-[12px] leading-[17px] font-[450] outline-hidden select-none focus:bg-foreground/8 dark:focus:bg-foreground/14 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+				className,
+			)}
+			{...props}
+		>
+			<span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+				<ContextMenuPrimitive.ItemIndicator>
+					<CheckIcon className="size-3.5" />
+				</ContextMenuPrimitive.ItemIndicator>
+			</span>
+			{children}
+		</ContextMenuPrimitive.CheckboxItem>
+	);
 }
 
 function ContextMenuRadioItem({

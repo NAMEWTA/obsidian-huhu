@@ -1,5 +1,10 @@
 import { displayLabel, at, Button, Check, Input, Select, Textarea } from './common';
-import { useId, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
+import { PrecisionDateControl } from './PrecisionDateControl';
+import { DateField } from '../../../../ui/components/huhu/date';
+import { Notice } from '../../../../ui/components/huhu/Notice';
+import { FormField } from '../../../../ui/components/huhu/FormField';
+import { useLeafMetrics } from '../../../../ui/react/use-leaf-metrics';
 import { FuzzySuggestModal, type App, type TFile } from 'obsidian';
 import type {
 	ArchiveTypeDefinition,
@@ -28,6 +33,8 @@ interface ControlProps {
 	value: unknown;
 	onChange(this: void, value: unknown): void;
 	disabled: boolean;
+	invalid?: boolean;
+	describedBy?: string;
 	id: string;
 	app?: App;
 }
@@ -49,8 +56,10 @@ class FilePicker extends FuzzySuggestModal<TFile> {
 		this.choose(file.path);
 	}
 }
-const plainControl = ({ value, onChange, disabled, id }: ControlProps) => (
+const plainControl = ({ value, onChange, disabled, id, invalid, describedBy }: ControlProps) => (
 	<Input
+		aria-invalid={invalid || undefined}
+		aria-describedby={describedBy}
 		id={id}
 		value={typeof value === 'string' || typeof value === 'number' ? String(value) : ''}
 		disabled={disabled}
@@ -61,6 +70,8 @@ function numericControl(props: ControlProps): ReactNode {
 	return (
 		<Input
 			id={props.id}
+			aria-invalid={props.invalid || undefined}
+			aria-describedby={props.describedBy}
 			inputMode="decimal"
 			value={props.value === undefined || props.value === null ? '' : displayValue(props.value)}
 			disabled={props.disabled}
@@ -86,7 +97,7 @@ function StringListControl({ value, onChange, disabled, id }: ControlProps) {
 						onChange={(event) => onChange(items.map((old, i) => (i === index ? event.target.value : old)))}
 					/>
 					<Button
-						variant="outline"
+						variant="secondary"
 						disabled={disabled}
 						onClick={() => onChange(items.filter((_item, i) => i !== index))}
 					>
@@ -94,7 +105,7 @@ function StringListControl({ value, onChange, disabled, id }: ControlProps) {
 					</Button>
 				</div>
 			))}
-			<Button variant="outline" disabled={disabled} onClick={() => onChange([...items, ''])}>
+			<Button variant="secondary" disabled={disabled} onClick={() => onChange([...items, ''])}>
 				{at('add')}
 			</Button>
 		</div>
@@ -103,7 +114,7 @@ function StringListControl({ value, onChange, disabled, id }: ControlProps) {
 function MoneyControl({ value, onChange, disabled, id }: ControlProps) {
 	const money = object(value) ? value : {};
 	return (
-		<div id={id} className="grid gap-2 sm:grid-cols-2">
+		<div id={id} className="grid gap-2 @min-[560px]:grid-cols-2">
 			<Input
 				aria-label={at('amount')}
 				inputMode="decimal"
@@ -165,19 +176,22 @@ function MultiSelectControl({ field, value, onChange, disabled, id }: ControlPro
 	);
 }
 function TableControl({ field, value, onChange, disabled, id, app }: ControlProps) {
-	const rows = Array.isArray(value)
-		? value
-				.filter(object)
-				.map((row) => ({ rowId: String(row.rowId), values: object(row.values) ? row.values : {} }))
-		: [];
+	const sourceRows: unknown[] = Array.isArray(value) ? value : [];
+	const rows = sourceRows.flatMap((source, index) =>
+		object(source) && typeof source.rowId === 'string' && object(source.values)
+			? [{ source, index, rowId: source.rowId, values: source.values }]
+			: [],
+	);
+	const invalid = rows.length !== sourceRows.length || (value !== undefined && !Array.isArray(value));
 	return (
 		<div id={id} className="space-y-3">
+			{invalid && <Notice tone="error" title={at('invalidValues')} />}
 			{rows.map((row, index) => (
 				<fieldset key={row.rowId} className="space-y-2 rounded-md border p-3">
 					<legend className="px-1 text-xs">
 						{at('row')} {index + 1}
 					</legend>
-					<div className="grid gap-3 sm:grid-cols-2">
+					<div className="grid gap-3 @min-[560px]:grid-cols-2">
 						{field.columns?.map((column) => (
 							<FieldEditor
 								key={column.fieldId}
@@ -188,12 +202,12 @@ function TableControl({ field, value, onChange, disabled, id, app }: ControlProp
 								disabled={disabled}
 								onChange={(value) =>
 									onChange(
-										rows.map((item) => {
-											if (item.rowId !== row.rowId) return item;
-											const values = { ...item.values };
+										sourceRows.map((item, index) => {
+											if (index !== row.index) return item;
+											const values = { ...row.values };
 											if (value === undefined) delete values[column.fieldId];
 											else values[column.fieldId] = value;
-											return { ...item, values };
+											return { ...row.source, values };
 										}),
 									)
 								}
@@ -201,21 +215,88 @@ function TableControl({ field, value, onChange, disabled, id, app }: ControlProp
 						))}
 					</div>
 					<Button
-						variant="outline"
+						variant="secondary"
 						disabled={disabled}
-						onClick={() => onChange(rows.filter((item) => item.rowId !== row.rowId))}
+						onClick={() => onChange(sourceRows.filter((_item, index) => index !== row.index))}
 					>
 						{at('remove')}
 					</Button>
 				</fieldset>
 			))}
 			<Button
-				variant="outline"
-				disabled={disabled}
-				onClick={() => onChange([...rows, { rowId: crypto.randomUUID(), values: {} }])}
+				variant="secondary"
+				disabled={disabled || sourceRows.length >= 10000 || (value !== undefined && !Array.isArray(value))}
+				onClick={() => onChange([...sourceRows, { rowId: crypto.randomUUID(), values: {} }])}
 			>
 				{at('addRow')}
 			</Button>
+		</div>
+	);
+}
+function DayControl(props: ControlProps) {
+	return (
+		<PrecisionDateControl
+			id={props.id}
+			label={displayLabel(props.field)}
+			value={typeof props.value === 'string' ? props.value : ''}
+			disabled={props.disabled}
+			error={props.invalid}
+			precision={props.field.precision ?? 'mixed'}
+			onChange={props.onChange}
+		/>
+	);
+}
+/** Offset timestamps remain archive strings: no IANA inference, epoch conversion or precision truncation. */
+function OffsetDateTimeControl(props: ControlProps) {
+	const { element: leafElement, ref: leafRef } = useLeafMetrics();
+	const raw = typeof props.value === 'string' ? props.value : '';
+	const parse = (value: string) => {
+		const split = /^(.*?)T(.*?)(Z|[+-]\d{0,2}(?::\d{0,2})?)?$/.exec(value);
+		return { date: split?.[1] ?? value, time: split?.[2] ?? '', offset: split?.[3] ?? '' };
+	};
+	const [parts, setParts] = useState(() => parse(raw));
+	const [previous, setPrevious] = useState(raw);
+	const [emitted, setEmitted] = useState<string>();
+	if (previous !== raw) {
+		setPrevious(raw);
+		if (raw !== emitted) {
+			const next = parse(raw);
+			setParts(next);
+		}
+	}
+	const { date, time, offset } = parts;
+	const change = (part: 'date' | 'time' | 'offset', value: string) => {
+		const next = { ...parts, [part]: value };
+		setParts(next);
+		const combined = `${next.date}T${next.time}${next.offset}`;
+		setEmitted(combined);
+		props.onChange(combined);
+	};
+	return (
+		<div ref={leafRef} className="grid min-w-0 gap-3 @min-[560px]:grid-cols-2">
+			<DateField
+				label={at('day')}
+				aria-label={`${displayLabel(props.field)} · ${at('day')}`}
+				value={date || null}
+				disabled={props.disabled}
+				collisionBoundary={leafElement}
+				onDraftChange={(value) => change('date', value)}
+				onChange={(value) => change('date', value ?? '')}
+			/>
+			<FormField label={at('timePart')}>
+				<Input
+					value={time}
+					disabled={props.disabled}
+					onChange={(event) => change('time', event.target.value)}
+				/>
+			</FormField>
+			<FormField label={at('offsetPart')} description={at('timezoneHint')}>
+				<Input
+					value={offset}
+					disabled={props.disabled}
+					onChange={(event) => change('offset', event.target.value)}
+				/>
+			</FormField>
 		</div>
 	);
 }
@@ -224,6 +305,8 @@ export const FieldRendererRegistry: Readonly<Record<FieldKind, (props: ControlPr
 	text: plainControl,
 	markdown: (props) => (
 		<Textarea
+			aria-invalid={props.invalid || undefined}
+			aria-describedby={props.describedBy}
 			id={props.id}
 			rows={5}
 			value={typeof props.value === 'string' ? props.value : ''}
@@ -242,20 +325,8 @@ export const FieldRendererRegistry: Readonly<Record<FieldKind, (props: ControlPr
 			onChange={props.onChange}
 		/>
 	),
-	date: (props) => (
-		<div className="space-y-1">
-			{plainControl(props)}
-			<p className="text-xs text-muted-foreground">
-				{at('dateHint')} · {at(props.field.precision ?? 'mixed')}
-			</p>
-		</div>
-	),
-	datetime: (props) => (
-		<div className="space-y-1">
-			{plainControl(props)}
-			<p className="text-xs text-muted-foreground">{at('timezoneHint')}</p>
-		</div>
-	),
+	date: DayControl,
+	datetime: OffsetDateTimeControl,
 	select: SelectControl,
 	multiselect: MultiSelectControl,
 	strings: StringListControl,
@@ -265,7 +336,7 @@ export const FieldRendererRegistry: Readonly<Record<FieldKind, (props: ControlPr
 				{plainControl(props)}
 				{props.app && (
 					<Button
-						variant="outline"
+						variant="secondary"
 						disabled={props.disabled}
 						onClick={() => new FilePicker(props.app!, props.onChange).open()}
 					>
@@ -316,12 +387,16 @@ export function FieldEditor({
 }) {
 	const id = useId(),
 		Control = FieldRendererRegistry[field.kind],
-		grouped = ['money', 'boolean', 'strings', 'select', 'multiselect', 'table'].includes(field.kind);
+		grouped = ['money', 'boolean', 'strings', 'select', 'multiselect', 'table', 'date', 'datetime'].includes(
+			field.kind,
+		);
 	return (
 		<div
 			data-field-id={field.fieldId}
 			role={grouped ? 'group' : undefined}
 			aria-labelledby={grouped ? `${id}-label` : undefined}
+			aria-invalid={error || undefined}
+			aria-describedby={error ? `${id}-error` : undefined}
 			className={`space-y-2 rounded-md p-2 ${error ? 'border border-destructive' : ''}`}
 		>
 			<div className="flex flex-wrap items-center justify-between gap-2">
@@ -345,6 +420,8 @@ export function FieldEditor({
 					id={id}
 					app={app}
 					field={field}
+					invalid={error}
+					describedBy={error ? `${id}-error` : undefined}
 					value={value}
 					disabled={disabled || !!field.archived}
 					onChange={onChange}
@@ -354,7 +431,7 @@ export function FieldEditor({
 			)}
 			{(help || field.help) && <p className="text-xs text-muted-foreground">{help || field.help}</p>}
 			{error && (
-				<p role="alert" className="text-sm text-destructive">
+				<p id={`${id}-error`} role="alert" className="text-sm text-destructive">
 					{at('invalidValues')}
 				</p>
 			)}
@@ -367,6 +444,7 @@ export function ValueForm({
 	onChange,
 	disabled = false,
 	errors = [],
+	readOnlyFields,
 	form,
 	app,
 }: {
@@ -375,6 +453,7 @@ export function ValueForm({
 	onChange: (fieldId: string, value: unknown) => void;
 	disabled?: boolean;
 	errors?: readonly string[];
+	readOnlyFields?: ReadonlySet<string>;
 	form?: FormTemplate;
 	app?: App;
 }) {
@@ -382,21 +461,21 @@ export function ValueForm({
 		{
 			id: 'all-fields',
 			label: at('fields'),
-			columns: 1 as const,
+			columns: 2 as const,
 			controls: fields
 				.filter((field) => !field.archived || own(values, field.fieldId))
 				.map((field) => ({ fieldId: field.fieldId })),
 		},
 	];
 	return (
-		<div className="space-y-4">
+		<div className="@container space-y-5">
 			{groups
 				.filter((group) => matches(group.visibleWhen, values))
 				.map((group) => (
 					<fieldset key={group.id} className="space-y-2">
 						<legend className="text-sm font-semibold">{displayLabel(group)}</legend>
 						<div
-							className={`grid gap-3 ${group.columns === 3 ? 'lg:grid-cols-3' : group.columns === 2 ? 'md:grid-cols-2' : ''}`}
+							className={`grid gap-3 ${group.columns === 3 ? '@min-[1000px]:grid-cols-3' : group.columns === 2 ? '@min-[720px]:grid-cols-2' : ''}`}
 						>
 							{group.controls
 								.filter((control) => matches(control.visibleWhen, values))
@@ -409,7 +488,9 @@ export function ValueForm({
 											stored={own(values, field.fieldId)}
 											value={values[field.fieldId]}
 											onChange={(value) => onChange(field.fieldId, value)}
-											disabled={disabled || control.readOnly}
+											disabled={
+												disabled || control.readOnly || readOnlyFields?.has(field.fieldId)
+											}
 											error={errors.includes(field.fieldId)}
 											help={control.help}
 											app={app}
@@ -428,7 +509,7 @@ export function ValueForm({
 }
 export function RecordValues({ type, values }: { type: ArchiveTypeDefinition; values: Values }) {
 	return (
-		<dl className="grid gap-3 sm:grid-cols-2">
+		<dl className="grid gap-3 @min-[560px]:grid-cols-2">
 			{type.fields
 				.filter((field) => own(values, field.fieldId))
 				.map((field) => (

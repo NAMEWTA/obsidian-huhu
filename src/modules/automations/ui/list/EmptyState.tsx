@@ -29,9 +29,9 @@ export function EmptyState({
 						key={template.id}
 						disabled={disabled}
 						onClick={() => onCreate(template)}
-						className="flex h-auto flex-col items-stretch justify-start rounded-md border border-border/70 bg-background px-3 py-2 text-left shadow-xs hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+						className="flex h-auto flex-col items-stretch justify-start rounded-md border border-border/70 bg-background px-3 py-2 text-left shadow-xs hover:bg-accent hover:text-accent-foreground focus-visible:outline-none outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]"
 					>
-						<div className="text-[11px] font-medium uppercase text-muted-foreground">
+						<div className="text-xs font-medium uppercase text-muted-foreground">
 							{t(`automation.${template.kind}`)}
 						</div>
 						<div className="mt-1 text-sm font-medium">{t(`automation.template.${template.id}.name`)}</div>

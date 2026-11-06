@@ -101,7 +101,7 @@ export function UsageStatsPage({
 				/>
 			</div>
 			{stats.firstEventAt && (
-				<p className="px-1 text-xs text-muted-foreground">
+				<p className="px-1 text-xs text-[var(--hu-fg-2)]">
 					{t('agent.stats.since', { date: new Date(stats.firstEventAt).toLocaleDateString() })}
 				</p>
 			)}
@@ -123,7 +123,7 @@ export function UsageStatsPage({
 			</div>
 			{disabled ? (
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						void controller.settings
 							.update((d) => {
@@ -153,7 +153,7 @@ export function UsageStatsPage({
 						</Select>
 					</div>
 					{!rows.length ? (
-						<div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-border/60 bg-card/30 text-sm text-muted-foreground">
+						<div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-[var(--hu-line)]/60 bg-[var(--hu-raised)]/30 text-sm text-[var(--hu-fg-2)]">
 							{history.loading ? t('agent.historyUI.loading') : t('agent.stats.empty')}
 						</div>
 					) : (
@@ -171,7 +171,7 @@ export function UsageStatsPage({
 										'turns',
 									] as const
 								).map((key) => (
-									<div key={key} className="rounded-lg border border-border/50 bg-card/60 px-4 py-3">
+									<div key={key} className="rounded-lg border border-[var(--hu-line)]/50 bg-[var(--hu-raised)]/60 px-4 py-3">
 										<p className="text-lg font-semibold">
 											{key === 'reuse'
 												? `${Math.round((summary.totals.cacheRead / Math.max(1, summary.totals.input + summary.totals.cacheRead + summary.totals.cacheWrite)) * 100)}%`
@@ -179,11 +179,11 @@ export function UsageStatsPage({
 														key === 'activeDays' ? summary.activeDays : summary.totals[key],
 													)}
 										</p>
-										<p className="text-xs text-muted-foreground">{t(`agent.stats.${key}`)}</p>
+										<p className="text-xs text-[var(--hu-fg-2)]">{t(`agent.stats.${key}`)}</p>
 									</div>
 								))}
 							</div>
-							<section className="rounded-lg border border-border bg-card p-4">
+							<section className="rounded-lg border border-[var(--hu-line)] bg-[var(--hu-raised)] p-4">
 								<h3 className="mb-3 text-sm font-semibold">{t('agent.stats.heatmap')}</h3>
 								<UsageHeatmap sessions={rows} now={Date.parse(range.range.end + 'T12:00:00Z')} range={range.range} format={format} />
 							</section>
@@ -210,7 +210,7 @@ export function UsageStatsPage({
 									return (
 										<section
 											key={key}
-											className="space-y-2 rounded-lg border border-border/60 bg-card/40 p-4"
+											className="space-y-2 rounded-lg border border-[var(--hu-line)]/60 bg-[var(--hu-raised)]/40 p-4"
 										>
 											<h3 className="text-sm font-semibold">{t(`agent.stats.by.${key}`)}</h3>
 											{[...groups]
@@ -228,9 +228,9 @@ export function UsageStatsPage({
 																%
 															</span>
 														</div>
-														<div className="h-1 rounded-full bg-muted">
+														<div className="h-1 rounded-full bg-[var(--hu-sunken)]">
 															<div
-																className="h-full rounded-full bg-[var(--chart-2)]"
+																className="h-full rounded-full bg-[var(--hu-chart-2)]"
 																style={{
 																	width: `${(total / Math.max(1, summary.totals.total)) * 100}%`,
 																}}
@@ -242,13 +242,13 @@ export function UsageStatsPage({
 									);
 								})}
 							</div>
-							<section className="rounded-lg border border-border/60 bg-card/40 p-4">
+							<section className="rounded-lg border border-[var(--hu-line)]/60 bg-[var(--hu-raised)]/40 p-4">
 								<h3 className="text-sm font-semibold">{t('agent.stats.recent')}</h3>
-								<p className="mb-3 text-xs text-muted-foreground">{t('agent.stats.costHint')}</p>
+								<p className="mb-3 text-xs text-[var(--hu-fg-2)]">{t('agent.stats.costHint')}</p>
 								<div className="overflow-x-auto">
 									<table className="min-w-full text-sm">
 										<thead>
-											<tr className="border-b border-border/60 text-left text-xs text-muted-foreground">
+											<tr className="border-b border-[var(--hu-line)]/60 text-left text-xs text-[var(--hu-fg-2)]">
 												{[
 													'lastActive',
 													'provider',
@@ -266,8 +266,8 @@ export function UsageStatsPage({
 										</thead>
 										<tbody>
 											{rows.slice(0, 100).map((row) => (
-												<tr key={row.key} className="border-b border-border/40 last:border-b-0">
-													<td className="px-2 py-2 text-muted-foreground">
+												<tr key={row.key} className="border-b border-[var(--hu-line)]/40 last:border-b-0">
+													<td className="px-2 py-2 text-[var(--hu-fg-2)]">
 														{new Date(row.modifiedAtMs).toLocaleDateString()}
 													</td>
 													<td className="px-2 py-2">{row.agentId}</td>
@@ -293,7 +293,7 @@ export function UsageStatsPage({
 				</>
 			)}
 			{history.error && (
-				<p role="alert" className="text-sm text-destructive">
+				<p role="alert" className="text-sm text-[var(--hu-danger)]">
 					{history.error}
 				</p>
 			)}

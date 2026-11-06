@@ -57,12 +57,12 @@ function accountName(accountKey: string, system: string): string {
 function TerminalHistoryRow({ row, spaceLabel }: { row: HistoryRow; spaceLabel: string }) {
 	const t = useT();
 	const [expanded, setExpanded] = useState(false);
-	return <article className="border-b border-sidebar-border/60" data-history-row={row.key}>
-		<button type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)} className="flex w-full min-w-0 items-start gap-2 px-2.5 py-2 text-left hover:bg-sidebar-accent/50">
+	return <article className="border-b border-[var(--hu-line)]/60" data-history-row={row.key}>
+		<button type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)} className="flex w-full min-w-0 items-start gap-2 px-2.5 py-2 text-left hover:bg-[var(--hu-hover)]/50">
 			<SquareTerminal className="size-3.5 shrink-0" aria-hidden="true" />
-			<span className="min-w-0 flex-1"><span className="block truncate text-[12px] font-medium">{row.title}</span><span className="block truncate text-[11px] text-muted-foreground">{spaceLabel} · {new Date(row.modifiedAtMs).toLocaleDateString()}</span></span>
+			<span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{row.title}</span><span className="block truncate text-sm text-[var(--hu-fg-2)]">{spaceLabel} · {new Date(row.modifiedAtMs).toLocaleDateString()}</span></span>
 		</button>
-		{expanded && <div className="space-y-2 border-t border-sidebar-border/70 p-3 text-xs text-muted-foreground">
+		{expanded && <div className="space-y-2 border-t border-[var(--hu-line)]/70 p-3 text-xs text-[var(--hu-fg-2)]">
 			<p>{t('agent.historyUI.terminalMetadata')}</p><p className="break-words">{row.cwd}</p><p className="break-all">{row.sessionId}</p>
 		</div>}
 	</article>;
@@ -170,7 +170,7 @@ function SessionRow({
 	const menu = (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" size="icon-xs" aria-label={t('agent.historyUI.actions')}>
+				<Button variant="ghost" size="icon-sm" aria-label={t('agent.historyUI.actions')}>
 					<MoreHorizontal className="size-3.5" />
 				</Button>
 			</DropdownMenuTrigger>
@@ -185,7 +185,7 @@ function SessionRow({
 	);
 	return (
 		<article
-			className="border-b border-sidebar-border/60"
+			className="border-b border-[var(--hu-line)]/60"
 			data-history-row={row.key}
 			draggable
 			onDragStart={(e) => {
@@ -193,7 +193,7 @@ function SessionRow({
 				e.dataTransfer.effectAllowed = 'copy';
 			}}
 		>
-			<div className="group flex items-start gap-1 px-2.5 py-2 hover:bg-sidebar-accent/50">
+			<div className="group flex items-start gap-1 px-2.5 py-2 hover:bg-[var(--hu-hover)]/50">
 				<button
 					type="button"
 					className="flex min-w-0 flex-1 items-start gap-2 text-left"
@@ -207,11 +207,11 @@ function SessionRow({
 				>
 					<AgentIcon agent={row.agentId} size={14} />
 					<span className="min-w-0 flex-1">
-						<span className="block truncate text-[12px] font-medium text-foreground">
+						<span className="block truncate text-sm font-medium text-[var(--hu-fg)]">
 							{row.metadata.favorite ? '★ ' : ''}
 							{row.metadata.title || row.title}
 						</span>
-						<span className="block truncate text-[11px] text-muted-foreground">
+						<span className="block truncate text-sm text-[var(--hu-fg-2)]">
 							{shortPath(row.cwd)} · {row.model || t('agent.stats.unknown')} ·{' '}
 							{new Date(row.modifiedAtMs).toLocaleDateString()}
 							{row.sourceStatus && row.sourceStatus !== 'available'
@@ -223,22 +223,22 @@ function SessionRow({
 				{menu}
 			</div>
 			{expanded && (
-				<div className="border-t border-sidebar-border/70 bg-background/30">
+				<div className="border-t border-[var(--hu-line)]/70 bg-[var(--hu-canvas)]/30">
 					<div className="space-y-3 p-3">
-						<div className="space-y-1 text-[11px] text-muted-foreground">
+						<div className="space-y-1 text-sm text-[var(--hu-fg-2)]">
 							<dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5">
 								<dt>{t('agent.historyUI.detail.provider')}</dt>
-								<dd className="min-w-0 break-words text-foreground/90">
+								<dd className="min-w-0 break-words text-[var(--hu-fg)]/90">
 									{getAgent(row.agentId as AgentId).title}
 								</dd>
 								<dt>{t('agent.historyUI.detail.account')}</dt>
-								<dd className="min-w-0 break-words text-foreground/90">
+								<dd className="min-w-0 break-words text-[var(--hu-fg)]/90">
 									{accountName(row.accountKey, t('agent.historyUI.account.system'))}
 								</dd>
 								<dt>{t('agent.historyUI.detail.space')}</dt>
-								<dd className="min-w-0 break-words text-foreground/90">{spaceLabel}</dd>
+								<dd className="min-w-0 break-words text-[var(--hu-fg)]/90">{spaceLabel}</dd>
 								<dt>{t('agent.historyUI.detail.source')}</dt>
-								<dd className="min-w-0 break-words text-foreground/90">
+								<dd className="min-w-0 break-words text-[var(--hu-fg)]/90">
 									{t(`agent.historyUI.source.${row.sourceStatus ?? 'unknown'}`)}
 								</dd>
 							</dl>
@@ -248,7 +248,7 @@ function SessionRow({
 								{t('agent.historyUI.messages', { count: row.messageCount })}
 							</p>
 						</div>
-						{row.sourceReason === 'identity-collision' && <p role="status" className="text-xs text-muted-foreground">{t('agent.historyUI.sourceCollision')}</p>}
+						{row.sourceReason === 'identity-collision' && <p role="status" className="text-xs text-[var(--hu-fg-2)]">{t('agent.historyUI.sourceCollision')}</p>}
 						<Input
 							aria-label={t('agent.rename')}
 							defaultValue={row.metadata.title || row.title}
@@ -259,18 +259,18 @@ function SessionRow({
 							}}
 						/>
 						<section className="space-y-1.5">
-							<div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+							<div className="flex items-center justify-between text-sm font-semibold uppercase tracking-[0.05em] text-[var(--hu-fg-2)]">
 								<span>{t('agent.historyUI.firstPrompt')}</span>
 								<Button
 									variant="ghost"
-									size="icon-xs"
+									size="icon-sm"
 									aria-label={t('agent.historyUI.copyPrompt')}
 									onClick={() => copy(row.firstPrompt)}
 								>
 									<Copy className="size-3" />
 								</Button>
 							</div>
-							<p className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-md border border-border/70 bg-foreground/[0.04] px-2.5 py-2 text-xs">
+							<p className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-md border border-[var(--hu-line)]/70 bg-[var(--hu-sunken)] px-2.5 py-2 text-xs">
 								{row.previewState === 'loading'
 									? t('agent.historyUI.loading')
 									: row.previewState === 'unavailable'
@@ -278,32 +278,32 @@ function SessionRow({
 										: row.firstPrompt || t('agent.historyUI.noPreview')}
 							</p>
 						</section>
-						{row.previewPartial && <p role="status" className="text-xs text-muted-foreground">{t('agent.historyUI.bodyPartial')}</p>}
+						{row.previewPartial && <p role="status" className="text-xs text-[var(--hu-fg-2)]">{t('agent.historyUI.bodyPartial')}</p>}
 						<section className="space-y-1.5">
-							<h4 className="text-[11px] font-semibold uppercase text-muted-foreground">
+							<h4 className="text-sm font-semibold uppercase text-[var(--hu-fg-2)]">
 								{t(row.previewPartial ? 'agent.historyUI.previewTurns' : 'agent.historyUI.latest')}
 							</h4>
 							{row.turns.slice(-5).map((turn, index) => (
 								<div
 									key={index}
-									className="rounded-md border border-sidebar-border/70 bg-sidebar-accent/25 px-2.5 py-2"
+									className="rounded-md border border-[var(--hu-line)]/70 bg-[var(--hu-hover)]/25 px-2.5 py-2"
 								>
-									<span className="text-[10px] font-semibold uppercase text-muted-foreground">
+									<span className="text-sm font-semibold uppercase text-[var(--hu-fg-2)]">
 										{t(`agent.historyUI.role.${turn.role}`)}
 									</span>
-									<p className="line-clamp-2 text-[12px] leading-[1.35] text-foreground/90 [overflow-wrap:anywhere]">
+									<p className="line-clamp-2 text-sm leading-[1.35] text-[var(--hu-fg)]/90 [overflow-wrap:anywhere]">
 										{turn.text}
 									</p>
 								</div>
 							))}
 						</section>
 						{row.readError && row.previewState !== 'unavailable' && (
-							<p role="alert" className="text-xs text-destructive">
+							<p role="alert" className="text-xs text-[var(--hu-danger)]">
 								{row.readError}
 							</p>
 						)}
 						{!assigned && (
-							<p className="text-[11px] text-muted-foreground">
+							<p className="text-sm text-[var(--hu-fg-2)]">
 								{t('agent.historyResume.unassignedNote')}
 							</p>
 						)}
@@ -334,7 +334,7 @@ function SessionRow({
 							</AlertDialogContent>
 						</AlertDialog>
 						{busy !== 'idle' && (
-							<p role="status" className="text-xs text-muted-foreground">
+							<p role="status" className="text-xs text-[var(--hu-fg-2)]">
 								{t(busy === 'resume' ? 'agent.historyResume.working' : 'agent.historyResume.importing')}
 							</p>
 						)}
@@ -343,8 +343,8 @@ function SessionRow({
 								role={notice.tone === 'error' ? 'alert' : 'status'}
 								className={
 									notice.tone === 'error'
-										? 'flex items-start gap-2 text-xs text-destructive'
-										: 'flex items-start gap-2 text-xs text-muted-foreground'
+										? 'flex items-start gap-2 text-xs text-[var(--hu-danger)]'
+										: 'flex items-start gap-2 text-xs text-[var(--hu-fg-2)]'
 								}
 							>
 								<span className="min-w-0 flex-1 break-words">
@@ -355,7 +355,7 @@ function SessionRow({
 									)}
 									{notice.text}
 								</span>
-								<Button variant="ghost" size="xs" onClick={() => setNotice(undefined)}>
+								<Button variant="ghost" size="sm" onClick={() => setNotice(undefined)}>
 									{t('agent.historyResume.dismiss')}
 								</Button>
 							</div>
@@ -363,7 +363,7 @@ function SessionRow({
 						<div className="flex flex-wrap items-center gap-1">
 							<Button
 								variant="secondary"
-								size="xs"
+								size="sm"
 								ref={continueRef}
 								disabled={busy !== 'idle' || continueBlocked}
 								title={
@@ -379,7 +379,7 @@ function SessionRow({
 							{!assigned && (
 								<Button
 									variant="ghost"
-									size="xs"
+									size="sm"
 									disabled={busy !== 'idle'}
 									title={t('agent.historyResume.importHint')}
 									onClick={() => void doImport()}
@@ -389,7 +389,7 @@ function SessionRow({
 							)}
 							<Button
 								variant="ghost"
-								size="xs"
+								size="sm"
 								onClick={() => run(controller.resumeCommand(row).then(copy))}
 							>
 								{t('agent.historyUI.copyResume')}
@@ -485,20 +485,20 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 	});
 	return (
 		<aside data-agent-history-panel="" data-history-narrow={narrow ? '' : undefined}
-			className="@container/ai-vault flex h-full min-h-0 flex-col bg-sidebar"
+			className="@container/ai-vault flex h-full min-h-0 flex-col bg-[var(--hu-surface)]"
 			aria-label={t('agent.historyUI.title')}
 		>
-			<div className="shrink-0 border-b border-sidebar-border px-2.5 py-2">
+			<div className="shrink-0 border-b border-[var(--hu-line)] px-2.5 py-2">
 				<div className="flex items-center gap-1.5">
 					<div className="min-w-0 flex-1">
-						<h3 className="truncate text-xs font-semibold text-foreground">{t('agent.historyUI.title')}</h3>
-						<p className="truncate text-[11px] text-muted-foreground">
+						<h3 className="truncate text-xs font-semibold text-[var(--hu-fg)]">{t('agent.historyUI.title')}</h3>
+						<p className="truncate text-sm text-[var(--hu-fg-2)]">
 							{t('agent.historyUI.count', { shown: filtered.length, total: allRows.length })}
 						</p>
 					</div>
 					<Button
 						variant="ghost"
-						size="icon-xs"
+						size="icon-sm"
 						disabled={state.loading}
 						aria-label={t('agent.refresh')}
 						onClick={() => {
@@ -509,12 +509,12 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 							className={state.loading ? 'size-3 animate-spin motion-reduce:animate-none' : 'size-3'}
 						/>
 					</Button>
-					<Button variant="ghost" size="icon-xs" aria-label={t('agent.close')} onClick={close}>
+					<Button variant="ghost" size="icon-sm" aria-label={t('agent.close')} onClick={close}>
 						<X className="size-3" />
 					</Button>
 				</div>
 				<div className="mt-2 flex items-center gap-1.5">
-					<Search className="size-3.5 text-muted-foreground" />
+					<Search className="size-3.5 text-[var(--hu-fg-2)]" />
 					<Input
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
@@ -524,7 +524,7 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 					/>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="icon-xs" aria-label={t('agent.historyUI.view')}>
+							<Button variant="ghost" size="icon-sm" aria-label={t('agent.historyUI.view')}>
 								<ListFilter className="size-3" />
 							</Button>
 						</DropdownMenuTrigger>
@@ -644,18 +644,18 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 				</div>
 			</div>
 			{state.error && (
-				<div role="alert" className="flex items-center gap-2 p-3 text-xs text-destructive">
+				<div role="alert" className="flex items-center gap-2 p-3 text-xs text-[var(--hu-danger)]">
 					<span className="min-w-0 flex-1 break-words">{state.error}</span>
-					<Button variant="ghost" size="xs" onClick={() => void controller.historyStore.refresh()}>
+					<Button variant="ghost" size="sm" onClick={() => void controller.historyStore.refresh()}>
 						{t('agent.historyUI.retry')}
 					</Button>
 				</div>
 			)}
 			{failed.length > 0 && (
-				<div role="status" className="space-y-1 p-2 text-xs text-muted-foreground">
+				<div role="status" className="space-y-1 p-2 text-xs text-[var(--hu-fg-2)]">
 					<div className="flex items-center gap-2">
 						<span className="min-w-0 flex-1">{t('agent.historyUI.partial', { count: failed.length })}</span>
-						<Button variant="ghost" size="xs" onClick={() => void controller.historyStore.refresh()}>
+						<Button variant="ghost" size="sm" onClick={() => void controller.historyStore.refresh()}>
 							{t('agent.historyUI.retry')}
 						</Button>
 					</div>
@@ -696,7 +696,7 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 										}
 									/>
 								) : (
-									<h4 className="flex h-8 items-center border-y border-sidebar-border bg-sidebar-accent/60 px-3 text-xs font-semibold">
+									<h4 className="flex h-8 items-center border-y border-[var(--hu-line)] bg-[var(--hu-hover)]/60 px-3 text-xs font-semibold">
 										{row.label}
 									</h4>
 								)}
@@ -705,15 +705,15 @@ export function SessionHistoryPanel({ controller, close, narrow = false }: { con
 					})}
 				</div>
 				{!rows.length && state.loading && (
-					<p role="status" className="p-6 text-center text-xs text-muted-foreground">
+					<p role="status" className="p-6 text-center text-xs text-[var(--hu-fg-2)]">
 						{t('agent.historyUI.loading')}
 					</p>
 				)}
 				{!rows.length && !state.loading && (
-					<div className="space-y-2 p-6 text-center text-xs text-muted-foreground">
+					<div className="space-y-2 p-6 text-center text-xs text-[var(--hu-fg-2)]">
 						<p>{t('agent.historyUI.empty')}</p>
 						{query && (
-							<Button variant="secondary" size="xs" onClick={() => setQuery('')}>
+							<Button variant="secondary" size="sm" onClick={() => setQuery('')}>
 								{t('agent.historyUI.clearSearch')}
 							</Button>
 						)}

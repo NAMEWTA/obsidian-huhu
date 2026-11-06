@@ -21,7 +21,7 @@ if (minimalDir) {
  await fs.writeFile(path.join(vault,'.obsidian/appearance.json'),JSON.stringify({cssTheme:'Minimal'}));
  await fs.writeFile(path.join(evidence,'minimal-manifest.json'),JSON.stringify(manifest,null,2));
 } 
-await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'zh', introSeen: true, modules: { home: true, archives: true, comments: false, agent: false, icons: false, sync: false, automations: false, notifications: false } }, home: { widgetWeatherEnabled: false } } }));
+await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'zh', introSeen: true, modules: { home: true, archives: true, comments: false, agent: false, icons: false, versioning: false, automations: false, notifications: false } }, home: { widgetWeatherEnabled: false } } }));
 await fs.writeFile(path.join(vault, 'Welcome.md'), '# HUHU P3 fixture\n');
 await fs.writeFile(path.join(profile, 'obsidian.json'), JSON.stringify({ updateDisabled: true, vaults: { abcdef1234567890: { path: vault, ts: Date.now(), open: true } } }));
 const port = process.env.HUHU_P3_CDP_PORT || '19553';
@@ -119,8 +119,8 @@ try {
   await c.evaluate(`app.plugins.plugins.huhu.openWorkbenchSettings('general').then(()=>true)`);
   await c.evaluate(`(()=>{const e=app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.contentEl;e.style.width='${width}px';e.style.maxWidth='${width}px';return true;})()`);await delay(350);
   await click(c,'button[aria-label="切换导航栏"]');await click(c,'[data-feature=contacts]');
-  await waitFor(()=>c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().target.feature==='contacts'`),'one-click rail navigation');
-  const rail=await c.evaluate(`({width:${width},drawerOpen:!!document.querySelector('[data-slot=sheet-content]'),target:app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().target})`);assert.equal(rail.drawerOpen,width===500);results.push({rail});await shot(c,'rail-navigation-'+width);await escape(c);
+  await waitFor(()=>c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().route.feature==='contacts'`),'one-click rail navigation');
+  const rail=await c.evaluate(`({width:${width},drawerOpen:!!document.querySelector('[data-slot=sheet-content]'),target:app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getState().route})`);assert.equal(rail.drawerOpen,false);results.push({rail});await shot(c,'rail-navigation-'+width);await escape(c);
  }
  // Native leaf navigation must finish the source interaction before the destination receives its first click.
  await c.evaluate(`app.plugins.plugins.huhu.openWorkbenchSettings('general').then(()=>true)`);
@@ -193,7 +193,7 @@ try {
    if(await candidate.evaluate(`!!document.querySelector('.huhu-settings-page')`)){c.close();c=candidate;c.on('Runtime.exceptionThrown',event=>errors.push(event.exceptionDetails));await c.send('Runtime.enable');return true;}candidate.close();
   }return false;
  },'restored settings');
- await waitFor(()=>c.evaluate(`getComputedStyle(document.querySelector('.huhu-settings-page').closest('.huhu-ui')).getPropertyValue('--primary').trim().length>0`),'theme tokens reach the restored page');await shot(c,'settings-restored');
+ await waitFor(()=>c.evaluate(`getComputedStyle(document.querySelector('.huhu-settings-page').closest('.huhu-ui')).getPropertyValue('--hu-accent').trim().length>0`),'theme tokens reach the restored page');await shot(c,'settings-restored');
  // Dispose the restored surface in its actual document and verify all leases are released.
  await c.evaluate(`app.workspace.getLeavesOfType('huhu-workbench-view').find(l=>l.view.contentEl.ownerDocument===document).view.disposeSurface().then(()=>true)`);await delay(200);
  const cleanup=await c.evaluate(`({shells:document.querySelectorAll('.huhu-shell').length,portals:document.querySelectorAll('.huhu-portal-root').length,guards:document.querySelectorAll('[data-radix-focus-guard]').length,lock:document.body.getAttribute('data-scroll-locked')})`);assert.deepEqual(cleanup,{shells:0,portals:0,guards:0,lock:null});results.push({cleanup});

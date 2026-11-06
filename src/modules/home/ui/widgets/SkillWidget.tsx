@@ -114,7 +114,7 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 					title={t('home.skills.empty')}
 					action={
 						<div className="hidden [@container(min-height:150px)]:block">
-							<Button variant="outline" onClick={() => setConfig(true)}>
+							<Button variant="secondary" onClick={() => setConfig(true)}>
 								<Settings />
 								{t('skillsWidget.configure')}
 							</Button>
@@ -129,9 +129,9 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 					{buttons.map((skill, index) => (
 						<Button
 							key={skill.id}
-							variant="outline"
+							variant="secondary"
 							disabled={busy}
-							className="h-auto min-h-9 min-w-0 justify-start gap-2 whitespace-normal px-2.5 py-1 font-normal"
+							className="h-auto min-h-[var(--hu-row-h)] min-w-0 justify-start gap-2 whitespace-normal px-2.5 py-1 font-normal"
 							onClick={() => run(skill)}
 						>
 							<span
@@ -140,7 +140,9 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 							>
 								<ObsidianIcon name={skill.icon || 'sparkles'} />
 							</span>
-							<span className="min-w-0 flex-1 line-clamp-2 text-left [overflow-wrap:anywhere]">{skill.label}</span>
+							<span className="min-w-0 flex-1 line-clamp-2 text-left [overflow-wrap:anywhere]">
+								{skill.label}
+							</span>
 						</Button>
 					))}
 				</div>

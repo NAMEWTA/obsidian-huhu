@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useStore } from 'zustand';
-import { Bell, Folder, MoreHorizontal, PanelLeft, PanelRight, SlidersHorizontal } from 'lucide-react';
+import { Info, Bell, Folder, MoreHorizontal, PanelLeft, PanelRight, SlidersHorizontal } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { useT } from '../../../../ui/react/hooks';
@@ -35,7 +35,7 @@ async function collectInboxPages(inbox: Pick<InboxService, 'listMessages'>, targ
 	return rows;
 }
 
-export function WorkspaceToolbar({ inboxUnread }: { inboxUnread?: number } = {}) {
+export function WorkspaceToolbar({ inboxUnread, sessionInfo, onSessionInfo }: { inboxUnread?: number; sessionInfo?: boolean; onSessionInfo?: () => void } = {}) {
 	const { controller, chrome } = useWorkspaceUI(),
 		t = useT();
 	const state = useStore(controller.spaces.store);
@@ -77,7 +77,7 @@ export function WorkspaceToolbar({ inboxUnread }: { inboxUnread?: number } = {})
 			role="toolbar"
 			aria-label={t('agent.workspace.toolbar')}
 			data-workspace-toolbar=""
-			className="huhu-workspace-toolbar flex min-h-11 min-w-0 shrink-0 items-center gap-1 border-b border-border bg-card px-1"
+			className="huhu-workspace-toolbar flex min-h-11 min-w-0 shrink-0 items-center gap-1 border-b border-[var(--hu-line)] bg-[var(--hu-raised)] px-1"
 		>
 			<Button
 				variant="ghost"
@@ -87,22 +87,23 @@ export function WorkspaceToolbar({ inboxUnread }: { inboxUnread?: number } = {})
 			>
 				<PanelLeft className="size-4" />
 			</Button>
-			<Folder className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+			<Folder className="size-4 shrink-0 text-[var(--hu-fg-2)]" aria-hidden="true" />
 			<div className="min-w-0 flex-1 px-1" title={space ? `${space.name}\n${space.id}` : title}>
 				<p className="m-0 truncate text-xs font-medium" data-workspace-space-name="">
 					{title}
 				</p>
 				{space && (
-					<p className="m-0 truncate font-mono text-[10px] text-muted-foreground" data-workspace-space-id="">
+					<p className="m-0 truncate font-mono text-sm text-[var(--hu-fg-2)]" data-workspace-space-id="">
 						{space.id}
 					</p>
 				)}
 			</div>
 			{background > 0 && (
-				<span className="huhu-workspace-background shrink-0 text-xs text-muted-foreground">
+				<span className="huhu-workspace-background shrink-0 text-xs text-[var(--hu-fg-2)]">
 					{t('agent.workspace.backgroundCount', { count: background })}
 				</span>
 			)}
+			{onSessionInfo && <Button variant="ghost" size="icon-sm" aria-label={t('agent.sessionInfo')} aria-pressed={sessionInfo} onClick={onSessionInfo}><Info className="size-4" /></Button>}
 			{chrome && (
 				<>
 					<Tooltip>
@@ -135,7 +136,7 @@ export function WorkspaceToolbar({ inboxUnread }: { inboxUnread?: number } = {})
 								}}
 							>
 								<Bell className="size-4" />
-								{typeof displayUnread === 'number' && displayUnread > 0 && <span aria-hidden="true" className="-ml-1 rounded-full bg-primary px-1 text-[10px] leading-4 text-primary-foreground">{displayUnread > 99 ? '99+' : displayUnread}</span>}
+								{typeof displayUnread === 'number' && displayUnread > 0 && <span aria-hidden="true" className="-ml-1 rounded-full bg-[var(--hu-accent)] px-1 text-sm leading-4 text-[var(--hu-accent-fg)]">{displayUnread > 99 ? '99+' : displayUnread}</span>}
 								{typeof displayUnread === 'number' && displayUnread > 0 && <span className="sr-only">{t('agent.inbox.unreadCount', { count: displayUnread })}</span>}
 							</Button>
 						</TooltipTrigger>

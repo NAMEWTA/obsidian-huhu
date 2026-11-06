@@ -1,3 +1,6 @@
+import type { App } from 'obsidian';
+import { WidgetBackgroundEditor } from '../settings/WidgetBackgroundEditor';
+import { LocalDateTimeField, localDateTimeDraft } from './LocalDateTimeField';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts, src/countdown-modal.ts
 import { useState } from 'react';
 import { useStore } from 'zustand';
@@ -90,11 +93,18 @@ export function CountdownWidget({ store, entryId }: { store: BoardStore; entryId
 							remaining = Math.max(0, Math.ceil((new Date(entry.targetDate).getTime() - now) / unit));
 						return (
 							<CountdownBackground key={entry.id} store={store} entry={entry}>
-								<span className="max-w-full truncate px-1 text-sm text-muted-foreground" title={entry.label}>
+								<span
+									className="max-w-full truncate px-1 text-sm text-muted-foreground"
+									title={entry.label}
+								>
 									{entry.label || t('countdown.untitled')}
 								</span>
-								<span className="leading-tight font-semibold tabular-nums [font-size:clamp(2rem,min(14cqw,26cqh),4.5rem)]">{remaining}</span>
-								<span className="text-xs text-muted-foreground">{t(`home.dashboard.${entry.displayMode}`)}</span>
+								<span className="leading-tight font-semibold tabular-nums [font-size:clamp(2rem,min(14cqw,26cqh),4.5rem)]">
+									{remaining}
+								</span>
+								<span className="text-xs text-muted-foreground">
+									{t(`home.dashboard.${entry.displayMode}`)}
+								</span>
 								<span className="mt-1 hidden text-xs text-muted-foreground tabular-nums [@container(min-height:9rem)]:block">
 									{entry.targetDate.slice(0, 10)}
 								</span>
@@ -105,6 +115,7 @@ export function CountdownWidget({ store, entryId }: { store: BoardStore; entryId
 			)}
 			{draft && (
 				<CountdownEditor
+					app={store.host.app}
 					initial={draft}
 					onClose={() => setDraft(null)}
 					onSave={(value) =>
@@ -132,54 +143,58 @@ export function CountdownWidget({ store, entryId }: { store: BoardStore; entryId
 
 export function CountdownEditor({
 	initial,
+	app,
 	onClose,
 	onSave,
 	onDelete,
+	embedded = false,
 }: {
 	initial: CountdownConfig;
+	app?: App;
+	embedded?: boolean;
 	onClose(this: void): void;
-	onSave(this: void, value: CountdownConfig): void;
+	onSave(this: void, value: CountdownConfig): void | Promise<void>;
 	onDelete?(this: void): void;
 }) {
 	const t = useT(),
-		[draft, setDraft] = useState(initial);
+		[draft, setDraft] = useState(initial),
+		[dateTimeRaw, setDateTimeRaw] = useState(() => localDateTimeDraft(initial.targetDate)),
+		[dateValid, setDateValid] = useState(!!initial.targetDate);
 	return (
 		<DashboardDialog
+			embedded={embedded}
+			disabled={!dateValid || !draft.label.trim() || !draft.targetDate}
 			title={t('home.dashboard.widget.countdown')}
 			onClose={onClose}
 			onSave={() => {
-				if (draft.label.trim() && draft.targetDate) onSave(draft);
+				if (dateValid && draft.label.trim() && draft.targetDate) {
+					const committed = localDateTimeDraft(draft.targetDate);
+					const targetDate =
+						committed.date === dateTimeRaw.date && committed.time === dateTimeRaw.time
+							? draft.targetDate
+							: `${dateTimeRaw.date}T${dateTimeRaw.time}`;
+					return onSave({ ...draft, targetDate });
+				}
 			}}
 		>
 			<Input
 				value={draft.label}
 				aria-label={t('home.dashboard.name')}
-				onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+				onChange={(e) => setDraft({ ...draft, label: e.target.value, defaultLabel: false })}
 			/>
-			<Input
-				type="datetime-local"
-				value={draft.targetDate.length === 10 ? `${draft.targetDate}T00:00` : draft.targetDate}
-				aria-label={t('home.dashboard.date')}
-				onChange={(e) => setDraft({ ...draft, targetDate: e.target.value })}
+			<LocalDateTimeField
+				draft={dateTimeRaw}
+				onDraftChange={setDateTimeRaw}
+				onValidityChange={setDateValid}
+				label={t('home.dashboard.date')}
+				value={draft.targetDate}
+				onChange={(value) => setDraft({ ...draft, targetDate: value })}
 			/>
-			<Label>
-				{t('home.dashboard.image')}
-				<Input
-					value={draft.background?.image ?? ''}
-					onChange={(e) =>
-						setDraft({
-							...draft,
-							background: {
-								opacity: 100,
-								dim: 30,
-								blur: 0,
-								...draft.background,
-								image: e.target.value,
-							},
-						})
-					}
-				/>
-			</Label>
+			<WidgetBackgroundEditor
+				app={app}
+				value={draft.background}
+				onChange={(background) => setDraft({ ...draft, background })}
+			/>
 			<Choice
 				label={t('home.dashboard.mode')}
 				value={draft.displayMode}
@@ -199,7 +214,7 @@ export function CountdownEditor({
 				/>
 			</Label>
 			{onDelete && (
-				<Button variant="destructive" onClick={onDelete}>
+				<Button variant="danger" onClick={onDelete}>
 					{t('common.delete')}
 				</Button>
 			)}

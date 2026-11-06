@@ -29,8 +29,8 @@ export function WorkspaceTools({
 	const t = useT();
 	return (
 		<Tabs
-			key={selected}
-			defaultValue={selected}
+			value={selected}
+			activationMode="manual"
 			onValueChange={(value) => {
 				if (value === 'control' || value === 'inbox') {
 					onSelectedChange(value);
@@ -42,7 +42,7 @@ export function WorkspaceTools({
 			data-selected-tool={selected}
 			data-compact={compact || undefined}
 		>
-			<TabsList variant="line" className="min-h-11 w-full shrink-0 rounded-none border-b border-border bg-card px-2">
+			<TabsList variant="line" className="min-h-11 w-full shrink-0 rounded-none border-b border-[var(--hu-line)] bg-[var(--hu-raised)] px-2">
 			<TabsTrigger value="control" className="justify-start gap-1.5 text-xs"><SlidersHorizontal className="size-3.5" />{t('agent.coordination.title')}</TabsTrigger>
 			<TabsTrigger value="inbox" className="justify-start gap-1.5 text-xs"><Bell className="size-3.5" />{t('agent.inbox.title')}</TabsTrigger>
 		</TabsList>

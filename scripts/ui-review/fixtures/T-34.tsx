@@ -2,6 +2,7 @@
 import { createRoot } from 'react-dom/client';
 import { Component } from 'obsidian';
 import type { App } from 'obsidian';
+import type { EditorContextAccess } from '../../../src/app/contracts/editor-context';
 import { HuhuProviders } from '../../../src/ui/react/providers';
 import { DesignScope } from '../../../src/ui/react/design-scope';
 import { registerMessages, setLanguage, t } from '../../../src/shared/i18n';
@@ -125,7 +126,14 @@ async function mount(doc: Document, key: string) {
 	host.dataset.surface = 'comments-panel';
 	host.style.height = '640px';
 	doc.body.append(host);
-	const unmountPanel = mountCommentsPanel(host, env);
+	const context = { id: `comments-${key}`, path: 'a.md', leafId: `source-${key}`, ownerWindow: doc.defaultView!, generation: 0 };
+ const documents: EditorContextAccess = {
+  current: (win) => win === context.ownerWindow ? context : undefined,
+  get: (id) => id === context.id ? context : undefined,
+  capture: (id) => { if (id !== context.id) throw new Error('Unknown source'); return { context, text: long }; },
+  resolveLeaf: () => undefined, resolveView: () => undefined, returnTo: async () => {}, subscribe: () => () => {},
+ };
+ const panel = mountCommentsPanel(host, env, documents, true);
 
 	const unmountOverlay = mountCommentsOverlay(doc, channel, env);
 
@@ -180,7 +188,7 @@ async function mount(doc: Document, key: string) {
 		exportFails: (value: boolean) => { exportFails = value; },
 		failIcons: (value: boolean) => { iconFail = value; },
 		unmount() {
-			unmountPanel(); unmountOverlay(); settingsRoot.unmount(); iconsRoot.unmount(); pickerRoot.unmount();
+			panel.dispose(); unmountOverlay(); settingsRoot.unmount(); iconsRoot.unmount(); pickerRoot.unmount();
 			for (const el of [host, settingsHost, iconsHost, pickerHost]) el.remove();
 			service.dispose(); channel.dispose();
 		},

@@ -12,6 +12,7 @@ afterEach(cleanup);
 const noop = () => {};
 const props = (over: Partial<WidgetCardProps> = {}): WidgetCardProps => ({
 	title: 'Probe',
+	editing: true,
 	icon: 'box',
 	tiers: ['S', 'M'],
 	current: 'S',
@@ -40,20 +41,27 @@ test('the card has one title in a 40px title bar that is the drag handle, and a 
 	);
 	const bar = document.querySelector<HTMLElement>('[data-slot="widget-header"]')!;
 	expect(bar.matches(DRAG_HANDLE)).toBe(true);
-	expect(bar.className).toContain('h-10');
-	expect(bar.className).toContain('px-3');
+	expect(bar.className).toContain('min-h-[52px]');
+	expect(bar.className).toContain('px-4');
 	expect(document.querySelectorAll('[data-slot="widget-title"]')).toHaveLength(1);
 	expect(screen.getByText('Probe').tagName).toBe('H3');
 	const body = document.querySelector<HTMLElement>('[data-slot="widget-body"]')!;
 	expect(body.className).toContain('huhu-widget-body');
-	expect(body.className).toContain('px-3');
-	expect(body.className).toContain('pb-3');
+	expect(body.className).toContain('p-4');
+	expect(body.className).toContain('p-4');
 	expect(body.className).toContain('[container-type:size]');
 	// the body never starts a drag; the grip and the title bar do
 	expect(body.matches(DRAG_CANCEL)).toBe(true);
 	expect(bar.querySelector('[data-grid-action="move"]')!.closest(DRAG_CANCEL)).toBeNull();
 	const card = document.querySelector<HTMLElement>('[data-slot="card"]')!;
-	for (const cls of ['rounded-xl', 'border-border', 'overflow-hidden', 'shadow-xs', 'h-full']) expect(card.className).toContain(cls);
+	for (const cls of [
+		'rounded-[var(--hu-radius-lg)]',
+		'border-border',
+		'overflow-hidden',
+		'shadow-[var(--hu-shadow-card)]',
+		'h-full',
+	])
+		expect(card.className).toContain(cls);
 });
 
 test('a view puts its buttons in the title bar slot and entries in the menu; both belong to the card', async () => {
@@ -75,7 +83,9 @@ test('a view puts its buttons in the title bar slot and entries in the menu; bot
 	);
 	const slot = document.querySelector('[data-slot="widget-actions"]')!;
 	await waitFor(() => expect(slot.querySelector('[aria-label="Refresh view"]')).not.toBeNull());
-	expect(document.querySelector('[data-slot="widget-body"]')!.querySelector('[aria-label="Refresh view"]')).toBeNull();
+	expect(
+		document.querySelector('[data-slot="widget-body"]')!.querySelector('[aria-label="Refresh view"]'),
+	).toBeNull();
 	menu('Probe');
 	fireEvent.click(await screen.findByRole('menuitem', { name: 'Archive things' }));
 	expect(archive).toHaveBeenCalledTimes(1);
@@ -92,7 +102,11 @@ test('the menu carries size, move, settings and remove, and tells the board what
 		</TestProviders>,
 	);
 	menu('Probe');
-	fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: t('canvas.setSize', { name: 'Probe', size: t('canvas.size.M') }) }));
+	fireEvent.click(
+		await screen.findByRole('menuitemcheckbox', {
+			name: t('canvas.setSize', { name: 'Probe', size: t('canvas.size.M') }),
+		}),
+	);
 	expect(onTier).toHaveBeenCalledWith('M');
 	menu('Probe');
 	fireEvent.click(await screen.findByRole('menuitem', { name: t('canvas.moveRight') }));
@@ -105,18 +119,17 @@ test('the menu carries size, move, settings and remove, and tells the board what
 	expect(onRemove).toHaveBeenCalled();
 });
 
-test('minimal chrome lays the title bar over the body, shown on hover, and it is still the handle', () => {
+test('image widgets retain the same visible title bar and menu as every other card', () => {
 	render(
 		<TestProviders>
-			<WidgetCard {...props({ chrome: 'minimal', bleed: true })} />
+			<WidgetCard {...props({ bleed: true })} />
 		</TestProviders>,
 	);
 	const bar = document.querySelector<HTMLElement>('[data-slot="widget-header"]')!;
-	expect(bar.className).toContain('absolute');
-	expect(bar.className).toContain('opacity-0');
-	expect(bar.className).toContain('group-hover/tile:opacity-100');
+	expect(bar.className).not.toContain('absolute');
+	expect(bar.className).not.toContain('opacity-0');
 	expect(bar.matches(DRAG_HANDLE)).toBe(true);
-	expect(document.querySelector('[data-slot="widget-body"]')!.className).not.toContain('px-3');
+	expect(document.querySelector('[data-slot="widget-body"]')!.className).not.toContain('px-4');
 });
 
 test('a title that can be renamed edits in place on double click and saves on Enter', async () => {

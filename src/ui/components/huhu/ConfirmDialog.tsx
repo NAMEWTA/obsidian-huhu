@@ -69,7 +69,7 @@ export function ConfirmDialog({
 					<AlertDialogCancel disabled={busy}>{t('ui.cancel')}</AlertDialogCancel>
 					<AlertDialogAction
 						disabled={busy}
-						className={buttonVariants({ variant: destructive ? 'destructive' : 'default' })}
+						className={buttonVariants({ variant: destructive ? 'danger' : 'primary' })}
 						onClick={(event) => {
 							event.preventDefault();
 							void confirm();

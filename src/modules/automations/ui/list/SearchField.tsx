@@ -27,7 +27,7 @@ export function SearchField({
 				aria-label={t('automation.searchAll')}
 				placeholder={t('automation.searchAll')}
 				maxLength={2048}
-				className="h-8 border-border bg-background pr-8 pl-8 text-xs shadow-none focus-visible:border-ring/70 dark:bg-background"
+				className="h-8 border-border bg-background pr-8 pl-8 text-sm shadow-none focus-visible:border-ring/70 dark:bg-background"
 				onChange={(event) => onChange(event.target.value)}
 				onKeyDown={(event) => {
 					if (
@@ -57,7 +57,7 @@ export function SearchField({
 				<div className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
 					<IconButton
 						label={t('automation.clearSearch')}
-						size="icon-xs"
+						size="icon-sm"
 						onMouseDown={(event) => event.preventDefault()}
 						onClick={() => {
 							onChange('');

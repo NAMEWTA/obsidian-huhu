@@ -4,14 +4,25 @@ import { TestProviders } from '../../ui/react/test-providers';
 import { setLanguage, t } from '../../shared/i18n';
 import { ContentOverview } from './ContentPanel';
 
-const row = (path: string, label: string, folder: string, mtime: number) => ({ path, label, folder, mtime, icon: 'lucide-file-text' });
+const row = (path: string, label: string, folder: string, mtime: number) => ({
+	path,
+	label,
+	folder,
+	mtime,
+	icon: 'lucide-file-text',
+});
 
 test('the overview lists files and a click opens one, with no editor on the page', () => {
 	setLanguage('zh');
 	const onOpen = vi.fn();
 	render(
 		<TestProviders>
-			<ContentOverview folder="huhu/档案" total={2} rows={[row('huhu/档案/a.md', 'a', '档案', Date.now()), row('huhu/档案/b.pdf', 'b.pdf', '档案', 1)]} onOpen={onOpen} />
+			<ContentOverview
+				folder="huhu/档案"
+				total={2}
+				rows={[row('huhu/档案/a.md', 'a', '档案', Date.now()), row('huhu/档案/b.pdf', 'b.pdf', '档案', 1)]}
+				onOpen={onOpen}
+			/>
 		</TestProviders>,
 	);
 	const buttons = within(document.querySelector('[data-content-overview]') as HTMLElement).getAllByRole('button');
@@ -31,4 +42,31 @@ test('an empty folder shows a quiet empty state', () => {
 	);
 	expect(screen.getByText(t('content.emptyTitle'))).toBeTruthy();
 	expect(screen.queryByRole('button')).toBeNull();
+});
+
+test('more than200 content rows remain reachable without replacing the current list', () => {
+	const load = vi.fn();
+	const rows = Array.from({ length: 200 }, (_, index) => row(`huhu/${index}.md`, String(index), '', index));
+	const { rerender } = render(
+		<TestProviders>
+			<ContentOverview folder="huhu" total={201} rows={rows} onOpen={() => {}} onLoadMore={load} />
+		</TestProviders>,
+	);
+	const list = document.querySelector('[data-content-overview]');
+	fireEvent.click(screen.getByRole('button', { name: t('content.loadMore') }));
+	expect(load).toHaveBeenCalledOnce();
+	rerender(
+		<TestProviders>
+			<ContentOverview
+				folder="huhu"
+				total={201}
+				rows={[...rows, row('huhu/200.md', '200', '', 200)]}
+				onOpen={() => {}}
+				onLoadMore={load}
+			/>
+		</TestProviders>,
+	);
+	expect(document.querySelector('[data-content-overview]')).toBe(list);
+	expect(within(list as HTMLElement).getAllByRole('button')).toHaveLength(201);
+	expect(screen.queryByRole('button', { name: t('content.loadMore') })).toBeNull();
 });

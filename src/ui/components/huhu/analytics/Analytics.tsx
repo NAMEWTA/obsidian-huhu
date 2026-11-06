@@ -12,7 +12,7 @@ import {
 } from '../../../../shared/analytics/range';
 import { useOwnerDocument, useVisible } from '../../../react/contexts';
 import { Button } from '../../button';
-import { Input } from '../../input';
+import { DateRangeField } from '../date';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../select';
 registerMessages(messages);
 
@@ -66,28 +66,14 @@ export function AnalyticsRangeControl({ state }: { state: ReturnType<typeof useA
 				</>
 			)}
 			{state.period === 'custom' ? (
-				<>
-					<Input
-						type="date"
-						className="w-40"
-						aria-label={t('analytics.start')}
-						value={state.custom.start}
-						max={state.custom.end}
-						onChange={(e) => {
-							if (e.target.value) state.setCustom({ ...state.custom, start: e.target.value });
-						}}
-					/>
-					<Input
-						type="date"
-						className="w-40"
-						aria-label={t('analytics.end')}
-						value={state.custom.end}
-						min={state.custom.start}
-						onChange={(e) => {
-							if (e.target.value) state.setCustom({ ...state.custom, end: e.target.value });
-						}}
-					/>
-				</>
+				<DateRangeField
+					aria-label={t('analytics.custom')}
+					required
+					value={{ from: state.custom.start, to: state.custom.end }}
+					onChange={({ from, to }) => {
+						if (from && to) state.setCustom({ start: from, end: to });
+					}}
+				/>
 			) : (
 				<span className="text-xs tabular-nums text-muted-foreground">
 					{state.range.start} — {state.range.end}

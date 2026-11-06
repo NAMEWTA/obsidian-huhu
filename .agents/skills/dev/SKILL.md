@@ -58,7 +58,7 @@ metadata:
 4. 模块自己启动、自己停止。它创建的一切都在 `dispose()` 里，或通过 `context.lifetime`、`context.commands`、`context.editor` 释放；关闭模块后不得留下监听器、命令、编辑器扩展、body 类名或进程。一个模块失败不影响其他模块。
 5. 设置是设置存储里的命名空间：用 `context.settings.bind(name, schema)` 绑定模块的模式，用 `update` 修改值。不要新增平铺的插件设置，也不要调用 `saveData`。
 6. HUHU 库内数据分两块根：用户内容与资料（日志、闪念、收件箱、档案、记账等记录、RSS 等）在可见的 `huhu/`，经 vault API 读写；配置、身份、运行状态、看板与自动化定义（`.huhu/dashboards/`、`.huhu/automation/definitions/`）、缓存、托管 CLI 账号/HOME/临时目录/Hook、加密保险箱（`.huhu/safe/`）及 helper 在隐藏的 `.huhu/`，按领域、设备和身份隔离。路径常量统一在 `src/shared/storage/vault-layout.ts`，自动生成的文件名不含空格。系统 CLI 账号沿用本机目录，系统状态 Hook、导航器 IndexedDB 缓存及显式导出有已实现的例外，见[数据边界](../../../docs/data.md#库之外的数据)。插件目录仅保留宿主加载资产及发行许可声明；普通笔记、宿主数据和 Git 元数据不搬迁。评论从不改写笔记。看板、档案、自动化和记录由黄金样本锁定，评论旁路文件由评论测试锁定，`iconic.json` 由 Iconic 移植测试锁定。格式只在有意变更时修改并同步样本；当前身份只使用 huhu/ 与 .huhu/，不读取或迁移旧品牌数据；数据格式变化必须有意实施并同步相关样本。
-7. 每条面向用户的文案都通过 `t()`，在模块自己的 `i18n.ts` 里同时提供 `en` 和 `zh`，在 `module.ts` 加载时注册。`src/shared/i18n/` 里的启动词典只放启动代码读取的键。
+7. 每条面向用户的文案都通过 `t()`，在所属词典里同时提供 `en` 和 `zh`。模块、服务、命令及激活期贡献使用的键在模块 `i18n.ts` 中随 `module.ts` 注册；纯 UI 键可放在本模块 `ui/i18n.ts`，由真实 UI 入口在渲染前注册。共享纯 UI 词典同样随使用入口注册，不进入启动或模块激活闭包。新增词典纳入检查与测试注册；加载时序验证不能依赖测试预载。`src/shared/i18n/` 里的启动词典只放启动代码读取的键。
 8. Node 和 Electron 只在 `desktop/` 文件夹里使用，且只在桌面端到达。core 和 shared 代码完全不使用宿主包。
 9. 代码检查零警告通过（`pnpm run lint`）。不要为此关闭规则；修改代码，或在 `eslint.config.mts` 里记录带理由的局部例外。
 10. 终端代码是为 HUHU 编写的。不得复制或改写 GPL 许可的终端项目的代码；允许的参考来源见 `references/licensing.md`。

@@ -127,7 +127,7 @@ describe('React foundation', () => {
 							onChange={(event) => setDraft(event.target.value)}
 						/>
 						<Input aria-label="uncontrolled" defaultValue="original" />
-						<Button size="icon-xs" ref={buttonRef}>
+						<Button size="icon-sm" ref={buttonRef}>
 							X
 						</Button>
 					</>
@@ -144,6 +144,8 @@ describe('React foundation', () => {
 			);
 			const button = container.querySelector('button')!;
 			expect(buttonRef.current).toBe(button);
+			expect(button.dataset.size).toBe('icon-sm');
+			expect(button.hasAttribute('data-hit-control')).toBe(true);
 			const inputs = Array.from(container.querySelectorAll('input'));
 			for (const input of inputs) fireEvent.change(input, { target: { value: 'unsaved draft' } });
 			expect(mounts).toHaveBeenCalledTimes(strict ? 2 : 1);

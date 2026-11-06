@@ -68,7 +68,7 @@ test.each(['widget', 'fullscreen'])('%s calendar month navigation has accessible
 
 // Migrated day-number regressions: actual month/week React grids, including keyboard routes.
 
-test('month numbers route boundary dates and keyboard activation while compact cells own the action', () => {
+test('month numbers route boundary dates and native keyboard activation in all presentations', async () => {
 	const { app } = memoryVault(),
 		context = new DashboardRenderContext(document.createElement('div')),
 		open = vi.fn();
@@ -84,19 +84,21 @@ test('month numbers route boundary dates and keyboard activation while compact c
 		</TestProviders>
 	);
 	const view = render(scene(false)),
-		nums = view.container.querySelectorAll('.dashboard-calendar-cell-num');
+		nums = view.container.querySelectorAll('button[data-date]');
 	expect(nums).toHaveLength(42);
 	for (const n of nums) expect(n.getAttribute('aria-label')).toBeTruthy();
 	fireEvent.click(nums[0]!);
 	fireEvent.click(nums[41]!);
-	fireEvent.keyDown(nums[5]!, { key: 'Enter' });
-	fireEvent.keyDown(nums[6]!, { key: ' ' });
+	(nums[5] as HTMLElement).focus();
+	await userEvent.keyboard('{Enter}');
+	(nums[6] as HTMLElement).focus();
+	await userEvent.keyboard(' ');
 	expect(open.mock.calls.map((c) => c[0])).toEqual(['2026-07-27', '2026-09-06', '2026-08-01', '2026-08-02']);
 	for (const dots of [false, true]) {
 		view.rerender(scene(true, dots));
 		expect(view.container.querySelector('.dashboard-calendar-cell-num[role="button"]')).toBeNull();
 	}
-	fireEvent.click(view.container.querySelector('.dashboard-calendar-cell')!);
+	fireEvent.click(view.container.querySelector('button[data-date]')!);
 	expect(open.mock.calls.at(-1)?.[0]).toBe('2026-07-27');
 });
 test('week headers cover Monday through Sunday and become inert without an action', () => {
@@ -154,10 +156,7 @@ test.each(['month', 'week'])('%s modifiers open existing notes but only select m
 			)}
 		</TestProviders>,
 	);
-	const button = (iso: string) =>
-		view.container.querySelector(
-			`[data-date="${iso}"]${kind === 'month' ? ' button.dashboard-calendar-cell-num' : ''}`,
-		)!;
+	const button = (iso: string) => view.container.querySelector(`button[data-date="${iso}"]`)!;
 	fireEvent.click(button('2026-08-24'), { ctrlKey: true });
 	fireEvent(button('2026-08-24'), new MouseEvent('auxclick', { bubbles: true, button: 1 }));
 	fireEvent.click(button('2026-08-25'), { metaKey: true });
@@ -336,9 +335,7 @@ test.each(['board', 'fullscreen'] as const)(
 					)}
 				</TestProviders>,
 			);
-			fireEvent.click(
-				view.container.querySelector('[data-date="2026-08-26"] button.dashboard-calendar-cell-num')!,
-			);
+			fireEvent.click(view.container.querySelector('button[data-date="2026-08-26"]')!);
 			expect(openDay).toHaveBeenCalledWith(
 				'2026-08-26',
 				[],
@@ -498,10 +495,7 @@ test.each(['month', 'week'] as const)(
 					)}
 				</TestProviders>,
 			);
-			const action = (iso: string) =>
-				view.container.querySelector(
-					kind === 'month' ? `[data-date="${iso}"] .dashboard-calendar-cell-num` : `[data-date="${iso}"]`,
-				)!;
+			const action = (iso: string) => view.container.querySelector(`button[data-date="${iso}"]`)!;
 			const selected = action('2026-08-26');
 			expect(selected.getAttribute('aria-current')).toBe('date');
 			expect(selected.getAttribute('aria-pressed')).toBe('true');
@@ -521,3 +515,35 @@ test.each(['month', 'week'] as const)(
 		}
 	},
 );
+
+test('compact month exposes task count as an independent day-agenda entry instead of narrow task columns', async () => {
+	setLanguage('en');
+	const { app } = memoryVault(),
+		context = new DashboardRenderContext(document.createElement('div')),
+		open = vi.fn();
+	const task = {
+		id: 'task:compact',
+		text: 'A complete task title must remain readable in the day agenda',
+		checked: false,
+		path: 'Tasks.json',
+		line: 0,
+		file: { path: 'Tasks.json' },
+	} as import('../../platform/calendar/alltasks-scan').VaultTask;
+	const v = render(
+		<TestProviders>
+			<MonthGrid
+				year={2026}
+				month={10}
+				byDay={new Map([['2026-11-05', [task]]])}
+				context={context}
+				opts={{ app, compact: true, onDayNumClick: open }}
+			/>
+		</TestProviders>,
+	);
+	const entry = v.container.querySelector('[data-calendar-count="2026-11-05"]');
+	expect(entry).toBeTruthy();
+	expect(entry?.textContent).toBe('1');
+	expect(v.container.querySelector('.dashboard-calendar-event')).toBeNull();
+	await userEvent.click(entry!);
+	expect(open).toHaveBeenLastCalledWith('2026-11-05');
+});

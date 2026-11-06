@@ -80,13 +80,42 @@ export function zonedOccurrence(
 	return null;
 }
 
-/** Resolve a selected wall-clock minute. Gaps are invalid; folds choose the earliest instant. */
-export function resolveWallTime(stamp: string, zone: string): number {
-	const target = Date.parse(`${stamp.replace(' ', 'T')}:00Z`);
-	if (!Number.isFinite(target)) throw new Error('Invalid wall time');
-	const candidates = [...new Set([-day, 0, day].map((delta) => wallTime(target + delta, zone) - (target + delta)))]
-		.map((offset) => target - offset)
-		.filter((at) => wallTime(at, zone) === target);
-	if (!candidates.length) throw new Error('Invalid wall time');
+export type AutomationWallTimeReason = 'invalid-date-time' | 'invalid-zone' | 'nonexistent-time' | 'ambiguous-time';
+/** Stable input-only error codes; UI callers translate them. The scheduler keeps its existing earlier policy. */
+export class AutomationWallTimeError extends Error {
+	constructor(readonly reason: AutomationWallTimeReason) {
+		super(reason);
+		this.name = 'AutomationWallTimeError';
+	}
+}
+
+/** Resolve a selected wall-clock minute. Gaps are invalid; folds choose the earliest instant unless rejected. */
+export function resolveWallTime(stamp: string, zone: string, options?: { disambiguation: 'reject' }): number {
+	const normalized = stamp.replace(' ', 'T');
+	const target = Date.parse(`${normalized}:00Z`);
+	const strict = options?.disambiguation === 'reject';
+	if (
+		!Number.isFinite(target) ||
+		(strict &&
+			(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(normalized) ||
+				new Date(target).toISOString().slice(0, 16) !== normalized))
+	) {
+		if (strict) throw new AutomationWallTimeError('invalid-date-time');
+		throw new Error('Invalid wall time');
+	}
+	let candidates: number[];
+	try {
+		candidates = [...new Set([-day, 0, day].map((delta) => wallTime(target + delta, zone) - (target + delta)))]
+			.map((offset) => target - offset)
+			.filter((at) => wallTime(at, zone) === target);
+	} catch (cause) {
+		if (strict && cause instanceof RangeError) throw new AutomationWallTimeError('invalid-zone');
+		throw cause;
+	}
+	if (!candidates.length) {
+		if (strict) throw new AutomationWallTimeError('nonexistent-time');
+		throw new Error('Invalid wall time');
+	}
+	if (strict && candidates.length > 1) throw new AutomationWallTimeError('ambiguous-time');
 	return Math.min(...candidates);
 }

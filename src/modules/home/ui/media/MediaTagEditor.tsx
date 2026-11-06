@@ -56,7 +56,7 @@ export function MediaTagEditor({
 				{tags.map((tag) => (
 					<Button
 						key={tag}
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						className="max-w-full"
 						onClick={() => setTags(tags.filter((v) => v !== tag))}
@@ -85,7 +85,7 @@ export function MediaTagEditor({
 				{known
 					.filter((tag) => !tags.includes(tag))
 					.map((tag) => (
-						<Button key={tag} variant="outline" size="sm" className="max-w-full" onClick={() => add(tag)}>
+						<Button key={tag} variant="secondary" size="sm" className="max-w-full" onClick={() => add(tag)}>
 							{tag}
 						</Button>
 					))}

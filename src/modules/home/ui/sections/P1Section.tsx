@@ -197,7 +197,7 @@ export function P1Section({
 								].map((query) => (
 									<Button
 										key={query}
-										variant="outline"
+										variant="secondary"
 										onClick={() => setDraft({ ...draft, dataviewConfig: { query } })}
 									>
 										{query}

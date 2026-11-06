@@ -1,5 +1,5 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/sidebar/index.tsx
-import { useEffect, useId, useMemo, useState, type Ref, type KeyboardEvent } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type Ref, type KeyboardEvent } from 'react';
 import type { PanelItem, PanelModel, WorkbenchTarget } from '../../app/contracts/workbench';
 import { t } from '../../shared/i18n';
 import { Button } from '../../ui/components/button';
@@ -12,11 +12,30 @@ import {
 	DropdownMenuItem,
 } from '../../ui/components/dropdown-menu';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../../ui/components/tooltip';
-import { Tree } from '../../ui/components/tree';
+import { Tree, type TreeNode } from '../../ui/components/tree';
 import { cn } from '../../ui/lib/utils';
 import { ShellIcon } from '../icon';
 import { targetKey } from '../navigation-state';
 import { useShellCloseAutoFocus } from '../interaction-lifetime';
+const EMPTY_LIMITS: Readonly<Record<string, number>> = {};
+const EMPTY_NODES: readonly TreeNode[] = [];
+type TreeData = NonNullable<NonNullable<PanelModel['tree']>['data']>;
+type LoadedTree = Awaited<ReturnType<TreeData['load']>>;
+function treeIds(nodes: readonly TreeNode[]) {
+	const all = new Set<string>(),
+		branches = new Set<string>();
+	const visit = (items: readonly TreeNode[]) => {
+		for (const item of items) {
+			all.add(item.id);
+			if (item.children) {
+				branches.add(item.id);
+				visit(item.children);
+			}
+		}
+	};
+	visit(nodes);
+	return { all, branches };
+}
 export interface SidePanelProps {
 	title: string;
 	/** The page supplies its own navigation header and content. */
@@ -32,9 +51,84 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 	const closeAutoFocus = useShellCloseAutoFocus();
 	const id = useId();
 	const [query, setQuery] = useState('');
+	const [primaryBusy, setPrimaryBusy] = useState(false);
+	const primaryPending = useRef(false);
+	const selectionRequest = useRef(0);
+	const mounted = useRef(true);
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+		};
+	}, []);
+	const runPrimary = async () => {
+		if (primaryPending.current || !model?.primary) return;
+		primaryPending.current = true;
+		setPrimaryBusy(true);
+		try {
+			await model.primary.run();
+		} catch (error) {
+			report(error);
+		} finally {
+			primaryPending.current = false;
+			if (mounted.current) setPrimaryBusy(false);
+		}
+	};
 	const needle = query.trim().toLocaleLowerCase();
+	const tree = model?.tree;
+	const dataSource = tree?.data;
+	const dataQuery = query.trim();
+	const dataKey = JSON.stringify([current.feature, dataQuery]);
+	const [pageState, setPageState] = useState<{ key: string; limits: Readonly<Record<string, number>> }>({
+		key: '',
+		limits: EMPTY_LIMITS,
+	});
+	const limits = pageState.key === dataKey ? pageState.limits : EMPTY_LIMITS;
+	const [loadedTree, setLoadedTree] = useState<{ key: string; value: LoadedTree } | null>(null);
+	const [dataStatus, setDataStatus] = useState({ key: '', pending: false, failed: false });
+	const [retry, setRetry] = useState(0);
+	useEffect(() => {
+		if (!dataSource) return;
+		let live = true;
+		setDataStatus({ key: dataKey, pending: true, failed: false });
+		void Promise.resolve()
+			.then(() => dataSource.load({ search: dataQuery, limits }))
+			.then(
+				(value) => {
+					if (!live) return;
+					setLoadedTree({ key: dataKey, value });
+					setDataStatus({ key: dataKey, pending: false, failed: false });
+				},
+				(error) => {
+					if (!live) return;
+					setDataStatus({ key: dataKey, pending: false, failed: true });
+					report(error);
+				},
+			);
+		return () => {
+			live = false;
+		};
+	}, [dataSource, dataKey, dataQuery, limits, retry, report]);
+	const projection = loadedTree?.key === dataKey ? loadedTree.value : null;
+	const nodes = dataSource ? (projection?.nodes ?? EMPTY_NODES) : (tree?.nodes ?? EMPTY_NODES);
+	const ids = useMemo(() => treeIds(nodes), [nodes]);
+	const [expansion, setExpansion] = useState<Record<string, readonly string[]>>({});
+	const storedExpansion = expansion[current.feature];
+	const expandedIds = (storedExpansion ?? tree?.defaultExpandedIds ?? [])
+		.filter((id) => ids.branches.has(id))
+		.slice(0, 512);
+	if (
+		storedExpansion &&
+		!needle &&
+		(!dataSource || (projection && dataStatus.key === dataKey && !dataStatus.pending)) &&
+		storedExpansion.join('\u0001') !== expandedIds.join('\u0001')
+	) {
+		setExpansion((previous) => ({ ...previous, [current.feature]: expandedIds }));
+	}
+	const dataPending = !!dataSource && (dataStatus.key !== dataKey || dataStatus.pending);
+	const dataFailed = !!dataSource && dataStatus.key === dataKey && dataStatus.failed;
 	// A page that matches the query itself (settings: every setting of every category) replaces the sections by its rows.
-	const search = model?.search;
+	const search = dataSource ? undefined : model?.search;
 	const [found, setFound] = useState<{ query: string; items: readonly PanelItem[]; failed?: boolean } | null>(null);
 	useEffect(() => {
 		if (!search || !needle) return;
@@ -55,20 +149,24 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 		() => (results?.query === needle ? new Set(results.items.map((item) => item.id)) : undefined),
 		[results, needle],
 	);
-	const sections = (search && needle && !model?.tree ? [] : model?.sections ?? [])
+	const sections = (search && needle && !model?.tree ? [] : (model?.sections ?? []))
 		.map((s) => ({ ...s, items: s.items.filter((i) => !needle || i.label.toLocaleLowerCase().includes(needle)) }))
 		.filter((s) => !needle || s.items.length);
 	const open = (item: PanelItem) => {
-		void Promise.resolve(item.select?.())
+		const request = ++selectionRequest.current;
+		void Promise.resolve()
+			.then(() => item.select?.())
 			.then(() => {
-				if (item.target) onNavigate(item.target);
+				if (mounted.current && request === selectionRequest.current && item.target) onNavigate(item.target);
 			})
 			.catch(report);
 	};
-	const tree = model?.tree;
 	const openTreeNode = (id: string) => {
-		void Promise.resolve(tree?.select?.(id))
+		const request = ++selectionRequest.current;
+		void Promise.resolve()
+			.then(() => tree?.select?.(id))
 			.then(() => {
+				if (!mounted.current || request !== selectionRequest.current) return;
 				const target = tree?.target?.(id);
 				if (target) onNavigate(target);
 			})
@@ -93,34 +191,37 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 			aria-label={custom ? title : undefined}
 			className="huhu-panel flex h-full min-h-0 min-w-0 flex-col border-r border-sidebar-border bg-sidebar"
 		>
-			{!custom && <header className="flex h-11 shrink-0 items-center gap-2 px-3">
-				<h2 id={id} className="min-w-0 flex-1 truncate text-sm font-semibold">
-					{title}
-				</h2>
-				{onClose && (
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon-sm"
-								aria-label={t('workbench.closeNavigation')}
-								onClick={onClose}
-							>
-								<ShellIcon name="x" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>{t('workbench.closeNavigation')}</TooltipContent>
-					</Tooltip>
-				)}
-			</header>}
+			{!custom && (
+				<header className="flex h-[var(--hu-header-h)] shrink-0 items-center gap-2 px-3">
+					<h2 id={id} className="min-w-0 flex-1 truncate text-sm font-semibold">
+						{title}
+					</h2>
+					{onClose && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									aria-label={t('workbench.closeNavigation')}
+									onClick={onClose}
+								>
+									<ShellIcon name="x" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>{t('workbench.closeNavigation')}</TooltipContent>
+						</Tooltip>
+					)}
+				</header>
+			)}
 			{model?.primary && (
 				<div className="px-3 pb-2">
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						className="w-full justify-start"
+						busy={primaryBusy}
 						onClick={() => {
-							void Promise.resolve(model.primary?.run()).catch(report);
+							void runPrimary();
 						}}
 					>
 						<ShellIcon name={model.primary.icon} />
@@ -131,7 +232,6 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 			{model?.searchable && (
 				<div className="px-3 pb-2">
 					<Input
-						className="h-8"
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
 						placeholder={search?.placeholder ?? t('workbench.searchPanel')}
@@ -139,11 +239,16 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 					/>
 				</div>
 			)}
-			<div className={cn('min-h-0 overflow-y-auto scrollbar-sleek', tree ? 'max-h-[40%] flex-none empty:hidden' : 'flex-1')}>
+			<div
+				className={cn(
+					'min-h-0 overflow-y-auto scrollbar-sleek',
+					tree ? 'max-h-[40%] flex-none empty:hidden' : 'flex-1',
+				)}
+			>
 				{sections.map((section) => (
 					<section key={section.id} aria-label={section.title}>
 						{section.title && (
-							<div className="px-3 pt-3 pb-1 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
+							<div className="px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
 								{section.title}
 							</div>
 						)}
@@ -163,7 +268,7 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 												onKeyDown={keys}
 												aria-current={active ? 'page' : undefined}
 												className={cn(
-													'h-8 min-w-0 flex-1 justify-start rounded-md px-2 text-[13px]',
+													'h-[var(--hu-row-h)] min-h-[var(--hu-hit)] min-w-0 flex-1 justify-start rounded-md px-2 text-sm',
 													active && 'bg-sidebar-accent',
 												)}
 												onClick={() => open(item)}
@@ -173,12 +278,12 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 												)}
 												<span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
 												{item.meta && (
-													<span className="max-w-24 truncate text-2xs text-muted-foreground">
+													<span className="max-w-24 truncate text-xs text-muted-foreground">
 														{item.meta}
 													</span>
 												)}
 												{!!item.badge && (
-													<span className="text-2xs tabular-nums">{item.badge}</span>
+													<span className="text-xs tabular-nums">{item.badge}</span>
 												)}
 											</Button>
 											{!!menu.length && (
@@ -186,7 +291,7 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 													<DropdownMenuTrigger asChild>
 														<Button
 															variant="ghost"
-															size="icon-xs"
+															size="icon-sm"
 															aria-label={t('workbench.more')}
 															className="opacity-0 focus-visible:opacity-100 group-hover:opacity-100"
 														>
@@ -199,7 +304,9 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 																key={i}
 																variant={m.danger ? 'destructive' : 'default'}
 																onSelect={() => {
-																	void Promise.resolve(m.run()).catch(report);
+																	void Promise.resolve()
+																		.then(() => m.run())
+																		.catch(report);
 																}}
 															>
 																{m.title}
@@ -217,7 +324,9 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 													key={i}
 													variant={m.danger ? 'destructive' : 'default'}
 													onSelect={() => {
-														void Promise.resolve(m.run()).catch(report);
+														void Promise.resolve()
+															.then(() => m.run())
+															.catch(report);
 													}}
 												>
 													{m.title}
@@ -247,12 +356,14 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 										variant="ghost"
 										title={item.detail ? `${item.label} · ${item.detail}` : item.label}
 										onKeyDown={keys}
-										className="h-auto min-h-8 w-full min-w-0 flex-col items-start gap-0 rounded-md px-2 py-1 text-left text-[13px] whitespace-normal"
+										className="h-auto min-h-8 w-full min-w-0 flex-col items-start gap-0 rounded-md px-2 py-1 text-left text-sm whitespace-normal"
 										onClick={() => open(item)}
 									>
 										<span className="w-full truncate">{item.label}</span>
 										{item.detail && (
-											<span className="w-full truncate text-2xs text-muted-foreground">{item.detail}</span>
+											<span className="w-full truncate text-xs text-muted-foreground">
+												{item.detail}
+											</span>
 										)}
 									</Button>
 								</div>
@@ -269,18 +380,96 @@ export function SidePanel({ title, custom, model, current, customRef, onNavigate
 				<div className="min-h-0 empty:hidden" ref={customRef} />
 			</div>
 			{tree && (
-				<div className="min-h-0 flex-1">
-					<Tree
-						nodes={tree.nodes}
-						ariaLabel={tree.label}
-						selectedId={tree.selectedId}
-						defaultExpandedIds={tree.defaultExpandedIds}
-						folderClick={tree.folderClick}
-						search={model?.searchable ? query : ''}
-						matchIds={search ? matchIds : undefined}
-						emptyText={needle ? t('workbench.noResults') : tree.emptyText}
-						onSelect={openTreeNode}
-					/>
+				<div className="flex min-h-0 flex-1 flex-col">
+					<div className="min-h-0 flex-1">
+						{(!dataSource || projection) && (
+							<Tree
+								nodes={nodes}
+								ariaLabel={tree.label}
+								selectedId={tree.selectedId}
+								expandedIds={expandedIds}
+								onExpandedChange={(next) =>
+									setExpansion((previous) => ({
+										...previous,
+										[current.feature]: [
+											...new Set([
+												...(needle
+													? (
+															previous[current.feature] ??
+															tree.defaultExpandedIds ??
+															[]
+														).filter((id) => !ids.branches.has(id))
+													: []),
+												...next.filter((id) => ids.branches.has(id)),
+											]),
+										].slice(-512),
+									}))
+								}
+								search={model?.searchable ? query : ''}
+								matchIds={dataSource && needle ? ids.all : search ? matchIds : undefined}
+								emptyText={needle ? t('workbench.noResults') : tree.emptyText}
+								onSelect={openTreeNode}
+							/>
+						)}
+					</div>
+					{dataSource && (
+						<div className="max-h-[40%] shrink-0 overflow-y-auto border-t border-[var(--hu-line)] px-3 py-2">
+							{dataPending && (
+								<p role="status" className="text-xs text-[var(--hu-fg-3)]">
+									{t('ui.tree.loading')}
+								</p>
+							)}
+							{dataFailed && (
+								<div className="flex flex-col gap-2">
+									<p role="alert" className="text-xs text-[var(--hu-danger)]">
+										{t('ui.tree.loadFailed')}
+									</p>
+									<Button
+										type="button"
+										variant="secondary"
+										size="sm"
+										onClick={() => setRetry((value) => value + 1)}
+									>
+										{t('ui.retry')}
+									</Button>
+								</div>
+							)}
+							{projection?.pages.map((page) => (
+								<section key={page.id} aria-label={page.label} className="flex flex-col gap-1.5 py-1">
+									<p className="m-0 text-xs text-[var(--hu-fg-3)]">
+										{t('ui.tree.loaded', {
+											label: page.label,
+											loaded: page.loaded,
+											total: page.total,
+										})}
+									</p>
+									{page.loaded < page.total && (
+										<Button
+											type="button"
+											variant="secondary"
+											size="sm"
+											busy={dataPending}
+											onClick={() =>
+												setPageState({
+													key: dataKey,
+													limits: {
+														...limits,
+														[page.id]: Math.min(
+															page.total,
+															Math.max(page.loaded, limits[page.id] ?? 0) +
+																Math.max(1, Math.min(500, dataSource.pageSize ?? 100)),
+														),
+													},
+												})
+											}
+										>
+											{t('ui.tree.loadMore', { label: page.label })}
+										</Button>
+									)}
+								</section>
+							))}
+						</div>
+					)}
 				</div>
 			)}
 		</aside>

@@ -10,11 +10,14 @@ import { createRecoveryHost, settingsOwner, type RecoveryHost } from './recovery
  * Before any owner loads: finish or undo an interrupted multi-file operation. An unrecoverable journal keeps the gate
  * held and stops start-up so no module reads half-replaced files.
  */
-export async function startRecovery(app: App): Promise<RecoveryHost> {
+export async function startRecovery(app: App, signal: AbortSignal): Promise<RecoveryHost> {
+	signal.throwIfAborted();
 	const host = createRecoveryHost(app);
 	try {
 		await host.recoverBeforeStart();
+		signal.throwIfAborted();
 	} catch (error) {
+		signal.throwIfAborted();
 		registerMessages(messages);
 		new Notice(t('agent.migration.blocked'), 0);
 		throw error;

@@ -26,7 +26,7 @@ if (minimal) {
 	files['.obsidian/themes/Minimal/manifest.json'] = await fs.readFile(path.join(theme, 'manifest.json'), 'utf8');
 	files['.obsidian/appearance.json'] = JSON.stringify({ cssTheme: 'Minimal', theme: dark ? 'obsidian' : 'moonstone' });
 } else files['.obsidian/appearance.json'] = JSON.stringify({ theme: dark ? 'obsidian' : 'moonstone' });
-const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, versioning: false };
 const runtime = await launchFreshVault({
 	root,
 	files,

@@ -49,7 +49,7 @@ export function P1Dialog({
 					style={{
 						height: contentHeight,
 						fontSize: /dashboard-(pmsec-board|skillsec-detail)/.test(classes)
-							? 'var(--font-ui-medium)'
+							? 'var(--hu-text-sm)'
 							: undefined,
 					}}
 					className={p1Classes(classes)}

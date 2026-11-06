@@ -20,11 +20,11 @@ export function ToolVersion({ info }: { info: ToolInfo }) {
 	if (!info.version) return null;
 	const newer = hasNewerVersion(info.version, info.latest);
 	return (
-		<div className="w-32 shrink-0 text-right font-mono text-[11px] leading-tight" data-agent-version="">
-			<div className="truncate text-foreground/80" title={info.version}>
+		<div className="w-32 shrink-0 text-right font-mono text-sm leading-tight" data-agent-version="">
+			<div className="truncate text-[var(--hu-fg)]/80" title={info.version}>
 				{info.version}
 			</div>
-			<div className={newer ? 'truncate text-primary' : 'truncate text-muted-foreground'}>
+			<div className={newer ? 'truncate text-[var(--hu-accent-text)]' : 'truncate text-[var(--hu-fg-2)]'}>
 				{newer ? t('agent.tools.newVersion', { version: info.latest ?? '' }) : info.latest ? t('agent.tools.upToDate') : ''}
 			</div>
 		</div>
@@ -38,7 +38,7 @@ export function ToolLocations({ info }: { info: ToolInfo }) {
 	const [first, ...rest] = info.locations;
 	if (!first) return null;
 	return (
-		<div className="mt-0.5 min-w-0 text-[11px] text-muted-foreground" data-agent-locations="">
+		<div className="mt-0.5 min-w-0 text-sm text-[var(--hu-fg-2)]" data-agent-locations="">
 			<div className="flex min-w-0 items-center gap-1.5">
 				<span className="min-w-0 truncate font-mono" title={first} aria-label={t('agent.tools.installPath')}>
 					{first}
@@ -46,7 +46,7 @@ export function ToolLocations({ info }: { info: ToolInfo }) {
 				{rest.length > 0 && (
 					<button
 						type="button"
-						className="shrink-0 cursor-pointer rounded px-1 text-primary hover:underline"
+						className="shrink-0 cursor-pointer rounded px-1 text-[var(--hu-accent-text)] hover:underline"
 						aria-expanded={open}
 						onClick={() => setOpen(!open)}
 					>
@@ -85,8 +85,8 @@ export function ToolAction({
 		: t(installed ? 'agent.tools.upgrade' : 'agent.tools.install');
 	return (
 		<Button
-			variant={installed && !newer ? 'ghost' : 'default'}
-			size="xs"
+			variant={installed && !newer ? 'ghost' : 'primary'}
+			size="sm"
 			className="h-7 w-full justify-center gap-1 text-xs"
 			disabled={busy}
 			aria-busy={busy}
@@ -114,7 +114,7 @@ export function ToolFailureNotice({ info, installed }: { info: ToolInfo; install
 	const failure = info.failure;
 	if (!failure) return null;
 	return (
-		<div role="alert" className="mt-2 pl-10 text-xs text-destructive" data-agent-failure="">
+		<div role="alert" className="mt-2 pl-10 text-xs text-[var(--hu-danger)]" data-agent-failure="">
 			<div className="flex flex-wrap items-center gap-2">
 				<span>
 					{failure.kind === 'noNpm'
@@ -131,7 +131,7 @@ export function ToolFailureNotice({ info, installed }: { info: ToolInfo; install
 				</button>
 			</div>
 			{open && (
-				<pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all rounded-md border border-border/50 bg-muted/40 p-2 font-mono text-[11px] text-foreground/80">
+				<pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all rounded-md border border-[var(--hu-line)]/50 bg-[var(--hu-sunken)]/40 p-2 font-mono text-sm text-[var(--hu-fg)]/80">
 					{failure.output}
 				</pre>
 			)}

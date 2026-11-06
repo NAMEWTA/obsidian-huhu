@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { openSync, closeSync } from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -28,7 +29,17 @@ export async function launchFreshVault({ root, files = {}, settings, port = 9237
 	const manifest = JSON.parse(await fs.readFile(path.join(pluginSource, 'manifest.json'), 'utf8'));
 	const pluginDir = path.join(vault, '.obsidian', 'plugins', manifest.id);
 	for (const dir of [vault, profile, evidence, pluginDir, path.join(root, 'home'), path.join(root, 'config'), path.join(root, 'runtime')]) await fs.mkdir(dir, { recursive: true });
-	for (const file of ['main.js', 'styles.css', 'manifest.json']) await fs.copyFile(path.join(pluginSource, file), path.join(pluginDir, file));
+	const artifacts = {};
+	for (const file of ['main.js', 'styles.css', 'manifest.json']) {
+		const expected = createHash('sha256').update(await fs.readFile(path.join(pluginSource, file))).digest('hex');
+		await fs.copyFile(path.join(pluginSource, file), path.join(pluginDir, file));
+		const installed = createHash('sha256').update(await fs.readFile(path.join(pluginDir, file))).digest('hex');
+		assert.equal(installed, expected, `Installed ${file} differs from frozen source`);
+		artifacts[file] = { expected, installed };
+	}
+	const native = process.env.HUHU_PTY_BINARY ? { path: process.env.HUHU_PTY_BINARY, sha256: createHash('sha256').update(await fs.readFile(process.env.HUHU_PTY_BINARY)).digest('hex') } : null;
+	const script = { path: process.argv[1], sha256: createHash('sha256').update(await fs.readFile(process.argv[1])).digest('hex') };
+	await fs.writeFile(path.join(evidence, 'installed-artifacts.json'), JSON.stringify({ pluginSource, pluginDir, artifacts, native, display: process.env.DISPLAY, script }, null, 2));
 	await fs.writeFile(path.join(vault, '.obsidian', 'community-plugins.json'), JSON.stringify([manifest.id]));
 	await fs.writeFile(path.join(vault, '.obsidian', 'app.json'), JSON.stringify({ livePreview: true }));
 	if (settings) {

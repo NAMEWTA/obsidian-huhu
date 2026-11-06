@@ -22,7 +22,7 @@ import type { SyncService, SyncSnapshot } from '../../services/sync-service';
 import { NoteReviewPage } from './NoteReviewPage';
 
 // Diff rendering is tested separately. These tests exercise the real review session, source capture,
-// action buttons, asynchronous restore preparation and dialog lifetime without a CodeMirror layout.
+// action buttons, asynchronous restore preparation and dialog lifetime without a shadow-layout measurement.
 vi.mock('../DiffSurface', () => ({
 	DiffSurface: ({ comparison }: { comparison: ResolvedComparison }) => (
 		<div aria-label="Comparison preview">

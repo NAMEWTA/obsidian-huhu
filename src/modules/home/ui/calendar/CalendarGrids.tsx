@@ -1,11 +1,15 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/calendar-grid.ts
+import { ProductCalendar } from '../../../../ui/components/huhu/calendar/ProductCalendar';
+import { TaskContent } from '../../../../ui/components/huhu/TaskContent';
 import { CalendarDateMenu } from '../../../../ui/components/huhu/calendar/CalendarMonth';
 import { cn } from '../../../../ui/lib/utils';
+import { Button } from '../../../../ui/components/button';
 import { Checkbox } from '../../../../ui/components/checkbox';
-import { widgetClasses } from '../theme/widget-classes';
-import { useLayoutEffect, useRef } from 'react';
+import { calendarClasses as widgetClasses } from './calendar-styles';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { startOfWeek } from '../../../../shared/periodic-paths';
 import { ExternalLink } from 'lucide-react';
-import { IconButton } from '../board/controls';
+import { IconButton } from './calendar-controls';
 import {
 	calendarSpan,
 	dateBucketOf,
@@ -17,7 +21,19 @@ import { t } from '../../../../shared/i18n/index';
 import { ObsidianIcon as Icon } from '../../../../ui/components/huhu/ObsidianIcon';
 import { InlineLinks } from './CalendarLinks';
 import type { DashboardRenderContext } from '../renderer/render-context';
-import { COMPACT_MAX_PER_DAY, TIMEGRID_HOUR_PX, byDayTaskTime, clampBarToWeek, hhmmToMin, monthDayLabel, packBarLanes, parseIso, taskDayTime, weekdayLabels, type BarEntry, type MonthGridOptions } from './calendar-layout';
+import {
+	TIMEGRID_HOUR_PX,
+	byDayTaskTime,
+	clampBarToWeek,
+	hhmmToMin,
+	monthDayLabel,
+	packBarLanes,
+	parseIso,
+	taskDayTime,
+	weekdayLabels,
+	type BarEntry,
+	type MonthGridOptions,
+} from './calendar-layout';
 interface GridProps {
 	byDay: Map<string, VaultTask[]>;
 	opts: MonthGridOptions;
@@ -25,7 +41,19 @@ interface GridProps {
 }
 /** A separate native button keeps source navigation outside checkbox and inline-link controls. */
 function TaskSourceButton({ task, open }: { task: VaultTask; open: NonNullable<MonthGridOptions['onOpenNote']> }) {
-	return <IconButton size="icon-sm" className="shrink-0" label={`${t('calendarUnified.source')} · ${task.text}`} onClick={(event) => { event.stopPropagation(); open(task.file, task.line, task); }}><ExternalLink className="size-3" /></IconButton>;
+	return (
+		<IconButton
+			size="icon-sm"
+			className="shrink-0"
+			label={`${t('calendarUnified.source')} · ${task.text}`}
+			onClick={(event) => {
+				event.stopPropagation();
+				open(task.file, task.line, task);
+			}}
+		>
+			<ExternalLink className="size-3" />
+		</IconButton>
+	);
 }
 function dayTrigger(iso: string, action?: (iso: string) => void) {
 	return action
@@ -40,29 +68,59 @@ function dayTrigger(iso: string, action?: (iso: string) => void) {
 				},
 				onKeyDown: (event: React.KeyboardEvent) => {
 					if (event.key === 'Enter' || event.key === ' ') {
-						event.preventDefault(); event.stopPropagation();
+						event.preventDefault();
+						event.stopPropagation();
 						action(iso);
 					}
 				},
 			}
 		: {};
 }
-function dateTrigger(iso: string, opts: MonthGridOptions, action?: (iso: string) => void, tasks: readonly VaultTask[] = []) {
-	const note = opts.dayState?.(iso), existing = note?.status === 'existing', today = iso === toIsoDate(new Date());
+function dateTrigger(
+	iso: string,
+	opts: MonthGridOptions,
+	action?: (iso: string) => void,
+	tasks: readonly VaultTask[] = [],
+) {
+	const note = opts.dayState?.(iso),
+		existing = note?.status === 'existing',
+		today = iso === toIsoDate(new Date());
 	const openTasks = tasks.filter((task) => !task.checked).length;
-	const label = [iso, t('calendarUnified.view'), today && t('calendarUnified.today'), note?.active && t('calendarUnified.currentNote'), existing && t('calendarUnified.hasNote'), tasks.length > 0 && t(openTasks ? 'calendarUnified.openTasks' : 'calendarUnified.doneTasks', { count: openTasks || tasks.length })].filter(Boolean).join(' · ');
+	const label = [
+		iso,
+		t('calendarUnified.view'),
+		today && t('calendarUnified.today'),
+		note?.active && t('calendarUnified.currentNote'),
+		existing && t('calendarUnified.hasNote'),
+		tasks.length > 0 &&
+			t(openTasks ? 'calendarUnified.openTasks' : 'calendarUnified.doneTasks', {
+				count: openTasks || tasks.length,
+			}),
+	]
+		.filter(Boolean)
+		.join(' · ');
 	const choose = (modified: boolean) => {
 		opts.onDayLeave?.();
 		if (modified && existing && opts.onPeriodNote) opts.onPeriodNote(iso, 'tab');
 		else (action ?? opts.onDayClick)?.(iso);
 	};
-	return { ...dayTrigger(iso, action),
+	return {
+		...dayTrigger(iso, action),
 		'aria-label': label,
-		'aria-current': today ? 'date' as const : undefined,
+		'aria-current': today ? ('date' as const) : undefined,
 		'aria-pressed': opts.selected === undefined ? undefined : opts.selected === iso,
 		title: t(existing ? 'calendarUnified.dateShortcuts' : 'calendarUnified.view'),
-		onClick: (event: React.MouseEvent) => { event.stopPropagation(); choose(event.ctrlKey || event.metaKey); },
-		onAuxClick: (event: React.MouseEvent) => { if (event.button === 1) { event.preventDefault(); event.stopPropagation(); choose(true); } },
+		onClick: (event: React.MouseEvent) => {
+			event.stopPropagation();
+			choose(event.ctrlKey || event.metaKey);
+		},
+		onAuxClick: (event: React.MouseEvent) => {
+			if (event.button === 1) {
+				event.preventDefault();
+				event.stopPropagation();
+				choose(true);
+			}
+		},
 	};
 }
 export function OriginMark({ task, iso }: { task: VaultTask; iso: string }) {
@@ -86,7 +144,7 @@ function DayTask({ task, iso, opts, context }: Omit<GridProps, 'byDay'> & { task
 	return (
 		<div
 			className={widgetClasses(
-				`dashboard-calendar-event${task.checked ? ' is-done' : ''}${multi ? ' is-multi' : ''}${task.priority ? ` prio-${task.priority}` : ''}${overdue ? ' is-overdue' : ''}${!opts.compact && opts.onOpenNote ? ' is-jumpable' : ''}`,
+				`dashboard-calendar-event${multi ? ' is-multi' : ''}${task.priority ? ` prio-${task.priority}` : ''}${overdue ? ' is-overdue' : ''}${!opts.compact && opts.onOpenNote ? ' is-jumpable' : ''}`,
 			)}
 			onClick={(event) => {
 				if (opts.compact || (event.target as HTMLElement).closest('input, [role="checkbox"], a')) return;
@@ -108,7 +166,10 @@ function DayTask({ task, iso, opts, context }: Omit<GridProps, 'byDay'> & { task
 			<div className="min-w-0 flex-1 overflow-hidden">
 				{opts.showTimes && time && <div className={widgetClasses('dashboard-calendar-event-time')}>{time}</div>}
 				<div className={widgetClasses('dashboard-calendar-event-text')}>
-					<InlineLinks text={task.text} app={opts.app} context={context} />
+					<TaskContent
+						title={<InlineLinks text={task.text} app={opts.app} context={context} />}
+						completed={task.checked}
+					/>
 				</div>
 			</div>
 			<OriginMark task={task} iso={iso} />
@@ -119,81 +180,6 @@ function DayTask({ task, iso, opts, context }: Omit<GridProps, 'byDay'> & { task
 					aria-label={`${task.start} → ${task.end}`}
 				>
 					<Icon name="arrow-right-left" />
-				</div>
-			)}
-		</div>
-	);
-}
-function DayCell({
-	date,
-	month,
-	tasks,
-	stateTasks = tasks,
-	opts,
-	context,
-}: Omit<GridProps, 'byDay'> & { date: Date; month: number; tasks: VaultTask[]; stateTasks?: readonly VaultTask[] }) {
-	const iso = toIsoDate(date),
-		today = toIsoDate(new Date()),
-		sorted = tasks.slice().sort(byDayTaskTime(iso)),
-		shown = opts.compact ? sorted.slice(0, COMPACT_MAX_PER_DAY) : sorted;
-	const note = opts.dayState?.(iso);
-	const hover = opts.dotMode || !opts.compact,
-		click = !!(opts.compact || opts.dotMode) && !!opts.onDayClick;
-	return (
-		<div
-			data-date={iso} data-selected={opts.selected === iso || undefined} data-has-note={note?.status === 'existing' || undefined} data-active-note={note?.active || undefined}
-			className={cn(opts.selected === iso && 'ring-1 ring-inset ring-primary/60', note?.active && 'outline-dashed outline-1 outline-foreground/50', widgetClasses(
-				`dashboard-calendar-cell${date.getMonth() === month ? '' : ' is-outside'}${iso === today ? ' is-today' : ''}${tasks.length ? ' has-tasks' : ''}${click ? ' is-clickable' : ''}`,
-			))}
-			onClick={() => {
-				if (click) opts.onDayClick?.(iso);
-			}}
-			onMouseEnter={(event) => {
-				if (hover) opts.onDayHover?.(iso, event.currentTarget);
-			}}
-			onMouseLeave={() => {
-				if (hover) opts.onDayLeave?.();
-			}}
-			onFocus={(event) => {
-				if (hover) opts.onDayHover?.(iso, event.currentTarget);
-			}}
-			onBlur={() => {
-				if (hover) opts.onDayLeave?.();
-			}}
-		>
-			<CalendarDateMenu status={note?.status ?? 'unavailable'} canSplit={opts.canSplit} onOpen={opts.onDayLeave} onAgenda={() => (opts.onDayNumClick ?? opts.onDayClick)?.(iso)} onNote={(action) => opts.onPeriodNote?.(iso, action)}><button type="button"
-				className={cn('min-h-8 min-w-8 bg-transparent [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11', widgetClasses(
-					`dashboard-calendar-cell-num${!opts.compact && !opts.dotMode && opts.onDayNumClick ? ' is-clickable' : ''}`,
-				))}
-				{...dateTrigger(iso, opts, !opts.compact && !opts.dotMode ? opts.onDayNumClick : undefined, stateTasks)}
-			>
-				{date.getDate()}
-				{note?.status === 'existing' && <span aria-label={t('calendarUnified.hasNote')} className="ml-1 inline-block h-1 w-2 rounded-sm bg-muted-foreground" />}
-			</button></CalendarDateMenu>
-			{opts.dotMode ? (
-				tasks.length > 0 && (
-					<div
-						className={widgetClasses(
-							`dashboard-calendar-cell-dot${tasks.every((task) => task.checked) ? ' is-done' : ''}`,
-						)}
-					/>
-				)
-			) : (
-				<div className={widgetClasses('dashboard-calendar-cell-list')}>
-					{shown.map((task) => (
-						<DayTask
-							key={task.path + ':' + task.line}
-							task={task}
-							iso={iso}
-							opts={opts}
-							context={context}
-						/>
-					))}
-					{opts.compact && sorted.length > COMPACT_MAX_PER_DAY && (
-						<div className={widgetClasses('dashboard-calendar-more')}>
-							{t('calendar.moreCount', { count: sorted.length - COMPACT_MAX_PER_DAY })}
-						</div>
-					)}
 				</div>
 			)}
 		</div>
@@ -210,7 +196,7 @@ function TaskBar({ bar, opts, context }: Omit<GridProps, 'byDay'> & { bar: BarEn
 	return (
 		<div
 			className={widgetClasses(
-				`dashboard-calendar-bar${task.checked ? ' is-done' : ''}${task.priority ? ` prio-${task.priority}` : ''}${bar.contLeft ? ' is-cont-left' : ''}${bar.contRight ? ' is-cont-right' : ''}`,
+				`dashboard-calendar-bar${task.priority ? ` prio-${task.priority}` : ''}${bar.contLeft ? ' is-cont-left' : ''}${bar.contRight ? ' is-cont-right' : ''}`,
 			)}
 			style={{
 				gridColumnStart: bar.fromCol + 1,
@@ -223,7 +209,10 @@ function TaskBar({ bar, opts, context }: Omit<GridProps, 'byDay'> & { bar: BarEn
 		>
 			{time && <div className={widgetClasses('dashboard-calendar-bar-time')}>{time}</div>}
 			<div className={widgetClasses('dashboard-calendar-bar-text')}>
-				<InlineLinks text={task.text} app={opts.app} context={context} />
+				<TaskContent
+					title={<InlineLinks text={task.text} app={opts.app} context={context} />}
+					completed={task.checked}
+				/>
 			</div>
 		</div>
 	);
@@ -236,83 +225,169 @@ function daysFrom(start: Date, count = 7) {
 	});
 }
 export function MonthGrid({ year, month, byDay, opts, context }: GridProps & { year: number; month: number }) {
-	const leading = (new Date(year, month, 1).getDay() - (opts.weekStart ?? 1) + 7) % 7,
-		rows = Math.ceil((leading + new Date(year, month + 1, 0).getDate()) / 7),
-		days = daysFrom(new Date(year, month, 1 - leading), rows * 7),
-		bars = !opts.compact && !opts.dotMode;
+	const container = useRef<HTMLDivElement>(null),
+		[condensed, setCondensed] = useState(opts.compact);
+	useLayoutEffect(() => {
+		const node = container.current,
+			win = node?.ownerDocument.defaultView;
+		if (!node || !win) return;
+		const measure = () => {
+			const width = node.getBoundingClientRect().width;
+			if (width <= 0) return;
+			const hit = Number.parseFloat(win.getComputedStyle(node).getPropertyValue('--hu-hit')) || 32;
+			setCondensed(opts.compact || width < 7 * (hit * 2 + 16));
+		};
+		measure();
+		const Observer = win.ResizeObserver;
+		const observer = new Observer(measure);
+		observer.observe(node);
+		const media = win.matchMedia('(pointer:coarse)');
+		media.addEventListener('change', measure);
+		return () => {
+			observer.disconnect();
+			media.removeEventListener('change', measure);
+		};
+	}, [opts.compact]);
+	const bars = !condensed && !opts.dotMode;
+	const weekBars = (dates: readonly string[]) => {
+		const spans = new Map<VaultTask, BarEntry>();
+		for (const iso of dates)
+			for (const task of byDay.get(iso) ?? []) {
+				if (spans.has(task)) continue;
+				const span = calendarSpan(task);
+				if (span && span.start !== span.end)
+					spans.set(task, clampBarToWeek(task, span, parseIso(iso), opts.weekStart));
+			}
+		return packBarLanes([...spans.values()]);
+	};
 	return (
-		<div className={widgetClasses(`dashboard-calendar${bars ? ' is-full' : ' is-compact'}`)} style={{ minWidth: !opts.compact && opts.onOpenNote ? 'calc(7 * (var(--nd-hit-size) + 72px))' : undefined }}>
-			<div className={widgetClasses('dashboard-calendar-weekdays')}>
-				{weekdayLabels(opts.weekStart).map((label) => (
-					<div key={label} className={widgetClasses('dashboard-calendar-weekday')}>
-						{label}
-					</div>
-				))}
-			</div>
-			<div className={widgetClasses(`dashboard-calendar-body${bars ? ' dashboard-calendar-body--bars' : ''}`)}>
-				{!bars
-					? days.map(({ date, iso }) => (
-							<DayCell
-								key={iso}
-								date={date}
-								month={month}
-								tasks={byDay.get(iso) ?? []}
-								opts={opts}
-								context={context}
-							/>
-						))
-					: Array.from({ length: rows }, (_, index) => {
-							const week = days.slice(index * 7, index * 7 + 7),
-								spans = new Map<VaultTask, BarEntry>();
-							for (const { iso, date } of week)
-								for (const task of byDay.get(iso) ?? []) {
-									if (spans.has(task)) continue;
-									const span = calendarSpan(task);
-									if (span && span.start !== span.end)
-										spans.set(task, clampBarToWeek(task, span, date, opts.weekStart));
-								}
-							const packed = packBarLanes(Array.from(spans.values())),
-								degraded = new Map(
-									packed.filter((bar) => bar.lane === -1).map((bar) => [bar.task, bar.firstIso]),
-								);
-							return (
-								<div key={week[0]!.iso} className={widgetClasses('dashboard-calendar-week')}>
-									<div
-										className={widgetClasses('dashboard-calendar-barlayer')}
-										style={{
-											gridTemplateRows: `repeat(${Math.max(0, ...packed.map((bar) => bar.lane + 1))}, 20px)`,
-										}}
-									>
-										{packed
-											.filter((bar) => bar.lane !== -1)
-											.map((bar) => (
-												<TaskBar
-													key={bar.task.path + ':' + bar.task.line}
-													bar={bar}
-													opts={opts}
-													context={context}
-												/>
-											))}
-									</div>
-									<div className={widgetClasses('dashboard-calendar-week-days')}>
-										{week.map(({ date, iso }) => (
-											<DayCell
-												key={iso}
-												date={date}
-												month={month}
-												stateTasks={byDay.get(iso) ?? []}
-												tasks={(byDay.get(iso) ?? []).filter(
-													(task) => !spans.has(task) || degraded.get(task) === iso,
-												)}
+		<div ref={container} className="min-w-0 max-w-full">
+			<ProductCalendar
+				className="min-w-0"
+				compact
+				month={new Date(year, month, 1)}
+				onMonthChange={(value) => opts.onAnchor?.(value)}
+				selected={opts.selected}
+				onSelectDate={(iso) => (opts.onDayNumClick ?? opts.onDayClick)?.(iso)}
+				weekStart={opts.weekStart}
+				onDayClick={(iso, event) => {
+					if (event.metaKey || event.ctrlKey || event.button === 1) {
+						const note = opts.dayState?.(iso);
+						if (note?.status === 'existing') opts.onPeriodNote?.(iso, 'tab');
+						else (opts.onDayNumClick ?? opts.onDayClick)?.(iso);
+					}
+				}}
+				onDayHover={opts.onDayHover}
+				onDayLeave={opts.onDayLeave}
+				decorateDayButton={(iso, button) => (
+					<CalendarDateMenu
+						status={opts.dayState?.(iso)?.status ?? 'unavailable'}
+						canSplit={opts.canSplit}
+						onAgenda={() => (opts.onDayNumClick ?? opts.onDayClick)?.(iso)}
+						onNote={(action) => opts.onPeriodNote?.(iso, action)}
+						onOpen={opts.onDayLeave}
+					>
+						{button}
+					</CalendarDateMenu>
+				)}
+				dayLabel={(iso) => {
+					const note = opts.dayState?.(iso),
+						tasks = byDay.get(iso) ?? [];
+					return [
+						iso,
+						t('calendarUnified.view'),
+						iso === toIsoDate(new Date()) && t('calendarUnified.today'),
+						note?.status === 'existing' && t('calendarUnified.hasNote'),
+						note?.active && t('calendarUnified.currentNote'),
+						tasks.length &&
+							t(
+								tasks.some((x) => !x.checked)
+									? 'calendarUnified.openTasks'
+									: 'calendarUnified.doneTasks',
+								{
+									count: tasks.some((x) => !x.checked)
+										? tasks.filter((x) => !x.checked).length
+										: tasks.length,
+								},
+							),
+					]
+						.filter(Boolean)
+						.join(' · ');
+				}}
+				renderDayContent={(iso) => {
+					const all = [...(byDay.get(iso) ?? [])].sort(byDayTaskTime(iso));
+					const week = daysFrom(startOfWeek(parseIso(iso), opts.weekStart ?? 1)).map((x) => x.iso);
+					const packed = bars ? weekBars(week) : [];
+					const tasks = all.filter(
+						(task) =>
+							!bars ||
+							!packed.some((bar) => bar.task === task && (bar.lane >= 0 || bar.firstIso !== iso)),
+					);
+					return (
+						<div className={condensed ? 'space-y-1' : 'space-y-1 p-1'} data-calendar-cell={iso}>
+							{opts.dayState?.(iso)?.status === 'existing' && (
+								<span
+									aria-label={t('calendarUnified.hasNote')}
+									className="block h-1 w-2 rounded-sm bg-[var(--hu-fg-3)]"
+								/>
+							)}
+							{condensed
+								? all.length > 0 && (
+										<Button
+											type="button"
+											variant="ghost"
+											className="h-[var(--hu-hit)] w-full min-w-0 p-0 text-xs"
+											data-calendar-count={iso}
+											aria-label={[
+												iso,
+												t('calendarUnified.view'),
+												t('calendarUnified.openTasks', {
+													count: all.filter((task) => !task.checked).length,
+												}),
+												t('calendarUnified.doneTasks', {
+													count: all.filter((task) => task.checked).length,
+												}),
+											].join(' · ')}
+											onClick={() => (opts.onDayNumClick ?? opts.onDayClick)?.(iso)}
+										>
+											{all.length}
+										</Button>
+									)
+								: opts.dotMode
+									? all.length > 0 && (
+											<span className="block size-1.5 rounded-full bg-[var(--hu-accent)]" />
+										)
+									: tasks.map((task) => (
+											<DayTask
+												key={task.id ?? task.path + task.line}
+												task={task}
+												iso={iso}
 												opts={opts}
 												context={context}
 											/>
 										))}
-									</div>
+						</div>
+					);
+				}}
+				renderWeekContent={
+					bars
+						? (dates) => (
+								<div className="grid grid-cols-7 gap-1 p-1">
+									{weekBars(dates)
+										.filter((bar) => bar.lane >= 0)
+										.map((bar) => (
+											<TaskBar
+												key={bar.task.id ?? bar.task.path + bar.task.line}
+												bar={bar}
+												opts={opts}
+												context={context}
+											/>
+										))}
 								</div>
-							);
-						})}
-			</div>
+							)
+						: undefined
+				}
+			/>
 		</div>
 	);
 }
@@ -345,19 +420,52 @@ export function WeekTimeGrid({ weekStart, byDay, opts, context }: GridProps & { 
 		return () => win.cancelAnimationFrame(id);
 	}, [weekTime, earliest]);
 	return (
-			<div className={widgetClasses('dashboard-calgrid')} style={{ minWidth: opts.onOpenNote ? 'calc(52px + 7 * (var(--nd-hit-size) + 64px))' : undefined }}>
+		<div className={widgetClasses('dashboard-calgrid')}>
 			<div className={widgetClasses('dashboard-calgrid-head')}>
 				<div className={widgetClasses('dashboard-calgrid-corner')} />
 				{days.map(({ date, iso }, index) => {
 					const note = opts.dayState?.(iso);
-					return <CalendarDateMenu key={iso} status={note?.status ?? 'unavailable'} canSplit={opts.canSplit} onOpen={opts.onDayLeave} onAgenda={() => opts.onDayNumClick?.(iso)} onNote={(action) => opts.onPeriodNote?.(iso, action)}><button type="button"
-						data-date={iso} data-selected={opts.selected === iso || undefined} data-has-note={note?.status === 'existing' || undefined} data-active-note={note?.active || undefined}
-						className={cn('min-h-8 bg-transparent [@media(pointer:coarse)]:min-h-11', opts.selected === iso && 'ring-1 ring-inset ring-primary', note?.active && 'outline-dashed outline-1 outline-foreground/50', widgetClasses(`dashboard-calgrid-dayhead${iso === today ? ' is-today' : ''}${opts.onDayNumClick ? ' is-clickable' : ''}`))}
-						onMouseEnter={(event) => opts.onDayHover?.(iso, event.currentTarget)} onMouseLeave={opts.onDayLeave} onBlur={opts.onDayLeave}
-						{...dateTrigger(iso, opts, opts.onDayNumClick, byDay.get(iso) ?? [])}>
-						<span className={widgetClasses('dashboard-calgrid-dayhead-wd')}>{labels[index]}</span>
-						<span className={widgetClasses('dashboard-calgrid-dayhead-date')}>{date.getMonth() + 1}/{date.getDate()}{note?.status === 'existing' && <span aria-label={t('calendarUnified.hasNote')} className="ml-1 inline-block h-1 w-2 rounded-sm bg-muted-foreground" />}</span>
-					</button></CalendarDateMenu>;
+					return (
+						<CalendarDateMenu
+							key={iso}
+							status={note?.status ?? 'unavailable'}
+							canSplit={opts.canSplit}
+							onOpen={opts.onDayLeave}
+							onAgenda={() => opts.onDayNumClick?.(iso)}
+							onNote={(action) => opts.onPeriodNote?.(iso, action)}
+						>
+							<button
+								type="button"
+								data-date={iso}
+								data-selected={opts.selected === iso || undefined}
+								data-has-note={note?.status === 'existing' || undefined}
+								data-active-note={note?.active || undefined}
+								className={cn(
+									'min-h-8 bg-transparent [@media(pointer:coarse)]:min-h-11',
+									opts.selected === iso && 'ring-1 ring-inset ring-primary',
+									note?.active && 'outline-dashed outline-1 outline-foreground/50',
+									widgetClasses(
+										`dashboard-calgrid-dayhead${iso === today ? ' is-today' : ''}${opts.onDayNumClick ? ' is-clickable' : ''}`,
+									),
+								)}
+								onMouseEnter={(event) => opts.onDayHover?.(iso, event.currentTarget)}
+								onMouseLeave={opts.onDayLeave}
+								onBlur={opts.onDayLeave}
+								{...dateTrigger(iso, opts, opts.onDayNumClick, byDay.get(iso) ?? [])}
+							>
+								<span className={widgetClasses('dashboard-calgrid-dayhead-wd')}>{labels[index]}</span>
+								<span className={widgetClasses('dashboard-calgrid-dayhead-date')}>
+									{date.getMonth() + 1}/{date.getDate()}
+									{note?.status === 'existing' && (
+										<span
+											aria-label={t('calendarUnified.hasNote')}
+											className="ml-1 inline-block h-1 w-2 rounded-sm bg-muted-foreground"
+										/>
+									)}
+								</span>
+							</button>
+						</CalendarDateMenu>
+					);
 				})}
 			</div>
 			<div className={widgetClasses('dashboard-calgrid-allday')}>
@@ -369,15 +477,20 @@ export function WeekTimeGrid({ weekStart, byDay, opts, context }: GridProps & { 
 					return (
 						<div key={iso} className={widgetClasses('dashboard-calgrid-allday-cell')}>
 							{tasks.slice(0, 3).map((task) => (
-								<button type="button"
+								<button
+									type="button"
 									key={task.path + ':' + task.line}
-									className={cn('text-left outline-none focus-visible:ring-2 focus-visible:ring-ring', widgetClasses(
-										`dashboard-calgrid-allday-chip${task.checked ? ' is-done' : ''}${opts.onOpenNote ? ' is-jumpable' : ''}`,
-									))}
-									aria-label={`${t('calendarUnified.source')} · ${task.text}`} disabled={!opts.onOpenNote}
+									className={cn(
+										'text-left',
+										widgetClasses(
+											`dashboard-calgrid-allday-chip${opts.onOpenNote ? ' is-jumpable' : ''}`,
+										),
+									)}
+									aria-label={`${t('calendarUnified.source')} · ${task.text}`}
+									disabled={!opts.onOpenNote}
 									onClick={() => opts.onOpenNote?.(task.file, task.line, task)}
 								>
-									{task.text}
+									<TaskContent title={task.text} completed={task.checked} />
 								</button>
 							))}
 							{tasks.length > 3 && (
@@ -406,13 +519,16 @@ export function WeekTimeGrid({ weekStart, byDay, opts, context }: GridProps & { 
 							{timed[index]!.map(({ task, time, start, end }) => (
 								<div
 									key={task.path + ':' + task.line}
-									className={cn('flex items-start gap-1', widgetClasses(
-										`dashboard-calgrid-event${task.checked ? ' is-done' : ''}${task.priority ? ` prio-${task.priority}` : ''}${opts.onOpenNote ? ' is-jumpable' : ''}`,
-									))}
+									className={cn(
+										'flex items-start gap-1',
+										widgetClasses(
+											`dashboard-calgrid-event${task.priority ? ` prio-${task.priority}` : ''}${opts.onOpenNote ? ' is-jumpable' : ''}`,
+										),
+									)}
 									style={{
 										top: Math.round((start * TIMEGRID_HOUR_PX) / 60),
 										height: Math.max(Math.round(((end - start) * TIMEGRID_HOUR_PX) / 60), 20),
-										minHeight: opts.onOpenNote ? 'calc(var(--nd-hit-size) + 8px)' : undefined,
+										minHeight: opts.onOpenNote ? 'calc(var(--hu-hit) + 8px)' : undefined,
 									}}
 									onClick={(event) => {
 										if (!(event.target as HTMLElement).closest('input, [role="checkbox"], a'))
@@ -420,21 +536,26 @@ export function WeekTimeGrid({ weekStart, byDay, opts, context }: GridProps & { 
 									}}
 								>
 									<div className="min-w-0 flex-1">
-									<div className={widgetClasses('dashboard-calgrid-event-time')}>{time}</div>
-									<div className={widgetClasses('dashboard-calgrid-event-title')}>
-										<InlineLinks text={task.text} app={opts.app} context={context} />
-									</div>
-									{!opts.compact && opts.onToggle && (
-										<Checkbox
-											className={widgetClasses('dashboard-calgrid-event-check')}
-											checked={task.checked}
-											aria-label={task.text}
-											onCheckedChange={(checked) => opts.onToggle?.(task, checked === true)}
-											onClick={(event) => {
-												event.stopPropagation();
-											}}
-										/>
-									)}
+										<div className={widgetClasses('dashboard-calgrid-event-time')}>{time}</div>
+										<div className={widgetClasses('dashboard-calgrid-event-title')}>
+											<TaskContent
+												title={
+													<InlineLinks text={task.text} app={opts.app} context={context} />
+												}
+												completed={task.checked}
+											/>
+										</div>
+										{!opts.compact && opts.onToggle && (
+											<Checkbox
+												className={widgetClasses('dashboard-calgrid-event-check')}
+												checked={task.checked}
+												aria-label={task.text}
+												onCheckedChange={(checked) => opts.onToggle?.(task, checked === true)}
+												onClick={(event) => {
+													event.stopPropagation();
+												}}
+											/>
+										)}
 									</div>
 									{opts.onOpenNote && <TaskSourceButton task={task} open={opts.onOpenNote} />}
 								</div>

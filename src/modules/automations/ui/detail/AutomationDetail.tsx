@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Copy, Pencil, Play, Trash2, ChevronDown } from 'lucide-react';
 import { useDesignNotice } from '../../../../ui/react/design-scope';
+import { Notice } from '../../../../ui/components/huhu/Notice';
 import { Button } from '../../../../ui/components/button';
 import { Switch } from '../../../../ui/components/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../ui/components/tabs';
@@ -20,7 +21,7 @@ import { RunHistory, type RunActions } from './RunHistory';
 function DetailMetric({ label, children }: { label: string; children: ReactNode }) {
 	return (
 		<div className="min-w-0">
-			<div className="text-[11px] font-medium uppercase text-muted-foreground">{label}</div>
+			<div className="text-xs font-medium uppercase text-muted-foreground">{label}</div>
 			<div className="mt-1 break-words text-sm font-medium">{children}</div>
 		</div>
 	);
@@ -29,6 +30,9 @@ export function AutomationDetail({
 	definition: d,
 	runs,
 	disabled,
+	pending = false,
+	error,
+	readOnlyReason,
 	rowActions,
 	runActions,
 	onSource,
@@ -37,6 +41,9 @@ export function AutomationDetail({
 	definition: AutomationDefinition;
 	runs: readonly AutomationRun[];
 	disabled: boolean;
+	pending?: boolean;
+	error?: string;
+	readOnlyReason?: string;
 	rowActions: RowActions;
 	runActions: RunActions;
 	onSource: () => void;
@@ -58,6 +65,8 @@ export function AutomationDetail({
 				<TabsTrigger value="runs">{t('automation.history')}</TabsTrigger>
 			</TabsList>
 			<TabsContent value="overview" className="min-h-0 overflow-y-auto">
+				{error && <Notice tone="error" title={error} />}
+				{readOnlyReason && <Notice tone="info" title={readOnlyReason} />}
 				<div className="flex w-full flex-col gap-4">
 					<div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/50 pb-4">
 						<div className="min-w-0">
@@ -65,7 +74,8 @@ export function AutomationDetail({
 							<div className="mt-2 flex items-center gap-2">
 								<Switch
 									checked={d.enabled}
-									disabled={disabled}
+									aria-busy={pending}
+									disabled={disabled || pending}
 									aria-label={t('automation.enabled')}
 									onCheckedChange={() => rowActions.onToggle(d)}
 								/>
@@ -78,7 +88,7 @@ export function AutomationDetail({
 							<Button
 								variant="secondary"
 								size="sm"
-								disabled={disabled}
+								disabled={disabled || pending}
 								onClick={() => rowActions.onRun(d)}
 							>
 								<Play className="size-4" />
@@ -86,14 +96,14 @@ export function AutomationDetail({
 							</Button>
 							<IconButton
 								label={t('automation.edit')}
-								disabled={disabled}
+								disabled={disabled || pending}
 								onClick={() => rowActions.onEdit(d)}
 							>
 								<Pencil className="size-4" />
 							</IconButton>
 							<IconButton
 								label={t('automation.delete')}
-								disabled={disabled || runs.some(isActiveRun)}
+								disabled={disabled || pending || runs.some(isActiveRun)}
 								onClick={() => rowActions.onDelete(d)}
 							>
 								<Trash2 className="size-4 text-destructive" />
@@ -124,14 +134,14 @@ export function AutomationDetail({
 						)}
 						{d.source && (
 							<DetailMetric label={t('automation.sourceTitle')}>
-								<Button variant="link" size="sm" onClick={onSource}>
+								<Button variant="ghost" size="sm" onClick={onSource}>
 									{t(`automation.source.${d.source.kind}`)} · {d.source.path}
 								</Button>
 							</DetailMetric>
 						)}
 						{d.link && (
 							<DetailMetric label={t('automation.linkTitle')}>
-								<Button variant="link" size="sm" className="h-auto p-0" onClick={onLink}>
+								<Button variant="ghost" size="sm" className="h-auto p-0" onClick={onLink}>
 									{d.link.path}
 								</Button>
 							</DetailMetric>

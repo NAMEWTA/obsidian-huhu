@@ -769,11 +769,13 @@ describe('exported files', () => {
 	});
 	test('settings of the importing device are untouched when the settings section is skipped', async () => {
 		const { pkg } = await makePackage();
-		const { dst, target } = await freshTarget();
+		const { dst, target } = await settledTarget();
+		const before = JSON.parse(dst.files.get(settingsDeviceFile(DST.deviceId))!).namespaces.agent;
 		await runImport(pkg, { adoptDevice: SRC.deviceId, skipSections: ['settings-agent'] }, envOf(target));
 		const agent = JSON.parse(dst.files.get(settingsDeviceFile(DST.deviceId))!).namespaces.agent;
 		expect(agent.fontSize).toBe(14);
 		expect(agent.quickCommands).toEqual([]);
+		expect(agent).toEqual(before);
 		await target.close();
 	});
 });

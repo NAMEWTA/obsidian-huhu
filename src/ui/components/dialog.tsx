@@ -3,23 +3,51 @@
 'use client';
 
 import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import { Minus, XIcon } from 'lucide-react';
 import * as DialogPrimitive from 'radix-ui/dialog';
 
 import { usePortalContainer } from '../react/contexts';
+import { useComposedRefs } from '../lib/compose-refs';
 import { cn } from '../lib/utils';
+import { ModalLayer, useOverlayStyle, useModalContent, useModalOpener } from '../react/modal-layer';
+import { useDirtyModal, type DirtyModalProps } from '../react/dirty-modal';
 import { handleImeOverlayEscape } from '../react/ime';
 import { Button } from './button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { useT } from '../react/hooks';
 
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-	return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+const DialogRequestContext = React.createContext<((value: boolean) => void) | null>(null);
+export function useDialogClose(): () => void {
+	const request = React.useContext(DialogRequestContext);
+	if (!request) throw new Error('Dialog close requires Dialog');
+	return () => request(false);
+}
+function Dialog({ children, dirty, onDiscard, open, defaultOpen, onOpenChange, ...props }: DirtyModalProps) {
+	const modal = useDirtyModal({ open, defaultOpen, onOpenChange, dirty, onDiscard });
+	return (
+		<ModalLayer open={modal.open} modal={props.modal !== false}>
+			<DialogRequestContext.Provider value={modal.requestOpen}>
+				<DialogPrimitive.Root {...props} open={modal.open} onOpenChange={modal.requestOpen}>
+					{children}
+					{modal.confirmation}
+				</DialogPrimitive.Root>
+			</DialogRequestContext.Provider>
+		</ModalLayer>
+	);
 }
 
-function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-	return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+function DialogTrigger({ onClickCapture, ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+	const capture = useModalOpener();
+	return (
+		<DialogPrimitive.Trigger
+			data-slot="dialog-trigger"
+			{...props}
+			onClickCapture={(event) => {
+				capture();
+				onClickCapture?.(event);
+			}}
+		/>
+	);
 }
 
 function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
@@ -30,31 +58,20 @@ function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.C
 	return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
-function DialogOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+function DialogOverlay({ className, style, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
 	return (
 		<DialogPrimitive.Overlay
 			data-slot="dialog-overlay"
-			// HUHU semantic surface tokens follow the host theme and the optional Orca palette.
+			style={useOverlayStyle(style)}
+			// HUHU semantic surfaces come from the approved theme palette.
 			className={cn(
-				'fixed inset-0 z-[var(--layer-modal)] bg-black/55 md:backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+				'fixed inset-0 z-[var(--hu-overlay-layer)] bg-[var(--hu-overlay)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
 				className,
 			)}
 			{...props}
 		/>
 	);
 }
-
-const dialogContentSurfaceVariants = cva('', {
-	variants: {
-		surface: {
-			default: '',
-			/** The tinted, edge-to-edge panel of the two-column feature tip dialogs. */
-			'feature-tip':
-				'gap-0 bg-[color-mix(in_srgb,var(--foreground)_8%,var(--background))] p-0 dark:bg-[color-mix(in_srgb,var(--foreground)_16%,var(--background))]',
-		},
-	},
-	defaultVariants: { surface: 'default' },
-});
 
 function DialogContentCloseButton({ variant }: { variant: 'close' | 'minimize' }) {
 	const t = useT();
@@ -64,11 +81,12 @@ function DialogContentCloseButton({ variant }: { variant: 'close' | 'minimize' }
 		<DialogPrimitive.Close asChild>
 			<Button
 				data-slot="dialog-close"
+				aria-label={label}
 				data-hit-control
 				type="button"
 				variant="ghost"
 				size="icon-sm"
-				className="huhu-close-target absolute top-5 right-4 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+				className="huhu-close-target absolute top-4 right-4"
 			>
 				{variant === 'minimize' ? <Minus className="size-3.5" /> : <XIcon />}
 				<span className="sr-only">{label}</span>
@@ -93,29 +111,56 @@ function DialogContent({
 	overlayClassName,
 	showCloseButton = true,
 	closeButtonVariant = 'close',
-	surface,
+	style,
+	ref,
 	...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> &
-	VariantProps<typeof dialogContentSurfaceVariants> & {
-		overlayClassName?: string;
-		showCloseButton?: boolean;
-		closeButtonVariant?: 'close' | 'minimize';
-	}) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+	overlayClassName?: string;
+	showCloseButton?: boolean;
+	closeButtonVariant?: 'close' | 'minimize';
+}) {
+	const layer = useOverlayStyle(style);
+	const modal = useModalContent();
+	const contentRef = useComposedRefs<HTMLDivElement>(modal.ref, ref);
 	return (
 		<DialogPortal data-slot="dialog-portal">
 			<DialogOverlay className={overlayClassName} />
 			<DialogPrimitive.Content
 				data-slot="dialog-content"
-				// HUHU semantic surface tokens follow the host theme and the optional Orca palette.
+				// HUHU semantic surfaces come from the approved theme palette.
 				className={cn(
-					'fixed top-[50%] left-[50%] z-[var(--layer-modal)] grid w-full max-w-[calc(100%-2rem)] grid-cols-[minmax(0,1fr)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border border-border bg-background p-6 text-foreground shadow-floating md:backdrop-blur-2xl duration-[var(--anim-duration-fast)] outline-none    data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
-					dialogContentSurfaceVariants({ surface }),
+					'fixed top-1/2 left-1/2 z-[var(--hu-overlay-layer)] grid w-[min(512px,calc(100%-32px))] max-h-[calc(100%-32px)] min-w-0 grid-cols-[minmax(0,1fr)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto scrollbar-sleek rounded-[var(--hu-radius-xl)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-5 text-[var(--hu-fg)] shadow-floating outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
 					// The title never runs under the close button.
 					showCloseButton && '[&>[data-slot=dialog-header]]:pe-9',
 					className,
 				)}
 				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
+				style={layer}
+				ref={contentRef}
+				onPointerDownCapture={(event) => {
+					modal.onPointerDownCapture(event);
+					props.onPointerDownCapture?.(event);
+				}}
+				onPointerDownOutside={(event) => {
+					props.onPointerDownOutside?.(event);
+					if (!event.defaultPrevented) modal.onPointerDownOutside(event);
+				}}
+				onKeyDownCapture={(event) => {
+					props.onKeyDownCapture?.(event);
+					if (!event.defaultPrevented) modal.onKeyDownCapture(event);
+				}}
+				onOpenAutoFocus={(event) => {
+					modal.onOpenAutoFocus();
+					props.onOpenAutoFocus?.(event);
+				}}
+				onCloseAutoFocus={(event) => {
+					props.onCloseAutoFocus?.(event);
+					if (!event.defaultPrevented) modal.onCloseAutoFocus(event);
+				}}
+				onEscapeKeyDown={(event) => {
+					handleImeOverlayEscape(event, props.onEscapeKeyDown);
+					event.stopPropagation();
+				}}
 			>
 				{children}
 				{showCloseButton && <DialogContentCloseButton variant={closeButtonVariant} />}
@@ -125,13 +170,7 @@ function DialogContent({
 }
 
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
-	return (
-		<div
-			data-slot="dialog-header"
-			className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
-			{...props}
-		/>
-	);
+	return <div data-slot="dialog-header" className={cn('flex flex-col gap-2 text-left', className)} {...props} />;
 }
 
 function DialogFooter({
@@ -146,35 +185,24 @@ function DialogFooter({
 	return (
 		<div
 			data-slot="dialog-footer"
-			className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
+			className={cn('flex flex-row flex-wrap justify-end gap-2', className)}
 			{...props}
 		>
 			{children}
 			{showCloseButton && (
 				<DialogPrimitive.Close asChild>
-					<Button variant="outline">{t('ui.close')}</Button>
+					<Button variant="secondary">{t('ui.close')}</Button>
 				</DialogPrimitive.Close>
 			)}
 		</div>
 	);
 }
 
-function DialogTitle({
-	className,
-	size = 'default',
-	...props
-}: React.ComponentProps<typeof DialogPrimitive.Title> & {
-	/** `display` is the large headline of the two-column feature tip dialogs. */
-	size?: 'default' | 'display';
-}) {
+function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
 	return (
 		<DialogPrimitive.Title
 			data-slot="dialog-title"
-			data-size={size}
-			className={cn(
-				'm-0 text-lg leading-snug font-semibold break-words data-[size=display]:text-2xl data-[size=display]:leading-tight data-[size=display]:tracking-tight md:data-[size=display]:text-[1.75rem]',
-				className,
-			)}
+			className={cn('m-0 text-lg leading-[var(--hu-lh-lg)] font-semibold break-words', className)}
 			{...props}
 		/>
 	);

@@ -1,183 +1,35 @@
-/* CodeMirror's owned DOM needs scoped CSS; all surrounding product layout uses Tailwind. */
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors {
-	background: var(--background);
-	color: var(--foreground);
-	font-family: var(--nd-font-mono);
-	font-size: 14px;
-	overflow: hidden;
+/* Pierre shadow DOM consumes only this token bridge; no external selector pierces its internals. */
+.huhu-ui .huhu-versioning-diff {
+	--diffs-font-family: var(--hu-font-mono);
+	--diffs-header-font-family: var(--hu-font-ui);
+	--diffs-font-size: 12.5px;
+	--diffs-line-height: 22px;
+	--diffs-tab-size: 4;
+	--diffs-min-number-column-width: 44px;
+	--diffs-foreground: var(--hu-fg);
+	--diffs-background: var(--hu-surface);
+	--diffs-bg-context-override: var(--hu-surface);
+	--diffs-bg-addition-override: var(--hu-diff-add);
+	--diffs-bg-deletion-override: var(--hu-diff-del);
+	--diffs-bg-addition-emphasis-override: var(--hu-diff-add-em);
+	--diffs-bg-deletion-emphasis-override: var(--hu-diff-del-em);
+	--diffs-addition-color-override: var(--hu-success);
+	--diffs-deletion-color-override: var(--hu-danger);
+	--diffs-modified-color-override: var(--hu-accent);
+	--diffs-bg-context-gutter-override: var(--hu-diff-gutter);
+	--diffs-bg-selection-override: var(--hu-diff-sel);
+	--diffs-selection-color-override: var(--hu-diff-sel);
+	--diffs-token-constant: var(--hu-accent-text);
+	--diffs-token-string: var(--hu-success);
+	--diffs-token-comment: var(--hu-fg-3);
+	--diffs-token-keyword: var(--hu-accent-text);
+	--diffs-token-parameter: var(--hu-fg);
+	--diffs-token-function: var(--hu-info);
+	--diffs-token-string-expression: var(--hu-success);
+	--diffs-token-punctuation: var(--hu-fg-2);
+	--diffs-token-link: var(--hu-accent-text);
 }
 
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors[data-layout='stacked'] {
-	display: flex;
-}
-
-.huhu-ui .huhu-versioning-stacked-pane {
-	display: flex;
-	height: 100%;
-	flex-direction: column;
-	min-width: 0;
-	min-height: 0;
-	overflow: hidden;
-}
-
-.huhu-ui .huhu-versioning-stacked-pane + .huhu-versioning-stacked-pane {
-	border-top: 1px solid var(--border);
-}
-
-.huhu-ui .huhu-versioning-pane-title {
-	flex: 0 0 auto;
-	min-height: 32px;
-	padding: 6px 12px;
-	border-bottom: 1px solid var(--border);
-	background: var(--muted);
-	color: var(--muted-foreground);
-	font-family: var(--nd-font-sans);
-	font-size: 12px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-editor {
-	height: 100%;
-	min-height: 0;
-	min-width: 0;
-	flex: 1 1 0%;
-	background: var(--background);
-	color: var(--foreground);
-	font-family: inherit;
-	font-size: inherit;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-scroller {
-	overflow: auto;
-	font-family: inherit;
-	line-height: 1.65;
-	scrollbar-width: thin;
-	scrollbar-color: var(--border) transparent;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-content {
-	padding-block: 8px;
-	caret-color: var(--foreground);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-line {
-	padding-inline: 10px;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-gutters {
-	background: var(--background);
-	color: var(--muted-foreground);
-	border-right: 1px solid var(--border);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-activeLineGutter {
-	background: var(--muted);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeView {
-	height: 100%;
-	min-height: 0;
-	overflow: hidden;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeViewEditors {
-	height: 100%;
-	min-height: 0;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeViewEditor {
-	height: 100%;
-	min-height: 0;
-	min-width: 0;
-	overflow: auto;
-	scrollbar-width: thin;
-	scrollbar-color: var(--border) transparent;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeViewEditor + .cm-mergeViewEditor {
-	border-left: 1px solid var(--border);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedLine,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedChunk,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-removed-line {
-	background: color-mix(in oklab, var(--destructive) 9%, transparent);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedLine,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-inlineChangedLine,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-added-line {
-	background: color-mix(in oklab, var(--status-success) 9%, transparent);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedText,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedText,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-removed-text {
-	background: color-mix(in oklab, var(--destructive) 20%, transparent);
-	text-decoration: underline;
-	text-decoration-color: var(--destructive);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedText,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-added-text {
-	background: color-mix(in oklab, var(--status-success) 20%, transparent);
-	text-decoration: underline;
-	text-decoration-color: var(--status-success);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedLineGutter,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedLineGutter {
-	background: var(--destructive);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedLineGutter {
-	background: var(--status-success);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-change-gutter {
-	min-width: 14px;
-	text-align: center;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold {
-	background: var(--muted);
-	color: var(--muted-foreground);
-	font-family: var(--nd-font-sans);
-	font-size: 12px;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button {
-	display: block;
-	width: 100%;
-	min-height: var(--nd-hit-size, 32px);
-	padding: 4px 12px;
-	border: 0;
-	border-radius: 0;
-	background: transparent;
-	color: inherit;
-	font: inherit;
-	text-align: start;
-	cursor: pointer;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button:hover {
-	background: var(--accent);
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button:focus-visible,
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-content:focus-visible {
-	outline: 2px solid var(--ring);
-	outline-offset: -2px;
-}
-
-.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-selectionBackground {
-	background: color-mix(in oklab, var(--primary) 20%, transparent);
-}
-
-@media (pointer: coarse) {
-	.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button {
-		min-height: 44px;
-	}
+.huhu-ui .huhu-versioning-diff[data-narrow='true'] {
+	--diffs-min-number-column-width: 36px;
 }

@@ -1,3 +1,4 @@
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts (renderSidebarPomodoro)
 import { lazy, Suspense, useState } from 'react';
 import { useStore } from 'zustand';
@@ -37,7 +38,7 @@ export function PomodoroWidget({ store }: { store: BoardStore }) {
 		service = store.widgets.pomodoro,
 		[open, setOpen] = useState(false),
 		settings = useStore(store.state, (s) => s.settings);
-	if (!service) return null;
+	if (!service) return <EmptyState size="sm" title={t('home.widget.unavailable')} />;
 	const state = service.getState(),
 		displaySeconds = state.mode === 'stopwatch' ? state.elapsedSeconds : state.remainingSeconds,
 		minutes = String(Math.floor(displaySeconds / 60)).padStart(2, '0'),
@@ -209,7 +210,7 @@ export function PomodoroWidget({ store }: { store: BoardStore }) {
 							onBlur={(e) => service.setActivity(e.target.value)}
 						/>
 					</Label>
-					<Button variant="outline" onClick={() => setTags(true)}>
+					<Button variant="secondary" onClick={() => setTags(true)}>
 						{t('pomodoro.tagManage')}
 					</Button>
 				</DashboardDialog>

@@ -25,13 +25,13 @@ HUHU 是 Obsidian 插件，界面入口为 `src/app/main.ts`，esbuild 生成 Co
 
 ## 状态与数据
 
-服务层拥有 zustand/vanilla 业务仓库；React 订阅并发送动作。设置按命名空间和库/设备范围存储，不新增平铺 saveData。叶子只保存有界界面状态，不保存保险箱敏感内容。
+服务层拥有 zustand/vanilla 业务仓库；React 订阅并发送动作。设置按命名空间和库/设备范围存储，不新增平铺 saveData。叶子只保存 `huhu-workbench-ui/1` 封套中的 route、navigation（width/open/lastRoutes）、mode 和 pageViews，不解码旧 target/panel 字段，不保存保险箱敏感内容。
 
 用户内容在可见 huhu 根；配置、受管 Markdown 与运行数据在隐藏根。所有路径、设备隔离、链接拒绝、写入合并和恢复的实际约定见[数据与恢复](data.md)。看板与自动化定义才属于隐藏受管文档，不能将任意私有文件回落到普通笔记接口。损坏或读取失败不能当作空内容覆盖。
 
 ## React、样式和所属窗口
 
-ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用元素所属 Document 的共享容器。所有组件和弹层保留 huhu-ui 作用域。主题、令牌、Tailwind 与中和层见[设计系统](design-system.md)。
+ReactSurface 每个页面一个根，关闭时卸载；编辑器贡献 mount(container, documents, visible) 返回 EditorPanelHandle，独立根由宿主显式 setVisible 暂停/恢复，dispose 释放；Portal 与 sonner 使用元素所属 Document 的共享容器。所有组件和弹层保留 huhu-ui 作用域。主题、令牌、Tailwind 与中和层见[设计系统](design-system.md)。
 
 ## 模块边界
 

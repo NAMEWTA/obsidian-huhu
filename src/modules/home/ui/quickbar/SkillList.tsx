@@ -121,7 +121,7 @@ export function SkillList({
 				)}
 			</DraftList>
 			<Button
-				variant="outline"
+				variant="secondary"
 				size="sm"
 				onClick={() =>
 					onChange([

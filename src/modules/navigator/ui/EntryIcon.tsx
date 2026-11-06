@@ -18,10 +18,10 @@ export function EntryIcon({ env, target, open, version }: { env: NavigatorEnv; t
 	// The service's default (`isDefault`) is the same table as below, except that the folder here knows whether it is open.
 	const custom = resolved.icon && !resolved.isDefault;
 	if (custom && resolved.emoji) {
-		return <span aria-hidden className="inline-flex size-4 shrink-0 items-center justify-center text-[13px] leading-none" style={style}>{resolved.icon}</span>;
+		return <span aria-hidden className="inline-flex size-4 shrink-0 items-center justify-center text-sm leading-none" style={style}>{resolved.icon}</span>;
 	}
 	if (custom && resolved.icon) return <span className="inline-flex shrink-0" style={style}><ObsidianIcon name={resolved.icon} className={ICON} /></span>;
-	const tone = resolved.color ? undefined : 'text-muted-foreground';
+	const tone = resolved.color ? undefined : 'text-[var(--hu-fg-3)]';
 	switch (target.kind) {
 		case 'folder':
 		case 'file': {
@@ -29,7 +29,7 @@ export function EntryIcon({ env, target, open, version }: { env: NavigatorEnv; t
 			const fallback = target.kind === 'folder' ? defaultFolderIcon(target.key, !!open) : defaultFileIcon(target.key);
 			const color = resolved.color ?? fallback.color;
 			return (
-				<span className={`inline-flex shrink-0 ${color ? '' : 'text-muted-foreground'}`} style={color ? { color } : undefined}>
+				<span className={`inline-flex shrink-0 ${color ? '' : 'text-[var(--hu-fg-3)]'}`} style={color ? { color } : undefined}>
 					<ObsidianIcon name={lucideIconId(fallback.icon)} className={ICON} />
 				</span>
 			);

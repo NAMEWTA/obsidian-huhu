@@ -5,17 +5,20 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import * as DropdownMenuPrimitive from 'radix-ui/dropdown-menu';
 
 import { usePortalContainer } from '../react/contexts';
+import { useOverlayStyle, FloatingLayer, FloatingOwner } from '../react/modal-layer';
 import { cn } from '../lib/utils';
 import { handleImeOverlayEscape } from '../react/ime';
 
 function DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-	return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+	return (
+		<FloatingOwner>
+			<DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
+		</FloatingOwner>
+	);
 }
 
 function DropdownMenuPortal({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
-	return (
-		<DropdownMenuPrimitive.Portal container={usePortalContainer()} data-slot="dropdown-menu-portal" {...props} />
-	);
+	return <DropdownMenuPrimitive.Portal container={usePortalContainer()} data-slot="dropdown-menu-portal" {...props} />;
 }
 
 function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
@@ -29,22 +32,27 @@ function DropdownMenuContent({
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
 	return (
-		<DropdownMenuPrimitive.Portal container={usePortalContainer()}>
-			<DropdownMenuPrimitive.Content
-				data-slot="dropdown-menu-content"
-				sideOffset={sideOffset}
-				className={cn(
-					'z-[var(--layer-menu)] max-h-(--radix-dropdown-menu-content-available-height) min-w-[11rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto scrollbar-sleek rounded-[11px] border border-border bg-popover p-[4px] text-popover-foreground shadow-floating md:backdrop-blur-2xl    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--anim-duration-fast)] data-[state=open]:zoom-in-[0.98]',
-					className,
-				)}
-				// Why: Electron's -webkit-app-region: drag on the titlebar captures
-				// clicks at the OS level regardless of z-index. Without no-drag,
-				// dropdown menus that visually overlap the titlebar are unclickable.
-				style={{ ...style, WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
-			/>
-		</DropdownMenuPrimitive.Portal>
+		<FloatingLayer>
+			<DropdownMenuPrimitive.Portal container={usePortalContainer()}>
+				<DropdownMenuPrimitive.Content
+					data-slot="dropdown-menu-content"
+					sideOffset={sideOffset}
+					className={cn(
+						'z-[var(--hu-overlay-layer)] max-h-(--radix-dropdown-menu-content-available-height) min-w-[11rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto scrollbar-sleek rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-[4px] text-popover-foreground shadow-floating     data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--hu-dur-fast)] data-[state=open]:zoom-in-[0.98]',
+						className,
+					)}
+					// Why: Electron's -webkit-app-region: drag on the titlebar captures
+					// clicks at the OS level regardless of z-index. Without no-drag,
+					// dropdown menus that visually overlap the titlebar are unclickable.
+					style={{ ...useOverlayStyle(style, 1), WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+					{...props}
+					onEscapeKeyDown={(event) => {
+						handleImeOverlayEscape(event, props.onEscapeKeyDown);
+						event.stopPropagation();
+					}}
+				/>
+			</DropdownMenuPrimitive.Portal>
+		</FloatingLayer>
 	);
 }
 
@@ -202,20 +210,25 @@ function DropdownMenuSubContent({
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
 	return (
-		<DropdownMenuPrimitive.Portal container={usePortalContainer()}>
-			<DropdownMenuPrimitive.SubContent
-				data-slot="dropdown-menu-sub-content"
-				className={cn(
-					'z-[var(--layer-menu)] min-w-[11rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-[11px] border border-border bg-popover p-[4px] text-popover-foreground shadow-floating md:backdrop-blur-2xl    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--anim-duration-fast)] data-[state=open]:zoom-in-[0.98]',
-					className,
-				)}
-				// Why: same no-drag fix as DropdownMenuContent — titlebar drag region
-				// would otherwise capture clicks when submenu overlaps it.
-				style={{ ...style, WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
-			/>
-		</DropdownMenuPrimitive.Portal>
+		<FloatingLayer>
+			<DropdownMenuPrimitive.Portal container={usePortalContainer()}>
+				<DropdownMenuPrimitive.SubContent
+					data-slot="dropdown-menu-sub-content"
+					className={cn(
+						'z-[var(--hu-overlay-layer)] min-w-[11rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] p-[4px] text-popover-foreground shadow-floating     data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:duration-[var(--hu-dur-fast)] data-[state=open]:zoom-in-[0.98]',
+						className,
+					)}
+					// Why: same no-drag fix as DropdownMenuContent — titlebar drag region
+					// would otherwise capture clicks when submenu overlaps it.
+					style={{ ...useOverlayStyle(style, 1), WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+					{...props}
+					onEscapeKeyDown={(event) => {
+						handleImeOverlayEscape(event, props.onEscapeKeyDown);
+						event.stopPropagation();
+					}}
+				/>
+			</DropdownMenuPrimitive.Portal>
+		</FloatingLayer>
 	);
 }
 

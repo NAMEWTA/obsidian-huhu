@@ -86,9 +86,10 @@ test('row controls and portaled menu actions never open detail; status filter an
 	expect(document.querySelector('[data-automation-editor]')).toBeNull();
 	await user.click(screen.getByRole('button', { name: 'Filter' }));
 	await user.click(await screen.findByRole('menuitemcheckbox', { name: 'Paused' }));
-	expect(screen.queryByRole('button', { name: 'Alpha' })).toBeNull();
-	await user.click(screen.getByRole('button', { name: 'Clear all' }));
 	expect(screen.getByRole('button', { name: 'Alpha' })).toBeTruthy();
+	expect(screen.queryByRole('button', { name: 'Beta' })).toBeNull();
+	await user.click(screen.getByRole('button', { name: 'Clear all' }));
+	expect(screen.getByRole('button', { name: 'Beta' })).toBeTruthy();
 	f.view.dispose();
 });
 test('template opens a prefilled reminder, validates name, saves and runs with the saved revision', async () => {
@@ -250,13 +251,22 @@ test('a Space archived after it was chosen is shown as unavailable and blocks sa
 		open: vi.fn(),
 	});
 	const d = definition('Bound');
-	d.action = { kind: 'agent', agentId: 'codex', prompt: 'P', cwd: '/vault', sessionMode: 'fresh', spaceId: 'space-gone' };
+	d.action = {
+		kind: 'agent',
+		agentId: 'codex',
+		prompt: 'P',
+		cwd: '/vault',
+		sessionMode: 'fresh',
+		spaceId: 'space-gone',
+	};
 	render(
 		<TestProviders>
 			<EditorView host={f.host} request={{ existing: d }} onSaved={close} onClose={close} />
 		</TestProviders>,
 	);
-	expect(screen.getByRole('combobox', { name: 'Space' }).textContent).toContain(t('automation.spaceUnavailableOption'));
+	expect(screen.getByRole('combobox', { name: 'Space' }).textContent).toContain(
+		t('automation.spaceUnavailableOption'),
+	);
 	expect(screen.getAllByText(t('automation.spaceUnavailable')).length).toBeGreaterThan(0);
 	await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 	await waitFor(() => expect(screen.getAllByText(t('automation.spaceUnavailable')).length).toBeGreaterThan(0));
@@ -271,7 +281,7 @@ test('disabled execution blocks every mutation while preserving readable definit
 	f.listeners.forEach((listener) => listener());
 	const user = userEvent.setup();
 	render(<f.Page />);
-	expect(screen.getByRole('alert').textContent).toContain(t('automation.moduleOff'));
+	expect(screen.getByText(t('automation.moduleOff'))).toBeTruthy();
 	expect((screen.getByRole('switch', { name: 'Pause Alpha' }) as HTMLButtonElement).disabled).toBe(true);
 	expect((screen.getByRole('button', { name: t('automation.new') }) as HTMLButtonElement).disabled).toBe(true);
 	await user.click(screen.getByRole('button', { name: 'Actions for Alpha' }));
@@ -365,9 +375,17 @@ test('hiding the page with an open picker releases the picker layer; the editor 
 
 test('detail rows name the bound Space, hint when unset, and say unavailable when it is gone', async () => {
 	const { agentView, bindSpaceLookup } = await import('./actions/agent');
-	const action = { kind: 'agent' as const, agentId: 'codex', prompt: 'P', cwd: '/vault', sessionMode: 'fresh' as const };
+	const action = {
+		kind: 'agent' as const,
+		agentId: 'codex',
+		prompt: 'P',
+		cwd: '/vault',
+		sessionMode: 'fresh' as const,
+	};
 	const spaceRow = (spaceId?: string) =>
-		agentView.facts!({ ...action, ...(spaceId ? { spaceId } : {}) }).find((row) => row.label === t('automation.space'))?.value;
+		agentView.facts!({ ...action, ...(spaceId ? { spaceId } : {}) }).find(
+			(row) => row.label === t('automation.space'),
+		)?.value;
 	bindSpaceLookup(() => [{ id: 'space-a', name: 'Alpha space' }]);
 	expect(spaceRow('space-a')).toBe(t('automation.spaceTarget', { name: 'Alpha space' }));
 	expect(spaceRow()).toBe(t('automation.spaceRequired'));

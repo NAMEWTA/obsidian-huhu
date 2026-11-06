@@ -33,10 +33,11 @@ const snapshot = (name: string) => fileURLToPath(new URL(`./__snapshots__/${name
 
 test('named appearances persist only global theme and Home decoration', async () => {
 	const stored = homeSettings.normalize({ appearancePresets: [{ id: 'evening', name: 'Evening',
-		theme: { preset: 'eye-care', editor: 'claude-code', headings: 'accented', emphasis: 'highlight', fontText: 'serif', fontSize: 18, lineHeight: 1.9 },
+		theme: { preset: 'system', source: 'huhu', accent: 'plum', density: 'comfortable', uiSize: '15', motion: 'reduce', editor: 'claude-code', headings: 'accented', emphasis: 'highlight', fontText: 'serif', fontSize: 18, lineHeight: 1.9 },
 		home: { bgImage: 'Images/bg.svg', bgDim: 33, bgBlur: 3, bgSize: 'contain', bgFocal: { x: 22, y: 77 }, surfaceOpacity: 75, glassBlur: 6, radiusScale: 19, fontScale: 'large', dashboardFile: 'excluded' },
 	}], activeAppearancePresetId: 'evening' });
 	const value = { appearancePresets: stored.appearancePresets, activeAppearancePresetId: stored.activeAppearancePresetId };
+	assert.equal(Object.hasOwn(value.appearancePresets[0]!.home, 'dashboardFile'), false);
 	const serialized = JSON.stringify(value, null, 2) + '\n';
 	await expect(serialized).toMatchFileSnapshot(snapshot('appearance-settings.json'));
 	assert.deepEqual(homeSettings.normalize(JSON.parse(serialized)).appearancePresets, value.appearancePresets);

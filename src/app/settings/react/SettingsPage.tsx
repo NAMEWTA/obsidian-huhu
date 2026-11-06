@@ -42,12 +42,22 @@ export function SettingsPage({
 	useSettingFocus(scroll, focusId, focusToken);
 	const section = settingsCategories(plugin).find((c) => c.id === category);
 	return (
-		<div className="huhu-settings-page settings-view-shell flex h-full min-h-0 flex-1 overflow-hidden bg-background">
+		<div className="huhu-settings-page @container settings-view-shell flex h-full min-h-0 flex-1 overflow-hidden bg-background">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
+				{section && (
+					<header className="shrink-0 border-b border-[var(--hu-line)] px-4 py-4 @min-[600px]:px-6">
+						<h1 className="m-0 text-xl font-semibold">{section.label}</h1>
+					</header>
+				)}
 				<div ref={scroll} className="min-h-0 flex-1 overflow-y-auto scrollbar-sleek" data-settings-scroll>
-					<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-8 pt-10 pb-24">
+					<div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-4 pb-12 @min-[600px]:p-6">
 						{section && (
-							<CategoryContent plugin={plugin} section={section} resourceId={resourceId} navigate={navigate} />
+							<CategoryContent
+								plugin={plugin}
+								section={section}
+								resourceId={resourceId}
+								navigate={navigate}
+							/>
 						)}
 					</div>
 				</div>

@@ -58,7 +58,7 @@ export function DeleteDialog({
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={busy}>{t('automation.cancel')}</AlertDialogCancel>
 					<Button
-						variant="destructive"
+						variant="danger"
 						disabled={busy}
 						onClick={() => {
 							setBusy(true);

@@ -1,9 +1,13 @@
+import { HomeGreetingSummary } from './HomeGreetingSummary';
+import { cancelSubmittedLayout } from './cancel-layout';
+import { getLanguage } from '../../../../shared/i18n';
+import '../i18n';
 // Layout engine: react-grid-layout 2.2.4 (MIT). Tile content and widget frames adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/immersive.ts
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Platform } from 'obsidian';
 import { Responsive } from 'react-grid-layout';
 import { useStore } from 'zustand';
-import { Ellipsis, PanelLeft, Plus } from 'lucide-react';
+import { Check, Ellipsis, LayoutGrid, PanelLeft, Plus } from 'lucide-react';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { Button } from '../../../../ui/components/button';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
@@ -25,7 +29,9 @@ import {
 	resizeItem,
 	type GridBreakpoint,
 	type GridItem,
+	type BoardGrid,
 } from '../../core/board/grid';
+import { defaultCanvas } from '../../core/board/canvas';
 import type { BoardWidgetMember } from '../../core/board/types/model';
 import { defaultWeatherLocation } from '../../core/board/weather-locations';
 import { WidgetLifetime } from '../../core/board/widget-lifetime';
@@ -61,7 +67,7 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 const pick = ({ i, x, y, w, h }: GridItem): GridItem => ({ i, x, y, w, h });
 
 /**
- * The board: a grid of fixed-height tiles that can always be moved and resized. 12 columns from 960px, 6 from 600px
+ * The board: a grid of fixed-height tiles that can be moved and resized in layout editing. 12 columns from 960px, 6 from 600px
  * and one column below; every tile is a whole number of rows tall, so tiles in one row line up at top and bottom
  * and a tile whose content is taller scrolls inside itself.
  *
@@ -102,6 +108,61 @@ function BoardCanvasView({
 		[announcement, setAnnouncement] = useState(''),
 		/** The one-column order is only a view: dragging there reorders it for this page without writing the board. */
 		[stackOrder, setStackOrder] = useState<string[] | undefined>();
+	const [editing, setEditing] = useState(false),
+		[savingLayout, setSavingLayout] = useState(false),
+		[draftGrid, setDraftGrid] = useState<Partial<Record<GridBreakpoint, GridItem[]>>>({});
+	const layoutBeforeEdit = useRef(data?.grid);
+	const submittedLayout = useRef<Partial<Pick<BoardGrid, 'lg' | 'md'>> | null>(null);
+	const stackBeforeEdit = useRef<string[] | undefined>(undefined);
+	const beginEditing = () => {
+		stackBeforeEdit.current = stackOrder;
+		layoutBeforeEdit.current = structuredClone(data?.grid);
+		submittedLayout.current = null;
+		setDraftGrid({});
+		setFailure('');
+		setEditing(true);
+	};
+	const finishEditing = async () => {
+		if (savingLayout || store.state.getState().switching) return;
+		setSavingLayout(true);
+		setFailure('');
+		try {
+			if (Object.keys(draftGrid).length) {
+				submittedLayout.current = structuredClone(draftGrid);
+				await store.sync.setBoardGrid(draftGrid);
+			}
+			await store.sync.flush();
+			setEditing(false);
+			setDraftGrid({});
+		} catch (error) {
+			fail(error);
+		} finally {
+			setSavingLayout(false);
+		}
+	};
+	const cancelEditing = async () => {
+		if (savingLayout || store.state.getState().switching) return;
+		setSavingLayout(true);
+		setFailure('');
+		try {
+			if (submittedLayout.current) {
+				const latest = store.sync.getData();
+				if (latest) {
+					const grid = cancelSubmittedLayout(latest.grid, layoutBeforeEdit.current, submittedLayout.current);
+					await store.sync.replaceData({ ...latest, grid });
+					await store.sync.flush();
+				}
+			}
+			submittedLayout.current = null;
+			setEditing(false);
+			setStackOrder(stackBeforeEdit.current);
+			setDraftGrid({});
+		} catch (error) {
+			fail(error);
+		} finally {
+			setSavingLayout(false);
+		}
+	};
 	const breakpoint = breakpointOf(width);
 	const narrow = breakpoint === 'sm';
 	const mobile = Platform.isPhone || narrow;
@@ -113,7 +174,17 @@ function BoardCanvasView({
 	// Geometry follows board edits and provider registration only; timer ticks must not rebuild the layouts.
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- `catalog` is the provider registry's change counter
 	const specs = useMemo(() => tileSpecs(sources, widgetTileDefaults), [sources, catalog]);
-	const layouts = useMemo(() => layoutsFor(data!.grid, specs, stackOrder), [data, specs, stackOrder]);
+	const layouts = useMemo(
+		() =>
+			layoutsFor(
+				Object.keys(draftGrid).length
+					? { ...data!.grid, v: 2, lg: data!.grid?.lg ?? [], ...draftGrid }
+					: data!.grid,
+				specs,
+				stackOrder,
+			),
+		[data, specs, stackOrder, draftGrid],
+	);
 	const cols = GRID_COLUMNS[breakpoint];
 	/** A gesture ended at this width: store it (the one-column order is not stored). */
 	const commit = useCallback(
@@ -125,7 +196,7 @@ function BoardCanvasView({
 				setStackOrder([...next].sort((a, b) => a.y - b.y || a.x - b.x).map((item) => item.i));
 				return;
 			}
-			void observeBoardAction(store.sync.setBoardGrid({ [at]: next }));
+			setDraftGrid((previous) => ({ ...previous, [at]: next }));
 		},
 		[store],
 	);
@@ -133,6 +204,7 @@ function BoardCanvasView({
 		if (item) setAnnouncement(t('renderer.tilePlace', { x: item.x + 1, y: item.y + 1, w: item.w, h: item.h }));
 	};
 	const place = (id: string, dx: number, dy: number) => {
+		if (!editing) beginEditing();
 		if (narrow) {
 			const order = layouts.sm.map((item) => item.i);
 			const from = order.indexOf(id),
@@ -166,14 +238,22 @@ function BoardCanvasView({
 		if (!kind || store.state.getState().switching) return;
 		const size = tierSize(kind, tier);
 		const spec = specs.find((item) => item.id === source.id);
-		void observeBoardAction(
-			store.sync.setBoardGrid({
-				lg: resizeItem(layouts.lg, source.id, size, spec, GRID_COLUMNS.lg),
-				...(data!.grid?.md
-					? { md: resizeItem(layouts.md, source.id, { ...size, w: Math.min(size.w, GRID_COLUMNS.md) }, spec, GRID_COLUMNS.md) }
-					: {}),
-			}),
-		);
+		if (!editing) beginEditing();
+		setDraftGrid((previous) => ({
+			...previous,
+			lg: resizeItem(layouts.lg, source.id, size, spec, GRID_COLUMNS.lg),
+			...(data!.grid?.md
+				? {
+						md: resizeItem(
+							layouts.md,
+							source.id,
+							{ ...size, w: Math.min(size.w, GRID_COLUMNS.md) },
+							spec,
+							GRID_COLUMNS.md,
+						),
+					}
+				: {}),
+		}));
 	};
 	// Provider lifetimes started here (create / configure) end with the canvas, the board or the provider.
 	const open = useRef(new Map<WidgetLifetime, { module: string; kind: string; instance?: string }>());
@@ -225,7 +305,9 @@ function BoardCanvasView({
 		const before = data!;
 		let done: Promise<void>;
 		if (source.type === 'widget')
-			done = store.sync.setBoardMembers((before.widgets ?? []).filter((m) => m.memberId !== source.member.memberId));
+			done = store.sync.setBoardMembers(
+				(before.widgets ?? []).filter((m) => m.memberId !== source.member.memberId),
+			);
 		else if (source.type === 'section')
 			done = store.sync.deleteColumn(
 				source.column.name,
@@ -315,7 +397,8 @@ function BoardCanvasView({
 			}
 		}
 		const member = memberOf(request.module, request.kind.key, instanceId);
-		if (request.module === 'home' && request.kind.key === 'weather') member.weather = defaultWeatherLocation(store.state.getState().settings);
+		if (request.module === 'home' && request.kind.key === 'weather')
+			member.weather = defaultWeatherLocation(store.state.getState().settings);
 		await observeBoardAction(store.sync.addToCanvas({ member }, size));
 	};
 	return (
@@ -335,11 +418,35 @@ function BoardCanvasView({
 						{t('home.frame.boardControls')}
 					</span>
 					<WorkspaceSwitcher store={store} />
-					<div className="flex min-w-0 justify-center data-[narrow]:order-last data-[narrow]:col-span-2" data-narrow={narrow || undefined}>
+					<div
+						className="flex min-w-0 justify-center data-[narrow]:order-last data-[narrow]:col-span-2"
+						data-narrow={narrow || undefined}
+					>
 						<BoardTitle store={store} />
 					</div>
 					<div className="ml-auto flex items-center gap-1">
-						<Button size="sm" variant="outline" onClick={() => setAdding(true)}>
+						{editing ? (
+							<>
+								<Button variant="ghost" disabled={savingLayout} onClick={() => void cancelEditing()}>
+									{t('home.layout.cancel')}
+								</Button>
+								<Button busy={savingLayout} onClick={() => void finishEditing()}>
+									<Check />
+									{t('home.layout.done')}
+								</Button>
+							</>
+						) : (
+							<Button variant="ghost" onClick={beginEditing}>
+								<LayoutGrid />
+								{t('home.layout.edit')}
+							</Button>
+						)}
+						<Button
+							hidden={sources.length === 0}
+							size="sm"
+							variant="secondary"
+							onClick={() => setAdding(true)}
+						>
 							<Plus />
 							{t('canvas.addWidget')}
 						</Button>
@@ -357,7 +464,30 @@ function BoardCanvasView({
 						</IconButton>
 					</div>
 				</div>
-				<div className="huhu-widget-board" data-breakpoint={breakpoint}>
+				<section className="mb-6 flex flex-wrap items-center justify-between gap-3" data-home-greeting>
+					<div className="min-w-0">
+						<p className="m-0 text-xs text-[var(--hu-fg-2)]">
+							{new Intl.DateTimeFormat(getLanguage() === 'zh' ? 'zh-CN' : 'en', {
+								dateStyle: 'full',
+							}).format(new Date())}
+						</p>
+						<h2 className="m-0 mt-[var(--hu-space-1-5)] text-2xl font-semibold tracking-[-0.01em] text-balance [font-family:var(--hu-font-read)]">
+							{t(
+								`home.greeting.${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}`,
+							)}
+						</h2>
+						<HomeGreetingSummary store={store} />
+					</div>
+				</section>
+				{editing && (
+					<p
+						role="status"
+						className="mb-4 rounded-[var(--hu-radius-md)] border border-[var(--hu-info)] bg-[var(--hu-info-soft)] p-3 text-sm"
+					>
+						{t('home.layout.hint')}
+					</p>
+				)}
+				<div className="huhu-widget-board" data-breakpoint={breakpoint} data-editing={editing || undefined}>
 					<div className="sr-only" role="status" aria-live="polite">
 						{announcement}
 					</div>
@@ -372,8 +502,15 @@ function BoardCanvasView({
 								rowHeight={GRID_ROW_HEIGHT}
 								margin={GRID_MARGIN}
 								containerPadding={[0, 0]}
-								dragConfig={{ enabled: !switching, handle: DRAG_HANDLE, cancel: DRAG_CANCEL }}
-								resizeConfig={{ enabled: !switching && !narrow, handles: ['se'] }}
+								dragConfig={{
+									enabled: editing && !savingLayout && !switching,
+									handle: DRAG_HANDLE,
+									cancel: DRAG_CANCEL,
+								}}
+								resizeConfig={{
+									enabled: editing && !savingLayout && !switching && !narrow,
+									handles: ['se'],
+								}}
 								onDragStop={(layout) => commit(breakpoint, layout)}
 								onResizeStop={(layout) => commit(breakpoint, layout)}
 							>
@@ -382,7 +519,8 @@ function BoardCanvasView({
 										tile = layouts.lg.find((item) => item.i === source.id),
 										label = labelOf(source, kind),
 										titleId = `${frameId}-tile-${index}`;
-									const current = kind && tile ? exactTier(kind, { w: tile.w, h: tile.h }) : undefined;
+									const current =
+										kind && tile ? exactTier(kind, { w: tile.w, h: tile.h }) : undefined;
 									return (
 										<article
 											key={source.id}
@@ -393,6 +531,7 @@ function BoardCanvasView({
 										>
 											<TileFrame
 												store={store}
+												editing={editing}
 												source={source}
 												kind={kind}
 												label={label}
@@ -412,8 +551,12 @@ function BoardCanvasView({
 														? setRemoving(source)
 														: remove(source, label)
 												}
-												onMove={(dx, dy) => place(source.id, dx, dy)}
-												onResize={(dw, dh) => resizeBy(source.id, dw, dh)}
+												onMove={(dx, dy) => {
+													place(source.id, dx, dy);
+												}}
+												onResize={(dw, dh) => {
+													if (editing) resizeBy(source.id, dw, dh);
+												}}
 											/>
 										</article>
 									);
@@ -426,6 +569,22 @@ function BoardCanvasView({
 							size="sm"
 							className="p-6"
 							title={t('canvas.noWidgets')}
+							action={
+								<div className="flex flex-wrap justify-center gap-2">
+									<Button onClick={() => setAdding(true)}>
+										<Plus />
+										{t('canvas.addWidget')}
+									</Button>
+									<Button
+										variant="secondary"
+										onClick={() => {
+											void store.sync.replaceData(defaultCanvas(data!)).catch(fail);
+										}}
+									>
+										{t('home.layout.default')}
+									</Button>
+								</div>
+							}
 						/>
 					)}
 				</div>
@@ -433,7 +592,7 @@ function BoardCanvasView({
 			{switching && (
 				<div
 					role={switchError ? 'alert' : 'status'}
-					className="absolute inset-0 z-[var(--layer-content)] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_70%,transparent)] p-6 text-center text-sm"
+					className="absolute inset-0 z-[var(--layer-content)] flex items-center justify-center bg-[color-mix(in_srgb,var(--hu-canvas)_70%,transparent)] p-6 text-center text-sm"
 				>
 					{switchError ? t('canvas.switchBroken', { detail: switchError }) : t('canvas.switching')}
 				</div>
@@ -441,7 +600,7 @@ function BoardCanvasView({
 			{!switching && switchError && (
 				<p
 					role="alert"
-					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--border)] bg-[var(--popover)] px-3 py-2 text-xs text-[var(--destructive)]"
+					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--hu-line)] bg-[var(--hu-raised)] px-3 py-2 text-xs text-[var(--hu-danger)]"
 				>
 					{t('canvas.switchFailed', { detail: switchError })}
 				</p>
@@ -449,7 +608,7 @@ function BoardCanvasView({
 			{failure && (
 				<p
 					role="alert"
-					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--border)] bg-[var(--popover)] px-3 py-2 text-xs text-[var(--destructive)]"
+					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--hu-line)] bg-[var(--hu-raised)] px-3 py-2 text-xs text-[var(--hu-danger)]"
 				>
 					{t('home.widget.failed', { detail: failure })}
 				</p>

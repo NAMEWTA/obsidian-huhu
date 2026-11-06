@@ -63,7 +63,7 @@ export function InlineEditor({ initial, ariaLabel, onCommit, onCancel }: {
 				aria-label={ariaLabel}
 				aria-invalid={!!error}
 				title={error || undefined}
-				className="h-6 px-1.5 py-0 text-[13px]"
+				className="h-6 px-1.5 py-0 text-sm"
 				onChange={(event) => { setValue(event.currentTarget.value); setError(''); }}
 				onClick={(event) => event.stopPropagation()}
 				onDoubleClick={(event) => event.stopPropagation()}
@@ -81,7 +81,7 @@ export function InlineEditor({ initial, ariaLabel, onCommit, onCancel }: {
 					}
 				}}
 			/>
-			{error && <span role="alert" className="absolute left-0 top-full z-[var(--layer-menu)] mt-0.5 rounded-md border border-border bg-popover px-1.5 py-0.5 text-[11px] text-destructive shadow-floating">{error}</span>}
+			{error && <span role="alert" className="absolute left-0 top-full z-[var(--hu-z-sticky)] mt-0.5 rounded-md border border-[var(--hu-line)] bg-[var(--hu-raised)] px-1.5 py-0.5 text-xs text-[var(--hu-danger)] shadow-[var(--hu-shadow-pop)]">{error}</span>}
 		</span>
 	);
 }

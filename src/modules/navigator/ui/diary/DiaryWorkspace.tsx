@@ -26,7 +26,7 @@ export function DiaryWorkspace({ port, initialDate, onDateChange, registerNaviga
 	}), [registerNavigation, changed]);
 
 	return <>
-		<div hidden={tools} inert={tools || undefined}><VisibilityContext.Provider value={visible && !tools}><DiaryReader key={bookKey} port={port} initialDate={date} onDateChange={changed} onLoaded={setLoaded} actions={<Button variant="outline" onClick={() => { search.loaded('', loaded); setTools(true); }}>{t('navigator.diary.tools.open')}</Button>} /></VisibilityContext.Provider></div>
-		{tools && <DesignScope className="h-full min-w-0 overflow-auto bg-background text-foreground"><SearchWritePanel search={search} writing={writing} port={port} date={date} loaded={loaded} registerGuard={registerGuard} onBack={() => { setBookKey(value => value + 1); setTools(false); }} onSaved={changed} onSelect={next => { changed(next); setBookKey(value => value + 1); setTools(false); }} /></DesignScope>}
+		<div hidden={tools} inert={tools || undefined}><VisibilityContext.Provider value={visible && !tools}><DiaryReader key={bookKey} port={port} initialDate={date} onDateChange={changed} onLoaded={setLoaded} actions={<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" variant="secondary" onClick={() => { search.loaded('', loaded); setTools(true); }}>{t('navigator.diary.tools.open')}</Button>} /></VisibilityContext.Provider></div>
+		{tools && <DesignScope className="h-full min-w-0 overflow-auto bg-[var(--hu-canvas)] text-[var(--hu-fg)]"><SearchWritePanel search={search} writing={writing} port={port} date={date} loaded={loaded} registerGuard={registerGuard} onBack={() => { setBookKey(value => value + 1); setTools(false); }} onSaved={changed} onSelect={next => { changed(next); setBookKey(value => value + 1); setTools(false); }} /></DesignScope>}
 	</>;
 }

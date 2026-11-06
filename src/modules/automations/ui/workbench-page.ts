@@ -8,16 +8,17 @@ export const createAutomationsPage =
 		const panelHost = host();
 		if (!panelHost) throw unavailable();
 		signal.throwIfAborted();
-		const surface = new AutomationPresentation(context, panelHost, target, state);
+		const surface = new AutomationPresentation(context, panelHost, target, state, signal);
 		return {
 			surface,
+			canClose: () => surface.canClose(),
 			getTarget: () => surface.getTarget(),
 			getState: () => surface.getState(),
 			restore: async (value) => {
-				surface.restore(value);
+				await surface.restore(value);
 			},
 			navigate: async (next, abort) => {
-				if (!abort.aborted) surface.navigate(next);
+				if (!abort.aborted) await surface.navigate(next, abort);
 			},
 		};
 	};

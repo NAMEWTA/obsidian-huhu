@@ -54,7 +54,7 @@ export function RecordDialog({
 				}}
 				showCloseButton={false}
 				className={widgetClasses(
-					`huhu-dashboard-root block gap-0 md:backdrop-blur-none ${classes.includes('--wide') ? '' : classes} ${size} [position:fixed] [font-size:inherit] [font-family:var(--nd-font-sans)]`,
+					`huhu-dashboard-root block gap-0 md:backdrop-blur-none ${classes.includes('--wide') ? '' : classes} ${size} [position:fixed] [font-size:inherit] [font-family:var(--hu-font-ui)]`,
 				)}
 				overlayClassName="md:backdrop-blur-none"
 				data-dashboard-layout={layout}

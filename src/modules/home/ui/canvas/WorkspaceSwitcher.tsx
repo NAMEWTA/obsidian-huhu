@@ -36,7 +36,7 @@ export function WorkspaceSwitcher({ store }: { store: BoardStore }) {
 			<div
 				role="group"
 				aria-labelledby={labelId}
-				className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--accent)] p-1"
+				className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--hu-hover)] p-1"
 			>
 				<span id={labelId} className="sr-only">
 					{t('home.frame.boards')}
@@ -47,13 +47,15 @@ export function WorkspaceSwitcher({ store }: { store: BoardStore }) {
 						<Tooltip key={entry.file}>
 							<TooltipTrigger asChild>
 								<Button
-									size="xs"
+									size="sm"
 									variant={entry.file === path ? 'secondary' : 'ghost'}
-									className="h-5 max-w-32 min-w-5 rounded-full px-2 text-[11px]"
+									className="h-5 max-w-32 min-w-5 rounded-full px-2 text-xs"
 									aria-label={label}
 									aria-current={entry.file === path ? 'page' : undefined}
 									onClick={() => {
-										void store.host.switchWorkspace(entry.file).then(() => store.switch(entry.file));
+										void store.host
+											.switchWorkspace(entry.file)
+											.then(() => store.switch(entry.file));
 									}}
 								>
 									<span className="min-w-0 truncate">{label}</span>

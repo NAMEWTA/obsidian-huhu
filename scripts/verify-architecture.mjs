@@ -10,7 +10,7 @@ import ts from 'typescript';
 const root = path.resolve(import.meta.dirname, '..');
 const nodeBuiltins = new Set([...builtinModules, ...builtinModules.map((n) => `node:${n}`)]);
 const hostPackages = new Set([...nodeBuiltins, 'obsidian', 'electron', 'react', 'react-dom', 'radix-ui']);
-const uiPackages = new Set(['react', 'react-dom', 'radix-ui', 'lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge', 'cmdk', 'sonner', 'zustand', '@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', '@tanstack/react-virtual', 'react-resizable-panels']);
+const uiPackages = new Set(['react', 'react-dom', 'radix-ui', 'lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge', 'cmdk', 'sonner', 'zustand', '@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', '@tanstack/react-virtual', 'react-resizable-panels', '@daypicker/react', 'react-day-picker']);
 function allowedPackage(zone, specifier) {
  const name = specifier.startsWith('@') ? specifier.split('/').slice(0, 2).join('/') : specifier.split('/')[0];
  if (!uiPackages.has(name)) return true;
@@ -21,6 +21,9 @@ assert.equal(allowedPackage('services', 'zustand/vanilla'), true);
 assert.equal(allowedPackage('services', 'zustand'), false);
 assert.equal(allowedPackage('core', 'radix-ui/dialog'), false);
 assert.equal(allowedPackage('ui', 'radix-ui/dialog'), true);
+assert.equal(allowedPackage('core', '@daypicker/react'), false);
+assert.equal(allowedPackage('services', '@daypicker/react/locale/zh-CN'), false);
+assert.equal(allowedPackage('ui', '@daypicker/react'), true);
 const forbiddenGlobals = new Set([
 	'window',
 	'activeWindow',

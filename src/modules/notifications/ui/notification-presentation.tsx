@@ -9,6 +9,7 @@ import { InboxPanel } from './InboxPanel';
 /** Inbox page: `section` `unread` shows unread records only, anything else shows all. */
 export class NotificationPresentation extends ReactSurface {
 	private generation = 0;
+	private active = false;
 	private openable = new Set<string>();
 	private names = new Map<string, NotificationTargetName | undefined>();
 	private error = '';
@@ -31,6 +32,7 @@ export class NotificationPresentation extends ReactSurface {
 		return 'bell';
 	}
 	onOpen(): Promise<void> {
+		this.active = true;
 		void super.onOpen();
 		this.register(this.service.subscribe(() => this.draw()));
 		this.register(onLanguageChanged(() => this.draw()));
@@ -53,7 +55,7 @@ export class NotificationPresentation extends ReactSurface {
 			})),
 		)
 			.then((rows) => {
-				if (generation !== this.generation) return;
+				if (!this.active || generation !== this.generation) return;
 				this.openable = new Set(rows.filter((row) => row.openable).map((row) => row.id));
 				this.names = new Map(rows.map((row) => [row.id, row.name]));
 				this.rerender();
@@ -63,7 +65,7 @@ export class NotificationPresentation extends ReactSurface {
 	}
 	protected renderContent() {
 		return (
-			<DesignScope className="flex h-full min-h-0 flex-col overflow-auto">
+			<DesignScope className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
 				<InboxPanel
 					records={this.service.records}
 					filter={this.filter}
@@ -84,21 +86,23 @@ export class NotificationPresentation extends ReactSurface {
 	}
 	/** Run one action; a failure stays visible in the page until dismissed, and is also reported. */
 	private perform(operation: () => Promise<void>): void {
-		if (this.busy) return;
+		if (this.busy || !this.active) return;
 		this.busy = true;
 		this.error = '';
 		this.rerender();
-		void operation()
+		void Promise.resolve()
+			.then(operation)
 			.catch((error) => {
-				this.error = t('notification.operationFailed');
+				if (this.active) this.error = t('notification.operationFailed');
 				this.report(error);
 			})
 			.finally(() => {
 				this.busy = false;
-				this.rerender();
+				if (this.active) this.rerender();
 			});
 	}
 	onClose(): Promise<void> {
+		this.active = false;
 		this.generation++;
 		return super.onClose();
 	}

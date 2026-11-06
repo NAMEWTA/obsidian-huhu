@@ -28,8 +28,8 @@ export function RecordSaveStatus({
 			)}
 			{(status === 'unsaved' || status === 'conflict') && (
 				<Button
-					variant="outline"
-					size="xs"
+					variant="secondary"
+					size="sm"
 					onClick={() => {
 						void source.retrySave().catch(() => undefined);
 					}}

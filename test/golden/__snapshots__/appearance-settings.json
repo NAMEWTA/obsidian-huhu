@@ -4,7 +4,12 @@
       "id": "evening",
       "name": "Evening",
       "theme": {
-        "preset": "eye-care",
+        "preset": "system",
+        "source": "huhu",
+        "accent": "plum",
+        "density": "comfortable",
+        "uiSize": "15",
+        "motion": "reduce",
         "custom": {
           "light": {
             "background": "#ffffff",

@@ -55,8 +55,8 @@ export function NewTabMenu({
 						<Button
 							ref={trigger}
 							variant="ghost"
-							size="icon-xs"
-							className="ml-2 my-auto size-8 shrink-0 rounded-md text-muted-foreground hover:bg-accent/50 hover:text-foreground pointer-coarse:size-11"
+							size="icon-sm"
+							className="ml-2 my-auto size-8 shrink-0 rounded-md text-[var(--hu-fg-2)] hover:bg-[var(--hu-accent-soft)]/50 hover:text-[var(--hu-fg)] pointer-coarse:size-11"
 							aria-label={t('agent.workspace.newTab')}
 						>
 							<Plus className="size-3.5" />
@@ -71,7 +71,7 @@ export function NewTabMenu({
 				align="start"
 				sideOffset={6}
 				collisionPadding={8}
-				className="w-72 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-[11px] border-border/80 p-1 shadow-[0_16px_36px_rgba(0,0,0,0.24)]"
+				className="w-72 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-[var(--hu-radius-lg)] border-[var(--hu-line)]/80 p-1 shadow-[var(--hu-shadow-pop)]"
 				onCloseAutoFocus={(event) => {
 					event.preventDefault();
 					const previous = origin.current;

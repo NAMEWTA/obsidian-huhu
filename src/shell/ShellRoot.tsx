@@ -18,6 +18,7 @@ import type {
 	WorkbenchTarget,
 } from '../app/contracts/workbench';
 import { t } from '../shared/i18n';
+import { focusAvailableInRegion, restoreFocus } from '../ui/react/modal-layer';
 import { Button } from '../ui/components/button';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '../ui/components/sheet';
 import { layoutFor, type ShellLayout } from './layout';
@@ -44,7 +45,6 @@ export interface ShellProps {
 	error?: string;
 	unavailable?: { message: string; action?: { label: string; run: () => void } };
 	ownerWindow: Window;
-	phone: boolean;
 	mobile?: boolean;
 	onRail: (feature: WorkbenchFeature) => 'toggled' | 'navigated';
 	onOpen: (feature: WorkbenchFeature, placement: 'tab' | 'split') => void;
@@ -71,9 +71,8 @@ export function cycleRegion(event: KeyboardEvent, regions: HTMLElement[], active
 				: index + (event.shiftKey ? -1 : 1) + regions.length) % regions.length
 		];
 	event.preventDefault();
-	(
-		next?.querySelector<HTMLElement>('[tabindex="0"], button:not([disabled]), input:not([disabled])') ?? next
-	)?.focus();
+	event.stopPropagation();
+	if (next) focusAvailableInRegion(next);
 }
 export function ShellRoot(props: ShellProps) {
 	const visible = props.visible !== false;
@@ -100,9 +99,9 @@ export function ShellRoot(props: ShellProps) {
 	}, [visible, generation]);
 	const { state } = props;
 	const hasPanel = !!props.panel || !!props.navigationContext;
-	const inline = layout === 'wide' && !state.focus;
-	const overlayOpen = visible && !inline && !state.focus && overlay;
-	const panelVisible = hasPanel && !state.focus && (inline ? state.panelOpen : overlayOpen);
+	const inline = layout === 'wide' && state.mode !== 'focus';
+	const overlayOpen = visible && !inline && state.mode !== 'focus' && overlay;
+	const panelVisible = hasPanel && state.mode !== 'focus' && (inline ? state.navigation.open : overlayOpen);
 	useLayoutEffect(() => {
 		const el = root.current;
 		const Observer = (props.ownerWindow as Window & { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
@@ -110,7 +109,7 @@ export function ShellRoot(props: ShellProps) {
 		const measure = () => {
 			const rect = el.getBoundingClientRect();
 			setBounds({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
-			const next = layoutFor(rect.width, props.phone);
+			const next = layoutFor(rect.width);
 			setLayout(next);
 			if (next === 'wide') setOverlay(false);
 		};
@@ -118,18 +117,18 @@ export function ShellRoot(props: ShellProps) {
 		observer.observe(el);
 		measure();
 		return () => observer.disconnect();
-	}, [props.ownerWindow, props.phone]);
+	}, [props.ownerWindow]);
 	const toggle = () => {
-		if (!visible || state.focus) return;
+		if (!visible || state.mode === 'focus') return;
 		if (inline) {
-			if (hasPanel) props.onPanelOpen(!state.panelOpen);
+			if (hasPanel) props.onPanelOpen(!state.navigation.open);
 		} else {
 			if (!overlay) returnFocus.current = root.current?.ownerDocument.activeElement as HTMLElement | null;
 			setOverlay(!overlay);
 		}
 	};
 	const open = () => {
-		if (!visible || state.focus) return;
+		if (!visible || state.mode === 'focus') return;
 		if (inline) {
 			if (hasPanel) props.onPanelOpen(true);
 		} else {
@@ -142,7 +141,7 @@ export function ShellRoot(props: ShellProps) {
 		const result = props.onRail(feature);
 		const next = overlayAfterRail(layout, inline, result, overlay);
 		if (next === 'toggle') {
-			if (hasPanel) toggle();
+			if (hasPanel || layout === 'narrow') toggle();
 		} else setOverlay(next);
 	};
 	const navigate = (target: WorkbenchTarget) => {
@@ -163,26 +162,26 @@ export function ShellRoot(props: ShellProps) {
 		<Rail
 			key={`rail-${generation}`}
 			items={props.rail}
-			current={props.railCurrent ?? state.target.feature}
-			panelOpen={panelVisible}
+			current={props.railCurrent ?? state.route.feature}
+			panelOpen={hasPanel ? panelVisible : layout === 'narrow' ? overlayOpen : undefined}
 			onSelect={selectRail}
 			onOpen={openLeaf}
 		/>
 	);
 	const panel = (close?: () => void) => (
 		<SidePanel
-			key={`${state.target.feature}-${generation}`}
+			key={`${state.route.feature}-${generation}`}
 			title={props.panelTitle}
 			custom={props.navigationContext && !props.panel}
 			model={props.panel}
-			current={state.target}
+			current={state.route}
 			customRef={props.panelCustomRef}
 			onNavigate={navigate}
 			onClose={close}
 			report={props.report}
 		/>
 	);
-	const resize = useRef<{ x: number; width: number; current: number } | null>(null);
+	const resize = useRef<{ pointer: number; x: number; width: number; current: number } | null>(null);
 	const keyboard = (event: KeyboardEvent) => {
 		const scope = overlayOpen ? overlayRoot.current : root.current;
 		cycleRegion(
@@ -195,18 +194,20 @@ export function ShellRoot(props: ShellProps) {
 		<ShellInteractionContext value={canRestoreFocus}>
 			<div
 				ref={root}
+				data-huhu-leaf
+				data-huhu-leaf-width={bounds.width}
 				data-layout={layout}
 				className={`huhu-shell huhu-shell--${layout} relative flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground`}
-				style={{ '--huhu-panel-width': `${panelWidth(state.panelWidth)}px` } as CSSProperties}
+				style={{ '--huhu-panel-width': `${panelWidth(state.navigation.width)}px` } as CSSProperties}
 				onKeyDown={keyboard}
 			>
 				<div className="flex flex-row flex-1 min-h-0 overflow-hidden">
 					{visible &&
-						!state.focus &&
+						state.mode !== 'focus' &&
 						layout !== 'narrow' &&
 						(overlayOpen ? <div aria-hidden="true" className="w-[52px] shrink-0" /> : rail)}
 					{visible && inline && panelVisible && (
-						<div className="relative min-h-0 w-[var(--huhu-panel-width)] shrink-0">
+						<div className="relative min-h-0 w-[var(--huhu-panel-width)] shrink-0 pr-[calc(var(--hu-hit)+8px)] after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-sidebar-border">
 							{panel()}
 							<div
 								role="separator"
@@ -215,8 +216,8 @@ export function ShellRoot(props: ShellProps) {
 								aria-orientation="vertical"
 								aria-valuemin={PANEL_MIN}
 								aria-valuemax={PANEL_MAX}
-								aria-valuenow={panelWidth(state.panelWidth)}
-								className="absolute inset-y-0 -right-1.5 z-10 w-3 cursor-col-resize touch-none focus-visible:ring-[3px] focus-visible:ring-ring/50 after:absolute after:inset-y-0 after:left-1.5 after:w-px hover:after:bg-ring/50 active:after:bg-ring"
+								aria-valuenow={panelWidth(state.navigation.width)}
+								className="absolute inset-y-1 right-1 z-10 w-[var(--hu-hit)] cursor-col-resize touch-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring after:pointer-events-none after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-ring/50 focus-visible:after:bg-ring active:after:bg-ring"
 								onDoubleClick={() => props.onPanelWidth(PANEL_DEFAULT)}
 								onKeyDown={(e) => {
 									const step = { ArrowLeft: -8, ArrowRight: 8 }[e.key];
@@ -226,7 +227,7 @@ export function ShellRoot(props: ShellProps) {
 											: e.key === 'End'
 												? PANEL_MAX
 												: step !== undefined
-													? state.panelWidth + step
+													? state.navigation.width + step
 													: undefined;
 									if (width !== undefined) {
 										e.preventDefault();
@@ -234,17 +235,18 @@ export function ShellRoot(props: ShellProps) {
 									}
 								}}
 								onPointerDown={(e) => {
-									if (e.button !== 0) return;
+									if (e.button !== 0 || resize.current) return;
 									resize.current = {
+										pointer: e.pointerId,
 										x: e.clientX,
-										width: state.panelWidth,
-										current: state.panelWidth,
+										width: state.navigation.width,
+										current: state.navigation.width,
 									};
 									e.currentTarget.setPointerCapture(e.pointerId);
 									e.preventDefault();
 								}}
 								onPointerMove={(e) => {
-									if (resize.current) {
+									if (resize.current?.pointer === e.pointerId) {
 										resize.current.current = panelWidth(
 											resize.current.width + e.clientX - resize.current.x,
 										);
@@ -254,15 +256,25 @@ export function ShellRoot(props: ShellProps) {
 										);
 									}
 								}}
-								onPointerUp={() => {
-									if (resize.current) props.onPanelWidth(resize.current.current);
+								onPointerUp={(e) => {
+									if (resize.current?.pointer !== e.pointerId) return;
+									props.onPanelWidth(resize.current.current);
 									resize.current = null;
 								}}
-								onLostPointerCapture={() => {
+								onPointerCancel={(e) => {
+									if (resize.current?.pointer !== e.pointerId) return;
 									resize.current = null;
 									root.current?.style.setProperty(
 										'--huhu-panel-width',
-										`${panelWidth(state.panelWidth)}px`,
+										`${panelWidth(state.navigation.width)}px`,
+									);
+								}}
+								onLostPointerCapture={(event) => {
+									if (resize.current && resize.current.pointer !== event.pointerId) return;
+									resize.current = null;
+									root.current?.style.setProperty(
+										'--huhu-panel-width',
+										`${panelWidth(state.navigation.width)}px`,
 									);
 								}}
 							/>
@@ -275,9 +287,10 @@ export function ShellRoot(props: ShellProps) {
 								title={props.title}
 								busy={props.busy}
 								panelToggle={
-									!state.focus && (layout === 'narrow' || (hasPanel && (!inline || !panelVisible)))
+									state.mode !== 'focus' &&
+									(layout === 'narrow' || (hasPanel && (!inline || !panelVisible)))
 										? {
-												open: panelVisible,
+												open: hasPanel ? panelVisible : overlayOpen,
 												icon: layout === 'narrow' ? 'menu' : 'panel-left',
 												onToggle: toggle,
 											}
@@ -327,25 +340,24 @@ export function ShellRoot(props: ShellProps) {
 						<SheetContent
 							side="left"
 							showCloseButton={false}
+							onKeyDownCapture={keyboard}
 							onOpenAutoFocus={(event) => {
 								event.preventDefault();
 								const scope = overlayRoot.current;
-								(
-									scope?.querySelector<HTMLElement>('input') ??
-									scope?.querySelector<HTMLElement>(
-										'[data-shell-region="panel"], [data-shell-region="rail"]',
-									)
-								)?.focus();
+								const region =
+									scope?.querySelector<HTMLElement>('[data-shell-region="panel"]') ??
+									scope?.querySelector<HTMLElement>('[data-shell-region="rail"]') ??
+									scope;
+								region?.focus({ preventScroll: true });
 							}}
 							className="gap-0 p-0"
 							style={{
 								left: bounds.left,
 								top: bounds.top,
 								height: bounds.height,
-								width:
-									layout === 'medium'
-										? 52 + Math.min(panelWidth(state.panelWidth), bounds.width * 0.88)
-										: Math.min(332, bounds.width * 0.88),
+								width: hasPanel
+									? Math.min(52 + panelWidth(state.navigation.width), bounds.width * 0.88)
+									: 52,
 							}}
 							overlayStyle={{
 								left: bounds.left + (layout === 'medium' ? 52 : 0),
@@ -358,34 +370,24 @@ export function ShellRoot(props: ShellProps) {
 							onCloseAutoFocus={(e) => {
 								e.preventDefault();
 								if (!canRestoreFocus()) return;
+								const owner = root.current;
+								if (!owner) return;
 								const trigger = returnFocus.current;
-								if (trigger?.isConnected) trigger.focus();
-								else if (trigger?.dataset.feature) {
-									// Opening from the medium rail moves its controls into the Sheet; restore the new copy.
-									const railTrigger = [
-										...(root.current?.querySelectorAll<HTMLElement>('[data-feature]') ?? []),
-									].find((button) => button.dataset.feature === trigger.dataset.feature);
-									(
-										railTrigger ??
-										root.current?.querySelector<HTMLElement>('.huhu-page-panel-toggle') ??
-										root.current?.querySelector<HTMLElement>('[data-shell-region="page"]')
-									)?.focus();
-								}
+								const source = trigger?.isConnected
+									? trigger
+									: trigger?.dataset.feature
+										? ([...owner.querySelectorAll<HTMLElement>('[data-feature]')].find(
+												(button) => button.dataset.feature === trigger.dataset.feature,
+											) ?? null)
+										: null;
+								restoreFocus(owner.ownerDocument, source, owner);
 							}}
 						>
 							<SheetTitle className="sr-only">{props.panelTitle}</SheetTitle>
 							<SheetDescription className="sr-only">{t('workbench.navigation')}</SheetDescription>
 							<div ref={overlayRoot} className="flex h-full min-h-0" onKeyDown={keyboard}>
 								<div className="flex h-full shrink-0">{rail}</div>
-								<div className="min-w-0 flex-1">
-									{hasPanel ? (
-										panel(() => setOverlay(false))
-									) : (
-										<Button className="m-3" variant="ghost" onClick={() => setOverlay(false)}>
-											{t('workbench.closeNavigation')}
-										</Button>
-									)}
-								</div>
+								{hasPanel && <div className="min-w-0 flex-1">{panel(() => setOverlay(false))}</div>}
 							</div>
 						</SheetContent>
 					</Sheet>

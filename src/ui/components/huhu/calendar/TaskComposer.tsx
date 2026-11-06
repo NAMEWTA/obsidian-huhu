@@ -56,7 +56,7 @@ export function TaskComposer({
 					<Button
 						type="button"
 						variant="ghost"
-						size="icon"
+						size="icon-md"
 						aria-label={t('tasks.schedule')}
 						disabled={pending}
 						onClick={() => options(text, () => setText(''))}
@@ -67,7 +67,7 @@ export function TaskComposer({
 				<Button
 					type="submit"
 					variant="ghost"
-					size="icon"
+					size="icon-md"
 					aria-label={t('calendarUnified.add')}
 					disabled={pending || !text.trim()}
 				>

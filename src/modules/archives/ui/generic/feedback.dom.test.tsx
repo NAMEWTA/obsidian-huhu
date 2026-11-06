@@ -14,30 +14,68 @@ import { RecordEditor } from './RecordEditor';
 
 test('archives save conflict still reports after notifications is disabled, preserving the real draft', async () => {
 	setLanguage('en');
-	const registry = new ModuleRegistry(MANIFESTS.filter(manifest => manifest.id === 'notifications'), {
-		env: { desktop: true, mobile: false, phone: false }, enabled: () => false,
-		createContext: () => { throw new Error('Disabled notifications must not activate'); },
-		releaseContext: () => {}, report: () => { throw new Error('Unexpected module error'); },
-	});
+	const registry = new ModuleRegistry(
+		MANIFESTS.filter((manifest) => manifest.id === 'notifications'),
+		{
+			env: { desktop: true, mobile: false, phone: false },
+			enabled: () => false,
+			createContext: () => {
+				throw new Error('Disabled notifications must not activate');
+			},
+			releaseContext: () => {},
+			report: () => {
+				throw new Error('Unexpected module error');
+			},
+		},
+	);
 	await registry.apply(['startup', 'layout-ready']);
 	expect(registry.state('notifications')).toBe('off');
 	const notices: HTMLElement[] = [];
 	const host = new FeedbackHost({
-		mount: async () => { throw new Error('No workbench is open'); },
+		mount: async () => {
+			throw new Error('No workbench is open');
+		},
 		notice: () => {
 			const containerEl = document.createElement('div');
 			notices.push(containerEl);
-			return { containerEl, setMessage: message => { containerEl.replaceChildren(message); return {} as never; }, hide: () => containerEl.remove() };
+			return {
+				containerEl,
+				setMessage: (message) => {
+					containerEl.replaceChildren(message);
+					return {} as never;
+				},
+				hide: () => containerEl.remove(),
+			};
 		},
 	});
 	host.bind(window);
 	const { runtime, files } = await memoryArchives();
 	const application = new ArchivesApplication(runtime);
 	try {
-		const receipt = await application.commands.create({ operationId: 'feedback-record', typeId: PERSON.id, values: { name: 'Original' } });
+		const receipt = await application.commands.create({
+			operationId: 'feedback-record',
+			typeId: PERSON.id,
+			values: { name: 'Original' },
+		});
 		const initial = await application.commands.beginEdit(receipt.id);
 		let committed = false;
-		render(<TestProviders><RecordEditor application={application} initial={initial} type={PERSON} forms={[]} app={{} as App} owner={document.body} guard={() => {}} committed={() => { committed = true; }} cancel={() => {}} /></TestProviders>);
+		render(
+			<TestProviders>
+				<RecordEditor
+					application={application}
+					initial={initial}
+					type={PERSON}
+					forms={[]}
+					app={{} as App}
+					owner={document.body}
+					guard={() => {}}
+					committed={() => {
+						committed = true;
+					}}
+					cancel={() => {}}
+				/>
+			</TestProviders>,
+		);
 		fireEvent.change(screen.getByLabelText('Name *', { selector: 'input' }), { target: { value: 'SECRET-DRAFT' } });
 		files.external(receipt.path, patchProperties(files.text.get(receipt.path)!, { name: 'Other writer' }));
 		fireEvent.click(screen.getByRole('button', { name: 'Save active record' }));
@@ -50,6 +88,10 @@ test('archives save conflict still reports after notifications is disabled, pres
 		cleanup();
 		expect(notices[0]?.isConnected).toBe(true);
 	} finally {
-		cleanup(); runtime.dispose(); host.dispose(); registry.disposeNow(); setLanguage('zh');
+		cleanup();
+		runtime.dispose();
+		host.dispose();
+		registry.disposeNow();
+		setLanguage('zh');
 	}
 });

@@ -91,7 +91,10 @@ export function QuickNoteConfigDialog({ store, onClose }: { store: BoardStore; o
 									/>
 								</div>
 								{row.templatePath && (
-									<IconButton label={t('quickNote.clearTemplate')} onClick={() => patch(row.id, { templatePath: '' })}>
+									<IconButton
+										label={t('quickNote.clearTemplate')}
+										onClick={() => patch(row.id, { templatePath: '' })}
+									>
 										<X />
 									</IconButton>
 								)}
@@ -125,7 +128,12 @@ export function QuickNoteConfigDialog({ store, onClose }: { store: BoardStore; o
 					{error}
 				</p>
 			)}
-			<Button variant="outline" size="sm" className="justify-self-start" onClick={() => setRows((list) => [...list, blank()])}>
+			<Button
+				variant="secondary"
+				size="sm"
+				className="justify-self-start"
+				onClick={() => setRows((list) => [...list, blank()])}
+			>
 				<Plus />
 				{t('quickNote.addButton')}
 			</Button>

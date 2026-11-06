@@ -10,7 +10,10 @@ import type { BoardStore } from '../../services/board-store';
 import { FileSearchWidget } from './InputWidgets';
 import { SkillWidget } from './SkillWidget';
 import { normalizeDashboardSettings } from '../../core/board/settings';
-vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), { getToasts: () => [], dismiss: vi.fn() }), Toaster: () => null }));
+vi.mock('sonner', () => ({
+	toast: Object.assign(vi.fn(), { getToasts: () => [], dismiss: vi.fn() }),
+	Toaster: () => null,
+}));
 afterEach(cleanup);
 function fixture() {
 	setLanguage('en');
@@ -54,9 +57,11 @@ function fixture() {
 test('file search floats results, cancels with Escape and opens the keyboard-selected file', async () => {
 	const f = fixture();
 	render(
-		<TestProviders><DesignScope>
-			<FileSearchWidget store={f.store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<FileSearchWidget store={f.store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	const floating = () => document.querySelector('.huhu-portal-root [data-file-results]');
 	const input = screen.getByRole('textbox');
@@ -75,23 +80,27 @@ test('file search floats results, cancels with Escape and opens the keyboard-sel
 test('file search is one 36px row: input fills the line beside the recent and search buttons', () => {
 	const f = fixture();
 	const { container } = render(
-		<TestProviders><DesignScope>
-			<FileSearchWidget store={f.store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<FileSearchWidget store={f.store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	const row = container.querySelector('[data-input-widget="search"] > div')!;
 	expect(row.className).toContain('flex');
 	const input = within(row as HTMLElement).getByRole('textbox');
-	expect(input.className).toContain('h-9');
+	expect(input.className).toContain('h-[var(--hu-ctl-h)]');
 	expect(input.parentElement!.className).toContain('flex-1');
 	expect(within(row as HTMLElement).getAllByRole('button')).toHaveLength(2);
 });
 test('standalone skills preview edited text and keep their configuration separate from board chips', async () => {
 	const f = fixture();
 	render(
-		<TestProviders><DesignScope>
-			<SkillWidget store={f.store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<SkillWidget store={f.store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	fireEvent.click(screen.getByRole('button', { name: 'Review' }));
 	const prompt = await screen.findByLabelText(t('home.dashboard.prompt'));
@@ -114,9 +123,11 @@ test('standalone skills preview edited text and keep their configuration separat
 test('skill buttons sit in an equal-width grid and an empty widget says so', () => {
 	const f = fixture();
 	const view = render(
-		<TestProviders><DesignScope>
-			<SkillWidget store={f.store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<SkillWidget store={f.store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	const grid = view.container.querySelector('[data-skill-grid]')!;
 	expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
@@ -125,9 +136,11 @@ test('skill buttons sit in an equal-width grid and an empty widget says so', () 
 	view.unmount();
 	f.store.state.setState({ settings: { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS), skillWidgetButtons: [] } });
 	const empty = render(
-		<TestProviders><DesignScope>
-			<SkillWidget store={f.store} />
-		</DesignScope></TestProviders>,
+		<TestProviders>
+			<DesignScope>
+				<SkillWidget store={f.store} />
+			</DesignScope>
+		</TestProviders>,
 	);
 	expect(empty.container.querySelector('[data-slot="empty-state"]')).toBeTruthy();
 	expect(empty.container.querySelector('[data-skill-grid]')).toBeNull();

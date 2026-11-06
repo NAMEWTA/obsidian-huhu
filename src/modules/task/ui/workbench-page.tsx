@@ -1,3 +1,4 @@
+import './i18n';
 import type { PageCreate } from '../../../app/contracts/workbench-host';
 import type { NativeSurfaceContext } from '../../../ui/native-surface';
 import type { TaskService, TaskResources, TaskViews } from '../api';

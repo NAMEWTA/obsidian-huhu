@@ -21,17 +21,17 @@ export function QueryBuilder({
 	if (!value)
 		return (
 			<div className="flex flex-wrap gap-2">
-				<Button variant="outline" disabled={!fields.length} onClick={() => onChange(leaf())}>
+				<Button variant="secondary" disabled={!fields.length} onClick={() => onChange(leaf())}>
 					{at('addCondition')}
 				</Button>
 				{depth < 8 && (
-					<Button variant="outline" onClick={() => onChange({ all: [] })}>
+					<Button variant="secondary" onClick={() => onChange({ all: [] })}>
 						{at('addGroup')}
 					</Button>
 				)}
 				{!conditionsOnly && relations[0] && (
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => onChange({ relationTypeId: relations[0]!.id, direction: 'either' })}
 					>
 						{at('relationFilter')}
@@ -51,7 +51,7 @@ export function QueryBuilder({
 						options={['all', 'any'].map((key) => [key, at(key)])}
 						onChange={(key) => onChange(key === 'all' ? { all: children } : { any: children })}
 					/>
-					<Button variant="outline" onClick={() => onChange(undefined)}>
+					<Button variant="secondary" onClick={() => onChange(undefined)}>
 						{at('remove')}
 					</Button>
 				</div>
@@ -107,7 +107,7 @@ export function QueryBuilder({
 					value={value.targetId ?? ''}
 					onChange={(event) => onChange({ ...value, targetId: event.target.value || undefined })}
 				/>
-				<Button variant="outline" onClick={() => onChange(undefined)}>
+				<Button variant="secondary" onClick={() => onChange(undefined)}>
 					{at('remove')}
 				</Button>
 			</div>
@@ -122,7 +122,7 @@ export function QueryBuilder({
 			: field;
 	return (
 		<div className="space-y-2 rounded-md border p-3">
-			<div className="grid gap-2 sm:grid-cols-2">
+			<div className="grid gap-2 @min-[560px]:grid-cols-2">
 				<Select
 					label={at('fields')}
 					value={value.fieldId}
@@ -144,7 +144,7 @@ export function QueryBuilder({
 					onChange={(next) => onChange({ ...value, value: next })}
 				/>
 			)}
-			<Button variant="outline" onClick={() => onChange(undefined)}>
+			<Button variant="secondary" onClick={() => onChange(undefined)}>
 				{at('remove')}
 			</Button>
 		</div>

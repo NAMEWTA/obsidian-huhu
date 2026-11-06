@@ -140,7 +140,8 @@ function mountHistory(doc: Document) {
 	container.dataset.review = 'history';
 	container.style.cssText = 'height:420px;border:1px solid var(--background-modifier-border)';
 	doc.body.append(container);
-	const dispose = mountNoteHistoryPanel(container, host);
+	const panel = mountNoteHistoryPanel(container, host, true);
+ const dispose = () => panel.dispose();
 	return { container, control, notify: () => { for (const fn of listeners) fn(); }, dispose };
 }
 

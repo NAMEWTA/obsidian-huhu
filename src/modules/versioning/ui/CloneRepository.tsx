@@ -53,7 +53,7 @@ export function CloneRepository({
 				</Label>
 				<div className="flex flex-wrap items-center gap-2">
 					<Button
-						variant="default"
+						variant="primary"
 						disabled={busy || !source.trim() || !target.trim()}
 						onClick={() => void clone().catch(report)}
 					>

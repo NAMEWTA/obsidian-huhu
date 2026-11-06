@@ -20,10 +20,19 @@ import { restoreHunks, type HunkDiff } from '../core/hunk-restore';
 
 function memoryRecoveryFiles(files: Map<string, string>) {
 	return {
-		async inventory() { return [...files].map(([path, text]) => ({ path, byteLength: new TextEncoder().encode(text).byteLength, stamp: text,
-			...(/\/objects\/([a-f0-9]{64})\.txt$/.test(path) ? { hash: /\/objects\/([a-f0-9]{64})\.txt$/.exec(path)![1]! } : {}) })); },
+		async inventory() {
+			return [...files].map(([path, text]) => ({
+				path,
+				byteLength: new TextEncoder().encode(text).byteLength,
+				stamp: text,
+				...(/\/objects\/([a-f0-9]{64})\.txt$/.test(path)
+					? { hash: /\/objects\/([a-f0-9]{64})\.txt$/.exec(path)![1]! }
+					: {}),
+			}));
+		},
 		async remove(file: { path: string; stamp: string }) {
-			if (files.get(file.path) !== file.stamp) throw new Error('changed'); files.delete(file.path);
+			if (files.get(file.path) !== file.stamp) throw new Error('changed');
+			files.delete(file.path);
 		},
 	};
 }
@@ -107,10 +116,20 @@ function fixture(disk = 'disk before', buffer = disk) {
 		},
 	};
 	const checkpoints = new CheckpointStore(storage, 'device-1'),
-		service = new RestoreService({ documents, gate, checkpoints, assertHunkOrigin: origin => {
-			if (origin.id !== 'editor-context' || origin.path !== 'note.md' || origin.leafId !== 'source-leaf'
-				|| origin.generation !== objects.get('note.md')?.buffers[0]?.generation) throw new Error('versioning.restore.changed');
-		} });
+		service = new RestoreService({
+			documents,
+			gate,
+			checkpoints,
+			assertHunkOrigin: (origin) => {
+				if (
+					origin.id !== 'editor-context' ||
+					origin.path !== 'note.md' ||
+					origin.leafId !== 'source-leaf' ||
+					origin.generation !== objects.get('note.md')?.buffers[0]?.generation
+				)
+					throw new Error('versioning.restore.changed');
+			},
+		});
 	return {
 		files,
 		objects,
@@ -149,23 +168,43 @@ const request = (text = 'historical contents') => ({
 });
 
 test('partial preparation validates the original B identity and generations before using exact raw selections', async () => {
-	const before = '\uFEFF新一\r\n保持😀\r\n新二', historical = '\uFEFF旧一\r\n保持😀\r\n旧二';
-	const diff: HunkDiff = { left: '旧一\n保持😀\n旧二', right: '新一\n保持😀\n新二', precise: true,
-		chunks: [{ fromA: 0, toA: 3, fromB: 0, toB: 3, precise: true }, { fromA: 8, toA: 11, fromB: 8, toB: 11, precise: true }] };
+	const before = '\uFEFF新一\r\n保持😀\r\n新二',
+		historical = '\uFEFF旧一\r\n保持😀\r\n旧二';
+	const diff: HunkDiff = {
+		left: '旧一\n保持😀\n旧二',
+		right: '新一\n保持😀\n新二',
+		precise: true,
+		chunks: [
+			{ fromA: 0, toA: 3, fromB: 0, toB: 3, precise: true },
+			{ fromA: 8, toA: 11, fromB: 8, toB: 11, precise: true },
+		],
+	};
 	for (const drift of ['replace', 'ABA-before-prepare', 'ABA-after-prepare', 'none'] as const) {
-		const f = fixture(before), target = await f.service.captureTarget('note.md', 'source-leaf');
-		const hunks = { target, origin: { id: 'editor-context', path: 'note.md', leafId: 'source-leaf', generation: 1 },
-			diff, selected: [restoreHunks(historical, before, diff)[0]!.id] };
+		const f = fixture(before),
+			target = await f.service.captureTarget('note.md', 'source-leaf');
+		const hunks = {
+			target,
+			origin: { id: 'editor-context', path: 'note.md', leafId: 'source-leaf', generation: 1 },
+			diff,
+			selected: [restoreHunks(historical, before, diff)[0]!.id],
+		};
 		if (drift === 'replace') f.objects.set('note.md', { ...target, documentKey: 'same-bytes-new-file' });
-		if (drift === 'ABA-before-prepare') { f.edit('new draft'); f.edit(before); }
+		if (drift === 'ABA-before-prepare') {
+			f.edit('new draft');
+			f.edit(before);
+		}
 		if (drift === 'replace' || drift === 'ABA-before-prepare') {
-			await expect(f.service.prepare({ ...request(historical), hunks })).rejects.toThrow('versioning.restore.changed');
-			expect(f.writes()).toBe(0); continue;
+			await expect(f.service.prepare({ ...request(historical), hunks })).rejects.toThrow(
+				'versioning.restore.changed',
+			);
+			expect(f.writes()).toBe(0);
+			continue;
 		}
 		const plan = await f.service.prepare({ ...request(historical), hunks });
 		expect(plan.afterText).toBe('\uFEFF旧一\r\n保持😀\r\n新二');
 		if (drift === 'ABA-after-prepare') {
-			f.edit('new draft'); f.edit(before);
+			f.edit('new draft');
+			f.edit(before);
 			await expect(f.service.apply(plan.id)).rejects.toThrow('versioning.restore.changed');
 			expect(f.writes()).toBe(0);
 		} else {
@@ -383,35 +422,63 @@ test('collection preserves the actual restore and restart undo chain while recla
 	const history = new LocalHistoryStore(f.storage, 'device-1', () => now, f.checkpoints);
 	const old = await history.capture('old.md', 'unrelated expired text', 'interval');
 	now += 31 * 86_400_000;
-	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1024 * 1024 }), () => now);
+	const retention = new HistoryRetention(
+		f.storage,
+		'device-1',
+		history,
+		memoryRecoveryFiles(f.files),
+		() => ({ days: 30, quotaBytes: 1024 * 1024 }),
+		() => now,
+	);
 	await retention.collect();
-	expect([...f.files.keys()].some(path => path.endsWith(`${old!.hash}.txt`))).toBe(false);
-	const restarted = new RestoreService({ documents: f.documents, gate: f.gate, checkpoints: new CheckpointStore(f.storage, 'device-1') });
+	expect([...f.files.keys()].some((path) => path.endsWith(`${old!.hash}.txt`))).toBe(false);
+	const restarted = new RestoreService({
+		documents: f.documents,
+		gate: f.gate,
+		checkpoints: new CheckpointStore(f.storage, 'device-1'),
+	});
 	await restarted.initialize();
 	expect((await restarted.undo(receipt.id)).stage).toBe('verified');
 	expect(f.objects.get('note.md')!.text).toBe('unsaved draft before');
-	await restarted.dispose(); await f.service.dispose();
+	await restarted.dispose();
+	await f.service.dispose();
 });
 
 test('an actual restore holds unpublished checkpoint objects until its recovery journal is durable', async () => {
 	const f = fixture();
 	let entered!: () => void, release!: () => void;
-	const enteredPromise = new Promise<void>(resolve => { entered = resolve; });
-	const blocked = new Promise<void>(resolve => { release = resolve; });
+	const enteredPromise = new Promise<void>((resolve) => {
+		entered = resolve;
+	});
+	const blocked = new Promise<void>((resolve) => {
+		release = resolve;
+	});
 	const write = f.storage.write;
 	let first = true;
 	f.storage.write = async (path, text) => {
-		if (first && path.includes('/objects/')) { first = false; entered(); await blocked; }
+		if (first && path.includes('/objects/')) {
+			first = false;
+			entered();
+			await blocked;
+		}
 		await write(path, text);
 	};
 	const plan = await f.service.prepare(request());
-	const applying = f.service.apply(plan.id); await enteredPromise;
+	const applying = f.service.apply(plan.id);
+	await enteredPromise;
 	const history = new LocalHistoryStore(f.storage, 'device-1', undefined, f.checkpoints);
-	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1024 * 1024 }));
+	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({
+		days: 30,
+		quotaBytes: 1024 * 1024,
+	}));
 	let complete = false;
-	const collecting = retention.collect().then(() => { complete = true; });
-	await Promise.resolve(); expect(complete).toBe(false);
-	release(); const [receipt] = await Promise.all([applying, collecting]);
+	const collecting = retention.collect().then(() => {
+		complete = true;
+	});
+	await Promise.resolve();
+	expect(complete).toBe(false);
+	release();
+	const [receipt] = await Promise.all([applying, collecting]);
 	expect(receipt.stage).toBe('verified');
 	expect(await f.checkpoints.readObject(receipt.beforeObject!)).toBe('disk before');
 	await f.service.dispose();
@@ -421,21 +488,40 @@ test('quota-paused automatic history cannot waive forced checkpoints, and checkp
 	const f = fixture();
 	await f.service.apply((await f.service.prepare(request())).id);
 	const history = new LocalHistoryStore(f.storage, 'device-1', undefined, f.checkpoints);
-	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1 }));
-	const settings = { get: () => ({ ...syncSettings.defaults(), localHistoryEnabled: true }), subscribe: () => () => {} } as unknown as SettingsHandle<SyncSettings>;
-	const automatic = new AutomaticHistory({ settings, history, capture: () => [{ path: 'note.md', text: 'another sample', sourceId: 'leaf' }],
-		assertProtection: async () => {}, timers: { setTimeout: () => 1, clearTimeout() {} } as unknown as Window,
-		admit: (allocation, scope, signal) => retention.admit(allocation, scope, signal) });
+	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({
+		days: 30,
+		quotaBytes: 1,
+	}));
+	const settings = {
+		get: () => ({ ...syncSettings.defaults(), localHistoryEnabled: true }),
+		subscribe: () => () => {},
+	} as unknown as SettingsHandle<SyncSettings>;
+	const automatic = new AutomaticHistory({
+		settings,
+		history,
+		capture: () => [{ path: 'note.md', text: 'another sample', sourceId: 'leaf' }],
+		assertProtection: async () => {},
+		timers: { setTimeout: () => 1, clearTimeout() {} } as unknown as Window,
+		admit: (allocation, scope, signal) => retention.admit(allocation, scope, signal),
+	});
 	try {
-		automatic.start(); await automatic.sample('important');
+		automatic.start();
+		await automatic.sample('important');
 		expect(automatic.snapshot).toMatchObject({ phase: 'error', error: 'versioning.localHistory.quota' });
 		const successful = await f.service.apply((await f.service.prepare(request('second restored text'))).id);
-		expect(successful.stage).toBe('verified'); expect(f.objects.get('note.md')!.text).toBe('second restored text');
+		expect(successful.stage).toBe('verified');
+		expect(f.objects.get('note.md')!.text).toBe('second restored text');
 		const count = f.writes();
-		f.fail(path => path.includes('/objects/'));
-		await expect(f.service.apply((await f.service.prepare(request('cannot checkpoint this version'))).id)).rejects.toThrow('disk-full');
-		expect(f.writes()).toBe(count); expect(f.objects.get('note.md')!.text).toBe('second restored text');
-	} finally { await automatic.stop(); await f.service.dispose(); }
+		f.fail((path) => path.includes('/objects/'));
+		await expect(
+			f.service.apply((await f.service.prepare(request('cannot checkpoint this version'))).id),
+		).rejects.toThrow('disk-full');
+		expect(f.writes()).toBe(count);
+		expect(f.objects.get('note.md')!.text).toBe('second restored text');
+	} finally {
+		await automatic.stop();
+		await f.service.dispose();
+	}
 });
 
 test.each(['open-to-closed', 'closed-to-open'] as const)(
@@ -498,3 +584,110 @@ test('annotation participants can refuse copy removal before any note or checkpo
 	await service.dispose();
 	await f.service.dispose();
 });
+
+test('conflict admission is bound to the exact target and retained through checkpoint/apply; undo refuses a changed index baseline', async () => {
+	const f = fixture('<<<<<<< HEAD\ncurrent\n=======\nincoming\n>>>>>>> incoming\n');
+	const conflict = {
+		repositoryId: 'repo',
+		path: 'note.md',
+		targetPath: 'note.md',
+		worktreeId: 'fixed-marker-source',
+	};
+	await expect(f.service.prepare({ ...request(), targetPath: 'other.md', conflict })).rejects.toThrow('changed');
+	const run = f.gate.run;
+	let admitted: unknown;
+	f.gate.run = (id, work, admission) => {
+		admitted = admission;
+		return run(id, work);
+	};
+	const plan = await f.service.prepare({ ...request(), conflict });
+	const receipt = await f.service.apply(plan.id);
+	expect(admitted).toEqual(conflict);
+	expect(receipt.stage).toBe('verified');
+	expect(await f.service.readSnapshot(receipt.beforeObject!)).toContain('<<<<<<< HEAD');
+	f.repo('external-index-change');
+	await expect(f.service.undo(receipt.id, conflict)).rejects.toThrow('changed');
+	expect(f.writes()).toBe(1);
+	await f.service.dispose();
+});
+
+test('Git hunk restores validate the raw candidate and carry immutable source proofs into the existing write gate', async () => {
+	const f = fixture('new\n');
+	const diff: HunkDiff = {
+		left: 'old\n',
+		right: 'new\n',
+		precise: true,
+		chunks: [{ fromA: 0, toA: 4, fromB: 0, toB: 4, precise: true }],
+	};
+	const gitHunks = {
+		repositoryId: 'repo',
+		path: 'note.md',
+		targetPath: 'note.md',
+		indexId: 'index',
+		worktreeId: 'worktree',
+		indexText: 'old\n',
+		worktreeText: 'new\n',
+		diff,
+		selected: ['0:4:0:4'],
+	};
+	await expect(
+		f.service.prepare({ ...request(), source: { id: 'index', text: 'unselected overwrite' }, gitHunks }),
+	).rejects.toThrow('changed');
+	let admitted: unknown;
+	const run = f.gate.run;
+	f.gate.run = (id, work, _conflict, proof) => {
+		admitted = proof;
+		return run(id, work);
+	};
+	const plan = await f.service.prepare({ ...request(), source: { id: 'index', text: 'old\n' }, gitHunks });
+	const receipt = await f.service.apply(plan.id);
+	expect(admitted).toEqual(gitHunks);
+	expect(receipt.stage).toBe('verified');
+	expect(f.objects.get('note.md')!.text).toBe('old\n');
+	await f.service.undo(receipt.id);
+	expect(f.objects.get('note.md')!.text).toBe('new\n');
+	await f.service.dispose();
+});
+
+test.each(['new', 'deleted', 'empty'] as const)(
+	'Git %s hunk restores retain missing versus empty through checkpoint and conditional undo',
+	async (kind) => {
+		const before = kind === 'deleted' ? null : 'new\n';
+		const indexText = kind === 'new' ? null : kind === 'empty' ? '' : 'old\n';
+		const f = fixture(before ?? '');
+		if (before === null) f.objects.delete('note.md');
+		const source = indexText ?? '',
+			target = before ?? '';
+		const { parseDiffFromFile } = await import('@pierre/diffs');
+		const { hunkProof } = await import('../ui/diff/hunk-proof');
+		const metadata = parseDiffFromFile(
+			indexText === null ? null : { name: 'note.md', contents: source },
+			before === null ? null : { name: 'note.md', contents: target },
+			{ context: 2 },
+			true,
+		);
+		const diff = hunkProof(source, target, metadata),
+			chunk = diff.chunks[0]!;
+		const gitHunks = {
+			repositoryId: 'repo',
+			path: 'note.md',
+			targetPath: 'note.md',
+			indexId: 'index',
+			worktreeId: 'worktree',
+			indexText,
+			worktreeText: before,
+			diff,
+			selected: [`${chunk.fromA}:${chunk.toA}:${chunk.fromB}:${chunk.toB}`],
+		};
+		const plan = await f.service.prepare({ ...request(), source: { id: 'index', text: source }, gitHunks });
+		expect(plan.beforeText).toBe(before);
+		expect(plan.afterText).toBe(indexText);
+		const receipt = await f.service.apply(plan.id);
+		expect(receipt.stage).toBe('verified');
+		expect(f.objects.get('note.md')!.text).toBe(indexText);
+		expect(receipt.beforeObject === null).toBe(before === null);
+		await f.service.undo(receipt.id);
+		expect(f.objects.get('note.md')!.text).toBe(before);
+		await f.service.dispose();
+	},
+);

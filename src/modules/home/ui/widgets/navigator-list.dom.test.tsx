@@ -99,7 +99,13 @@ test('the widget follows list changes, an empty list and the navigator module go
 });
 
 test('rows are 36px buttons with the default icon of the file type, and the card owns the title', () => {
-	const f = fixture({ recent: [{ path: 'Notes/One.md', title: 'One' }, { path: 'Docs/Spec.pdf', title: 'Spec' }], shortcuts: lists.shortcuts });
+	const f = fixture({
+		recent: [
+			{ path: 'Notes/One.md', title: 'One' },
+			{ path: 'Docs/Spec.pdf', title: 'Spec' },
+		],
+		shortcuts: lists.shortcuts,
+	});
 	render(
 		<TestProviders>
 			<NavigatorRecentWidget store={f.store} />
@@ -108,7 +114,7 @@ test('rows are 36px buttons with the default icon of the file type, and the card
 	const rows = [...document.querySelectorAll<HTMLElement>('[data-nav-list="recent"] li button')];
 	expect(rows).toHaveLength(2);
 	for (const row of rows) {
-		expect(row.className).toContain('h-9');
+		expect(row.className).toContain('min-h-[var(--hu-row-h)]');
 		expect(row.className).toContain('w-full');
 		expect(row.querySelector('[aria-hidden]')).not.toBeNull();
 	}

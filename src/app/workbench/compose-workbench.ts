@@ -3,7 +3,6 @@ import type { ModuleId } from '../contracts/module';
 import type { PageCreate } from '../contracts/workbench-host';
 import {
 	FEATURE_MODULES,
-	iconSettingsTarget,
 	type PanelModel,
 	type WorkbenchFeature,
 	type StatusSegment,
@@ -46,25 +45,22 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	// The HUHU files tree (and the default-icon table it uses) loads when the panel is first shown, not at startup.
 	let contentTree: typeof import('../content/content-tree') | undefined;
 	let contentTreeLoading = false;
-	const contentSidePanel = (selected?: string): PanelModel => {
+	const contentSidePanel = (ownerWindow: Window, selected?: string): PanelModel => {
 		if (contentTree) {
 			const { files, directories } = contentTree.huhuVaultSnapshot(plugin.app.vault);
-			const openFile = (path: string) => {
-				void import('../content/new-note')
-					.then((loaded) => loaded.openInNativeTab(plugin.app, path))
-					.catch(report);
+			const openFile = async (path: string) => {
+				const loaded = await import('../content/new-note');
+				await loaded.openInNativeTab(plugin.app, path, undefined, ownerWindow);
 			};
 			return {
 				...contentTree.contentPanel(files, directories, selected, plugin.managedContent, openFile),
 				primary: {
 					label: t('content.newNote'),
 					icon: 'file-plus',
-					run: () => {
-						void (async () => {
-							const loaded = await import('../content/new-note');
-							const created = await loaded.createHuhuNote(plugin.app, selected);
-							await loaded.openInNativeTab(plugin.app, created.path);
-						})().catch(report);
+					run: async () => {
+						const loaded = await import('../content/new-note');
+						const created = await loaded.createHuhuNote(plugin.app, selected);
+						await loaded.openInNativeTab(plugin.app, created.path, undefined, ownerWindow);
 					},
 				},
 			};
@@ -262,21 +258,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			create: modulePage('versioning', 'revision-review'),
 		},
 		{
-			id: 'icons',
-			railParent: 'settings',
-			navigation: { id: 'icons', labelKey: 'modules.iconic', icon: 'images', target: { feature: 'icons' } },
-			redirect: iconSettingsTarget,
-			availability: ready,
-			stateKeys: [],
-			create: async (context, target, state, signal) =>
-				(await import('./settings-page')).createSettingsPage(plugin)(
-					context,
-					iconSettingsTarget(target),
-					state,
-					signal,
-				),
-		},
-		{
 			id: 'notifications',
 			statusSegments: () => {
 				const count = plugin.services.peek(NOTIFICATION_INBOX)?.unread ?? 0;
@@ -314,30 +295,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 					},
 				],
 			},
-			panel: ({ target }) => ({
-				sections: [
-					{
-						id: 'inbox',
-						items: [
-							{
-								id: 'unread',
-								label: t('workbench.unread'),
-								icon: 'mail',
-								badge: plugin.services.peek(NOTIFICATION_INBOX)?.unread,
-								target: { feature: 'notifications', section: 'unread' },
-								active: target.section === 'unread',
-							},
-							{
-								id: 'all',
-								label: t('workbench.allNotifications'),
-								icon: 'inbox',
-								target: { feature: 'notifications', section: 'all' },
-								active: target.section !== 'unread',
-							},
-						],
-					},
-				],
-			}),
 			availability: () => ({
 				...ready(),
 				enabled: plugin.moduleEnabled('notifications'),
@@ -351,7 +308,7 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			id: 'content',
 			railParent: 'settings',
 			navigation: { id: 'content', labelKey: 'content.title', icon: 'files', target: { feature: 'content' } },
-			panel: ({ target }) => contentSidePanel(target.resourceId),
+			panel: ({ target, ownerWindow }) => contentSidePanel(ownerWindow, target.resourceId),
 			title: (target) => target.resourceId?.split('/').at(-1) ?? t('content.title'),
 			availability: ready,
 			stateKeys: [],
@@ -548,7 +505,7 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		await leaf.setViewState({
 			type: WORKBENCH_VIEW_TYPE,
 			active: true,
-			state: { target, focus: true, pages: [{ target, state }] },
+			state: focusLeafState(target, state),
 		});
 		await plugin.app.workspace.revealLeaf(leaf);
 	};

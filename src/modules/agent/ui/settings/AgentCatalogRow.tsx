@@ -36,31 +36,31 @@ export function AgentCatalogRow({
 	return (
 		<div className={cn('py-3', !detected && 'opacity-70')} data-agent-catalog={agent.id}>
 			<div className="flex flex-wrap items-start gap-3">
-				<div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/50">
+				<div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-[var(--hu-line)]/50 bg-[var(--hu-canvas)]/50">
 					<AgentIcon agent={agent.id} size={16} />
 				</div>
 				<div className="min-w-0 flex-1 sm:min-w-[12rem]">
 					<div className="flex items-center gap-2">
 						<span className="text-sm font-medium leading-none">{agent.title}</span>
 						{!enabled && (
-							<span className="text-xs text-muted-foreground">{t('agent.manage.disabled')}</span>
+							<span className="text-xs text-[var(--hu-fg-2)]">{t('agent.manage.disabled')}</span>
 						)}
 					</div>
-					<div className="mt-1 truncate font-mono text-[11px] text-muted-foreground">
+					<div className="mt-1 truncate font-mono text-sm text-[var(--hu-fg-2)]">
 						{override.command ? (
 							<>
-								<span className="text-muted-foreground/60 line-through">{agent.detectCommand}</span>
-								<span className="ml-1.5 text-foreground/80">{override.command}</span>
+								<span className="text-[var(--hu-fg-2)]/60 line-through">{agent.detectCommand}</span>
+								<span className="ml-1.5 text-[var(--hu-fg)]/80">{override.command}</span>
 							</>
 						) : (
 							agent.detectCommand
 						)}
-						<span className="ml-1.5 text-foreground/70">{args}</span>
+						<span className="ml-1.5 text-[var(--hu-fg)]/70">{args}</span>
 					</div>
 					{detected && <ToolLocations info={info} />}
 				</div>
 				{detected && <ToolVersion info={info} />}
-				<div className="ml-auto grid shrink-0 grid-cols-[6.5rem_max-content_6.5rem_2rem_2rem] items-center gap-1.5">
+				<div className="ml-auto flex max-w-full flex-wrap items-center gap-2">
 					<ToolAction controller={controller} id={agent.id} installed={detected} info={info} />
 					<SegmentedControl
 						value={enabled ? 'enabled' : 'disabled'}
@@ -76,7 +76,7 @@ export function AgentCatalogRow({
 						{detected && enabled && (
 							<Button
 								variant={isDefault ? 'secondary' : 'ghost'}
-								size="xs"
+								size="sm"
 								className="h-7 w-full justify-center gap-1 text-xs"
 								onClick={() => run(controller.agents.setDefault(agent.id))}
 							>
@@ -90,14 +90,14 @@ export function AgentCatalogRow({
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label={t('agent.manage.docs')}
-						className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+						className="flex size-8 items-center justify-center rounded-md text-[var(--hu-fg-2)] hover:bg-[var(--hu-sunken)]/50 hover:text-[var(--hu-fg)]"
 					>
 						<ExternalLink className="size-3.5" />
 					</a>
 					<Button
 						variant="ghost"
 						size="icon-sm"
-						className="size-8 text-muted-foreground"
+						className="size-8 text-[var(--hu-fg-2)]"
 						aria-label={t('agent.manage.override')}
 						aria-expanded={open}
 						onClick={() => setOpen(!open)}
@@ -109,7 +109,7 @@ export function AgentCatalogRow({
 			<ToolFailureNotice info={info} installed={detected} />
 			{open && (
 				<div className="mt-3 space-y-2 pl-10">
-					<label className="flex flex-col gap-1 text-xs text-muted-foreground">
+					<label className="flex flex-col gap-1 text-xs text-[var(--hu-fg-2)]">
 						{t('agent.manage.command')}
 						<Input
 							key={override.command}
@@ -119,7 +119,7 @@ export function AgentCatalogRow({
 							onBlur={(e) => run(controller.agents.saveOverride(agent.id, { command: e.target.value }))}
 						/>
 					</label>
-					<label className="flex flex-col gap-1 text-xs text-muted-foreground">
+					<label className="flex flex-col gap-1 text-xs text-[var(--hu-fg-2)]">
 						{t('agent.manage.args')}
 						<div className="flex items-center gap-2">
 							<Input
@@ -135,7 +135,7 @@ export function AgentCatalogRow({
 							/>
 							<Button
 								variant="ghost"
-								size="xs"
+								size="sm"
 								aria-label={t('agent.manage.reset')}
 								onClick={() => run(controller.agents.saveOverride(agent.id, { args: undefined }))}
 							>
@@ -143,7 +143,7 @@ export function AgentCatalogRow({
 							</Button>
 						</div>
 					</label>
-					<label className="flex flex-col gap-1 text-xs text-muted-foreground">
+					<label className="flex flex-col gap-1 text-xs text-[var(--hu-fg-2)]">
 						{t('agent.manage.env')}
 						<Textarea
 							defaultValue={Object.entries(override.env ?? {})
@@ -172,11 +172,11 @@ export function AgentCatalogRow({
 						/>
 					</label>
 					{envError && (
-						<p role="alert" className="text-xs text-destructive">
+						<p role="alert" className="text-xs text-[var(--hu-danger)]">
 							{envError}
 						</p>
 					)}
-					<p className="mt-2 text-[11px] text-muted-foreground">{t('agent.manage.overrideHint')}</p>
+					<p className="mt-2 text-sm text-[var(--hu-fg-2)]">{t('agent.manage.overrideHint')}</p>
 				</div>
 			)}
 		</div>

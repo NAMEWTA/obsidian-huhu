@@ -59,7 +59,7 @@ export function RunHistory({
 							>
 								<span role="cell">
 									<Button
-										variant="link"
+										variant="ghost"
 										size="sm"
 										className="px-0 text-xs"
 										onClick={(event) => {
@@ -93,7 +93,7 @@ export function RunHistory({
 									{run.terminalId && (
 										<IconButton
 											label={t('automation.openTerminal')}
-											size="icon-xs"
+											size="icon-sm"
 											onClick={() => actions.onTerminal(run)}
 										>
 											<Terminal className="size-3.5" />
@@ -102,7 +102,7 @@ export function RunHistory({
 									{isActiveRun(run) ? (
 										<IconButton
 											label={t('automation.stop')}
-											size="icon-xs"
+											size="icon-sm"
 											disabled={disabled}
 											onClick={() => actions.onStop(run)}
 										>
@@ -110,8 +110,12 @@ export function RunHistory({
 										</IconButton>
 									) : (
 										<IconButton
-											label={t(canRetryCalendarDelivery(run) ? 'automation.calendarRetry' : 'automation.rerun')}
-											size="icon-xs"
+											label={t(
+												canRetryCalendarDelivery(run)
+													? 'automation.calendarRetry'
+													: 'automation.rerun',
+											)}
+											size="icon-sm"
 											disabled={disabled || !run.definition}
 											onClick={() => actions.onRerun(run)}
 										>
@@ -120,7 +124,7 @@ export function RunHistory({
 									)}
 									<IconButton
 										label={t('automation.viewOutput')}
-										size="icon-xs"
+										size="icon-sm"
 										onClick={() => actions.onOpen(run)}
 									>
 										<Eye className="size-3.5" />

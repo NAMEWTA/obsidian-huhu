@@ -1,3 +1,5 @@
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../../../ui/components/select';
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/pm-board-modal.ts
 import { projectStageColor } from './stage-color';
 import { useState, type CSSProperties } from 'react';
@@ -15,7 +17,6 @@ import { pmField, pmIncome, pmCycleText } from '../../core/pm/fields';
 import { P1Dialog } from '../dialogs/P1Dialog';
 import { Choice, IconButton } from '../board/controls';
 import { p1Classes as cls } from '../theme/p1-classes';
-
 export function ProjectBoard({
 	project,
 	service,
@@ -67,13 +68,15 @@ export function ProjectBoard({
 					{!rows.length && <div className={cls('dashboard-library-empty')}>—</div>}
 					{rows.map((row) => (
 						<div className={cls('dashboard-pmsec-check-item')} key={row.line}>
-							<Checkbox
-								data-hit-control
-								className="size-[14px]"
-								aria-label={row.text}
-								checked={row.checked}
-								onCheckedChange={(checked) => act(() => service.toggle(project.path, row, !!checked))}
-							/>
+							<span className="flex size-[var(--hu-hit)] shrink-0 items-center justify-center">
+								<Checkbox
+									data-hit-control
+									className="min-h-0 min-w-0 rounded-full"
+									aria-label={row.text}
+									checked={row.checked}
+									onCheckedChange={(checked) => act(() => service.toggle(project.path, row, !!checked))}
+								/>
+							</span>
 							<div className={cls('dashboard-pmsec-check-text')}>{row.text}</div>
 							<IconButton
 								className={cls(
@@ -101,32 +104,36 @@ export function ProjectBoard({
 					/>
 					{section === 'todo' && (
 						<>
-							<select
-								data-hit-control
-								className={cls('dashboard-pmsec-add-kind')}
-								aria-label={t('pm.addTodoNone')}
-								value={due.kind}
-								onChange={(e) => setDue({ ...due, kind: e.target.value })}
+							<Select
+								value={due.kind || '__none__'}
+								onValueChange={(e) => setDue({ ...due, kind: e === '__none__' ? '' : e })}
 							>
-								{['', 'due', 'scheduled'].map((v) => (
-									<option key={v} value={v}>
-										{t(
-											v === 'due'
-												? 'pm.addTodoDue'
-												: v === 'scheduled'
-													? 'pm.addTodoScheduled'
-													: 'pm.addTodoNone',
-										)}
-									</option>
-								))}
-							</select>
-							<Input
+								<SelectTrigger
+									data-hit-control
+									className={cls('dashboard-pmsec-add-kind')}
+									aria-label={t('pm.addTodoNone')}
+								>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{['', 'due', 'scheduled'].map((v) => (
+										<SelectItem key={v} value={v || '__none__'}>
+											{t(
+												v === 'due'
+													? 'pm.addTodoDue'
+													: v === 'scheduled'
+														? 'pm.addTodoScheduled'
+														: 'pm.addTodoNone',
+											)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<DateField
 								data-hit-control
-								className={cls('dashboard-modal-input dashboard-pmsec-add-date')}
-								type="date"
-								aria-label={t('pm.f.keyDate')}
-								value={due.date}
-								onChange={(e) => setDue({ ...due, date: e.target.value })}
+								label={t('pm.f.keyDate')}
+								value={parseDate(due.date)}
+								onChange={(day) => setDue({ ...due, date: day ?? '' })}
 							/>
 							<Input
 								data-hit-control
@@ -156,7 +163,12 @@ export function ProjectBoard({
 		key: string,
 		icon: string,
 		value: string,
-		options: { full?: boolean; big?: boolean; accent?: boolean; sub?: string } = {},
+		options: {
+			full?: boolean;
+			big?: boolean;
+			accent?: boolean;
+			sub?: string;
+		} = {},
 	) =>
 		value && (
 			<div
@@ -217,8 +229,7 @@ export function ProjectBoard({
 	const link = (path?: string) => {
 		const file = path
 			? files.getFileByPath(path)
-			: (matches[0] ??
-				app.metadataCache.getFirstLinkpathDest(query.replace(/^\[\[|\]\]$/g, ''), project.path));
+			: (matches[0] ?? app.metadataCache.getFirstLinkpathDest(query.replace(/^\[\[|\]\]$/g, ''), project.path));
 		if (!file) {
 			setError(t('pm.fileMissing'));
 			return;
@@ -277,7 +288,7 @@ export function ProjectBoard({
 				</div>
 				<div className={cls('dashboard-pmsec-hero-intro')}>{pmField(project.fields, 'intro')}</div>
 			</header>
-			<div className={cls('dashboard-modal-body dashboard-pmsec-board-body')}>
+			<div className={cls('dashboard-modal-body dashboard-pmsec-board-body') + ' max-[901px]:grid-rows-none max-[901px]:auto-rows-max'}>
 				<div className={cls('dashboard-pmsec-pane')}>
 					<section
 						className={cls(
@@ -461,14 +472,15 @@ export function ProjectBoard({
 						{!!matches.length && (
 							<div className={cls('dashboard-pmsec-link-results')}>
 								{matches.map((f) => (
-									<button
+									<Button
+										variant="ghost"
 										data-hit-control
 										key={f.path}
 										className={cls('dashboard-pmsec-link-item')}
 										onClick={() => link(f.path)}
 									>
 										{f.basename}
-									</button>
+									</Button>
 								))}
 							</div>
 						)}
@@ -478,7 +490,8 @@ export function ProjectBoard({
 							)}
 							{allPaths.map((path) => (
 								<div key={path} className={cls('dashboard-pmsec-file')}>
-									<button
+									<Button
+										variant="ghost"
 										data-hit-control
 										className={cls('dashboard-pmsec-file-name')}
 										onClick={() => {
@@ -486,7 +499,7 @@ export function ProjectBoard({
 										}}
 									>
 										{files.getFileByPath(path)?.basename ?? path}
-									</button>
+									</Button>
 									{linked.includes(path) && (
 										<IconButton
 											className={cls('dashboard-pmsec-file-unlink')}

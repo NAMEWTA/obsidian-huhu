@@ -6,6 +6,7 @@ import type {
 	ResolvedEndpoint,
 	RevisionFileChange,
 	RevisionReader,
+	RepositoryEndpoint,
 	RevisionRef,
 	VersioningQueries,
 } from '../core/history';
@@ -22,15 +23,26 @@ export interface HistoryRepositoryAccess {
 }
 
 export class HistoryQueryService implements VersioningQueries {
-	constructor(private readonly access: () => Promise<HistoryRepositoryAccess>, private readonly local?: () => LocalHistoryStore | undefined) {}
+	constructor(
+		private readonly access: () => Promise<HistoryRepositoryAccess>,
+		private readonly local?: () => LocalHistoryStore | undefined,
+	) {}
 
 	async localHistory(path: string, signal?: AbortSignal) {
 		if (signal?.aborted) throw new GitError('cancelled');
-		const entries = await this.local?.()?.list(path) ?? [];
+		const entries = (await this.local?.()?.list(path)) ?? [];
 		if (signal?.aborted) throw new GitError('cancelled');
-		return entries.map(entry => ({ id: entry.id, commitOid: '', parents: [], author: '', time: entry.createdAt / 1000,
-			subject: '', pathAtRevision: path, status: 'M',
-			ref: { kind: 'local-snapshot' as const, path, snapshotId: entry.id, text: '' } }));
+		return entries.map((entry) => ({
+			id: entry.id,
+			commitOid: '',
+			parents: [],
+			author: '',
+			time: entry.createdAt / 1000,
+			subject: '',
+			pathAtRevision: path,
+			status: 'M',
+			ref: { kind: 'local-snapshot' as const, path, snapshotId: entry.id, text: '' },
+		}));
 	}
 	async readLocalSnapshot(id: string, signal?: AbortSignal): Promise<string> {
 		if (signal?.aborted) throw new GitError('cancelled');
@@ -57,6 +69,57 @@ export class HistoryQueryService implements VersioningQueries {
 		return reader.resolve(ref, { signal });
 	}
 
+	async compareFiles(
+		left: RepositoryEndpoint,
+		right: RepositoryEndpoint,
+		signal?: AbortSignal,
+	): Promise<readonly RevisionFileChange[]> {
+		if (left.kind === 'worktree' && right.kind !== 'worktree') {
+			const forward = await this.compareFiles(right, left, signal);
+			return forward.map((file) => ({
+				...file,
+				path: file.from ?? file.path,
+				...(file.from ? { from: file.path } : {}),
+				status: file.status === 'A' ? 'D' : file.status === 'D' ? 'A' : file.status,
+				additions: file.deletions,
+				deletions: file.additions,
+			}));
+		}
+		const { repo, reader } = await this.repository(signal);
+		const files = await repo.compareFiles(left, right, signal);
+		if (right.kind !== 'worktree' || left.kind === 'worktree') return files;
+		const untracked = await repo.git(['ls-files', '--others', '--exclude-standard', '-z'], {
+			signal,
+			maxOutputBytes: 8 * 1024 * 1024,
+			env: { GIT_OPTIONAL_LOCKS: '0' },
+		});
+		const result = new Map(files.map((file) => [file.path, file]));
+		for (const path of untracked.stdout.split('\0').filter(Boolean)) {
+			const current = await reader.resolve({ kind: 'worktree', path }, { signal });
+			const previous =
+				left.kind === 'index' || left.kind === 'empty'
+					? undefined
+					: await reader.resolve({ ...left, path }, { signal });
+			if (
+				previous?.status === 'text' &&
+				current.status === 'text' &&
+				previous.snapshot.hash === current.snapshot.hash
+			) {
+				result.delete(path);
+				continue;
+			}
+			const created = !previous || previous.status === 'missing';
+			const additions =
+				created && current.status === 'text'
+					? current.snapshot.text
+						? current.snapshot.text.split('\n').length - Number(current.snapshot.text.endsWith('\n'))
+						: 0
+					: undefined;
+			result.set(path, { path, status: created ? 'A' : 'M', additions, deletions: created ? 0 : undefined });
+		}
+		return [...result.values()].sort((a, b) => a.path.localeCompare(b.path));
+	}
+
 	async changedFiles(
 		leftCommit: string | null,
 		rightCommit: string,
@@ -69,10 +132,25 @@ export class HistoryQueryService implements VersioningQueries {
 	async compare(request: ComparisonRequest, signal?: AbortSignal): Promise<ResolvedComparison> {
 		if (!request.repositoryId && isInlineRevision(request.left) && isInlineRevision(request.right)) {
 			const repositoryId = request.repositoryId ?? 'local-history';
-			const [left, right] = await Promise.all([resolveInlineRevision(request.left, repositoryId, signal), resolveInlineRevision(request.right, repositoryId, signal)]);
-			return Object.freeze({ id: `${left.id}\0${right.id}`, repositoryId, intent: request.intent, left, right, capturedAt: Date.now(),
-				identical: left.status === 'text' && right.status === 'text' ? left.snapshot.hash === right.snapshot.hash : left.status === 'missing' && right.status === 'missing',
-				canCompare: [left, right].every(endpoint => endpoint.status === 'text' || endpoint.status === 'missing') });
+			const [left, right] = await Promise.all([
+				resolveInlineRevision(request.left, repositoryId, signal),
+				resolveInlineRevision(request.right, repositoryId, signal),
+			]);
+			return Object.freeze({
+				id: `${left.id}\0${right.id}`,
+				repositoryId,
+				intent: request.intent,
+				left,
+				right,
+				capturedAt: Date.now(),
+				identical:
+					left.status === 'text' && right.status === 'text'
+						? left.snapshot.hash === right.snapshot.hash
+						: left.status === 'missing' && right.status === 'missing',
+				canCompare: [left, right].every(
+					(endpoint) => endpoint.status === 'text' || endpoint.status === 'missing',
+				),
+			});
 		}
 		return this.compareWithin(await this.repository(signal), request, signal);
 	}

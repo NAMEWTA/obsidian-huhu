@@ -69,12 +69,12 @@ function fixture() {
 }
 
 function panel(label: string) {
-	const unmount = vi.fn();
-	const mount = vi.fn((parent: HTMLElement, _documents: EditorContextAccess) => {
+	const unmount = vi.fn(), setVisible = vi.fn();
+	const mount = vi.fn((parent: HTMLElement, _documents: EditorContextAccess, _visible: boolean) => {
 		const content = parent.ownerDocument.createElement('p'); content.textContent = label; parent.append(content);
-		return () => { content.remove(); unmount(); };
+		return { setVisible, dispose: () => { content.remove(); unmount(); } };
 	});
-	return { mount, unmount };
+	return { mount, unmount, setVisible };
 }
 
 function selectTab(name: string) {
@@ -90,7 +90,7 @@ test('unavailable panels open General settings and switch to a registered contri
 	const comments = panel('Active comments');
 	act(() => f.setPanel(COMMENTS_PANEL, comments));
 	await screen.findByText('Active comments');
-	expect(comments.mount).toHaveBeenCalledExactlyOnceWith(expect.any(HTMLElement), f.host.documents);
+	expect(comments.mount).toHaveBeenCalledExactlyOnceWith(expect.any(HTMLElement), f.host.documents, true);
 	expect(document.querySelectorAll('.huhu-portal-root')).toHaveLength(1);
 	act(() => f.setPanel(COMMENTS_PANEL));
 	await screen.findByRole('button', { name: t('editorPanel.settings') });
@@ -103,7 +103,7 @@ test('unavailable panels open General settings and switch to a registered contri
 	expect(f.watchers(NOTE_HISTORY_PANEL)).toBe(0);
 });
 
-test('tabs mount only their current contribution and preserve the selected tab in leaf state', async () => {
+test('tabs lazily mount contributions, retain hidden content, and preserve the selected tab in leaf state', async () => {
 	setLanguage('en'); const f = fixture(), comments = panel('Comment contribution'), history = panel('History contribution');
 	f.setPanel(COMMENTS_PANEL, comments); f.setPanel(NOTE_HISTORY_PANEL, history);
 	await act(() => f.leaf.onOpen());
@@ -113,16 +113,17 @@ test('tabs mount only their current contribution and preserve the selected tab i
 	expect(f.watchers(NOTE_HISTORY_PANEL)).toBe(0);
 	selectTab('History');
 	await screen.findByText('History contribution');
-	expect(comments.unmount).toHaveBeenCalledOnce();
-	expect(history.mount).toHaveBeenCalledExactlyOnceWith(expect.any(HTMLElement), f.host.documents);
-	expect(screen.queryByText('Comment contribution')).toBeNull();
-	expect(f.watchers(COMMENTS_PANEL)).toBe(0);
+	expect(comments.unmount).not.toHaveBeenCalled();
+	expect(comments.setVisible).toHaveBeenLastCalledWith(false);
+	expect(history.mount).toHaveBeenCalledExactlyOnceWith(expect.any(HTMLElement), f.host.documents, true);
+	expect(screen.getByText('Comment contribution').closest('[role=tabpanel]')?.hasAttribute('hidden')).toBe(true);
+	expect(f.watchers(COMMENTS_PANEL)).toBe(1);
 	expect(f.watchers(NOTE_HISTORY_PANEL)).toBe(1);
 	expect(f.leaf.getState()).toEqual({ tab: 'history' });
 	selectTab('Comments');
 	await screen.findByText('Comment contribution');
-	expect(history.unmount).toHaveBeenCalledOnce();
-	expect(comments.mount).toHaveBeenCalledTimes(2);
+	expect(history.unmount).not.toHaveBeenCalled();
+	expect(comments.mount).toHaveBeenCalledOnce();
 	expect(f.leaf.getState()).toEqual({ tab: 'comments' });
 });
 
@@ -142,7 +143,7 @@ test('service changes remount the active contribution without remounting for ina
 	expect(replacement.mount).toHaveBeenCalledOnce();
 	selectTab('History');
 	await screen.findByText('History contribution');
-	expect(replacement.unmount).toHaveBeenCalledOnce();
+	expect(replacement.unmount).not.toHaveBeenCalled();
 	act(() => f.setPanel(COMMENTS_PANEL));
 	expect(history.mount).toHaveBeenCalledOnce();
 	expect(history.unmount).not.toHaveBeenCalled();
@@ -197,7 +198,7 @@ test('closing a React contribution releases both root lifetimes and the shared p
 	f.setPanel(COMMENTS_PANEL, { mount: container => {
 		const root = createRoot(container);
 		root.render(<ContainerProviders container={container}><ChildPanel /></ContainerProviders>);
-		return () => root.unmount();
+		return { setVisible() {}, dispose: () => root.unmount() };
 	} });
 	await act(() => f.leaf.onOpen());
 	await screen.findByText('Nested React panel');

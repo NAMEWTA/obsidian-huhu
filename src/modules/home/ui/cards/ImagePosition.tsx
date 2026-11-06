@@ -24,7 +24,7 @@ export function ImagePosition({
 	return (
 		<div className="grid gap-2">
 			<Button
-				variant="outline"
+				variant="secondary"
 				aria-label={t('home.dashboard.focal')}
 				className="h-28 w-full touch-none bg-cover bg-center"
 				style={{
@@ -69,7 +69,7 @@ export function ImagePosition({
 						/>
 					</Label>
 				))}
-				<Button variant="outline" onClick={() => onChange(50, 50)}>
+				<Button variant="secondary" onClick={() => onChange(50, 50)}>
 					{t('home.dashboard.centerImage')}
 				</Button>
 			</div>

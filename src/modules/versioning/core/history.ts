@@ -25,7 +25,7 @@ export interface TextSnapshot {
 }
 
 export type EndpointContent =
-	| { readonly status: 'text'; readonly snapshot: TextSnapshot }
+	| { readonly status: 'text'; readonly snapshot: TextSnapshot; readonly fileMode?: '100644' | '100755' }
 	| { readonly status: 'missing'; readonly reason: 'not-present' | 'empty' }
 	| {
 			readonly status: 'binary';
@@ -43,6 +43,7 @@ export type ResolvedEndpoint = EndpointContent & {
 	readonly label: string;
 	readonly commitOid?: string;
 	readonly blobOid?: string;
+	readonly fileMode?: '100644' | '100755';
 };
 
 export type ComparisonIntent = 'unstaged' | 'staged' | 'commit' | 'history-current' | 'revisions' | 'branches';
@@ -104,6 +105,9 @@ export interface RevisionReader {
 	resolve(ref: RevisionRef, options?: SnapshotReadOptions): Promise<ResolvedEndpoint>;
 }
 
+export type RepositoryEndpoint =
+	{ readonly kind: 'commit'; readonly commit: string } | { readonly kind: 'index' | 'worktree' | 'empty' };
+
 /** The UI consumes this contract; the service owns immutable resolution and repository checks. */
 export interface VersioningQueries {
 	/** Automatic local history remains readable without a Git repository. Metadata is loaded before bodies. */
@@ -114,6 +118,11 @@ export interface VersioningQueries {
 	resolve(ref: RevisionRef, signal?: AbortSignal): Promise<ResolvedEndpoint>;
 	compare(request: ComparisonRequest, signal?: AbortSignal): Promise<ResolvedComparison>;
 	commitComparison(commit: string, path: string, parent?: string, signal?: AbortSignal): Promise<ResolvedComparison>;
+	compareFiles?(
+		left: RepositoryEndpoint,
+		right: RepositoryEndpoint,
+		signal?: AbortSignal,
+	): Promise<readonly RevisionFileChange[]>;
 	changedFiles(
 		leftCommit: string | null,
 		rightCommit: string,
@@ -122,7 +131,23 @@ export interface VersioningQueries {
 }
 
 export interface RevisionFileChange {
+	readonly additions?: number | null;
+	readonly deletions?: number | null;
 	readonly path: string;
 	readonly from?: string;
 	readonly status: string;
+}
+
+/** Immutable hunk authorization. The service re-reads every source inside its write queue. */
+export interface IndexHunkRequest {
+	readonly repositoryId: string;
+	readonly path: string;
+	readonly direction: 'stage' | 'unstage';
+	readonly head: string | null;
+	readonly indexId: string;
+	readonly worktreeId: string;
+	readonly comparison: ResolvedComparison;
+	readonly diff: import('./hunk-restore').HunkDiff;
+	readonly selected: readonly string[];
+	readonly candidate: string | null;
 }

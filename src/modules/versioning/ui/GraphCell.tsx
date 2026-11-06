@@ -1,7 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import { LANE_COLORS, type GraphRow } from '../core/graph';
 
 export const LANE_WIDTH = 16;
-export const ROW_HEIGHT = 32;
+export const ROW_HEIGHT = 44;
 const MIN_WIDTH = 48;
 
 const laneX = (lane: number) => LANE_WIDTH / 2 + lane * LANE_WIDTH;
@@ -18,6 +19,8 @@ export function GraphCell({
 	hollow = false,
 	below = false,
 	above = false,
+	merge = false,
+	worktree = false,
 }: {
 	row?: GraphRow;
 	width: number;
@@ -25,15 +28,28 @@ export function GraphCell({
 	hollow?: boolean;
 	below?: boolean;
 	above?: boolean;
+	merge?: boolean;
+	worktree?: boolean;
 }) {
-	const mid = ROW_HEIGHT / 2;
+	const svg = useRef<SVGSVGElement>(null);
+	const [height, setHeight] = useState(ROW_HEIGHT);
+	useEffect(() => {
+		const node = svg.current,
+			owner = node?.ownerDocument.defaultView;
+		if (!node || !owner) return;
+		const observer = new owner.ResizeObserver(() => setHeight(node.getBoundingClientRect().height || ROW_HEIGHT));
+		observer.observe(node);
+		return () => observer.disconnect();
+	}, []);
+	const mid = height / 2;
 	const column = row?.column ?? 0;
 	const dotX = laneX(column);
 	return (
 		<svg
+			ref={svg}
 			width={width}
-			height={ROW_HEIGHT}
-			viewBox={`0 0 ${width} ${ROW_HEIGHT}`}
+			height={height}
+			viewBox={`0 0 ${width} ${height}`}
 			preserveAspectRatio="none"
 			className="block h-full shrink-0 overflow-hidden"
 			aria-hidden="true"
@@ -46,15 +62,15 @@ export function GraphCell({
 					const to = laneX(segment.to ?? segment.lane);
 					d =
 						to === x
-							? `M${x} 0V${ROW_HEIGHT}`
-							: `M${x} 0V${mid - 2}C${x} ${mid + 4} ${to} ${mid + 2} ${to} ${ROW_HEIGHT}`;
+							? `M${x} 0V${height}`
+							: `M${x} 0V${mid - 2}C${x} ${mid + 4} ${to} ${mid + 2} ${to} ${height}`;
 				} else if (segment.type === 'in')
 					d = x === dotX ? `M${x} 0V${mid}` : `M${x} 0C${x} ${mid} ${dotX} ${mid - 4} ${dotX} ${mid}`;
 				else
 					d =
 						x === dotX
-							? `M${x} ${mid}V${ROW_HEIGHT}`
-							: `M${dotX} ${mid}C${dotX} ${mid + 4} ${x} ${mid} ${x} ${ROW_HEIGHT}`;
+							? `M${x} ${mid}V${height}`
+							: `M${dotX} ${mid}C${dotX} ${mid + 4} ${x} ${mid} ${x} ${height}`;
 				return (
 					<path
 						key={index}
@@ -77,14 +93,18 @@ export function GraphCell({
 			)}
 			{below && (
 				<path
-					d={`M${dotX} ${mid}V${ROW_HEIGHT}`}
+					d={`M${dotX} ${mid}V${height}`}
 					fill="none"
 					strokeWidth={1.5}
 					strokeDasharray="2 2"
 					className="stroke-muted-foreground"
 				/>
 			)}
-			{hollow ? (
+			{worktree ? (
+				<circle cx={dotX} cy={mid} r={4.5} className="fill-status-warning" />
+			) : merge ? (
+				<circle cx={dotX} cy={mid} r={5} style={{ fill: colorOf(row?.color ?? 0) }} />
+			) : hollow ? (
 				<circle
 					cx={dotX}
 					cy={mid}

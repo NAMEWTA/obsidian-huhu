@@ -119,8 +119,8 @@ function Content({ action, update, host, showErrors, onTouch }: ActionFormProps<
 					{['date', 'time', 'vault', 'folder'].map((variable) => (
 						<Button
 							key={variable}
-							variant="outline"
-							size="xs"
+							variant="secondary"
+							size="sm"
 							className="font-mono"
 							onClick={() => setPrompt(action.prompt + `{{${variable}}}`)}
 						>{`{{${variable}}}`}</Button>

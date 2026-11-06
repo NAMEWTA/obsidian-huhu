@@ -14,7 +14,10 @@ import { PipelineSection } from '../pipeline/PipelineSection';
 import { ProjectSection } from '../pm/ProjectSection';
 import { RssSection } from '../rss/RssSection';
 import { Section } from './Section';
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+afterEach(() => {
+	cleanup();
+	vi.restoreAllMocks();
+});
 vi.mock('sonner', () => ({ toast: vi.fn(), Toaster: () => null }));
 
 const column = (type: string, extra: Partial<DashboardColumn> = {}) =>
@@ -86,7 +89,7 @@ test('the media toolbar is one wrapping row of 36px controls over a scrolling ar
 	);
 	const toolbar = container.querySelector('[data-toolbar]') as HTMLElement;
 	expect(toolbar.className).toContain('flex-wrap');
-	expect(toolbar.querySelector('input')?.className).toContain('h-9');
+	expect(toolbar.querySelector('input')?.className).toContain('h-[var(--hu-ctl-h)]');
 	expect(toolbar.querySelector('select')).toBeNull();
 	expect(toolbar.querySelector('[role="button"]')).toBeNull();
 	expect(container.querySelector('[data-footer]')).toBeTruthy();

@@ -133,7 +133,7 @@ export function ProductivitySettings({ settings, runtime, app }: { settings: Set
 			<SettingsSection title={t('navigator.setting.createCommandsTitle')}>
 				<SettingsSubsectionHeader title={t('navigator.setting.createCommandsHint')} description={t('navigator.setting.createCommandsDesc')} />
 				{value.createCommands.map((command) => (
-					<div key={command.id} className="space-y-1 rounded-md border border-border p-2" data-create-command={command.id}>
+					<div key={command.id} className="space-y-1 rounded-md border border-[var(--hu-line)] p-2" data-create-command={command.id}>
 						<TextRow label={t('navigator.setting.commandName')} value={command.name} onCommit={(next) => { if (next.trim()) setCommand(command.id, { name: next.trim() }); }} />
 						<TemplateRow label={t('navigator.setting.commandTemplate')} value={command.template} templates={templates} onCommit={(next) => setCommand(command.id, { template: next })} />
 						<TextRow label={t('navigator.setting.commandFileName')} description={t('navigator.setting.commandFileNameDesc')} placeholder={t('navigator.untitled')} value={command.fileName} onCommit={(next) => setCommand(command.id, { fileName: next.trim() })} />
@@ -143,33 +143,33 @@ export function ProductivitySettings({ settings, runtime, app }: { settings: Set
 						/>
 						{command.location === 'folder' && <PathRow app={app} label={t('navigator.setting.commandFolder')} value={command.folder} onCommit={(next) => setCommand(command.id, { folder: next })} />}
 						<div className="flex justify-end">
-							<Button type="button" variant="ghost" size="sm" onClick={() => update((draft) => { draft.createCommands = draft.createCommands.filter((entry) => entry.id !== command.id); })}>{t('navigator.setting.remove')}</Button>
+							<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="ghost" size="sm" onClick={() => update((draft) => { draft.createCommands = draft.createCommands.filter((entry) => entry.id !== command.id); })}>{t('navigator.setting.remove')}</Button>
 						</div>
 					</div>
 				))}
 				<div className="flex justify-end">
-					<Button type="button" variant="outline" size="sm" disabled={value.createCommands.length >= MAX_CREATE_COMMANDS} onClick={() => update((draft) => { draft.createCommands = [...draft.createCommands, newCreateCommand(draft.createCommands, t('navigator.setting.newCommandName'))]; })}>{t('navigator.setting.addCommand')}</Button>
+					<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" size="sm" disabled={value.createCommands.length >= MAX_CREATE_COMMANDS} onClick={() => update((draft) => { draft.createCommands = [...draft.createCommands, newCreateCommand(draft.createCommands, t('navigator.setting.newCommandName'))]; })}>{t('navigator.setting.addCommand')}</Button>
 				</div>
 			</SettingsSection>
 
 			<SettingsSection title={t('navigator.setting.profilesTitle')}>
 				<SettingsSubsectionHeader title={t('navigator.setting.profilesHint')} description={t('navigator.setting.profilesDesc')} />
 				{profiles.map((profile) => (
-					<div key={profile.id} className="space-y-1 rounded-md border border-border p-2" data-profile={profile.id}>
+					<div key={profile.id} className="space-y-1 rounded-md border border-[var(--hu-line)] p-2" data-profile={profile.id}>
 						<TextRow label={t('navigator.setting.profileName')} value={profile.name} onCommit={(next) => update((draft) => { draft.profiles = editProfile(draft.profiles, profile.id, { name: next }, t('navigator.profileDefault')); })} />
 						<PathRow app={app} kind="file" label={t('navigator.setting.profileBanner')} description={t('navigator.setting.profileBannerDesc')} value={profile.banner} placeholder="Attachments/banner.png" onCommit={(next) => update((draft) => { draft.profiles = editProfile(draft.profiles, profile.id, { banner: next }, t('navigator.profileDefault')); })} />
 						<div className="flex items-center justify-end gap-2">
-							{profile.active ? <span className="text-xs text-muted-foreground">{t('navigator.profileActive')}</span> : (
+							{profile.active ? <span className="text-xs text-[var(--hu-fg-3)]">{t('navigator.profileActive')}</span> : (
 								<>
-									<Button type="button" variant="outline" size="sm" onClick={() => runtime()?.service.switchProfile(profile.id)}>{t('navigator.setting.profileUse')}</Button>
-									<Button type="button" variant="ghost" size="sm" onClick={() => update((draft) => { draft.profiles = removeProfile(draft.profiles, profile.id, draft.activeProfile, t('navigator.profileDefault')); })}>{t('navigator.setting.remove')}</Button>
+									<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" size="sm" onClick={() => runtime()?.service.switchProfile(profile.id)}>{t('navigator.setting.profileUse')}</Button>
+									<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="ghost" size="sm" onClick={() => update((draft) => { draft.profiles = removeProfile(draft.profiles, profile.id, draft.activeProfile, t('navigator.profileDefault')); })}>{t('navigator.setting.remove')}</Button>
 								</>
 							)}
 						</div>
 					</div>
 				))}
 				<div className="flex justify-end">
-					<Button type="button" variant="outline" size="sm" disabled={profiles.length >= MAX_PROFILES} onClick={() => update((draft) => { draft.profiles = addProfile(draft.profiles, t('navigator.setting.newProfileName'), t('navigator.profileDefault')).profiles; })}>{t('navigator.setting.addProfile')}</Button>
+					<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" size="sm" disabled={profiles.length >= MAX_PROFILES} onClick={() => update((draft) => { draft.profiles = addProfile(draft.profiles, t('navigator.setting.newProfileName'), t('navigator.profileDefault')).profiles; })}>{t('navigator.setting.addProfile')}</Button>
 				</div>
 			</SettingsSection>
 		</>
@@ -179,11 +179,11 @@ export function ProductivitySettings({ settings, runtime, app }: { settings: Set
 function FolderTemplateRow({ entry, templates, onChange, onRemove }: { entry: FolderTemplate; templates: readonly string[]; onChange: (entry: FolderTemplate) => void; onRemove: () => void }) {
 	const t = useT();
 	return (
-		<div className="space-y-1 rounded-md border border-border p-2" data-folder-template={entry.folder}>
+		<div className="space-y-1 rounded-md border border-[var(--hu-line)] p-2" data-folder-template={entry.folder}>
 			<SettingsRow label={t('navigator.setting.folderTemplateFolder')} control={<span className="max-w-56 truncate text-sm">{entry.folder === '/' ? t('navigator.rootFolder') : entry.folder}</span>} />
 			<TemplateRow label={t('navigator.setting.commandTemplate')} value={entry.template} templates={templates} onCommit={(next) => onChange({ ...entry, template: next })} />
 			<SettingsSwitchRow label={t('navigator.folderTemplateOnly')} checked={entry.exact} onChange={() => onChange({ ...entry, exact: !entry.exact })} />
-			<div className="flex justify-end"><Button type="button" variant="ghost" size="sm" onClick={onRemove}>{t('navigator.setting.remove')}</Button></div>
+			<div className="flex justify-end"><Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="ghost" size="sm" onClick={onRemove}>{t('navigator.setting.remove')}</Button></div>
 		</div>
 	);
 }
@@ -203,7 +203,7 @@ function AddFolderTemplate({ app, templates, onAdd }: { app: App; templates: rea
 				<div className="flex flex-col gap-2">
 					<VaultPathField app={app} label={t('navigator.setting.folderTemplateFolder')} className="w-56" placeholder={t('navigator.setting.folderPlaceholder')} value={folder} create={false} onChange={setFolder} />
 					<PathPicker label={t('navigator.setting.commandTemplate')} kind="file" allowCreate={false} className="w-56" items={items} value={template} onChange={setTemplate} />
-					<Button type="button" variant="outline" size="sm" disabled={!ready} onClick={() => { onAdd({ folder: folder.trim().replace(/^\/+|\/+$/g, '') || '/', template: template.trim(), exact: false }); setFolder(''); setTemplate(''); }}>{t('navigator.setting.add')}</Button>
+					<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" size="sm" disabled={!ready} onClick={() => { onAdd({ folder: folder.trim().replace(/^\/+|\/+$/g, '') || '/', template: template.trim(), exact: false }); setFolder(''); setTemplate(''); }}>{t('navigator.setting.add')}</Button>
 				</div>
 			}
 		/>

@@ -14,14 +14,14 @@ import { dialogOwner, openReactDialog } from '../../../../ui/react/dialog';
 export function SpaceChoices({ choices, choose, spaces }: { choices: readonly SpaceChoice[]; choose: (id: string) => void; spaces?: SpaceService }) {
 	const [creating, setCreating] = useState(false);
 	if (choices.length === 0 && spaces?.canWrite) return <div className="flex min-w-0 flex-col items-start gap-3">
-		<p className="text-sm text-muted-foreground">{t('agent.spaces.noSpacesHint')}</p>
+		<p className="text-sm text-[var(--hu-fg-2)]">{t('agent.spaces.noSpacesHint')}</p>
 		<Button onClick={() => setCreating(true)}>{t('agent.spaces.create')}</Button>
 		{creating && <SpaceForm spaces={spaces} finish={space => { setCreating(false); if (space) choose(space.id); }} />}
 	</div>;
 	return <div className="flex max-h-80 min-w-0 flex-col gap-1 overflow-y-auto">
-		{choices.length === 0 ? <p className="text-sm text-muted-foreground">{t('agent.spaces.noSpacesHint')}</p> : choices.map(choice =>
+		{choices.length === 0 ? <p className="text-sm text-[var(--hu-fg-2)]">{t('agent.spaces.noSpacesHint')}</p> : choices.map(choice =>
 			<Button key={choice.id} variant="ghost" className="h-auto min-h-11 justify-start py-2 text-left" onClick={() => choose(choice.id)}>
-				<span className="flex min-w-0 flex-col"><span className="truncate" title={choice.name}>{choice.name}</span><span className="truncate text-xs text-muted-foreground" title={choice.directoryLabel}>{choice.directoryLabel}</span><span className="truncate font-mono text-2xs text-muted-foreground">{choice.id}</span></span>
+				<span className="flex min-w-0 flex-col"><span className="truncate" title={choice.name}>{choice.name}</span><span className="truncate text-xs text-[var(--hu-fg-2)]" title={choice.directoryLabel}>{choice.directoryLabel}</span><span className="truncate font-mono text-xs text-[var(--hu-fg-2)]">{choice.id}</span></span>
 			</Button>)}
 	</div>;
 }

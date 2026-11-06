@@ -46,8 +46,8 @@ function Slider({
 					aria-label={thumbLabels?.[index]}
 					aria-valuetext={thumbValueLabels?.[index]}
 					className={cn(
-						'block size-4 rounded-full border border-primary/40 bg-background shadow-sm',
-						'transition-[transform,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+						'block size-4 rounded-full border border-[var(--hu-control-line)] bg-[var(--hu-raised)] shadow-[var(--hu-shadow-card)]',
+						'transition-[transform,opacity] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]',
 						'disabled:pointer-events-none disabled:opacity-50',
 					)}
 				/>

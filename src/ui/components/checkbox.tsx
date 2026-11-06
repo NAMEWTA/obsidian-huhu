@@ -8,24 +8,34 @@ import * as CheckboxPrimitive from 'radix-ui/checkbox';
 
 import { cn } from '../lib/utils';
 
-function Checkbox({ className, checked, ref, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+function Checkbox({
+	className,
+	checked,
+	ref,
+	busy = false,
+	disabled,
+	...props
+}: React.ComponentProps<typeof CheckboxPrimitive.Root> & { busy?: boolean }) {
 	return (
 		<CheckboxPrimitive.Root
 			data-slot="checkbox"
 			ref={ref}
 			data-hit-control
 			checked={checked}
+			disabled={disabled || busy}
 			className={cn(
-				'peer size-4 shrink-0 rounded-[4px] border border-border bg-background shadow-xs outline-none transition-[transform,opacity] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+				'peer size-[18px] shrink-0 rounded-[4px] border border-[var(--hu-control-line)] bg-[var(--hu-raised)] outline-none transition-[transform,opacity] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] disabled:cursor-not-allowed disabled:opacity-50 aria-busy:border-dashed data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
 				className,
 			)}
 			{...props}
+			aria-busy={busy || props['aria-busy']}
 		>
 			<CheckboxPrimitive.Indicator
 				data-slot="checkbox-indicator"
 				className="flex items-center justify-center text-current"
 			>
-				{checked === 'indeterminate' ? <MinusIcon className="size-3.5" /> : <CheckIcon className="size-3.5" />}
+				<MinusIcon aria-hidden="true" className="size-3.5 [[data-state=checked]>&]:hidden" />
+				<CheckIcon aria-hidden="true" className="size-3.5 [[data-state=indeterminate]>&]:hidden" />
 			</CheckboxPrimitive.Indicator>
 		</CheckboxPrimitive.Root>
 	);

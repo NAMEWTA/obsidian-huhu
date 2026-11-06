@@ -34,7 +34,7 @@ export function MediaServiceSettings({ app, settings, update }: Props) {
 						description={t(`album.size.${config.heightRatio}`)}
 						control={
 							<div className="flex gap-2">
-								<Button variant="outline" onClick={() => setAlbum({ ...config })}>
+								<Button variant="secondary" onClick={() => setAlbum({ ...config })}>
 									{t('common.edit')}
 								</Button>
 								<Button
@@ -54,7 +54,7 @@ export function MediaServiceSettings({ app, settings, update }: Props) {
 					/>
 				))}
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() =>
 						setAlbum({
 							id: Date.now(),

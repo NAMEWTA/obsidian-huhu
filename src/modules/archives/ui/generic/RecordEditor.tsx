@@ -1,4 +1,4 @@
-import { displayLabel, at, ct, Button, ErrorBox, Select, confirmAt } from './common';
+import { displayLabel, at, ct, Button, ErrorBox, Select, useArchiveConfirm } from './common';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { App } from 'obsidian';
 import type { ArchivesApplication } from '../../services/generic/application';
@@ -18,6 +18,10 @@ import { useT } from '../../../../ui/react/hooks';
 import { reportOperationFailure } from '../../../../host/obsidian/feedback';
 
 import { ValueForm } from './FieldRenderer';
+import { BELONGING_TYPE_ID } from '../../api';
+import { BELONGING_FIELDS } from '../../core/belongings/lifecycle';
+import { useArchiveVersion } from './hooks';
+import { Notice } from '../../../../ui/components/huhu/Notice';
 
 export function RecordEditor({
 	application,
@@ -41,6 +45,12 @@ export function RecordEditor({
 	cancel(this: void): void;
 }) {
 	useT();
+	const confirm = useArchiveConfirm(owner, initial.id);
+	useArchiveVersion(application);
+	const unavailable =
+		!application.runtime.ready ||
+		application.runtime.loading ||
+		application.runtime.index.diagnostics().some((item) => item.code === 'read-failed');
 	const [session, setSession] = useState(() => copy(initial)),
 		[formId, setFormId] = useState(type.defaultFormId ?? ''),
 		[busy, setBusy] = useState(false),
@@ -51,29 +61,31 @@ export function RecordEditor({
 		pendingDraft = useRef<Promise<void>>(Promise.resolve()),
 		alive = useRef(true),
 		done = useRef(false),
+		saving = useRef(false),
 		operationId = useRef(crypto.randomUUID());
 	const persist = useCallback(
 		(snapshot: FormSession) => {
-			const operation = application.commands.saveDraft(snapshot);
+			const operation = pendingDraft.current.catch(() => {}).then(() => application.commands.saveDraft(snapshot));
 			pendingDraft.current = operation;
 			void operation.catch((error) => {
-				if (alive.current) setError(error);
+				if (alive.current && current.current === snapshot) setError(error);
 			});
 			return operation;
 		},
 		[application],
 	);
 	const leave = useCallback(async () => {
+		if (saving.current) return false;
 		if (done.current || (current.current.dirtyFields.length === 0 && !current.current.creating)) return true;
-		if (!(await confirmAt(owner, at('dirtyPrompt'), at('keepDraft')))) return false;
+		if (!(await confirm(at('dirtyPrompt'), at('keepDraft')))) return false;
 		try {
 			await persist(current.current);
-			return true;
+			return alive.current;
 		} catch (error) {
 			if (alive.current) setError(error);
 			return false;
 		}
-	}, [owner, persist]);
+	}, [confirm, persist]);
 	useEffect(() => {
 		alive.current = true;
 		guard(leave);
@@ -98,6 +110,8 @@ export function RecordEditor({
 		void persist(next);
 	};
 	const save = async (lifecycle: EntityState) => {
+		if (saving.current || unavailable) return;
+		saving.current = true;
 		setBusy(true);
 		setError(undefined);
 		setErrors([]);
@@ -123,7 +137,7 @@ export function RecordEditor({
 				await application.commands
 					.discardDraft(current.current.id)
 					.catch((error) => console.warn('[HUHU archives draft cleanup]', error));
-			committed(receipt);
+			if (alive.current) committed(receipt);
 		} catch (error) {
 			if (alive.current) {
 				const win = owner.ownerDocument.defaultView;
@@ -133,6 +147,7 @@ export function RecordEditor({
 				setErrors(fields);
 				if (fields.length)
 					queueMicrotask(() => {
+						if (!alive.current) return;
 						const field = Array.from(owner.querySelectorAll<HTMLElement>('[data-field-id]')).find(
 							(node) => node.dataset.fieldId === fields[0],
 						);
@@ -141,22 +156,28 @@ export function RecordEditor({
 					});
 			}
 		} finally {
+			saving.current = false;
 			if (alive.current) setBusy(false);
 		}
 	};
 	return (
-		<div className="space-y-4">
+		<div
+			data-archive-editor
+			data-archive-dirty={session.creating || session.dirtyFields.length > 0}
+			className="relative space-y-5"
+		>
 			<h2 className="text-xl font-semibold">{session.creating ? at('newRecord') : displayLabel(type)}</h2>
 			<p className="break-all text-xs text-muted-foreground">
 				{session.entityId} · {session.schemaRevisionId}
 			</p>
 			<ErrorBox error={error} />
+			{unavailable && <Notice tone="warning" title={at('incomplete')} />}
 			{notice && (
 				<p role="status" className="text-sm">
 					{notice}
 				</p>
 			)}
-			<fieldset disabled={busy} className="space-y-4">
+			<fieldset disabled={busy || unavailable} className="space-y-4">
 				<Select
 					label={at('formPicker')}
 					value={formId}
@@ -165,69 +186,80 @@ export function RecordEditor({
 				/>
 				<ValueForm
 					fields={type.fields}
+					readOnlyFields={type.id === BELONGING_TYPE_ID ? new Set(BELONGING_FIELDS) : undefined}
 					values={session.draft}
 					form={forms.find((form) => form.id === formId)}
 					onChange={change}
 					errors={errors}
 					app={app}
 				/>
-				<div className="flex flex-wrap gap-2">
-					<Button
-						onClick={() => {
-							void save('active');
-						}}
-					>
-						{at('saveActive')}
-					</Button>
-					{session.creating || frontmatter(session.baseRaw)['huhu-type'] === ENTITY_TAG ? (
+				<div className="sticky bottom-0 z-10 space-y-3 border-t border-border bg-card p-4 shadow-[var(--hu-shadow-card)]">
+					{(session.creating || session.dirtyFields.length > 0) && (
+						<Notice title={at('unsavedTitle')}>{at('unsavedDescription')}</Notice>
+					)}
+					<div className="flex flex-wrap gap-2">
 						<Button
-							variant="outline"
+							busy={busy}
 							onClick={() => {
-								void save('draft');
+								void save('active');
 							}}
 						>
-							{at('saveDraft')}
+							{at('saveActive')}
 						</Button>
-					) : null}
-					<Button
-						variant="outline"
-						onClick={() => {
-							void persist(current.current).then(
-								() => {
-									if (alive.current) setNotice(at('draftSaved'));
-								},
-								() => {},
-							);
-						}}
-					>
-						{at('keepDraft')}
-					</Button>
-					<Button
-						variant="outline"
-						onClick={() => {
-							void leave().then((allowed) => {
-								if (allowed) cancel();
-							});
-						}}
-					>
-						{ct('cancel')}
-					</Button>
-					<Button
-						variant="outline"
-						onClick={() => {
-							void confirmAt(owner, at('discardDraft'), at('discardDraft'))
-								.then(async (accepted) => {
-									if (!accepted) return;
-									await pendingDraft.current.catch(() => {});
-									await application.commands.discardDraft(current.current.id);
-									done.current = true;
-									cancel();
-								})
-								.catch(setError);
-						}}
-					>
-						{at('discardDraft')}
-					</Button>
+						{session.creating || frontmatter(session.baseRaw)['huhu-type'] === ENTITY_TAG ? (
+							<Button
+								variant="secondary"
+								onClick={() => {
+									void save('draft');
+								}}
+							>
+								{at('saveDraft')}
+							</Button>
+						) : null}
+						<Button
+							variant="secondary"
+							onClick={() => {
+								void persist(current.current).then(
+									() => {
+										if (alive.current) setNotice(at('draftSaved'));
+									},
+									() => {},
+								);
+							}}
+						>
+							{at('keepDraft')}
+						</Button>
+						<Button
+							variant="secondary"
+							onClick={() => {
+								void leave().then((allowed) => {
+									if (allowed && alive.current) cancel();
+								});
+							}}
+						>
+							{ct('cancel')}
+						</Button>
+						<Button
+							variant="secondary"
+							onClick={() => {
+								void confirm(at('discardDraft'), at('discardDraft'))
+									.then(async (accepted) => {
+										if (!accepted || !alive.current) return;
+										const discarded = current.current.id;
+										await pendingDraft.current.catch(() => {});
+										await application.commands.discardDraft(discarded);
+										if (!alive.current || current.current.id !== discarded) return;
+										done.current = true;
+										cancel();
+									})
+									.catch((error) => {
+										if (alive.current) setError(error);
+									});
+							}}
+						>
+							{at('discardDraft')}
+						</Button>
+					</div>
 				</div>
 			</fieldset>
 		</div>

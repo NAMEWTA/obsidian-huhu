@@ -44,7 +44,7 @@ function describeError(t: Translate, error: unknown): { message: string; code: s
 
 function Alert({ children }: { children: ReactNode }) {
 	return (
-		<div role="alert" className="space-y-1 rounded-md border border-destructive/50 p-3 text-sm">
+		<div role="alert" className="space-y-1 rounded-md border border-[var(--hu-danger)]/50 p-3 text-sm">
 			{children}
 		</div>
 	);
@@ -59,7 +59,7 @@ function Manifest({ view }: { view: PackageView }) {
 	return (
 		<div className="space-y-2 text-sm">
 			<h4 className="font-medium">{t('agent.backup.manifest.title')}</h4>
-			<p className="text-xs text-muted-foreground">
+			<p className="text-xs text-[var(--hu-fg-2)]">
 				{t('agent.backup.manifest.created', {
 					date: new Date(view.createdAt).toLocaleString(),
 					vault: view.vaultName,
@@ -89,7 +89,7 @@ function Manifest({ view }: { view: PackageView }) {
 				)}
 			</ul>
 			<h4 className="font-medium">{t('agent.backup.exclusions.title')}</h4>
-			<ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+			<ul className="list-disc space-y-1 pl-5 text-[var(--hu-fg-2)]">
 				{view.manifest.exclusions.map((category) => (
 					<li key={category}>{t(`agent.backup.exclusion.${category}`)}</li>
 				))}
@@ -97,7 +97,7 @@ function Manifest({ view }: { view: PackageView }) {
 			{view.manifest.notes.length > 0 && (
 				<>
 					<h4 className="font-medium">{t('agent.backup.notes.title')}</h4>
-					<ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+					<ul className="list-disc space-y-1 pl-5 text-[var(--hu-fg-2)]">
 						{view.manifest.notes.map((note, index) => (
 							<li key={index}>
 								{t(`agent.backup.note.${note.code}`, {
@@ -147,7 +147,7 @@ function Plan({ plan }: { plan: PlanView }) {
 			{plan.outcomes.length > 0 && (
 				<>
 					<h4 className="font-medium">{t('agent.backup.import.plan')}</h4>
-					<ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+					<ul className="list-disc space-y-1 pl-5 text-[var(--hu-fg-2)]">
 						{summarize(plan).map(([key, section, action, count]) => (
 							<li key={key}>
 								{t('agent.backup.outcome', {
@@ -182,7 +182,7 @@ function summarize(
 
 function Report({ report }: { report: ImportReport | undefined }) {
 	const t = useT();
-	if (!report) return <p className="text-sm text-muted-foreground">{t('agent.backup.report.none')}</p>;
+	if (!report) return <p className="text-sm text-[var(--hu-fg-2)]">{t('agent.backup.report.none')}</p>;
 	const done = report.batches.filter((b) => b.status === 'done').length;
 	return (
 		<div className="space-y-2 text-sm">
@@ -353,13 +353,13 @@ function Ready({ actions }: { actions: BackupActions }) {
 	return (
 		<>
 			{(busy === 'export' || busy === 'import') && (
-				<Button size="sm" variant="outline" onClick={() => active.current?.abort()}>
+				<Button size="sm" variant="secondary" onClick={() => active.current?.abort()}>
 					{t('agent.backup.cancel')}
 				</Button>
 			)}
 			<div className="space-y-2">
 				<h3 className="text-sm font-medium">{t('agent.backup.export.title')}</h3>
-				<Button size="sm" variant="outline" disabled={!!busy} onClick={doExport}>
+				<Button size="sm" variant="secondary" disabled={!!busy} onClick={doExport}>
 					{busy === 'export' ? t('agent.backup.export.running') : t('agent.backup.export.button')}
 				</Button>
 				{exported && (
@@ -370,7 +370,7 @@ function Ready({ actions }: { actions: BackupActions }) {
 						<Manifest view={exported.view} />
 					</div>
 				)}
-				<p className="text-xs text-muted-foreground">{t('agent.backup.export.hint')}</p>
+				<p className="text-xs text-[var(--hu-fg-2)]">{t('agent.backup.export.hint')}</p>
 			</div>
 
 			<div className="space-y-3">
@@ -400,7 +400,7 @@ function Ready({ actions }: { actions: BackupActions }) {
 									id={ids.adopt}
 									value={adopt}
 									disabled={!!busy}
-									className="h-8 rounded-md border border-border bg-background px-2 text-sm"
+									className="h-8 rounded-md border border-[var(--hu-line)] bg-[var(--hu-canvas)] px-2 text-sm"
 									onChange={(event) => change(() => setAdopt(event.target.value))}
 								>
 									<option value="">{t('agent.backup.import.adoptChoose')}</option>
@@ -411,7 +411,7 @@ function Ready({ actions }: { actions: BackupActions }) {
 									))}
 								</select>
 							</div>
-							<p className="text-xs text-muted-foreground">{t('agent.backup.import.adoptHint')}</p>
+							<p className="text-xs text-[var(--hu-fg-2)]">{t('agent.backup.import.adoptHint')}</p>
 							{pkg.view.devices.length > 1 && (
 								<label htmlFor={ids.archives} className="flex items-center gap-2">
 									<input
@@ -436,7 +436,7 @@ function Ready({ actions }: { actions: BackupActions }) {
 							</label>
 						</div>
 						<div className="flex flex-wrap gap-2">
-							<Button size="sm" variant="outline" disabled={!!busy} onClick={() => doCheck()}>
+							<Button size="sm" variant="secondary" disabled={!!busy} onClick={() => doCheck()}>
 								{busy === 'check' ? t('agent.backup.import.checking') : t('agent.backup.import.check')}
 							</Button>
 							<Button
@@ -466,8 +466,8 @@ function Ready({ actions }: { actions: BackupActions }) {
 						{failure.error instanceof BackupError && failure.error.code === 'partial-import' && (
 							<p>{t('agent.backup.failure.resume')}</p>
 						)}
-						<p className="text-xs text-muted-foreground">{t('agent.backup.failure.copies')}</p>
-						<Button size="sm" variant="outline" disabled={!!busy} onClick={failure.retry}>
+						<p className="text-xs text-[var(--hu-fg-2)]">{t('agent.backup.failure.copies')}</p>
+						<Button size="sm" variant="secondary" disabled={!!busy} onClick={failure.retry}>
 							{t('agent.backup.failure.retry')}
 						</Button>
 					</Alert>

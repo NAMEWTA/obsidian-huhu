@@ -271,7 +271,8 @@ test('the list view is 36px rows and the kanban view lays its columns on the til
 			<LibrarySection store={store} column={column} />
 		</TestProviders>,
 	);
-	for (const row of screen.getAllByRole('button', { name: /^Item \d/ })) expect(row.className).toContain('h-9');
+	for (const row of screen.getAllByRole('button', { name: /^Item \d/ }))
+		expect(row.className).toContain('h-[var(--hu-ctl-h)]');
 	list.unmount();
 	column.libraryConfig!.viewMode = 'kanban';
 	const kanban = render(
@@ -293,7 +294,7 @@ test('the toolbar is one wrapping row of 36px controls, and a library with no ma
 	);
 	const toolbar = view.container.querySelector('[data-toolbar]') as HTMLElement;
 	expect(toolbar.className).toContain('flex-wrap');
-	expect(within(toolbar).getByLabelText(t('home.dashboard.findNote')).className).toContain('h-9');
+	expect(within(toolbar).getByLabelText(t('home.dashboard.findNote')).className).toContain('h-[var(--hu-ctl-h)]');
 	expect(within(toolbar).getByRole('button', { name: t('library.displayOptions') })).toBeTruthy();
 	fireEvent.change(within(toolbar).getByLabelText(t('home.dashboard.findNote')), { target: { value: 'zzz' } });
 	expect(view.container.querySelector('[data-slot="empty-state"]')?.textContent).toContain(t('library.empty'));

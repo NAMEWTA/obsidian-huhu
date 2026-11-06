@@ -18,9 +18,8 @@ import {
 	AlertDialogCancel,
 	AlertDialogAction,
 } from '../../../ui/components/alert-dialog';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../../ui/components/dialog';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
-import { TerminalControlPanel } from './control/TerminalControlPanel';
+import { DetailPane } from '../../../ui/components/huhu/DetailPane';
 import type { AgentController } from '../services/controller';
 import { type WorkspaceCommand } from '../core/workspace/shortcuts';
 import { AgentSidebar } from './sidebar/AgentSidebar';
@@ -33,6 +32,8 @@ import { createWorkspaceView, type WorkspaceViewStore } from '../services/worksp
 import type { ConfirmFn } from '../services/workspace-service';
 import { SessionHistoryPanel, HISTORY_DRAG } from './history/SessionHistoryPanel';
 import { JumpPalette } from './jump/JumpPalette';
+import { useLeafMetrics } from '../../../ui/react/use-leaf-metrics';
+import { SessionInformation, WaitingAnswerBanner } from './workspace/SessionInformation';
 import { VisibilityContext } from '../../../ui/react/contexts';
 export function AgentWorkspace({
 	controller,
@@ -53,27 +54,13 @@ export function AgentWorkspace({
 		page = useStore(viewStore);
 	const select = (id: string) => workspace.activate(id);
 	const root = useRef<HTMLDivElement>(null);
-	const [narrowControl, setNarrowControl] = useState(false);
+	const [sessionInfo, setSessionInfo] = useState(false);
+	const toolOpen = page.control || page.history;
+	const [lastToolOpen, setLastToolOpen] = useState(toolOpen);
+	if (lastToolOpen !== toolOpen) { setLastToolOpen(toolOpen); if (toolOpen) setSessionInfo(false); }
+	const leaf = useLeafMetrics(context.contentEl);
 	const [inboxUnread, setInboxUnread] = useState<number | undefined>();
-	const historyReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
-	const controlReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
-	useEffect(() => {
-		const element = root.current;
-		if (!element) return;
-		const update = () => {
-			const width = element.getBoundingClientRect().width;
-			if (width > 0) setNarrowControl(width < 600);
-		};
-		const Observer = (doc.defaultView as Window & { ResizeObserver: typeof ResizeObserver }).ResizeObserver;
-		const observer = new Observer((entries) => {
-			const width = entries[0]?.contentRect.width ?? 0;
-			if (width > 0) setNarrowControl(width < 600);
-			else update();
-		});
-		observer.observe(element);
-		update();
-		return () => observer.disconnect();
-	}, [doc]);
+
 	const [menu, setMenu] = useState<string>(),
 		[confirmation, setConfirmation] = useState<{
 			message: string;
@@ -98,8 +85,6 @@ export function AgentWorkspace({
 		const win = doc.defaultView;
 		const blur = () => {
 			if (returnFocus.current) returnFocus.current.blurred = true;
-			if (controlReturn.current) controlReturn.current.blurred = true;
-			if (historyReturn.current) historyReturn.current.blurred = true;
 		};
 		win?.addEventListener('blur', blur);
 		return () => win?.removeEventListener('blur', blur);
@@ -136,7 +121,6 @@ export function AgentWorkspace({
 			confirmationRef.current?.resolve(false);
 			confirmationRef.current = undefined;
 			returnFocus.current = undefined;
-			controlReturn.current = undefined;
 		}
 	}, [visible, viewStore]);
 	useEffect(() => {
@@ -209,12 +193,13 @@ export function AgentWorkspace({
 	return (
 		<WorkspaceUIContext value={{ controller, confirm, close, chrome: { context, menu, setMenu, view: viewStore } }}>
 			<div
-				className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-background"
+				className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-[var(--hu-canvas)]"
 				data-agent-workspace=""
-				ref={root}
+				ref={node => { root.current = node; leaf.ref(node); }}
 			>
 				<DesignScope className="flex min-h-0 min-w-0 flex-1 flex-col">
-				<WorkspaceToolbar inboxUnread={inboxUnread} />
+				<WorkspaceToolbar inboxUnread={inboxUnread} sessionInfo={sessionInfo} onSessionInfo={() => { viewStore.setState({ history: false, control: false }); setSessionInfo(value => !value); }} />
+				{visible && <WaitingAnswerBanner />}
 				<div className="@container relative flex min-h-0 flex-1">
 					<div
 						className="relative min-w-0 flex-1"
@@ -245,151 +230,15 @@ export function AgentWorkspace({
 							</VisibilityContext>
 						</div>
 					</div>
-					{page.history && visible && (narrowControl ? (
-						<Dialog open onOpenChange={(open) => { if (!open) viewStore.setState({ history: false }); }}>
-							<DialogContent showCloseButton={false} className="h-[min(90dvh,800px)] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0" data-agent-history-dialog="" data-history-narrow=""
-								onOpenAutoFocus={() => {
-									const origin = doc.activeElement;
-									if (origin && typeof (origin as HTMLElement).focus === 'function') historyReturn.current = { origin: origin as HTMLElement, target: focusTarget(), blurred: false };
-								}}
-								onCloseAutoFocus={(event) => {
-									event.preventDefault();
-									const captured = historyReturn.current;
-									historyReturn.current = undefined;
-									if (captured && !captured.blurred && alive.current && captured.origin.isConnected && doc.hasFocus() && captured.target === focusTarget() && interactive.current && !doc.querySelector('[role=alertdialog][data-state=open]')) captured.origin.focus();
-								}}>
-								<DialogTitle className="sr-only">{t('agent.historyUI.title')}</DialogTitle>
-								<DialogDescription className="sr-only">{t('agent.historyUI.search')}</DialogDescription>
-								<SessionHistoryPanel controller={controller} close={() => viewStore.setState({ history: false })} narrow />
-							</DialogContent>
-						</Dialog>
-					) : (
-						<>
-							<div
-								role="separator"
-								aria-label={t('agent.historyUI.resize')}
-								aria-orientation="vertical"
-								aria-valuenow={page.historyWidth}
-								tabIndex={0}
-								className="w-1 shrink-0 cursor-col-resize bg-border hover:bg-ring @max-[34rem]:hidden"
-								onKeyDown={(e) => {
-									if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-										e.preventDefault();
-										viewStore.setState({
-											historyWidth:
-												e.key === 'Home'
-													? 240
-													: e.key === 'End'
-														? 480
-														: Math.max(
-																240,
-																Math.min(
-																	480,
-																	page.historyWidth +
-																		(e.key === 'ArrowLeft' ? 8 : -8),
-																),
-															),
-										});
-									}
-								}}
-								onPointerDown={(e) => {
-									e.currentTarget.setPointerCapture(e.pointerId);
-								}}
-								onPointerMove={(e) => {
-									if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-										const box = root.current?.getBoundingClientRect();
-										if (box)
-											viewStore.setState({
-												historyWidth: Math.max(240, Math.min(480, box.right - e.clientX)),
-											});
-									}
-								}}
-							/>
-							{/* Beside the workspace while there is room; over it (never squeezing the tabs to nothing) in a narrow pane. */}
-							<div
-								className="min-h-0 shrink-0 @max-[34rem]:absolute @max-[34rem]:inset-y-0 @max-[34rem]:right-0 @max-[34rem]:z-10 @max-[34rem]:border-l @max-[34rem]:border-border @max-[34rem]:shadow-lg"
-								style={{ width: page.historyWidth, maxWidth: '100%' }}
-							>
-								<SessionHistoryPanel
-									controller={controller}
-									close={() => viewStore.setState({ history: false })}
-								/>
-							</div>
-						</>
-					))}
-					{page.control &&
-						!page.history &&
-						visible &&
-						(narrowControl ? (
-							<Dialog
-								open
-								onOpenChange={(open) => {
-									if (!open) viewStore.setState({ control: false });
-								}}
-							>
-								<DialogContent
-									showCloseButton={false}
-									className="h-[min(90dvh,800px)] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0"
-									data-agent-control-dialog=""
-									onOpenAutoFocus={() => {
-										const origin = doc.activeElement;
-										if (
-											origin instanceof
-											(doc.defaultView as Window & { HTMLElement: typeof HTMLElement })
-												.HTMLElement
-										)
-											controlReturn.current = { origin, target: focusTarget(), blurred: false };
-									}}
-									onCloseAutoFocus={(event) => {
-										event.preventDefault();
-										const captured = controlReturn.current;
-										controlReturn.current = undefined;
-										if (
-											!captured ||
-											captured.blurred ||
-											!alive.current ||
-											!interactive.current ||
-											!doc.hasFocus() ||
-											captured.target !== focusTarget() ||
-											!captured.origin.isConnected ||
-											doc.querySelector('[role=alertdialog][data-state=open]')
-										)
-											return;
-										captured.origin.focus();
-									}}
-								>
-									<DialogTitle className="sr-only">{page.agentTool === 'inbox' ? t('agent.inbox.title') : t('agent.coordination.title')}</DialogTitle>
-									<DialogDescription className="sr-only">
-										{t('agent.coordination.doneMeaning')}
-									</DialogDescription>
-									{page.agentTool === 'control' ? <TerminalControlPanel
-										controller={controller}
-										confirm={confirm}
-										compact
-										close={() => viewStore.setState({ control: false })}
-									/> : <WorkspaceTools
-										controller={controller}
-										confirm={confirm}
-										compact
-										selected={page.agentTool}
-										onSelectedChange={(tool: WorkspaceTool) => viewStore.setState({ control: true, history: false, agentTool: tool })}
-										onUnreadCount={setInboxUnread}
-										close={() => viewStore.setState({ control: false })}
-									/>}
-								</DialogContent>
-							</Dialog>
-						) : (
-							<aside className="min-h-0 w-[312px] max-w-full shrink-0 border-l border-border">
-								<WorkspaceTools
-									controller={controller}
-									confirm={confirm}
-									selected={page.agentTool}
-									onSelectedChange={(tool: WorkspaceTool) => viewStore.setState({ control: true, history: false, agentTool: tool })}
-									onUnreadCount={setInboxUnread}
-									close={() => viewStore.setState({ control: false })}
-								/>
-							</aside>
-						))}
+					<DetailPane open={page.history && visible} onOpenChange={history => viewStore.setState({ history })} leafWidth={leaf.width} title={t('agent.historyUI.title')}>
+						<SessionHistoryPanel controller={controller} close={() => viewStore.setState({ history: false })} narrow={leaf.width < 600} />
+					</DetailPane>
+					<DetailPane open={page.control && !page.history && visible} onOpenChange={control => viewStore.setState({ control })} leafWidth={leaf.width} title={t(page.agentTool === 'inbox' ? 'agent.inbox.title' : 'agent.coordination.title')}>
+						<WorkspaceTools controller={controller} confirm={confirm} compact={leaf.width < 600} selected={page.agentTool}
+							onSelectedChange={(tool: WorkspaceTool) => viewStore.setState({ control: true, history: false, agentTool: tool })}
+							onUnreadCount={setInboxUnread} close={() => viewStore.setState({ control: false })} />
+					</DetailPane>
+					<SessionInformation open={sessionInfo && visible} onOpenChange={setSessionInfo} leafWidth={leaf.width} />
 				</div>
 				{page.jump && visible && (
 					<JumpPalette
@@ -445,7 +294,7 @@ export function AgentWorkspace({
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={() => finish(false)}>{t('common.cancel')}</AlertDialogCancel>
 						<AlertDialogAction
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							className="bg-[var(--hu-danger)] text-[var(--hu-danger-fg)] hover:bg-[var(--hu-danger)]/90"
 							onClick={() => finish(true)}
 						>
 							{confirmation?.action ?? t('agent.end')}
@@ -456,6 +305,11 @@ export function AgentWorkspace({
 		</WorkspaceUIContext>
 	);
 }
+export function AgentUnavailable() {
+	const t = useT();
+	return <EmptyState title={t('agent.workspace.desktopOnly')} />;
+}
+
 export class AgentWorkspacePage extends ReactSurface {
 	readonly view = createWorkspaceView();
 	constructor(
@@ -477,7 +331,7 @@ export class AgentWorkspacePage extends ReactSurface {
 		return this.controller ? (
 			<AgentWorkspace controller={this.controller} context={this.context} view={this.view} />
 		) : (
-			<EmptyState title={t('agent.workspace.desktopOnly')} />
+			<AgentUnavailable />
 		);
 	}
 	/**

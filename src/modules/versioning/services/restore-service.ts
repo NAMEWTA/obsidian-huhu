@@ -10,6 +10,7 @@ import { applySelectedHunks } from '../core/hunk-restore';
 import {
 	RestoreError,
 	type PrepareRestore,
+	type ConflictRestoreAdmission,
 	type PreparedRestoreState,
 	type RestoreDependencies,
 	type RestorePlan,
@@ -78,10 +79,39 @@ export class RestoreService {
 		this.assertOpen();
 		await this.initialize();
 		this.bounded(request.source.text);
-		if (request.hunks && (request.mode !== 'replace-current' || request.hunks.target.path !== request.targetPath
-			|| request.hunks.target.originLeafId !== request.originLeafId || !request.originLeafId
-			|| !request.hunks.target.exists || !request.hunks.target.buffers.length || request.hunks.target.text === null
-			|| request.hunks.origin.path !== request.targetPath || request.hunks.origin.leafId !== request.originLeafId)) throw new RestoreError('changed');
+		if (
+			request.conflict &&
+			(request.mode !== 'replace-current' || request.hunks || request.targetPath !== request.conflict.targetPath)
+		)
+			throw new RestoreError('changed');
+		if (
+			request.gitHunks &&
+			(request.mode !== 'replace-current' ||
+				request.hunks ||
+				request.conflict ||
+				request.targetPath !== request.gitHunks.targetPath ||
+				request.source.text !==
+					applySelectedHunks(
+						request.gitHunks.indexText ?? '',
+						request.gitHunks.worktreeText ?? '',
+						request.gitHunks.diff,
+						request.gitHunks.selected,
+					))
+		)
+			throw new RestoreError('changed');
+		if (
+			request.hunks &&
+			(request.mode !== 'replace-current' ||
+				request.hunks.target.path !== request.targetPath ||
+				request.hunks.target.originLeafId !== request.originLeafId ||
+				!request.originLeafId ||
+				!request.hunks.target.exists ||
+				!request.hunks.target.buffers.length ||
+				request.hunks.target.text === null ||
+				request.hunks.origin.path !== request.targetPath ||
+				request.hunks.origin.leafId !== request.originLeafId)
+		)
+			throw new RestoreError('changed');
 		if (request.hunks) {
 			if (!this.deps.assertHunkOrigin) throw new Error('versioning.restore.hunks-unavailable');
 			this.deps.assertHunkOrigin(request.hunks.origin);
@@ -97,11 +127,21 @@ export class RestoreService {
 				request.copyPath ??
 				`${parent}${huhuName(`${name}-${VISIBLE_NAMES.restored}-${new Date(time).toISOString().slice(0, 19).replace(/[-:T]/g, '')}-${id.slice(0, 6)}`)}.md`;
 		}
-		const document = request.hunks ? await this.revalidate(request.hunks.target) : await this.deps.documents.capture(
-			path,
-			request.mode === 'create-copy' ? undefined : request.originLeafId,
-		);
+		const document = request.hunks
+			? await this.revalidate(request.hunks.target)
+			: await this.deps.documents.capture(
+					path,
+					request.mode === 'create-copy' ? undefined : request.originLeafId,
+				);
 		if (request.mode === 'create-copy' && document.exists) throw new RestoreError('changed');
+		if (
+			request.gitHunks &&
+			document.text !==
+				(request.gitHunks.worktreeText === null
+					? null
+					: this.deps.documents.editableText(request.gitHunks.worktreeText, document))
+		)
+			throw new RestoreError('changed');
 		this.bounded(document.text);
 		this.bounded(document.diskText);
 		const repositoryBaseline = await this.deps.gate.capture();
@@ -114,15 +154,27 @@ export class RestoreService {
 			mode: request.mode,
 			beforeText: document.text,
 			afterText: request.hunks
-				? applySelectedHunks(request.source.text, document.text ?? '', request.hunks.diff, request.hunks.selected,
+				? applySelectedHunks(
+						request.source.text,
+						document.text ?? '',
+						request.hunks.diff,
+						request.hunks.selected,
 						(text) => this.deps.documents.editableText(text, document),
 					)
-				: this.deps.documents.editableText(request.source.text, document),
+				: request.gitHunks?.indexText === null && request.source.text === ''
+					? null
+					: this.deps.documents.editableText(request.source.text, document),
 			dirty: this.dirty(document),
 			createdAt: time,
 			...(request.hunks ? { selectedHunks: [...request.hunks.selected] } : {}),
 		};
-		this.plans.set(id, { plan, document, repositoryBaseline, ...(request.hunks ? { hunkOrigin: { ...request.hunks.origin } } : {}),
+		this.plans.set(id, {
+			plan,
+			document,
+			repositoryBaseline,
+			...(request.gitHunks ? { gitHunks: structuredClone(request.gitHunks) } : {}),
+			...(request.conflict ? { conflict: { ...request.conflict } } : {}),
+			...(request.hunks ? { hunkOrigin: { ...request.hunks.origin } } : {}),
 		});
 		if (this.plans.size > 64) this.plans.delete(this.plans.keys().next().value!);
 		return structuredClone(plan);
@@ -171,149 +223,157 @@ export class RestoreService {
 		if (previous) throw new RestoreError('unverified');
 		const prepared = this.plans.get(planId);
 		if (!prepared) throw new RestoreError('plan-missing');
-		return this.deps.gate.run(planId, () => this.checkpointLease((checkpoints) =>
-			this.deps.documents.exclusive(prepared.plan.path, async () => {
-				this.assertOpen();
-				if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
-				let document = await this.revalidate(prepared.document);
-				await this.repositoryUnchanged(prepared.repositoryBaseline);
-				await this.deps.gate.hold(planId);
-				await this.deps.gate.assertCheckpointProtection();
-				const { plan } = prepared;
-				let participant: DocumentChangeParticipant | undefined,
-					annotationsBefore: unknown,
-					admitted = false,
-					receipt: RestoreReceipt | undefined;
-				try {
-					participant = this.deps.participant?.();
-					if (participant && document.exists) {
-						annotationsBefore = await participant.prepare(
-							{
-								operationId: planId,
+		return this.deps.gate.run(
+			planId,
+			() =>
+				this.checkpointLease((checkpoints) =>
+					this.deps.documents.exclusive(prepared.plan.path, async () => {
+						this.assertOpen();
+						if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
+						let document = await this.revalidate(prepared.document);
+						await this.repositoryUnchanged(prepared.repositoryBaseline);
+						await this.deps.gate.hold(planId);
+						await this.deps.gate.assertCheckpointProtection();
+						const { plan } = prepared;
+						let participant: DocumentChangeParticipant | undefined,
+							annotationsBefore: unknown,
+							admitted = false,
+							receipt: RestoreReceipt | undefined;
+						try {
+							participant = this.deps.participant?.();
+							if (participant && document.exists) {
+								annotationsBefore = await participant.prepare(
+									{
+										operationId: planId,
+										path: plan.path,
+										kind: plan.afterText === null ? 'remove' : 'replace',
+										before: document.text ?? '',
+										after: plan.afterText ?? '',
+										edits: textEdits(document.text ?? '', plan.afterText ?? ''),
+									},
+									prepared.annotationUndo,
+								);
+								admitted = true;
+							}
+							const beforeObject =
+								document.text === null ? null : await checkpoints.putObject(document.text);
+							let beforeDiskObject =
+								document.diskText === null ? null : await checkpoints.putObject(document.diskText);
+							const afterObject =
+								plan.afterText === null ? null : await checkpoints.putObject(plan.afterText);
+							receipt = {
+								id: plan.id,
 								path: plan.path,
-								kind: plan.afterText === null ? 'remove' : 'replace',
-								before: document.text ?? '',
-								after: plan.afterText ?? '',
-								edits: textEdits(document.text ?? '', plan.afterText ?? ''),
-							},
-							prepared.annotationUndo,
-						);
-						admitted = true;
-					}
-					const beforeObject =
-						document.text === null ? null : await checkpoints.putObject(document.text);
-					let beforeDiskObject =
-						document.diskText === null ? null : await checkpoints.putObject(document.diskText);
-					const afterObject =
-						plan.afterText === null ? null : await checkpoints.putObject(plan.afterText);
-					receipt = {
-						id: plan.id,
-						path: plan.path,
-						sourceId: plan.sourceId,
-						sourceLabel: plan.sourceLabel,
-						mode: plan.mode,
-						stage: 'prepared',
-						createdAt: plan.createdAt,
-						updatedAt: this.now(),
-						beforeObject,
-						beforeDiskObject,
-						afterObject,
-						repositoryBaseline: prepared.repositoryBaseline,
-						...(annotationsBefore === undefined ? {} : { annotationsBefore }),
-						...(plan.undoOf ? { undoOf: plan.undoOf } : {}),
-						...(plan.selectedHunks ? { selectedHunks: plan.selectedHunks } : {}),
-					};
-					await checkpoints.putReceipt(receipt);
-					const current = await this.revalidate(document);
-					if (current.diskText !== document.diskText)
-						beforeDiskObject =
-							current.diskText === null ? null : await checkpoints.putObject(current.diskText);
-					document = current;
-					await this.repositoryUnchanged(prepared.repositoryBaseline);
-					this.assertOpen();
-					if (participant && participant !== this.deps.participant?.()) throw new RestoreError('changed');
-					receipt = { ...receipt, beforeDiskObject, stage: 'applying', updatedAt: this.now() };
-					await checkpoints.putReceipt(receipt);
-					// Once admitted, preserve and verify any completed write even when the module begins closing.
-					this.assertOpen();
-					if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
-					const after = await this.deps.documents.apply(document, plan.afterText, plan.id);
-					receipt = { ...receipt, stage: 'applied', updatedAt: this.now() };
-					await checkpoints.putReceipt(receipt);
-					let annotationsAfter: unknown;
-					if (admitted && participant) {
-						annotationsAfter = await participant.commit(plan.id, after.text ?? '');
-						admitted = false;
-					}
-					await this.repositoryUnchanged(prepared.repositoryBaseline);
-					const verified = await this.deps.documents.capture(
-						plan.path,
-						plan.afterText === null ? undefined : document.originLeafId,
-					);
-					if (!sameDocumentSnapshot(after, verified)) throw new RestoreError('unverified');
-					const actualDiskObject =
-						verified.diskText === null ? null : await checkpoints.putObject(verified.diskText);
-					receipt = {
-						...receipt,
-						stage: 'verified',
-						actualDiskObject,
-						...(annotationsAfter === undefined ? {} : { annotationsAfter }),
-						updatedAt: this.now(),
-					};
-					await checkpoints.putReceipt(receipt);
-					if (plan.undoOf) {
-						const original = this.receipts().find((item) => item.id === plan.undoOf);
-						if (original)
-							await checkpoints.putReceipt({
-								...original,
-								undoneBy: plan.id,
+								sourceId: plan.sourceId,
+								sourceLabel: plan.sourceLabel,
+								mode: plan.mode,
+								stage: 'prepared',
+								createdAt: plan.createdAt,
 								updatedAt: this.now(),
-							});
-					}
-					this.plans.delete(planId);
-					this.emit();
-					return structuredClone(receipt);
-				} catch (error) {
-					if (admitted && participant) {
-						let actual: string | undefined;
-						try {
-							actual = (await this.deps.documents.capture(plan.path)).text ?? undefined;
-						} catch {
-							/* Unknown host state: release the guard without inventing a document. */
+								beforeObject,
+								beforeDiskObject,
+								afterObject,
+								repositoryBaseline: prepared.repositoryBaseline,
+								...(annotationsBefore === undefined ? {} : { annotationsBefore }),
+								...(plan.undoOf ? { undoOf: plan.undoOf } : {}),
+								...(plan.selectedHunks ? { selectedHunks: plan.selectedHunks } : {}),
+							};
+							await checkpoints.putReceipt(receipt);
+							const current = await this.revalidate(document);
+							if (current.diskText !== document.diskText)
+								beforeDiskObject =
+									current.diskText === null ? null : await checkpoints.putObject(current.diskText);
+							document = current;
+							await this.repositoryUnchanged(prepared.repositoryBaseline);
+							this.assertOpen();
+							if (participant && participant !== this.deps.participant?.())
+								throw new RestoreError('changed');
+							receipt = { ...receipt, beforeDiskObject, stage: 'applying', updatedAt: this.now() };
+							await checkpoints.putReceipt(receipt);
+							// Once admitted, preserve and verify any completed write even when the module begins closing.
+							this.assertOpen();
+							if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
+							const after = await this.deps.documents.apply(document, plan.afterText, plan.id);
+							receipt = { ...receipt, stage: 'applied', updatedAt: this.now() };
+							await checkpoints.putReceipt(receipt);
+							let annotationsAfter: unknown;
+							if (admitted && participant) {
+								annotationsAfter = await participant.commit(plan.id, after.text ?? '');
+								admitted = false;
+							}
+							await this.repositoryUnchanged(prepared.repositoryBaseline);
+							const verified = await this.deps.documents.capture(
+								plan.path,
+								plan.afterText === null ? undefined : document.originLeafId,
+							);
+							if (!sameDocumentSnapshot(after, verified)) throw new RestoreError('unverified');
+							const actualDiskObject =
+								verified.diskText === null ? null : await checkpoints.putObject(verified.diskText);
+							receipt = {
+								...receipt,
+								stage: 'verified',
+								actualDiskObject,
+								...(annotationsAfter === undefined ? {} : { annotationsAfter }),
+								updatedAt: this.now(),
+							};
+							await checkpoints.putReceipt(receipt);
+							if (plan.undoOf) {
+								const original = this.receipts().find((item) => item.id === plan.undoOf);
+								if (original)
+									await checkpoints.putReceipt({
+										...original,
+										undoneBy: plan.id,
+										updatedAt: this.now(),
+									});
+							}
+							this.plans.delete(planId);
+							this.emit();
+							return structuredClone(receipt);
+						} catch (error) {
+							if (admitted && participant) {
+								let actual: string | undefined;
+								try {
+									actual = (await this.deps.documents.capture(plan.path)).text ?? undefined;
+								} catch {
+									/* Unknown host state: release the guard without inventing a document. */
+								}
+								try {
+									await participant.abort(planId, actual);
+								} catch {
+									/* The durable checkpoint remains available for explicit review. */
+								}
+							}
+							if (receipt) {
+								const next = {
+									...receipt,
+									stage:
+										receipt.stage === 'prepared' ? ('aborted' as const) : ('needs-review' as const),
+									error: errorCode(error),
+									updatedAt: this.now(),
+								};
+								try {
+									await checkpoints.putReceipt(next);
+								} catch {
+									/* A prior verified journal phase remains authoritative. Never replay the write. */
+								}
+							}
+							this.plans.delete(planId);
+							this.emit();
+							throw error;
 						}
-						try {
-							await participant.abort(planId, actual);
-						} catch {
-							/* The durable checkpoint remains available for explicit review. */
-						}
-					}
-					if (receipt) {
-						const next = {
-							...receipt,
-							stage: receipt.stage === 'prepared' ? ('aborted' as const) : ('needs-review' as const),
-							error: errorCode(error),
-							updatedAt: this.now(),
-						};
-						try {
-							await checkpoints.putReceipt(next);
-						} catch {
-							/* A prior verified journal phase remains authoritative. Never replay the write. */
-						}
-					}
-					this.plans.delete(planId);
-					this.emit();
-					throw error;
-				}
-			}),
-			),
+					}),
+				),
+			prepared.conflict,
+			prepared.gitHunks,
 		);
 	}
 
-	async undo(receiptId: string): Promise<RestoreReceipt> {
+	async undo(receiptId: string, conflict?: ConflictRestoreAdmission): Promise<RestoreReceipt> {
 		this.assertOpen();
 		await this.initialize();
 		const receipt = this.receipts().find((item) => item.id === receiptId);
-		if (!receipt || receipt.stage !== 'verified' || receipt.undoneBy || receipt.objectsReleasedAt !== undefined) throw new RestoreError('undo-unavailable');
+		if (!receipt || receipt.stage !== 'verified' || receipt.undoneBy || receipt.objectsReleasedAt !== undefined)
+			throw new RestoreError('undo-unavailable');
 		const document = await this.deps.documents.capture(receipt.path);
 		const expectedText =
 			receipt.afterObject === null ? null : await this.deps.checkpoints.readObject(receipt.afterObject);
@@ -341,7 +401,9 @@ export class RestoreService {
 				undoOf: receiptId,
 			};
 		const repositoryBaseline = await this.deps.gate.capture();
+		if (conflict && repositoryBaseline !== receipt.repositoryBaseline) throw new RestoreError('changed');
 		this.plans.set(id, {
+			...(conflict ? { conflict: { ...conflict } } : {}),
 			plan,
 			document,
 			repositoryBaseline,

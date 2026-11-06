@@ -51,9 +51,9 @@
 ## 界面
 
 - 沿用 `huhu-comments-view`，由 `app/editor-panel/panel-host.tsx` 提供「批注/历史」标签。布局就绪后按 `comments.panelAutoPlaced` 用 `workspace.ensureSideLeaf()` 首次放入右侧栏，图标 `highlighter`；设置可改左侧栏。不贡献工作台图标轨或工作台批注页面。
-- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，提供摘录/笔记/标签检索、颜色过滤、文件/颜色/标签分组和排序。`COMMENTS_PANEL.mount(container, documents)` 接收 `EditorContextAccess`，按 `container.ownerDocument.defaultView` 读取源 Markdown leaf 上下文；批注全局 service.path 不得覆盖窗口上下文。历史预览、侧栏焦点或其他窗口切换不清空当前源笔记。通过 `COMMENTS_PANEL` 挂到编辑器面板；其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
-- gutter 行首悬停显示添加按钮，有批注的行显示图标与数量；支持行级与选区批注。阅读模式只显示高亮、行级图标与查看入口。
-- 悬停高亮或 gutter 350ms 打开，离开目标和浮窗 300ms 关闭，移入浮窗保留；点击或命令立即打开并固定。未保存编辑/回复不因鼠标离开关闭；Esc 先取消编辑，再关闭。
+- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，提供摘录/笔记/标签检索、颜色过滤、文件/颜色/标签分组和排序。`COMMENTS_PANEL.mount(container, documents, visible)` 返回 `EditorPanelHandle`，由宿主通过 `setVisible()` 暂停/恢复隐藏根、通过 `dispose()` 卸载；接收 `EditorContextAccess`，按 `container.ownerDocument.defaultView` 读取源 Markdown leaf 上下文；批注全局 service.path 不得覆盖窗口上下文。历史预览、侧栏焦点或其他窗口切换不清空当前源笔记。通过 `COMMENTS_PANEL` 挂到编辑器面板；其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
+- gutter 行首只显示非交互状态图像，不提供悬停或点击添加入口；行级与选区批注由命令、面板和高亮浮层操作。阅读模式显示高亮与状态图像。
+- 悬停高亮 350ms 打开，离开目标和浮窗 300ms 关闭，移入浮窗保留；点击或命令立即打开并固定。未保存编辑/回复不因鼠标离开关闭；Esc 先取消编辑，再关闭。
 - 可编辑浮窗使用受控 Radix `Popover` 和虚拟矩形锚点，线程卡片在面板与浮窗共用。正文用 `MarkdownRenderer`，外层加 `huhu-native`；支持查看、编辑、回复、解决/重新打开、删除、跳转与重新挂接。手机用底部 `Sheet`。
 - 每个窗口一个 `CommentsOverlay` React 根，编辑器经 `services/overlay.ts` 请求开合；按 `view.dom.ownerDocument` 选 Portal，滚动更新锚点，非固定浮窗在锚点滚出时关闭。
 - 表单有 Label 与快捷键说明，Ctrl/Cmd+Enter 提交，IME 组合时不提交；失败保留草稿和重试入口，关闭恢复原焦点。

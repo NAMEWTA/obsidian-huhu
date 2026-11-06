@@ -5,6 +5,7 @@ import { t } from '../shared/i18n/index';
 export class IntroModal extends Modal {
 	private generation = 0;
 	private opened = false;
+	private cancelled = false;
 	private disposeContent?: () => void;
 
 	constructor(
@@ -14,7 +15,17 @@ export class IntroModal extends Modal {
 		super(app);
 	}
 
+	/** Plugin unload closes the native owner without recording a user acknowledgement. */
+	cancel(): void {
+		if (this.cancelled) return;
+		this.cancelled = true;
+		this.opened = false;
+		++this.generation;
+		this.close();
+	}
+
 	onOpen(): void {
+		if (this.cancelled) return;
 		this.disposeContent?.();
 		this.disposeContent = undefined;
 		this.opened = true;
@@ -43,13 +54,15 @@ export class IntroModal extends Modal {
 	}
 
 	onClose(): void {
+		// The lazy import may still be pending or show retry UI; acknowledge only a committed intro tree.
+		const presented = this.opened && !!this.disposeContent && !!this.contentEl.querySelector('.huhu-design');
 		++this.generation;
 		this.disposeContent?.();
 		this.disposeContent = undefined;
 		this.contentEl.empty();
 		if (this.opened) {
 			this.opened = false;
-			this.onSeen();
+			if (presented) this.onSeen();
 		}
 	}
 }

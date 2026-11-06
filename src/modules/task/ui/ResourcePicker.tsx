@@ -65,7 +65,7 @@ export function ResourcePicker({
 				<Button
 					type="button"
 					size="sm"
-					variant="outline"
+					variant="secondary"
 					disabled={disabled}
 					onClick={() => setExpanded(!expanded)}
 				>

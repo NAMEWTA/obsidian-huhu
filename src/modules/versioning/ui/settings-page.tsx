@@ -1,3 +1,4 @@
+import './i18n';
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { toast } from 'sonner';
@@ -14,7 +15,12 @@ import { Input } from '../../../ui/components/input';
 import { VaultPathField } from '../../../ui/components/huhu/VaultPathField';
 import { Button } from '../../../ui/components/button';
 
-export function syncSettingsPage(settings: SettingsHandle<SyncSettings>, service: () => SyncService | undefined, app: App, localHistory?: () => AutomaticHistory | undefined) {
+export function syncSettingsPage(
+	settings: SettingsHandle<SyncSettings>,
+	service: () => SyncService | undefined,
+	app: App,
+	localHistory?: () => AutomaticHistory | undefined,
+) {
 	return function SyncSettingsPage() {
 		const t = useT(),
 			owner = useOwnerWindow(),
@@ -24,7 +30,10 @@ export function syncSettingsPage(settings: SettingsHandle<SyncSettings>, service
 			);
 		const current = service();
 		const automatic = localHistory?.();
-		const localState = useSyncExternalStore(listener => automatic?.subscribe(listener) ?? (() => {}), () => automatic?.snapshot);
+		const localState = useSyncExternalStore(
+			(listener) => automatic?.subscribe(listener) ?? (() => {}),
+			() => automatic?.snapshot,
+		);
 		const snapshot = useSyncExternalStore(
 			(listener) => current?.subscribe(listener) ?? (() => {}),
 			() => current?.snapshot,
@@ -58,12 +67,41 @@ export function syncSettingsPage(settings: SettingsHandle<SyncSettings>, service
 		return (
 			<div className="space-y-8">
 				<SettingsSection title={t('history.local')}>
-					<SettingsSwitchRow label={t('history.localEnable')} description={t('history.localDescription')}
-						checked={value.localHistoryEnabled} onChange={() => save('localHistoryEnabled', !value.localHistoryEnabled)} />
-					<NumberField label={t('history.localInterval')} description={t('history.localDescription')} min={1} integer value={value.localHistoryIntervalMinutes} onChange={v => save('localHistoryIntervalMinutes', v)} />
-					<NumberField label={t('history.localRetention')} description={t('history.localRetentionDesc')} min={1} integer value={value.localHistoryRetentionDays} onChange={v => save('localHistoryRetentionDays', v)} />
-					<NumberField label={t('history.localQuota')} description={t('history.localQuotaDesc')} min={1} integer value={value.localHistoryQuotaMiB} onChange={v => save('localHistoryQuotaMiB', v)} />
-					{localState?.phase === 'error' && <p role="alert" className="text-sm text-destructive">{t(localState.error ?? 'versioning.localHistory.failed')}</p>}
+					<SettingsSwitchRow
+						label={t('history.localEnable')}
+						description={t('history.localDescription')}
+						checked={value.localHistoryEnabled}
+						onChange={() => save('localHistoryEnabled', !value.localHistoryEnabled)}
+					/>
+					<NumberField
+						label={t('history.localInterval')}
+						description={t('history.localDescription')}
+						min={1}
+						integer
+						value={value.localHistoryIntervalMinutes}
+						onChange={(v) => save('localHistoryIntervalMinutes', v)}
+					/>
+					<NumberField
+						label={t('history.localRetention')}
+						description={t('history.localRetentionDesc')}
+						min={1}
+						integer
+						value={value.localHistoryRetentionDays}
+						onChange={(v) => save('localHistoryRetentionDays', v)}
+					/>
+					<NumberField
+						label={t('history.localQuota')}
+						description={t('history.localQuotaDesc')}
+						min={1}
+						integer
+						value={value.localHistoryQuotaMiB}
+						onChange={(v) => save('localHistoryQuotaMiB', v)}
+					/>
+					{localState?.phase === 'error' && (
+						<p role="alert" className="text-sm text-destructive">
+							{t(localState.error ?? 'versioning.localHistory.failed')}
+						</p>
+					)}
 				</SettingsSection>
 				<SettingsSection title={t('sync.settings.repository')}>
 					<SettingsRow
@@ -71,7 +109,7 @@ export function syncSettingsPage(settings: SettingsHandle<SyncSettings>, service
 						description={snapshot?.gitVersion ? `${snapshot.gitVersion} · ${where}` : where}
 						control={
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() => {
 									void current?.connect().catch(report);
 								}}

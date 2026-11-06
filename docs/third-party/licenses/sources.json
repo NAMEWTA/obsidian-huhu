@@ -72,5 +72,24 @@
     "source": "https://github.com/yeshimei/bz/blob/d76a0870329403247917a00c43019e203a2560a4/LICENSE",
     "sha256": "9fdaddcce3609e5ccec46c1841c61a2e559db82b866394e214dd933e18ddacbb",
     "note": "bz 来源登记所保留的上游许可原文；固定源码提交，不是 npm 运行依赖。具体采用范围见 docs/third-party/bz.md。"
+  },
+  "@headless-tree/core@1.8.0": {
+    "license": "MIT",
+    "file": "headless-tree-MIT.txt",
+    "source": "https://github.com/lukasbach/headless-tree/blob/8a96358a139c4793f8e572201fd714d1a2d26e83/LICENSE",
+    "sha256": "cac45d63b6a0bf68f7aba2219c0d74470135ead032a0872e533476492abb2559"
+  },
+  "@headless-tree/react@1.8.0": {
+    "license": "MIT",
+    "file": "headless-tree-MIT.txt",
+    "source": "https://github.com/lukasbach/headless-tree/blob/8a96358a139c4793f8e572201fd714d1a2d26e83/LICENSE",
+    "sha256": "cac45d63b6a0bf68f7aba2219c0d74470135ead032a0872e533476492abb2559"
+  },
+  "lru_map@0.4.1": {
+    "license": "MIT",
+    "file": "lru-map-MIT.txt",
+    "source": "https://github.com/rsms/js-lru/blob/77c51e90dbcf4ffc0d27e6bc04a012a6b54a05e1/README.md",
+    "sha256": "9f2d50765b51cff7280889b9d3a8f1987b59378f9231c664bb504c78a2a14310",
+    "note": "MIT全文逐字保留自发布包gitHead对应README的MIT license节；未将仅声明许可的源码头当作全文。"
   }
 }

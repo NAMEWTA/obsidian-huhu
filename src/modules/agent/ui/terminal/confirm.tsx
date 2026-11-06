@@ -58,7 +58,7 @@ export function confirmAction(app: App, message: string, signal?: AbortSignal): 
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={() => finish(false)}>{t('common.cancel')}</AlertDialogCancel>
 						<AlertDialogAction
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							className="bg-[var(--hu-danger)] text-[var(--hu-danger-fg)] hover:bg-[var(--hu-danger)]/90"
 							onClick={() => finish(true)}
 						>
 							{t('agent.end')}

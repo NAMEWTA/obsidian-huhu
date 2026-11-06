@@ -61,7 +61,11 @@ test('the list is the files of the inbox folder, most recently modified first; d
 	expect(rows()).toHaveLength(3);
 	const capture = rows().find((row) => row.hasAttribute('data-capture-file'))!;
 	expect(capture.textContent).toContain(t('home.inbox.captureDay', { date: '2026-10-20' }));
-	expect(rows().map((row) => row.textContent).join('|')).toContain('买牛奶');
+	expect(
+		rows()
+			.map((row) => row.textContent)
+			.join('|'),
+	).toContain('买牛奶');
 	expect(document.body.textContent).not.toContain('无关');
 	fireEvent.click(within(rows().find((row) => row.textContent?.includes('买牛奶'))!).getByText('买牛奶'));
 	expect(open).toHaveBeenCalledWith('huhu/收件箱/2026-10-19-1405-买牛奶.md');
@@ -72,8 +76,11 @@ test('an empty inbox says so in one line and the capture strip stays at the foot
 	expect(rows()).toHaveLength(0);
 	expect(view.container.querySelector('[data-inbox-empty]')?.textContent).toBe(t('home.inbox.empty'));
 	const root = view.container.querySelector('[data-inbox]')!;
-	const children = [...root.children].filter((child) => !child.hasAttribute('data-slot'));
-	expect(children.at(-1)?.hasAttribute('data-capture-composer')).toBe(true);
+	const composer = root.querySelector('[data-capture-composer]')!;
+	expect(composer).toBeTruthy();
+	expect(
+		root.querySelector('[data-inbox-today]')!.compareDocumentPosition(composer) & Node.DOCUMENT_POSITION_FOLLOWING,
+	).toBeTruthy();
 	expect(screen.getByRole('textbox', { name: t('home.inbox.composer') })).toBeTruthy();
 });
 
@@ -105,7 +112,7 @@ test('New item opens a field at the top of the list: Enter creates the dated not
 	expect([...vault.contents.keys()].some((path) => /-untitled\.md$/.test(path))).toBe(true);
 });
 
-test('a capture goes to the day file, clears the draft, says so and shows up in today\'s column and the count; the newest is on top', async () => {
+test("a capture goes to the day file, clears the draft, says so and shows up in today's column and the count; the newest is on top", async () => {
 	const { vault } = await scene();
 	const box = screen.getByRole('textbox', { name: t('home.inbox.composer') }) as HTMLTextAreaElement;
 	const send = screen.getByRole('button', { name: t('home.inbox.send') });
@@ -123,9 +130,13 @@ test('a capture goes to the day file, clears the draft, says so and shows up in 
 	fireEvent.change(box, { target: { value: '第二条\n换行' } });
 	fireEvent.click(send);
 	await waitFor(() => expect(vault.contents.get(path)).toMatch(/第一条\n- \d{2}:\d{2} 第二条\n {2}换行\n$/));
-	await waitFor(() => expect(document.querySelector('[data-inbox-captures]')?.querySelectorAll('button')).toHaveLength(2));
+	await waitFor(() =>
+		expect(document.querySelector('[data-inbox-captures]')?.querySelectorAll('button')).toHaveLength(2),
+	);
 	const today = document.querySelector('[data-inbox-captures]') as HTMLElement;
-	const entries = within(today).getAllByRole('button').map((entry) => entry.textContent ?? '');
+	const entries = within(today)
+		.getAllByRole('button')
+		.map((entry) => entry.textContent ?? '');
 	expect(entries[0]).toContain('第二条');
 	expect(entries[1]).toContain('第一条');
 	expect(screen.getByRole('button', { name: t('home.inbox.todayCount', { count: 2 }) })).toBeTruthy();
@@ -133,7 +144,7 @@ test('a capture goes to the day file, clears the draft, says so and shows up in 
 	await waitFor(() => expect(rows().some((row) => row.hasAttribute('data-capture-file'))).toBe(true));
 });
 
-test('today\'s column reads the day file that is already there, and clicking an entry opens that file', async () => {
+test("today's column reads the day file that is already there, and clicking an entry opens that file", async () => {
 	const path = `huhu/收件箱/${day()}-captures.md`;
 	const { open } = await scene({ [path]: `${properties}- 09:12 买牛奶\n- 10:30 第一行\n  第二行\n` });
 	await waitFor(() => expect(document.querySelector('[data-inbox-captures]')).toBeTruthy());
@@ -202,15 +213,15 @@ test('the inbox folder is the one in the board settings, for items and for the d
 	expect([...vault.contents.keys()].some((path) => path === `Notes/Memos/${day()}-captures.md`)).toBe(true);
 });
 
-test.each(['en','zh'] as const)('empty inbox title creates the same fixed default in %s', async (language) => {
- const {vault,open}=await scene({}, DEFAULT_DASHBOARD_SETTINGS.memoSavePath, language);
- fireEvent.click(screen.getByRole('button',{name:t('home.inbox.new')}));
- const field=screen.getByRole('textbox',{name:t('home.inbox.newLabel')});
- expect(field.getAttribute('placeholder')).toBe(t('home.inbox.newPlaceholder'));
- fireEvent.keyDown(field,{key:'Enter'});
- await waitFor(()=>expect(open).toHaveBeenCalledTimes(1));
- const made=[...vault.contents.keys()].filter(path=>path.startsWith('huhu/inbox/'));
- expect(made).toHaveLength(1);
- expect(made[0]).toMatch(/^huhu\/inbox\/\d{4}-\d{2}-\d{2}-\d{4}-untitled\.md$/);
- expect(open).toHaveBeenCalledWith(made[0]);
+test.each(['en', 'zh'] as const)('empty inbox title creates the same fixed default in %s', async (language) => {
+	const { vault, open } = await scene({}, DEFAULT_DASHBOARD_SETTINGS.memoSavePath, language);
+	fireEvent.click(screen.getByRole('button', { name: t('home.inbox.new') }));
+	const field = screen.getByRole('textbox', { name: t('home.inbox.newLabel') });
+	expect(field.getAttribute('placeholder')).toBe(t('home.inbox.newPlaceholder'));
+	fireEvent.keyDown(field, { key: 'Enter' });
+	await waitFor(() => expect(open).toHaveBeenCalledTimes(1));
+	const made = [...vault.contents.keys()].filter((path) => path.startsWith('huhu/inbox/'));
+	expect(made).toHaveLength(1);
+	expect(made[0]).toMatch(/^huhu\/inbox\/\d{4}-\d{2}-\d{2}-\d{4}-untitled\.md$/);
+	expect(open).toHaveBeenCalledWith(made[0]);
 });

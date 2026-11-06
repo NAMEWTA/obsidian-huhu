@@ -64,6 +64,7 @@ export function createRevisionReader(runner: GitRunner, cwd: string): RevisionRe
 			let content: EndpointContent;
 			let commitOid: string | undefined;
 			let blobOid: string | undefined;
+			let fileMode: '100644' | '100755' | undefined;
 			let label: string = ref.kind;
 			let resolvedRef: RevisionRef = ref;
 			try {
@@ -134,6 +135,7 @@ export function createRevisionReader(runner: GitRunner, cwd: string): RevisionRe
 					else {
 						if (!isObjectId(blobOid)) throw new GitError('unknown', 'invalid blob object');
 						content = await gitBlob(blobOid, limit, signal);
+						fileMode = mode;
 					}
 				}
 			} catch (error) {
@@ -146,7 +148,10 @@ export function createRevisionReader(runner: GitRunner, cwd: string): RevisionRe
 				};
 			}
 			checkAbort(signal);
-			const identity = content.status === 'text' ? content.snapshot.hash : `${content.status}:${blobOid ?? ''}`;
+			const identity =
+				content.status === 'text'
+					? `${content.snapshot.hash}:${content.fileMode ?? fileMode ?? ''}`
+					: `${content.status}:${blobOid ?? ''}`;
 			const sourceIdentity =
 				ref.kind === 'commit'
 					? (commitOid ?? ref.commit)
@@ -161,6 +166,7 @@ export function createRevisionReader(runner: GitRunner, cwd: string): RevisionRe
 									: '';
 			return Object.freeze({
 				...content,
+				...(fileMode ? { fileMode } : {}),
 				repositoryId: cwd,
 				ref: resolvedRef,
 				id: `${cwd}:${ref.kind}:${sourceIdentity}:${ref.path}:${identity}`,
@@ -246,7 +252,10 @@ async function readWorktree(
 			const after = await file.stat();
 			if (before.size !== after.size || before.mtimeMs !== after.mtimeMs || before.ctimeMs !== after.ctimeMs)
 				return { status: 'error', code: 'source-changed', message: 'File changed while its snapshot was read' };
-			return decodeSnapshot(Buffer.concat(chunks, length), limit);
+			const content = decodeSnapshot(Buffer.concat(chunks, length), limit);
+			return content.status === 'text'
+				? { ...content, fileMode: after.mode & 0o111 ? '100755' : '100644' }
+				: content;
 		} finally {
 			await file.close();
 		}

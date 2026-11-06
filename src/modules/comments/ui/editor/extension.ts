@@ -9,7 +9,7 @@ import { openComposer } from './selection';
 export function commentsCmExtension(env: CommentsEnv) {
 	return [EditorView.editorAttributes.of(view => {
 		const settings = env.service.settings();
-		return { class: 'huhu-comments-editor', ...(!settings.followAccent && settings.color && view.dom.ownerDocument.defaultView?.CSS.supports('color', settings.color) ? { style: `--nd-comment-color: ${settings.color}` } : {}) };
+		return { class: 'huhu-comments-editor', ...(!settings.followAccent && settings.color && view.dom.ownerDocument.defaultView?.CSS.supports('color', settings.color) ? { style: `--hu-comment-color: ${settings.color}` } : {}) };
 	}), commentGutter(env), ViewPlugin.fromClass(class {
 		decorations: DecorationSet;
 		private readonly hover: HoverTracker;

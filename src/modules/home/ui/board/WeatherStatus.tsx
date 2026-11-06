@@ -45,18 +45,23 @@ export function WeatherStatus({
 	const actions: [string, () => void][] = [];
 	if (view.kind === 'unconfigured') actions.push(['weather.configure', onConfigure]);
 	if (busy) actions.push(['weather.cancel', onCancel]);
-	if (view.kind === 'error' || view.kind === 'cancelled' || (view.kind === 'ready' && view.stale)) actions.push(['weather.retry', onRetry]);
+	if (view.kind === 'error' || view.kind === 'cancelled' || (view.kind === 'ready' && view.stale))
+		actions.push(['weather.retry', onRetry]);
 	if (view.kind === 'error') actions.push(['weather.configure', onConfigure]);
 	return (
 		<div
 			data-weather-state={view.kind}
 			role={view.kind === 'error' ? 'alert' : 'status'}
 			aria-busy={busy || undefined}
-			className={cn('flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground', view.kind === 'error' && 'border-l-2 border-destructive pl-2 text-foreground', className)}
+			className={cn(
+				'flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground',
+				view.kind === 'error' && 'border-l-2 border-destructive pl-2 text-foreground',
+				className,
+			)}
 		>
 			<p className="m-0 min-w-0 flex-1 basis-40 break-words">{message}</p>
 			{actions.map(([key, run]) => (
-				<Button key={key} type="button" size="xs" variant="outline" onClick={run}>
+				<Button key={key} type="button" size="sm" variant="secondary" onClick={run}>
 					{t(key)}
 				</Button>
 			))}

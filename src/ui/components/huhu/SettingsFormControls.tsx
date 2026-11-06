@@ -1,8 +1,10 @@
 // Adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
 import type React from 'react';
-import { useContext, useState } from 'react';
+import { ToggleGroup, ToggleGroupItem } from '../toggle-group';
+import { useContext, useId, useRef, useState } from 'react';
 import { SettingsSearchContext, SearchHighlight, matchesSettingsSearch } from '../../react/settings-search';
 import { Input } from '../input';
+import { Badge } from '../badge';
 import { Label } from '../label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../tooltip';
 import { Switch } from '../switch';
@@ -16,7 +18,9 @@ type SettingsSwitchProps = {
 	onChange: () => void;
 	ariaLabel?: string;
 	ariaLabelledBy?: string;
+	ariaDescribedBy?: string;
 	disabled?: boolean;
+	busy?: boolean;
 };
 
 export function SettingsSwitch({
@@ -24,14 +28,18 @@ export function SettingsSwitch({
 	onChange,
 	ariaLabel,
 	ariaLabelledBy,
+	ariaDescribedBy,
 	disabled,
+	busy,
 }: SettingsSwitchProps): React.JSX.Element {
 	return (
 		<Switch
 			checked={checked}
 			aria-label={ariaLabel}
 			aria-labelledby={ariaLabelledBy}
+			aria-describedby={ariaDescribedBy}
 			disabled={disabled}
+			busy={busy}
 			onCheckedChange={onChange}
 		/>
 	);
@@ -58,7 +66,14 @@ export function SettingsRow({
 	alignTop,
 }: SettingsRowProps): React.JSX.Element {
 	const query = useContext(SettingsSearchContext);
-	if (typeof label === 'string' && !matchesSettingsSearch(query, { title: label, description: typeof description === 'string' ? description : undefined })) return <></>;
+	if (
+		typeof label === 'string' &&
+		!matchesSettingsSearch(query, {
+			title: label,
+			description: typeof description === 'string' ? description : undefined,
+		})
+	)
+		return <></>;
 	return (
 		<div
 			data-slot="settings-row"
@@ -70,13 +85,13 @@ export function SettingsRow({
 				className,
 			)}
 		>
-			<div className={cn('min-w-0 flex-1', description ? 'space-y-1' : 'space-y-0.5')}>
+			<div className={cn('min-w-0 flex-[1_1_240px]', description ? 'space-y-1' : 'space-y-0.5')}>
 				<Label id={labelId} className="select-text">
 					{typeof label === 'string' ? <SearchHighlight text={label} /> : label}
 				</Label>
 				{description ? <p className="select-text text-xs text-muted-foreground">{description}</p> : null}
 			</div>
-			<div className="shrink-0">{control}</div>
+			<div className="min-w-0 max-w-full shrink-0">{control}</div>
 		</div>
 	);
 }
@@ -89,6 +104,7 @@ type SettingsSwitchRowProps = {
 	className?: string;
 	ariaLabel?: string;
 	disabled?: boolean;
+	busy?: boolean;
 };
 
 export function SettingsSwitchRow({
@@ -99,19 +115,30 @@ export function SettingsSwitchRow({
 	className,
 	ariaLabel,
 	disabled,
+	busy = false,
 }: SettingsSwitchRowProps): React.JSX.Element {
+	const t = useT();
+	const labelId = useId();
 	return (
 		<SettingsRow
 			label={label}
+			labelId={labelId}
 			description={description}
 			className={className}
 			control={
-				<SettingsSwitch
-					checked={checked}
-					onChange={onChange}
-					disabled={disabled}
-					ariaLabel={ariaLabel ?? (typeof label === 'string' ? label : undefined)}
-				/>
+				<div className="flex items-center gap-2">
+					<span role={busy ? 'status' : undefined} className="text-xs text-[var(--hu-fg-3)]">
+						{busy ? t('ui.saving') : t(checked ? 'ui.enabled' : 'ui.disabled')}
+					</span>
+					<SettingsSwitch
+						checked={checked}
+						busy={busy}
+						ariaLabelledBy={ariaLabel ? undefined : labelId}
+						onChange={onChange}
+						disabled={disabled}
+						ariaLabel={ariaLabel ?? (typeof label === 'string' ? label : undefined)}
+					/>
+				</div>
 			}
 		/>
 	);
@@ -136,6 +163,8 @@ type SegmentedControlProps<T extends string | number> = {
 	wrap?: boolean;
 };
 
+const segmentKey = (value: string | number): string => `${typeof value}:${value}`;
+
 /** Canonical segmented control for theme/ligatures/cursor/shell/etc. */
 export function SegmentedControl<T extends string | number>({
 	value,
@@ -146,59 +175,58 @@ export function SegmentedControl<T extends string | number>({
 	equalWidth = false,
 	wrap = false,
 }: SegmentedControlProps<T>): React.JSX.Element {
+	// ToggleGroup moves focus; only keyboard movement selects here, so pointer focus cannot dispatch twice.
+	const selectOnFocus = useRef(false);
 	return (
-		<div
-			role="radiogroup"
-			data-hit-group
+		<ToggleGroup
+			type="single"
+			variant="segmented"
+			size={size}
+			value={segmentKey(value)}
+			onValueChange={(next) => {
+				const option = options.find((opt) => segmentKey(opt.value) === next);
+				if (option) onChange(option.value);
+			}}
 			aria-label={ariaLabel}
-			className={cn(
-				'inline-flex max-w-full flex-wrap items-center rounded-md border border-border bg-background/50 p-0.5',
-				equalWidth && 'w-full',
-			)}
+			onKeyDownCapture={(event) => {
+				selectOnFocus.current = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(
+					event.key,
+				);
+			}}
+			onPointerDownCapture={() => {
+				selectOnFocus.current = false;
+			}}
+			data-slot="segmented-control"
+			className={cn('inline-flex', wrap && 'flex-wrap', equalWidth && 'w-full')}
 		>
 			{options.map((opt) => {
-				const active = opt.value === value;
 				const button = (
-					<button
-						key={String(opt.value)}
-						type="button"
-						role="radio"
+					<ToggleGroupItem
+						key={segmentKey(opt.value)}
+						value={segmentKey(opt.value)}
 						data-hit-control
-						aria-checked={active}
 						aria-label={opt.ariaLabel}
-						// Why aria-disabled, not disabled: a native disabled button leaves the tab
-						// order, so keyboard users can never focus it to open the tooltip explaining
-						// why the option is unavailable. The click guard below keeps it inert.
-						aria-disabled={opt.disabled}
-						onClick={() => {
-							if (!opt.disabled) {
-								onChange(opt.value);
-							}
+						disabled={opt.disabled}
+						onFocus={() => {
+							if (!selectOnFocus.current) return;
+							selectOnFocus.current = false;
+							if (!opt.disabled && opt.value !== value) onChange(opt.value);
 						}}
-						className={cn(
-							'rounded-sm text-center outline-none transition-[transform,opacity] focus-visible:ring-[3px] focus-visible:ring-ring/50',
-							size === 'sm' ? 'px-2.5 py-0.5 text-xs' : 'px-3 py-1 text-sm',
-							equalWidth && 'flex-1',
-							active
-								? 'bg-accent font-medium text-accent-foreground'
-								: opt.disabled
-									? 'cursor-not-allowed text-muted-foreground/50'
-									: 'text-muted-foreground hover:text-foreground',
-						)}
+						className={equalWidth ? 'flex-1' : undefined}
 					>
 						{opt.label}
-					</button>
+					</ToggleGroupItem>
 				);
 				return opt.tooltip == null ? (
 					button
 				) : (
-					<Tooltip key={String(opt.value)}>
+					<Tooltip key={segmentKey(opt.value)}>
 						<TooltipTrigger asChild>{button}</TooltipTrigger>
 						<TooltipContent>{opt.tooltip}</TooltipContent>
 					</Tooltip>
 				);
 			})}
-		</div>
+		</ToggleGroup>
 	);
 }
 
@@ -211,19 +239,12 @@ type SettingsBadgeProps = {
 /** Tokenized badge for status pills inside settings (e.g. Detected, Not installed). */
 export function SettingsBadge({ tone = 'neutral', children, className }: SettingsBadgeProps): React.JSX.Element {
 	return (
-		<span
-			className={cn(
-				'inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-medium',
-				tone === 'accent'
-					? 'border-foreground/20 bg-foreground/10 text-foreground'
-					: tone === 'muted'
-						? 'border-border/40 bg-muted/30 text-muted-foreground'
-						: 'border-border/50 bg-background/50 text-foreground/80',
-				className,
-			)}
+		<Badge
+			variant={tone === 'accent' ? 'accent' : 'neutral'}
+			className={cn(tone === 'muted' && 'text-[var(--hu-fg-3)]', className)}
 		>
 			{children}
-		</span>
+		</Badge>
 	);
 }
 
@@ -295,7 +316,7 @@ export function ColorField({ label, description, value, fallback, onChange }: Co
 						aria-label={label}
 						value={normalized}
 						onChange={(e) => onChange(e.target.value)}
-						className="h-8 w-10 rounded-md border border-input bg-transparent p-1"
+						className="h-8 min-h-[var(--hu-hit)] w-10 min-w-[var(--hu-hit)] rounded-md border border-input bg-transparent p-1"
 					/>
 					<Input
 						aria-label={label}
@@ -371,7 +392,7 @@ export function NumberField({
 				<>
 					{description}
 					{defaultValue !== undefined ? (
-						<span className="ml-1 text-muted-foreground/70">
+						<span className="ml-1 text-muted-foreground">
 							{t('ui.defaultValue')} {defaultValue}
 						</span>
 					) : null}

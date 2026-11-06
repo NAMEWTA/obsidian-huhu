@@ -1,12 +1,15 @@
 import type { WorkbenchTarget } from '../contracts/workbench';
-
-export interface FocusLeafState extends Record<string, unknown> {
-	target: WorkbenchTarget;
-	focus: true;
-	pages: Array<{ target: WorkbenchTarget; state: Record<string, unknown> }>;
-}
-
-/** Open the selected feature in a focus-mode workbench leaf. */
+import { normalizeWorkbenchState, WORKBENCH_UI_SCHEMA, type WorkbenchUiState } from '../contracts/workbench-state';
+export type FocusLeafState = WorkbenchUiState & { mode: 'focus' };
+/** Emit only the current bounded leaf envelope. */
 export function focusLeafState(target: WorkbenchTarget, state: Record<string, unknown>): FocusLeafState {
- return { target, focus: true, pages: [{ target, state }] };
+	return {
+		...normalizeWorkbenchState({
+			schema: WORKBENCH_UI_SCHEMA,
+			route: target,
+			mode: 'focus',
+			pageViews: [{ target, state }],
+		}),
+		mode: 'focus',
+	};
 }

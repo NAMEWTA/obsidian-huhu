@@ -209,8 +209,8 @@ export function Omnibox({
 				aria-label={t('agent.workspace.omnibox')}
 				className="h-9 w-full border-0 bg-transparent px-2 text-xs outline-none"
 			/>
-			<div className="space-y-1 border-t border-border px-2 py-2" onKeyDown={event => { if (event.key !== 'Escape' && event.key !== 'Tab') event.stopPropagation(); }}>
-				<label htmlFor={nameId} className="block text-xs text-muted-foreground">{t('agent.managed.name')}</label>
+			<div className="space-y-1 border-t border-[var(--hu-line)] px-2 py-2" onKeyDown={event => { if (event.key !== 'Escape' && event.key !== 'Tab') event.stopPropagation(); }}>
+				<label htmlFor={nameId} className="block text-xs text-[var(--hu-fg-2)]">{t('agent.managed.name')}</label>
 				<Input id={nameId} value={name} onChange={event => setName(event.target.value)} maxLength={200} disabled={!!pending} className="h-8 text-xs pointer-coarse:h-11" />
 				<label htmlFor={backgroundId} className="flex min-h-8 cursor-pointer items-center gap-2 text-xs pointer-coarse:min-h-11">
 					<Checkbox id={backgroundId} checked={background} disabled={!!pending} onCheckedChange={value => setBackground(value === true)} />
@@ -218,12 +218,12 @@ export function Omnibox({
 				</label>
 			</div>
 			{error && (
-				<p role="alert" className="px-2 py-1 text-xs text-destructive">
+				<p role="alert" className="px-2 py-1 text-xs text-[var(--hu-danger)]">
 					{error}
 				</p>
 			)}
 			<Command.List
-				className="max-h-80 overflow-y-auto border-t border-border p-1"
+				className="max-h-80 overflow-y-auto border-t border-[var(--hu-line)] p-1"
 				aria-label={t('agent.workspace.newTab')}
 			>
 				{(() => {
@@ -258,7 +258,7 @@ export function Omnibox({
 										onSelect={() => {
 											void execute(option);
 										}}
-										className={`flex min-h-8 cursor-pointer items-center rounded-[7px] text-left leading-5 text-muted-foreground outline-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 pointer-coarse:min-h-11 ${query.trim() ? 'gap-1.5 px-1 py-1 text-[11px]' : 'gap-2 px-2 py-1.5 text-xs font-medium'}`}
+										className={`flex min-h-8 cursor-pointer items-center rounded-[var(--hu-radius-md)] text-left leading-5 text-[var(--hu-fg-2)] outline-none data-[selected=true]:bg-[var(--hu-accent-soft)] data-[selected=true]:text-[var(--hu-accent-text)] data-[disabled=true]:opacity-50 pointer-coarse:min-h-11 ${query.trim() ? 'gap-1.5 px-1 py-1 text-sm' : 'gap-2 px-2 py-1.5 text-xs font-medium'}`}
 									>
 										{pending === option.id ? (
 											<Loader2 className="size-3.5 shrink-0 animate-spin" />
@@ -275,14 +275,14 @@ export function Omnibox({
 											</>
 										)}
 										{option.shortcut && (
-											<span className="ml-auto text-[10px] text-muted-foreground">
+											<span className="ml-auto text-sm text-[var(--hu-fg-2)]">
 												{option.shortcut}
 											</span>
 										)}
 									</Command.Item>
 								))}
 								{group.id === 'agents' && !group.options.length && (
-									<div className="px-2 py-1.5 text-xs text-muted-foreground">
+									<div className="px-2 py-1.5 text-xs text-[var(--hu-fg-2)]">
 										{t(
 											detected.some((a) => a.installed)
 												? 'agent.workspace.noEnabledAgents'

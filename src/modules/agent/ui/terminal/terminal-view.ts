@@ -105,7 +105,7 @@ export class TerminalView {
 		this.el = parent.createDiv({ cls: 'huhu-terminal-view' });
 		this.el.dataset.session = session.id;
 		this.statusEl = this.el.createDiv({
-			cls: 'pointer-events-none absolute inset-x-0 bottom-0 z-[var(--layer-popover)] bg-card p-1 text-xs text-muted-foreground',
+			cls: 'pointer-events-none absolute inset-x-0 bottom-0 z-[var(--hu-z-panel)] bg-[var(--hu-raised)] p-1 text-xs text-[var(--hu-fg-2)]',
 		});
 		this.statusEl.setAttribute('role', 'status');
 		this.statusEl.setAttribute('aria-live', 'polite');
@@ -130,24 +130,25 @@ export class TerminalView {
 		const settings = this.host.settings();
 		const el = this.el;
 		const background = settings.useObsidianTheme
-			? cssVar(el, '--background-primary')
-			: settings.background || cssVar(el, '--background-primary');
+			? cssVar(el, '--hu-term-bg')
+			: settings.background || cssVar(el, '--hu-term-bg');
 		const foreground = settings.useObsidianTheme
-			? cssVar(el, '--text-normal')
-			: settings.foreground || cssVar(el, '--text-normal');
+			? cssVar(el, '--hu-term-fg')
+			: settings.foreground || cssVar(el, '--hu-term-fg');
 		el.style.setProperty('--huhu-terminal-background', background);
 		return {
 			background,
 			foreground,
-			cursor: foreground,
+			cursor: cssVar(el, '--hu-term-cursor') || foreground,
 			cursorAccent: background,
-			selectionBackground: cssVar(el, '--text-selection') || 'rgba(128,128,128,0.35)',
+			selectionBackground: cssVar(el, '--hu-term-selection'),
+			...Object.fromEntries(['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'brightBlack', 'brightRed', 'brightGreen', 'brightYellow', 'brightBlue', 'brightMagenta', 'brightCyan', 'brightWhite'].map((name, index) => [name, cssVar(el, `--hu-term-ansi-${index}`)])),
 		};
 	}
 
 	private fontFamily(): string {
 		const configured = this.host.settings().fontFamily.trim();
-		return configured || cssVar(this.el, '--font-monospace') || 'Menlo, Consolas, "DejaVu Sans Mono", monospace';
+		return configured || cssVar(this.el, '--hu-font-mono') || 'Menlo, Consolas, "DejaVu Sans Mono", monospace';
 	}
 
 	/** Create the xterm presentation (first time the view is shown). */

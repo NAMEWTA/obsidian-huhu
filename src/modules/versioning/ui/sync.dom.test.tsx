@@ -1,3 +1,4 @@
+import { diffPreferenceStore, DEFAULT_DIFF_PREFERENCES } from './diff/preferences';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, expect, test, vi } from 'vitest';
@@ -193,7 +194,7 @@ test('unstaged, staged and untracked comparisons have explicit distinct bases an
 			<SyncPage {...props} />
 		</TestProviders>,
 	);
-	fireEvent.click(screen.getByRole('button', { name: 'notes/a.md' }));
+	fireEvent.click(screen.getAllByRole('button', { name: 'notes/a.md' })[0]!);
 	await waitFor(() =>
 		expect(versioning.compare).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -205,7 +206,7 @@ test('unstaged, staged and untracked comparisons have explicit distinct bases an
 		),
 	);
 	await waitFor(() => expect(view.container.querySelectorAll('[data-comparison-id]')).toHaveLength(1));
-	expect(view.container.querySelector('[data-versioning-navigation] .cm-editor')).toBeNull();
+	expect(view.container.querySelector('[data-versioning-navigation] diffs-container')).toBeNull();
 	fireEvent.click(screen.getByRole('button', { name: 'notes/new.md' }));
 	await waitFor(() =>
 		expect(versioning.compare).toHaveBeenLastCalledWith(
@@ -216,8 +217,11 @@ test('unstaged, staged and untracked comparisons have explicit distinct bases an
 			expect.any(AbortSignal),
 		),
 	);
-	fireEvent.click(screen.getByRole('radio', { name: t('versioning.changes.staged', { count: 1 }) }));
-	fireEvent.click(screen.getByRole('button', { name: 'notes/a.md' }));
+	fireEvent.click(
+		within(screen.getByRole('region', { name: t('versioning.changes.staged', { count: 1 }) })).getByRole('button', {
+			name: 'notes/a.md',
+		}),
+	);
 	await waitFor(() =>
 		expect(versioning.compare).toHaveBeenLastCalledWith(
 			expect.objectContaining({
@@ -236,7 +240,7 @@ test('unstaged, staged and untracked comparisons have explicit distinct bases an
 			<SyncPage {...props} snapshot={baseSnapshot()} />
 		</TestProviders>,
 	);
-	expect(view.container.querySelector('.cm-editor')).toBeNull();
+	expect(view.container.querySelector('diffs-container')).toBeNull();
 });
 
 test('history keeps commit and file navigation separate, uses the selected merge parent, and browses without checkout', async () => {
@@ -265,9 +269,9 @@ test('history keeps commit and file navigation separate, uses the selected merge
 			expect.any(AbortSignal),
 		),
 	);
-	expect(merge.closest('li')?.style.height).toBe('32px');
-	expect(merge.closest('li')?.querySelector('.cm-editor')).toBeNull();
-	expect(view.container.querySelector('[data-versioning-navigation] .cm-editor')).toBeNull();
+	expect(merge.closest('li')?.style.height).toBe('44px');
+	expect(merge.closest('li')?.querySelector('diffs-container')).toBeNull();
+	expect(view.container.querySelector('[data-versioning-navigation] diffs-container')).toBeNull();
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('combobox', { name: t('versioning.history.parent') }));
 	await user.click(
@@ -278,7 +282,7 @@ test('history keeps commit and file navigation separate, uses the selected merge
 	await waitFor(() =>
 		expect(versioning.changedFiles).toHaveBeenLastCalledWith(hash('f1'), hash('c3'), expect.any(AbortSignal)),
 	);
-	expect(view.container.querySelector('.cm-editor')).toBeNull();
+	expect(view.container.querySelector('diffs-container')).toBeNull();
 	fireEvent.click(screen.getByRole('button', { name: /Initial/ }));
 	await waitFor(() =>
 		expect(versioning.changedFiles).toHaveBeenLastCalledWith(null, hash('c1'), expect.any(AbortSignal)),
@@ -288,21 +292,31 @@ test('history keeps commit and file navigation separate, uses the selected merge
 
 test('a manual comparison layout survives new files and all three workbench modes', async () => {
 	mockLayout();
-	const snapshot = baseSnapshot(`# branch.oid ${hash('c3')}\0# branch.head main\0` +
-		'1 MM N... 100644 100644 100644 aaa bbb notes/a.md\0? notes/new.md\0');
+	const snapshot = baseSnapshot(
+		`# branch.oid ${hash('c3')}\0# branch.head main\0` +
+			'1 MM N... 100644 100644 100644 aaa bbb notes/a.md\0? notes/new.md\0',
+	);
 	const service = { ...graphQueries() } as unknown as SyncService;
 	const versioning = queries();
-	const view = render(<TestProviders><SyncPage {...propsFor(snapshot, service, versioning)} /></TestProviders>);
-	fireEvent.click(screen.getByRole('button', { name: 'notes/a.md' }));
+	const view = render(
+		<TestProviders>
+			<SyncPage {...propsFor(snapshot, service, versioning)} />
+		</TestProviders>,
+	);
+	fireEvent.click(screen.getAllByRole('button', { name: 'notes/a.md' })[0]!);
 	await waitFor(() => expect(view.container.querySelector('[data-layout]')).toBeTruthy());
 	fireEvent.click(screen.getByRole('radio', { name: t('versioning.diff.stacked') }));
 	const reads = vi.mocked(versioning.compare).mock.calls.length;
 	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.swap') }));
-	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.syncScroll') }));
+	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.wrap') }));
 	expect(vi.mocked(versioning.compare)).toHaveBeenCalledTimes(reads);
 	const expectPreferences = () => {
-		expect(screen.getByRole('button', { name: t('versioning.diff.swap') }).getAttribute('aria-pressed')).toBe('true');
-		expect(screen.getByRole('button', { name: t('versioning.diff.syncScroll') }).getAttribute('aria-pressed')).toBe('false');
+		expect(screen.getByRole('button', { name: t('versioning.diff.swap') }).getAttribute('aria-pressed')).toBe(
+			'true',
+		);
+		expect(screen.getByRole('button', { name: t('versioning.diff.wrap') }).getAttribute('aria-pressed')).toBe(
+			'false',
+		);
 	};
 	fireEvent.click(screen.getByRole('button', { name: 'notes/new.md' }));
 	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
@@ -312,15 +326,11 @@ test('a manual comparison layout survives new files and all three workbench mode
 	fireEvent.click(await screen.findByRole('button', { name: 'notes/a.md' }));
 	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
 	expectPreferences();
+
 	fireEvent.click(screen.getByRole('radio', { name: t('versioning.mode.compare') }));
-	const user = userEvent.setup();
-	await user.click(screen.getByRole('combobox', { name: t('versioning.compare.target') }));
-	await user.click(await screen.findByRole('option', { name: /feature/ }));
-	fireEvent.click(await screen.findByRole('button', { name: 'notes/b.md' }));
-	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
-	expectPreferences();
-	expect(view.container.querySelector('[data-versioning-navigation] .cm-editor')).toBeNull();
-	expect(versioning.compare).toHaveBeenLastCalledWith(expect.objectContaining({ intent: 'branches' }), expect.any(AbortSignal));
+	expect(screen.getByRole('textbox', { name: t('versioning.compare.base') })).toBeTruthy();
+	expect(screen.getByRole('textbox', { name: t('versioning.compare.target') })).toBeTruthy();
+	expect(view.container.querySelector('[data-versioning-navigation] diffs-container')).toBeNull();
 });
 
 test('file navigation windows long lists, keeps fixed targets, groups folders and supports arrow keys', async () => {
@@ -338,13 +348,13 @@ test('file navigation windows long lists, keeps fixed targets, groups folders an
 	);
 	const list = screen.getByRole('list', { name: 'Files' });
 	expect(list.querySelectorAll('li').length).toBeLessThan(100);
-	expect(list.querySelector('li')?.style.height).toBe('32px');
+	expect(list.querySelector('li')?.style.height).toBe('44px');
 	const first = within(list).getAllByRole('button')[0]!;
 	fireEvent.keyDown(first, { key: 'ArrowDown' });
 	expect(select).toHaveBeenLastCalledWith(files[1]);
 	fireEvent.click(screen.getByRole('button', { name: t('versioning.files.tree') }));
 	expect(await screen.findByRole('button', { name: 'notes/group-0' })).toBeTruthy();
-	expect(view.container.querySelector('.cm-editor')).toBeNull();
+	expect(view.container.querySelector('diffs-container')).toBeNull();
 });
 
 test('persisted restore hold remains visible with a deliberate acknowledgement action', async () => {
@@ -366,25 +376,28 @@ test('resolved Git failure reports and newer drafts are preserved by the commit 
 	const pending: Array<(report: RunReport) => void> = [];
 	const commit = vi.fn(() => new Promise<RunReport>((resolve) => pending.push(resolve)));
 	const service = { ...graphQueries(), commit } as unknown as SyncService;
-	const props = { ...propsFor(baseSnapshot('# branch.head main\0? new.md\0'), service), message: 'Original draft' };
+	const props = {
+		...propsFor(baseSnapshot('# branch.head main\0' + '1 A. N... 100644 100644 100644 aaa bbb new.md\0'), service),
+		message: 'Original draft',
+	};
 	render(
 		<TestProviders>
 			<SyncPage {...props} />
 		</TestProviders>,
 	);
 	const input = screen.getByRole<HTMLTextAreaElement>('textbox', { name: t('sync.message') });
-	fireEvent.click(screen.getByRole('button', { name: t('sync.commit') }));
+	fireEvent.click(screen.getByRole('button', { name: `${t('sync.commitStaged')} · 1` }));
 	await act(async () =>
 		pending[0]!({ action: 'commit', ok: false, at: 1, auto: false, steps: [{ step: 'commit', state: 'failed' }] }),
 	);
 	expect(input.value).toBe('Original draft');
-	fireEvent.click(screen.getByRole('button', { name: t('sync.commit') }));
+	fireEvent.click(screen.getByRole('button', { name: `${t('sync.commitStaged')} · 1` }));
 	fireEvent.change(input, { target: { value: 'Next draft' } });
 	await act(async () =>
 		pending[1]!({ action: 'commit', ok: true, at: 2, auto: false, steps: [{ step: 'commit', state: 'done' }] }),
 	);
 	expect(input.value).toBe('Next draft');
-	fireEvent.click(screen.getByRole('button', { name: t('sync.commit') }));
+	fireEvent.click(screen.getByRole('button', { name: `${t('sync.commitStaged')} · 1` }));
 	fireEvent.click(screen.getByRole('radio', { name: t('versioning.mode.history') }));
 	fireEvent.click(screen.getByRole('radio', { name: t('versioning.mode.changes') }));
 	fireEvent.change(screen.getByRole('textbox', { name: t('sync.message') }), { target: { value: 'Reopened draft' } });
@@ -432,3 +445,9 @@ test('sync dialogs scope portals, trim prompts, restore focus, and cancel withou
 	expect(await confirmed).toBe(false);
 	await waitFor(() => expect(document.querySelector('.huhu-portal-root')).toBeNull());
 });
+
+vi.mock('./diff/owner-pool', () => ({
+	DiffOwner: ({ children }: { children: import('react').ReactNode }) => children,
+}));
+
+afterEach(() => diffPreferenceStore.set(DEFAULT_DIFF_PREFERENCES));

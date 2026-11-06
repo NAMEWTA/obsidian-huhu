@@ -58,7 +58,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 				/>
 				{nullable && (
 					<Button
-						size="icon-xs"
+						size="icon-sm"
 						variant="ghost"
 						className={cls('dashboard-theme-studio-color-clear')}
 						aria-label={t('themeStudio.advanced.resetToTheme')}
@@ -85,7 +85,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 				<div className={cls('dashboard-modal-header dashboard-theme-studio-header')}>
 					<div className={cls('dashboard-modal-title')}>{t('themeStudio.modalTitle')}</div>
 					<Button
-						size="xs"
+						size="sm"
 						variant="ghost"
 						data-hit-control
 						className={`${cls('dashboard-theme-studio-resetall')} h-[30px]`}
@@ -115,7 +115,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 								/>
 								<Button
 									size="sm"
-									variant="outline"
+									variant="secondary"
 									className={cls('dashboard-theme-studio-browse')}
 									onClick={() => setPicking(true)}
 								>
@@ -123,7 +123,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 								</Button>
 								<Button
 									size="sm"
-									variant="outline"
+									variant="secondary"
 									className={cls('dashboard-theme-studio-image-clear')}
 									onClick={() =>
 										update((s) => {
@@ -170,7 +170,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 								<div className={cls('dashboard-theme-studio-fontscale')}>
 									{(['small', 'medium', 'large'] as const).map((value) => (
 										<Button
-											size="xs"
+											size="sm"
 											variant="ghost"
 											key={value}
 											className={cls(
@@ -187,7 +187,7 @@ export function AppearanceStudio({ host, onClose }: { host: HomeHost; onClose: (
 									))}
 								</div>
 								<Button
-									size="icon-xs"
+									size="icon-sm"
 									variant="ghost"
 									className={cls('dashboard-theme-studio-color-clear')}
 									aria-label={t('themeStudio.fontSizeReset')}

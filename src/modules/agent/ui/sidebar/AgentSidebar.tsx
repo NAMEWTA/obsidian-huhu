@@ -1,7 +1,7 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/sidebar/SidebarNav.tsx, worktree-card-surface.tsx, StatusIndicator.tsx
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { useStore } from 'zustand';
-import { ChevronDown, ListFilter, MoreHorizontal, PanelLeftClose, Search, TerminalSquare } from 'lucide-react';
+import { History, Inbox, User, ChevronDown, ListFilter, MoreHorizontal, PanelLeftClose, Search, TerminalSquare } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import {
@@ -198,8 +198,8 @@ function SessionCard({
 						data-current={current || undefined}
 						data-session-card={tab.id}
 						className={cn(
-							'group mx-2 flex items-start rounded-md px-2 py-1.5 hover:bg-sidebar-accent/60',
-							current && 'bg-sidebar-accent',
+							'group mx-2 flex items-start rounded-md px-2 py-1.5 hover:bg-[var(--hu-hover)]/60',
+							current && 'bg-[var(--hu-hover)]',
 							tab.kind === 'terminal' &&
 								['waiting', 'permission'].includes(tab.state) &&
 								'bg-agent-question/8',
@@ -207,7 +207,7 @@ function SessionCard({
 					>
 						<button
 							type="button"
-							className="flex min-w-0 flex-1 flex-col items-stretch justify-start rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							className="flex min-w-0 flex-1 flex-col items-stretch justify-start rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50"
 							onClick={() => workspace.activate(tab.id)}
 							onDoubleClick={actions[0]!.run}
 						>
@@ -215,14 +215,14 @@ function SessionCard({
 								<TabLeadingIcon tab={tab} sidebar />
 								<span
 									className={cn(
-										'min-w-0 truncate text-[13px] font-medium',
+										'min-w-0 truncate text-sm font-medium',
 										tab.kind === 'terminal' && tab.unread && 'font-bold',
 									)}
 								>
 									<span title={tab.customTitle || tab.title}>{tab.customTitle || tab.title}</span>
 								</span>
 							</span>
-							<span className="mt-0.5 block truncate pl-5 text-xs text-muted-foreground" title={path}>
+							<span className="mt-0.5 block truncate pl-5 text-xs text-[var(--hu-fg-2)]" title={path}>
 								{shortPath(path)} · {age ? t('agent.minutesAgo', { count: age }) : t('agent.justNow')}
 							</span>
 						</button>
@@ -230,7 +230,7 @@ function SessionCard({
 							<DropdownMenuTrigger asChild>
 								<Button
 									variant="ghost"
-									size="icon-xs"
+									size="icon-sm"
 									className="size-5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
 									aria-label={t('agent.more')}
 								>
@@ -269,7 +269,7 @@ function SessionCard({
 				<div className="mx-3 min-w-0 space-y-1 pb-1">
 					<ManagedLifecycleStatus session={managed} />
 					{managed.runtime?.error && (
-						<p role="alert" className="m-0 break-words text-xs text-destructive">
+						<p role="alert" className="m-0 break-words text-xs text-[var(--hu-danger)]">
 							{t(managed.runtime.error.messageKey)}
 						</p>
 					)}
@@ -328,7 +328,7 @@ function ActivityEvidence({ session }: { session: ManagedSessionSummary }) {
 		(activity?.lastFact?.blocking.state === 'blocked' ||
 			activity?.sources.some((source) => source.lastFact?.blocking.state === 'blocked'));
 	return (
-		<div className="min-w-0 space-y-1 text-xs text-muted-foreground" data-activity-evidence>
+		<div className="min-w-0 space-y-1 text-xs text-[var(--hu-fg-2)]" data-activity-evidence>
 			{activity && (
 				<>
 					<p className="m-0">
@@ -351,7 +351,7 @@ function ActivityEvidence({ session }: { session: ManagedSessionSummary }) {
 					{activity.sources.map((source) => (
 						<div
 							key={source.bindingId}
-							className="min-w-0 break-words border-l border-border pl-2"
+							className="min-w-0 break-words border-l border-[var(--hu-line)] pl-2"
 							data-activity-source={source.bindingId}
 						>
 							<p className="m-0">
@@ -524,7 +524,7 @@ function ManagedCard({ session, attention = false }: { session: ManagedSessionSu
 	};
 	return (
 		<div
-			className="mx-2 rounded-md px-2 py-1.5 hover:bg-sidebar-accent/60"
+			className="mx-2 rounded-md px-2 py-1.5 hover:bg-[var(--hu-hover)]/60"
 			data-managed-session={session.sessionId}
 			data-managed-runtime={session.runtime?.runtimeId}
 			data-activity-session={attention ? session.sessionId : undefined}
@@ -535,31 +535,31 @@ function ManagedCard({ session, attention = false }: { session: ManagedSessionSu
 				data-activity-open={attention || undefined}
 				aria-label={`${t(attention && session.runtime ? 'agent.activityEvidence.viewTerminal' : 'agent.managed.open')}: ${session.title}`}
 				aria-describedby={statusId}
-				className="flex min-h-8 w-full min-w-0 items-center gap-2 rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 pointer-coarse:min-h-11"
+				className="flex min-h-8 w-full min-w-0 items-center gap-2 rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50 disabled:opacity-50 pointer-coarse:min-h-11"
 				onClick={() => {
 					void open();
 				}}
 			>
 				<TerminalSquare className="size-3.5 shrink-0" aria-hidden="true" />
-				<span className="min-w-0 flex-1 truncate text-[13px] font-medium" title={session.title}>
+				<span className="min-w-0 flex-1 truncate text-sm font-medium" title={session.title}>
 					{session.title}
 				</span>
 			</button>
-			<p id={statusId} className="m-0 text-xs text-muted-foreground">
+			<p id={statusId} className="m-0 text-xs text-[var(--hu-fg-2)]">
 				{stateLabel}
 			</p>
 			<p
-				className="m-0 truncate text-2xs text-muted-foreground"
+				className="m-0 truncate text-xs text-[var(--hu-fg-2)]"
 				title={`${targetTitle} · ${session.spaceId} · ${session.sessionId} · ${session.runtime?.runtimeId ?? ''}`}
 			>
 				{targetTitle} · {session.spaceId} · {session.sessionId} · {session.runtime?.runtimeId}
 			</p>
 			<ActivityEvidence session={session} />
 			{session.runtime?.error && (
-				<p className="m-0 text-xs text-destructive">{t(session.runtime.error.messageKey)}</p>
+				<p className="m-0 text-xs text-[var(--hu-danger)]">{t(session.runtime.error.messageKey)}</p>
 			)}
 			{message && (
-				<p role="status" className="m-0 text-xs text-muted-foreground">
+				<p role="status" className="m-0 text-xs text-[var(--hu-fg-2)]">
 					{message}
 				</p>
 			)}
@@ -676,7 +676,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 	const [query, setQuery] = useState(''),
 		[collapsed, setCollapsed] = useState<string[]>([]);
 	const [filters, setFilters] = useState({ terminal: true, done: true, idle: false }),
-		[grouping, setGrouping] = useState<'status' | 'agent' | 'none'>('status');
+		[grouping, setGrouping] = useState<'space' | 'status' | 'agent' | 'none'>('space');
 	const managedSnapshot = useSyncExternalStore(
 		controller.workspace.subscribeManaged,
 		controller.workspace.getManagedSnapshot,
@@ -691,7 +691,9 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 		const bucket = sessionBucket(tab);
 		if (bucket in filters && !filters[bucket as keyof typeof filters]) continue;
 		const key =
-			grouping === 'none'
+			grouping === 'space'
+				? (tab.panes[tab.focusedSessionId]?.spaceId ?? tab.resume?.spaceId ?? 'unbound')
+				: grouping === 'none'
 				? 'all'
 				: grouping === 'agent'
 					? (tab.agentId ?? 'terminal')
@@ -704,7 +706,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 			: Object.keys(grouped);
 	return (
 		<aside
-			className="huhu-ui flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground"
+			className="huhu-ui flex h-full min-h-0 flex-col bg-[var(--hu-surface)] text-[var(--hu-fg)]"
 			aria-label={t('workbench.agent')}
 		>
 			<div className="flex h-9 shrink-0 items-center gap-2 px-3">
@@ -713,7 +715,7 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 					<TooltipTrigger asChild>
 						<Button
 							variant="ghost"
-							size="icon-xs"
+							size="icon-sm"
 							aria-label={t('agent.workspace.toggleSidebar')}
 							onClick={togglePanel}
 						>
@@ -738,9 +740,9 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 						chrome?.view?.setState({ jump: true });
 						void controller.historyStore.refresh(false);
 					}}
-					className="group flex w-full items-center justify-start gap-2 rounded-md bg-foreground/5 px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-foreground/60 hover:bg-foreground/8"
+					className="group flex w-full items-center justify-start gap-2 rounded-md bg-[var(--hu-sunken)] px-2 py-1.5 text-left text-sm font-medium tracking-tight text-[var(--hu-fg)]/60 hover:bg-[var(--hu-hover)]"
 				>
-					<Search className="size-4 text-foreground/30" strokeWidth={1.75} />
+					<Search className="size-4 text-[var(--hu-fg)]/30" strokeWidth={1.75} />
 					<span className="flex-1">{t('agent.search')}</span>
 				</button>
 
@@ -765,12 +767,12 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 												data-page-entry={item.page}
 												onClick={() => controller.workspace.openPage(item.page)}
 												className={cn(
-													'flex w-full items-center justify-start gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium text-sidebar-foreground/60 hover:bg-sidebar-foreground/8 aria-disabled:opacity-50',
-													current && 'bg-sidebar-accent text-sidebar-foreground',
+													'flex w-full items-center justify-start gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium text-[var(--hu-fg)]/60 hover:bg-[var(--hu-hover)] aria-disabled:opacity-50',
+													current && 'bg-[var(--hu-hover)] text-[var(--hu-fg)]',
 												)}
 											>
 												<Icon
-													className="size-4 text-sidebar-foreground/30"
+													className="size-4 text-[var(--hu-fg)]/30"
 													strokeWidth={1.75}
 												/>
 												{t(`agent.workspace.nav.${item.key}`)}
@@ -796,13 +798,18 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 						);
 					})}
 			</div>
+			<nav className="space-y-1 px-2 py-2" aria-label={t('agent.workspace.tabs')}>
+				<Button variant="ghost" className="w-full justify-start" onClick={() => chrome?.view?.setState({ history: true, control: false })}><History />{t('agent.history')}</Button>
+				<Button variant="ghost" className="w-full justify-start" onClick={() => chrome?.view?.setState({ control: true, history: false, agentTool: 'inbox' })}><Inbox />{t('agent.inbox.title')}</Button>
+				<Button variant="ghost" className="w-full justify-start" onClick={() => { void controller.open({ feature: 'settings', section: 'terminal', resourceId: 'accounts' }).catch(error => controller.workspace.report(error)); }}><User />{t('agent.manage.accounts')}</Button>
+			</nav>
 			<div className="flex items-center px-3 pt-3 pb-1">
-				<span className="flex-1 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">
+				<span className="flex-1 text-xs font-semibold uppercase tracking-wide text-[var(--hu-fg-2)]">
 					{t('agent.sessions')}
 				</span>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon-xs" aria-label={t('agent.workspace.filters')}>
+						<Button variant="ghost" size="icon-sm" aria-label={t('agent.workspace.filters')}>
 							<ListFilter className="size-3.5" />
 						</Button>
 					</DropdownMenuTrigger>
@@ -816,19 +823,19 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 								{t(`agent.workspace.show.${key}`)}
 							</DropdownMenuCheckboxItem>
 						))}
-						{(['status', 'agent', 'none'] as const).map((key) => (
+						{(['space', 'status', 'agent', 'none'] as const).map((key) => (
 							<DropdownMenuCheckboxItem
 								key={key}
 								checked={grouping === key}
 								onCheckedChange={() => setGrouping(key)}
 							>
-								{t(`agent.workspace.group.${key}`)}
+								{key === 'space' ? t('agent.spaces.title') : t(`agent.workspace.group.${key}`)}
 							</DropdownMenuCheckboxItem>
 						))}
 						<DropdownMenuItem
 							onSelect={() => {
 								setFilters({ terminal: true, done: true, idle: false });
-								setGrouping('status');
+								setGrouping('space');
 								setQuery('');
 							}}
 						>
@@ -855,13 +862,15 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 							<button
 								type="button"
 								aria-expanded={!collapsed.includes(key)}
-								className="flex w-full items-center gap-1 px-3 py-1 text-xs text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+								className="flex w-full items-center gap-1 px-3 py-1 text-xs text-[var(--hu-fg-2)] outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50"
 								onClick={() =>
 									setCollapsed((v) => (v.includes(key) ? v.filter((k) => k !== key) : [...v, key]))
 								}
 							>
 								<ChevronDown className={cn('size-3', collapsed.includes(key) && '-rotate-90')} />
-								{grouping === 'agent' && key !== 'terminal'
+								{grouping === 'space'
+									? (controller.spaces?.store.getState().records.spaces?.[key]?.name ?? t('agent.historyUI.space.unassigned'))
+									: grouping === 'agent' && key !== 'terminal'
 									? grouped[key][0]?.kind === 'terminal' &&
 										controller.agentTitle(grouped[key][0].agentId!)
 									: t(`agent.workspace.bucket.${key}`)}

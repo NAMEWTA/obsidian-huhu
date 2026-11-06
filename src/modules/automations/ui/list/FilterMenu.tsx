@@ -43,7 +43,7 @@ export function FilterMenu({
 	return (
 		<DropdownMenu open={layer.open} onOpenChange={layer.onOpenChange}>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="sm">
+				<Button variant="secondary" size="sm">
 					<Filter className="size-3.5" />
 					{t('automation.filters')}
 				</Button>
@@ -147,7 +147,7 @@ export function FilterPills({ filter, onChange }: { filter: ListFilter; onChange
 				<Button
 					key={chip.label}
 					variant="secondary"
-					size="xs"
+					size="sm"
 					className="rounded-full"
 					onClick={chip.clear}
 					aria-label={t('automation.removeFilter', { name: chip.label })}
@@ -156,7 +156,7 @@ export function FilterPills({ filter, onChange }: { filter: ListFilter; onChange
 					<X className="size-3" />
 				</Button>
 			))}
-			<Button variant="ghost" size="xs" onClick={() => onChange(EMPTY_FILTER)}>
+			<Button variant="ghost" size="sm" onClick={() => onChange(EMPTY_FILTER)}>
 				{t('automation.clearAll')}
 			</Button>
 		</div>

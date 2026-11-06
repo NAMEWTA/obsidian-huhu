@@ -1,6 +1,7 @@
 /** Strings of the icons module, registered when the module loads. */
 export const messages = {
 	en: {
+		"iconic.ruleEditor.invalidDateTime": "Enter a valid date and time.",
 		"iconic.openSettings": "Open icon settings",
 		"iconic.appItems.help": "Open help",
 		"iconic.appItems.settings": "Open settings",
@@ -343,6 +344,7 @@ export const messages = {
 		"iconic.backups.backupDate": "Your icons have been restored from a backup saved on {#}.",
 	},
 	zh: {
+		"iconic.ruleEditor.invalidDateTime": "请输入有效的日期和时间。",
 		"iconic.openSettings": "打开图标设置",
 		"iconic.appItems.help": "查看帮助",
 		"iconic.appItems.settings": "打开设置",

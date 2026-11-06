@@ -1,3 +1,4 @@
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/media-section.ts
 import type { App } from 'obsidian';
 import { Popover, PopoverAnchor, PopoverContent } from '../../../../ui/components/popover';
@@ -5,7 +6,6 @@ import { useDashboardAppearance } from '../theme/ThemeBridge';
 import { t } from '../../../../shared/i18n';
 import { Button } from '../../../../ui/components/button';
 import { Badge } from '../../../../ui/components/badge';
-import { Input } from '../../../../ui/components/input';
 import { Choice, IconButton } from '../board/controls';
 import { X } from 'lucide-react';
 import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
@@ -63,12 +63,15 @@ export function MediaFilter({
 								return (
 									<Button
 										key={tag}
-										variant={on ? 'default' : 'outline'}
+										variant={on ? 'primary' : 'secondary'}
 										size="sm"
 										className="max-w-full"
 										aria-pressed={on}
 										onClick={() =>
-											update({ ...value, tags: on ? value.tags.filter((v) => v !== tag) : [...value.tags, tag] })
+											update({
+												...value,
+												tags: on ? value.tags.filter((v) => v !== tag) : [...value.tags, tag],
+											})
 										}
 									>
 										#{tag}
@@ -82,9 +85,11 @@ export function MediaFilter({
 					<div className={label}>{t('library.filterProperty')}</div>
 					<Choice
 						label={t('library.filterProperty')}
-						className="w-full data-[size=sm]:h-9"
+						className="w-full data-[size=sm]:h-[var(--hu-ctl-h)]"
 						value={value.property}
-						onChange={(property) => update({ ...value, property: property as MediaFilterValue['property'] })}
+						onChange={(property) =>
+							update({ ...value, property: property as MediaFilterValue['property'] })
+						}
 						options={[
 							{ value: 'created', label: t('library.created') },
 							{ value: 'modified', label: t('library.modified') },
@@ -94,19 +99,15 @@ export function MediaFilter({
 				<div className={row}>
 					<div className={label}>{t('library.filterDateRange')}</div>
 					<div className="flex flex-wrap gap-1.5">
-						<Input
-							className="min-w-0 flex-1 basis-32"
-							type="date"
-							aria-label={t('media.filterFrom')}
-							value={value.start}
-							onChange={(e) => update({ ...value, start: e.currentTarget.value })}
+						<DateField
+							label={t('media.filterFrom')}
+							value={parseDate(value.start)}
+							onChange={(day) => update({ ...value, start: day ?? '' })}
 						/>
-						<Input
-							className="min-w-0 flex-1 basis-32"
-							type="date"
-							aria-label={t('media.filterTo')}
-							value={value.end}
-							onChange={(e) => update({ ...value, end: e.currentTarget.value })}
+						<DateField
+							label={t('media.filterTo')}
+							value={parseDate(value.end)}
+							onChange={(day) => update({ ...value, end: day ?? '' })}
 						/>
 					</div>
 				</div>
@@ -115,7 +116,7 @@ export function MediaFilter({
 					<div className="flex flex-wrap gap-1.5">
 						{value.folders.length ? (
 							value.folders.map((path) => (
-								<Badge key={path} variant="secondary" className="max-w-full gap-0.5 pr-0.5">
+								<Badge key={path} variant="neutral" className="max-w-full gap-0.5 pr-0.5">
 									<span className="truncate">{path}</span>
 									<IconButton
 										label={t('media.removeFilter', { name: path })}
@@ -148,7 +149,7 @@ export function MediaFilter({
 					<div className={label}>{t('media.filterFolderHint')}</div>
 				</div>
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						update(emptyMediaFilter);
 						close();

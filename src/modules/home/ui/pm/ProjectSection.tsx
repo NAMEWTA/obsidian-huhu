@@ -120,14 +120,15 @@ export function ProjectSection({
 							</span>
 						</div>
 						<div className={cls('dashboard-pmsec-title-row')}>
-							<button
+							<Button
+								variant="ghost"
 								type="button"
 								data-hit-control
 								className={cls('dashboard-pmsec-title')}
 								onClick={() => setSelected(p.path)}
 							>
 								{p.title}
-							</button>
+							</Button>
 						</div>
 						<div className={cls('dashboard-pmsec-intro')}>{pmField(p.fields, 'intro')}</div>
 						{total > 0 && (
@@ -308,8 +309,8 @@ export function ProjectSection({
 							}
 						/>
 						<Button
-							variant="outline"
-							size="icon"
+							variant="secondary"
+							size="icon-md"
 							aria-label={t('pm.groupView')}
 							title={t('pm.groupView')}
 							aria-pressed={config.groupView === 'blocks'}
@@ -325,8 +326,8 @@ export function ProjectSection({
 							<Layers />
 						</Button>
 						<Button
-							variant="outline"
-							size="icon"
+							variant="secondary"
+							size="icon-md"
 							aria-label={t('pm.groupViewKanban')}
 							title={t('pm.groupViewKanban')}
 							aria-pressed={config.groupView === 'kanban'}
@@ -342,8 +343,8 @@ export function ProjectSection({
 							<Columns3 />
 						</Button>
 						<Button
-							variant="outline"
-							size="icon"
+							variant="secondary"
+							size="icon-md"
 							aria-label={t('home.p1.archived')}
 							title={t('home.p1.archived')}
 							aria-pressed={archived}
@@ -485,7 +486,7 @@ export function ProjectSection({
 				<DashboardDialog title={t('common.confirmDelete')} onClose={() => setDeleting(null)}>
 					<p>{t('common.confirmDeleteMessage')}</p>
 					<Button
-						variant="destructive"
+						variant="danger"
 						onClick={() =>
 							act(async () => {
 								await service.trash(deleting.path);

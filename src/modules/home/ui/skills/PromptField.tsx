@@ -1,3 +1,4 @@
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 import type { HTMLInputTypeAttribute } from 'react';
 import { Input } from '../../../../ui/components/input';
 import { Textarea } from '../../../../ui/components/textarea';
@@ -23,6 +24,16 @@ export function TextField({
 	disabled?: boolean;
 	placeholder?: string;
 }) {
+	if (type === 'date')
+		return (
+			<DateField
+				label={label}
+				description={hint}
+				value={parseDate(value)}
+				disabled={disabled}
+				onChange={(day) => onInput(day ?? '')}
+			/>
+		);
 	return (
 		<Label className="flex flex-col gap-1">
 			{label}

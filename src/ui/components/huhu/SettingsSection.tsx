@@ -14,11 +14,11 @@ export function SettingsSection({
 }) {
 	const id = useId();
 	return (
-		<section aria-labelledby={id} className={cn('space-y-3', className)}>
+		<section aria-labelledby={id} className={cn('space-y-4', className)}>
 			<div id={id}>
 				<SettingsSubsectionHeader title={title} description={description} />
 			</div>
-			<div className="space-y-3">{children}</div>
+			<div className="space-y-4">{children}</div>
 		</section>
 	);
 }

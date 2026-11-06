@@ -100,7 +100,7 @@ export function Section({ store, column }: { store: BoardStore; column: Dashboar
 						{['task'].map((kind) => (
 							<Button
 								key={kind}
-								variant="outline"
+								variant="secondary"
 								className="h-20"
 								onClick={() => {
 									void observeBoardAction(

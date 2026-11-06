@@ -1,3 +1,4 @@
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts (renderReadingWidget)
 import { lazy, Suspense, useState } from 'react';
 import { useOwnerDocument } from '../../../../ui/react/contexts';
@@ -16,7 +17,7 @@ export function ReadingWidget({ store }: { store: BoardStore }) {
 	const doc = useOwnerDocument(),
 		t = useT(),
 		service = store.widgets.reading;
-	if (!service) return null;
+	if (!service) return <EmptyState size="sm" title={t('home.widget.unavailable')} />;
 	const close = () => setDialog(null);
 	return (
 		<>

@@ -1,6 +1,10 @@
 /** Calendar presentation strings, registered by each calendar host when that module loads. */
 export const messages = {
 	en: {
+		"calendarUnified.time.invalid-date-time": "Enter a valid date and time.",
+		"calendarUnified.time.invalid-zone": "Enter a valid time zone.",
+		"calendarUnified.time.nonexistent-time": "This local time does not exist in the selected time zone.",
+		"calendarUnified.time.ambiguous-time": "This local time occurs twice; choose a different time.",
 		'tasks.more': 'More actions',
 		'tasks.repeat': 'Repeat',
 		'tasks.showCompleted': 'Show completed',
@@ -112,6 +116,10 @@ export const messages = {
 		'calendarUnified.error.stopped': 'The calendar operation was cancelled.',
 	},
 	zh: {
+		"calendarUnified.time.invalid-date-time": "请输入有效的日期和时间。",
+		"calendarUnified.time.invalid-zone": "请输入有效时区。",
+		"calendarUnified.time.nonexistent-time": "所选时区不存在这个本地时间。",
+		"calendarUnified.time.ambiguous-time": "这个本地时间出现两次，请选择其他时间。",
 		'tasks.more': '更多操作',
 		'tasks.repeat': '重复',
 		'tasks.showCompleted': '显示已完成',

@@ -7,36 +7,24 @@ import * as Slot from 'radix-ui/slot';
 import { cn } from '../lib/utils';
 
 const badgeVariants = cva(
-	'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[transform,opacity] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+	'inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border border-transparent px-1.5 text-xs font-medium whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] [&>svg]:pointer-events-none [&>svg]:size-3',
 	{
 		variants: {
 			variant: {
-				default: 'bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
-				secondary: 'bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
-				dot: 'bg-background text-foreground border-border shadow-xs dark:bg-secondary dark:border-foreground/20',
-				destructive:
-					'bg-destructive text-destructive-foreground focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:text-white dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90',
-				outline: 'border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
-				ghost: '[a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
-				link: 'text-primary underline-offset-4 [a&]:hover:underline',
-				/** The chip naming the machine a workspace runs on — quieter and squarer than `secondary`,
-				 *  so it reads as context beside a workspace name rather than as a status of its own. */
-				hostContext:
-					'h-4 rounded border-border bg-accent px-1.5 text-[10px] leading-none text-muted-foreground dark:border-border/50 dark:bg-accent/80',
-				/** A skill or file sitting inline in the chat message box, ringed while selected. */
-				promptPill:
-					'max-w-full border-border bg-secondary px-1.5 py-0 align-baseline text-muted-foreground data-[selected=true]:ring-1 data-[selected=true]:ring-ring',
+				neutral: 'border-[var(--hu-line)] bg-[var(--hu-sunken)] text-[var(--hu-fg-2)]',
+				accent: 'bg-[var(--hu-accent-soft)] text-[var(--hu-accent-text)]',
+				success: 'bg-[var(--hu-success-soft)] text-[var(--hu-success)]',
+				warning: 'bg-[var(--hu-warning-soft)] text-[var(--hu-warning)]',
+				error: 'bg-[var(--hu-danger-soft)] text-[var(--hu-danger)]',
 			},
 		},
-		defaultVariants: {
-			variant: 'default',
-		},
+		defaultVariants: { variant: 'neutral' },
 	},
 );
 
 function Badge({
 	className,
-	variant = 'default',
+	variant = 'neutral',
 	asChild = false,
 	...props
 }: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {

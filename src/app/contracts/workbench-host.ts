@@ -4,6 +4,8 @@ import type { NativeSurface, NativeSurfaceContext } from '../../ui/native-surfac
 
 export interface WorkbenchPageBinding {
 	surface: NativeSurface;
+	/** Veto an explicit user close; hidden pages and forced host/module cleanup bypass this decision. */
+	canClose?: () => Promise<boolean>;
 	navigate(target: WorkbenchTarget, signal: AbortSignal): Promise<void>;
 	getState?: () => Record<string, unknown>;
 	getTarget?: () => WorkbenchTarget;
@@ -13,6 +15,7 @@ export interface WorkbenchPageBinding {
 /** What a side panel provider can read and do in the leaf it renders for. */
 export interface PanelContext {
 	target: WorkbenchTarget;
+	ownerWindow: Window;
 	pages: (feature: WorkbenchFeature) => SavedPage[];
 	navigate: (target: WorkbenchTarget) => void;
 }

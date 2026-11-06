@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { Platform } from 'obsidian';
 import { test } from 'vitest';
 
 import { visibleProducts } from './nav.ts';
@@ -17,12 +18,37 @@ const ALL_ON = {
 	versioning: true,
 	safe: true,
 };
-const ALL_OFF = { automation: false, iconic: false, contacts: false, dashboard: false, editor: false, navigator: false, terminal: false, versioning: false, safe: false };
+const ALL_OFF = {
+	automation: false,
+	iconic: false,
+	contacts: false,
+	dashboard: false,
+	editor: false,
+	navigator: false,
+	terminal: false,
+	versioning: false,
+	safe: false,
+};
 
 test('settings list home first, then every module that is on', () => {
-	assert.deepEqual(visibleProducts(ALL_ON), ['home', 'dashboard', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe']);
+	assert.deepEqual(visibleProducts(ALL_ON), [
+		'home',
+		'dashboard',
+		'editor',
+		'navigator',
+		'terminal',
+		'iconic',
+		'contacts',
+		'automation',
+		'versioning',
+		'safe',
+	]);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, editor: true, terminal: true }), ['home', 'editor', 'terminal']);
-	assert.deepEqual(visibleProducts({ ...ALL_OFF, dashboard: true, terminal: true }), ['home', 'dashboard', 'terminal']);
+	assert.deepEqual(visibleProducts({ ...ALL_OFF, dashboard: true, terminal: true }), [
+		'home',
+		'dashboard',
+		'terminal',
+	]);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, automation: true }), ['home', 'automation']);
 	assert.deepEqual(visibleProducts(ALL_OFF), ['home']);
 });
@@ -30,7 +56,12 @@ test('settings list home first, then every module that is on', () => {
 test('stored editor placeholder selections return to comments while preserving preferences', () => {
 	for (const activeDomain of ['comments', 'writing-stats', 'focus', 'unknown']) {
 		assert.deepEqual(
-			normalizeCommentsSettings({ activeDomain, sidebarWidth: 300, highlightEnabled: false, popoverEnabled: false }),
+			normalizeCommentsSettings({
+				activeDomain,
+				sidebarWidth: 300,
+				highlightEnabled: false,
+				popoverEnabled: false,
+			}),
 			{ ...DEFAULT_COMMENTS_SETTINGS, sidebarWidth: 300, highlightEnabled: false, popoverEnabled: false },
 		);
 	}
@@ -47,8 +78,38 @@ test('icon preferences are a settings category only while their module is enable
 		moduleEnabled: (id: string) => id === 'icons' && enabled,
 		appSettings: { get: () => ({ devGallery: false }) },
 	} as unknown as DashboardPlugin;
-	assert.deepEqual(settingsCategories(plugin).map((item) => item.id), ['general', 'appearance', 'iconic', 'about']);
+	assert.deepEqual(
+		settingsCategories(plugin).map((item) => item.id),
+		['general', 'appearance', 'iconic', 'about'],
+	);
 	enabled = false;
-	assert.equal(settingsCategories(plugin).some((item) => item.id === 'iconic'), false);
+	assert.equal(
+		settingsCategories(plugin).some((item) => item.id === 'iconic'),
+		false,
+	);
 });
 
+test('device capability filters enabled desktop-only modules from settings', () => {
+	const previous = Platform.isMobile;
+	try {
+		Object.assign(Platform, { isMobile: true });
+		const plugin = {
+			moduleEnabled: () => true,
+			moduleManifests: () => [
+				{ id: 'agent', platforms: { mobile: false, desktop: true } },
+				{ id: 'icons', platforms: { mobile: true, desktop: true } },
+			],
+			appSettings: { get: () => ({ devGallery: false }) },
+		} as unknown as DashboardPlugin;
+		assert.equal(
+			settingsCategories(plugin).some((item) => item.id === 'terminal'),
+			false,
+		);
+		assert.equal(
+			settingsCategories(plugin).some((item) => item.id === 'iconic'),
+			true,
+		);
+	} finally {
+		Object.assign(Platform, { isMobile: previous });
+	}
+});

@@ -1,3 +1,4 @@
+import './i18n';
 import type { SettingsPageHost } from '../../../app/contracts/module';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { TerminalSettings as Settings } from '../core/terminal/settings';

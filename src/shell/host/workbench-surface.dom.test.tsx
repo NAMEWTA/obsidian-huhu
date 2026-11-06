@@ -89,7 +89,7 @@ test('WorkbenchSurface.setVisible releases shell portals, forwards visibility an
 	};
 	let surface!: WorkbenchSurface;
 	await act(async () => {
-		surface = createWorkbenchSurface(view, host, { target: { feature: 'settings' } });
+		surface = createWorkbenchSurface(view, host, { schema: 'huhu-workbench-ui/1', route: { feature: 'settings' } });
 		await surface.ensureActivePage();
 	});
 	try {
@@ -194,14 +194,14 @@ test('a contribution that redirects a target never creates its own page: the tar
 	};
 	let surface!: WorkbenchSurface;
 	await act(async () => {
-		surface = createWorkbenchSurface(view, host, { target: { feature: 'terminal' } });
+		surface = createWorkbenchSurface(view, host, { schema: 'huhu-workbench-ui/1', route: { feature: 'terminal' } });
 		await surface.ensureActivePage();
 	});
 	try {
 		await act(async () => surface.navigate({ feature: 'automations', section: 'tasks', resourceId: 'abc' }));
 		expect(shown).toEqual(['terminal::', 'terminal:usage:abc']);
 		expect(standalone).not.toHaveBeenCalled();
-		expect(surface.getState().target).toMatchObject({ feature: 'terminal', section: 'usage', resourceId: 'abc' });
+		expect(surface.getState().route).toMatchObject({ feature: 'terminal', section: 'usage', resourceId: 'abc' });
 		redirectTo = undefined;
 		await expect(act(async () => surface.navigate({ feature: 'automations' }))).rejects.toThrow('must not build');
 		expect(standalone).toHaveBeenCalledTimes(1);
@@ -210,3 +210,120 @@ test('a contribution that redirects a target never creates its own page: the tar
 		contentEl.remove();
 	}
 });
+
+test('focus chrome-none pane menu returns to the actual window workbench and detaches only after success', async () => {
+	const { Menu } = await import('../../../scripts/obsidian-stub');
+	const contentEl = document.createElement('div');
+	Object.assign(contentEl, {
+		addClass: (...names: string[]) => contentEl.classList.add(...names),
+		removeClass: (...names: string[]) => contentEl.classList.remove(...names),
+		onWindowMigrated: () => () => {},
+	});
+	Object.defineProperty(contentEl, 'win', { value: window });
+	document.body.append(contentEl);
+	const detach = vi.fn();
+	const view = {
+		contentEl,
+		app: { workspace: { requestSaveLayout: vi.fn() } },
+		leaf: { detach },
+		addChild: (child: unknown) => child,
+		removeChild: (child: { unload(): void }) => child.unload(),
+	} as unknown as WorkbenchLeafView;
+	let finish!: () => void;
+	const openInWorkbench = vi.fn(
+		() =>
+			new Promise<void>((resolve) => {
+				finish = resolve;
+			}),
+	);
+	const report = vi.fn();
+	const host: WorkbenchHost = {
+		contributions: [],
+		subscribe: () => () => {},
+		failed: () => false,
+		report,
+		openSettings: vi.fn(),
+		openFocus: async () => {},
+		openInWorkbench,
+	};
+	let surface!: WorkbenchSurface;
+	await act(async () => {
+		surface = createWorkbenchSurface(view, host, {
+			schema: 'huhu-workbench-ui/1',
+			mode: 'focus',
+			route: { feature: 'terminal' },
+		});
+	});
+	try {
+		const menu = new Menu();
+		surface.onPaneMenu(menu as unknown as import('obsidian').Menu, 'tab-header');
+		const action = menu.items.find((item) => item.title === t('workbench.openInWorkbench'));
+		expect(action).toBeTruthy();
+		action!.click();
+		expect(openInWorkbench).toHaveBeenCalledExactlyOnceWith({ feature: 'terminal' }, {}, window);
+		expect(detach).not.toHaveBeenCalled();
+		await act(async () => finish());
+		expect(detach).toHaveBeenCalledOnce();
+		expect(report).not.toHaveBeenCalled();
+	} finally {
+		await act(async () => surface.dispose());
+		contentEl.remove();
+	}
+});
+
+test.each([undefined, 'huhu-workbench-ui/0'])(
+	'unknown schema %s discards the whole persisted UI envelope',
+	async (schema) => {
+		const contentEl = document.createElement('div');
+		document.body.append(contentEl);
+		Object.assign(contentEl, {
+			addClass: (...names: string[]) => contentEl.classList.add(...names),
+			removeClass: (...names: string[]) => contentEl.classList.remove(...names),
+			onWindowMigrated: () => () => {},
+		});
+		Object.defineProperty(contentEl, 'win', { value: window });
+		const view = {
+			contentEl,
+			app: { workspace: { requestSaveLayout: vi.fn() } },
+			addChild: (child: unknown) => child,
+			removeChild: (child: { unload(): void }) => child.unload(),
+		} as unknown as WorkbenchLeafView;
+		const host: WorkbenchHost = {
+			contributions: [],
+			subscribe: () => () => {},
+			failed: () => false,
+			report: vi.fn(),
+			openSettings: vi.fn(),
+			openFocus: async () => {},
+			openInWorkbench: async () => {},
+		};
+		let surface!: WorkbenchSurface;
+		await act(async () => {
+			surface = createWorkbenchSurface(view, host, {
+				schema,
+				route: { feature: 'settings' },
+				mode: 'focus',
+				navigation: { open: false, width: 480, lastRoutes: { settings: { feature: 'settings' } } },
+				pageViews: [{ target: { feature: 'settings' }, state: { secret: 'old' } }],
+				target: { feature: 'terminal' },
+				focus: true,
+				panelWidth: 400,
+				panelOpen: false,
+				lastTargets: { settings: { feature: 'settings' } },
+				pages: [{ target: { feature: 'settings' }, state: { secret: 'old' } }],
+			});
+		});
+		try {
+			expect(surface.getState()).toEqual({
+				schema: 'huhu-workbench-ui/1',
+				route: { feature: 'dashboard' },
+				navigation: { width: 272, open: true, lastRoutes: {} },
+				mode: 'workbench',
+				pageViews: [],
+			});
+		} finally {
+			await act(async () => surface.dispose());
+			contentEl.remove();
+		}
+	},
+);

@@ -17,13 +17,10 @@ import { DRAG_CANCEL, DRAG_HANDLE } from './grid-config';
 const toasts = vi.hoisted(() => [] as { message: string; options?: { action?: { label: string; onClick(): void } } }[]);
 vi.mock('sonner', async (original) => {
 	const real = await original<typeof import('sonner')>();
-	const toast = Object.assign(
-		(message: string, options?: { action?: { label: string; onClick(): void } }) => {
-			toasts.push({ message, options });
-			return toasts.length;
-		},
-		real.toast,
-	);
+	const toast = Object.assign((message: string, options?: { action?: { label: string; onClick(): void } }) => {
+		toasts.push({ message, options });
+		return toasts.length;
+	}, real.toast);
 	return { ...real, toast };
 });
 
@@ -46,13 +43,17 @@ const member = { memberId: 'probe:probe:default', provider: 'probe', kind: 'prob
 function fixture(
 	widgets: (typeof member)[] = [member],
 	kinds: HomeWidgetKind[] = [probe],
-	grid: { v: 2; lg: GridItem[]; md?: GridItem[] } = { v: 2, lg: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }] },
+	grid: { v: 2; lg: GridItem[]; md?: GridItem[] } = {
+		v: 2,
+		lg: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }],
+	},
 	onBreakpoint?: (breakpoint: GridBreakpoint) => void,
 	context: Partial<NativeSurfaceContext> = {},
 ) {
 	setLanguage('en');
 	homeServices.widgets = indexWidgetProviders([{ module: 'probe', bundle: { kinds } }]);
 	const sync = {
+		flush: vi.fn(async () => {}),
 		setBoardGrid: vi.fn(async (_patch: unknown) => {}),
 		setBoardMembers: vi.fn(async () => {}),
 		addToCanvas: vi.fn(async () => {}),
@@ -81,8 +82,8 @@ function fixture(
 	render(
 		<TestProviders>
 			<DesignScope>
-			<BoardCanvas store={store} context={context as NativeSurfaceContext} onBreakpoint={onBreakpoint} />
-		</DesignScope>
+				<BoardCanvas store={store} context={context as NativeSurfaceContext} onBreakpoint={onBreakpoint} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	return { store, sync, state, data };
@@ -119,21 +120,21 @@ const menu = async (name: string) => {
 };
 const tile = () => document.querySelector<HTMLElement>('[data-tile]')!;
 
-test('there is no editing mode: no Edit or Done button, an always-present Add widget button, and a handle on every tile', () => {
+test('layout editing exposes handles, while normal mode keeps the card menu and add action', () => {
 	fixture();
-	expect(screen.queryByRole('button', { name: 'Edit board' })).toBeNull();
-	expect(screen.queryByRole('button', { name: 'Done' })).toBeNull();
-	expect(screen.getByRole('button', { name: t('canvas.addWidget') })).toBeTruthy();
-	expect(document.querySelector('[data-editing]')).toBeNull();
-	for (const el of document.querySelectorAll('[data-tile]')) {
-		expect(el.querySelector(DRAG_HANDLE), el.getAttribute('data-tile') ?? '').not.toBeNull();
-		expect(el.querySelector(`${DRAG_HANDLE} [data-grid-action="move"]`)).not.toBeNull();
-	}
+	expect(document.querySelector(DRAG_HANDLE)).toBeNull();
+	expect(screen.getByRole('button', { name: t('home.layout.edit') })).toBeTruthy();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+	expect(screen.getByRole('button', { name: t('home.layout.done') })).toBeTruthy();
+	expect(screen.getByRole('button', { name: t('home.layout.cancel') })).toBeTruthy();
+	for (const el of document.querySelectorAll('[data-tile]'))
+		expect(el.querySelector('[data-grid-action="move"]')).not.toBeNull();
 });
 
-test('dragging needs no mode: the title bar is the handle, and controls, fields and the body are outside it', async () => {
+test('in editing mode: the title bar is the handle, and controls, fields and the body are outside it', async () => {
 	fixture();
 	await waitFor(() => expect(tile().textContent).toContain('probe content'));
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
 	const handle = tile().querySelector<HTMLElement>(DRAG_HANDLE)!;
 	// the title bar and the grip start a drag
 	expect(handle.matches(DRAG_HANDLE)).toBe(true);
@@ -160,8 +161,8 @@ test('every tile is one card: a single title from the kind or the member label, 
 	expect(tile().querySelectorAll('[data-slot="widget-title"]')).toHaveLength(1);
 	// the user's own title wins over the kind's name
 	expect(tile().querySelector('[data-slot="widget-title"]')!.textContent).toBe('My probe');
-	expect(tile().querySelector('[data-slot="widget-header"]')!.className).toContain('h-10');
-	expect(tile().querySelector('.huhu-widget-body')!.className).toContain('px-3');
+	expect(tile().querySelector('[data-slot="widget-header"]')!.className).toContain('min-h-[52px]');
+	expect(tile().querySelector('.huhu-widget-body')!.className).toContain('p-4');
 	expect(tile().querySelectorAll('h3')).toHaveLength(1);
 });
 
@@ -206,6 +207,8 @@ test('the size menu offers the supported tiers and a tier is one write at its ce
 			name: t('canvas.setSize', { name: t('probe.title'), size: t('canvas.size.L') }),
 		}),
 	);
+	expect(sync.setBoardGrid).not.toHaveBeenCalled();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
 	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(1));
 	const patch = sync.setBoardGrid.mock.calls[0]![0] as { lg: GridItem[]; md?: GridItem[] };
 	expect(patch.lg).toEqual([{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 4 }]);
@@ -214,56 +217,42 @@ test('the size menu offers the supported tiers and a tier is one write at its ce
 });
 
 test('once the six-column layout is stored, a tier changes both layouts in the same write', async () => {
-	const { sync } = fixture(
-		[member],
-		[probe],
-		{
-			v: 2,
-			lg: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }],
-			md: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }],
-		},
-	);
+	const { sync } = fixture([member], [probe], {
+		v: 2,
+		lg: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }],
+		md: [{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 }],
+	});
 	await menu(t('probe.title'));
 	fireEvent.click(
 		await screen.findByRole('menuitemcheckbox', {
 			name: t('canvas.setSize', { name: t('probe.title'), size: t('canvas.size.XL') }),
 		}),
 	);
+	expect(sync.setBoardGrid).not.toHaveBeenCalled();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
 	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(1));
 	const patch = sync.setBoardGrid.mock.calls[0]![0] as { lg: GridItem[]; md: GridItem[] };
 	expect(patch.lg[0]).toMatchObject({ w: 12, h: 4 });
 	expect(patch.md[0]).toMatchObject({ w: 6, h: 4 });
 });
 
-test('the keyboard moves a tile by a cell from its grip and resizes it with Shift; menu moves do the same', async () => {
-	const grid = {
-		v: 2 as const,
-		lg: [
-			{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 },
-			{ i: 'widget:probe:other:default', x: 0, y: 2, w: 6, h: 2 },
-		],
-	};
-	const { sync } = fixture(
-		[member, { memberId: 'probe:other:default', provider: 'probe', kind: 'other', instanceId: 'default' }],
-		[probe, second],
-		grid,
-	);
-	const grip = document.querySelector<HTMLElement>('[data-tile="widget:probe:probe:default"] [data-grid-action="move"]')!;
-	expect(grip.getAttribute('aria-label')).toBe(t('renderer.moveTile', { name: t('probe.title') }));
-	fireEvent.keyDown(grip, { key: 'ArrowDown' });
-	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(1));
-	const moved = (sync.setBoardGrid.mock.calls[0]![0] as { lg: GridItem[] }).lg;
-	const y = (id: string) => moved.find((item) => item.i === id)!.y;
-	expect(y('widget:probe:probe:default')).toBeGreaterThan(y('widget:probe:other:default'));
-	expect(screen.getByRole('status', { hidden: true }).textContent).toMatch(/^Column 1, row \d/);
-	fireEvent.keyDown(grip, { key: 'ArrowRight', shiftKey: true });
+test('keyboard geometry is a draft: cancel writes nothing, failed save retains it, retry commits once', async () => {
+	const { sync } = fixture();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+	fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, { key: 'ArrowRight', shiftKey: true });
+	expect(sync.setBoardGrid).not.toHaveBeenCalled();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.cancel') }));
+	expect(sync.setBoardGrid).not.toHaveBeenCalled();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+	fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, { key: 'ArrowRight', shiftKey: true });
+	sync.setBoardGrid.mockRejectedValueOnce(new Error('layout rejected'));
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
+	await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('layout rejected'));
+	expect(screen.getByRole('button', { name: t('home.layout.done') })).toBeTruthy();
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
 	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(2));
-	const grown = (sync.setBoardGrid.mock.calls[1]![0] as { lg: GridItem[] }).lg.find((item) => item.i === 'widget:probe:probe:default')!;
-	expect(grown.w).toBe(7);
-	// the menu carries the same moves for pointer users who do not drag
-	await menu(t('probe.title'));
-	fireEvent.click(await screen.findByRole('menuitem', { name: t('canvas.moveRight') }));
-	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(3));
+	expect((sync.setBoardGrid.mock.calls[1]![0] as { lg: GridItem[] }).lg[0]!.w).toBe(7);
+	await waitFor(() => expect(screen.queryByRole('button', { name: t('home.layout.done') })).toBeNull());
 });
 
 test('the one-column layout reorders for this page only and never writes the board', async () => {
@@ -286,7 +275,10 @@ test('the one-column layout reorders for this page only and never writes the boa
 	expect(document.querySelector('.huhu-widget-board')?.getAttribute('data-breakpoint')).toBe('sm');
 	const topOf = (id: string) => document.querySelector<HTMLElement>(`[data-tile="${id}"]`)!.style.transform;
 	expect(topOf('widget:probe:probe:default')).toMatch(/,\s*0px\)/);
-	const grip = document.querySelector<HTMLElement>('[data-tile="widget:probe:probe:default"] [data-grid-action="move"]')!;
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+	const grip = document.querySelector<HTMLElement>(
+		'[data-tile="widget:probe:probe:default"] [data-grid-action="move"]',
+	)!;
 	fireEvent.keyDown(grip, { key: 'ArrowDown' });
 	await waitFor(() => expect(topOf('widget:probe:probe:default')).not.toMatch(/,\s*0px\)/));
 	expect(topOf('widget:probe:other:default')).toMatch(/,\s*0px\)/);
@@ -303,8 +295,10 @@ test('the six-column layout is reported and a drag there is stored as its own la
 	const seen: GridBreakpoint[] = [];
 	const { sync } = fixture(undefined, undefined, undefined, (breakpoint) => seen.push(breakpoint));
 	await waitFor(() => expect(seen).toContain('md'));
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
 	const grip = document.querySelector<HTMLElement>('[data-tile] [data-grid-action="move"]')!;
 	fireEvent.keyDown(grip, { key: 'ArrowDown' });
+	fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
 	await waitFor(() => expect(sync.setBoardGrid).toHaveBeenCalledTimes(1));
 	const patch = sync.setBoardGrid.mock.calls[0]![0] as Record<string, unknown>;
 	expect(Object.keys(patch)).toEqual(['md']);
@@ -332,7 +326,9 @@ test('the add panel searches, previews a size and adds the widget in one write a
 test('removing a widget writes the member list once and offers an undo that restores the board as it was', async () => {
 	const { sync, data } = fixture();
 	await menu(t('probe.title'));
-	fireEvent.click(await screen.findByRole('menuitem', { name: t('home.widget.removeNamed', { name: t('probe.title') }) }));
+	fireEvent.click(
+		await screen.findByRole('menuitem', { name: t('home.widget.removeNamed', { name: t('probe.title') }) }),
+	);
 	await waitFor(() => expect(sync.setBoardMembers).toHaveBeenCalledExactlyOnceWith([]));
 	expect(toasts).toHaveLength(1);
 	expect(toasts[0]!.message).toBe(t('canvas.removed', { name: t('probe.title') }));
@@ -418,7 +414,9 @@ test('configure and create lifetimes end when the canvas goes away or the board 
 	try {
 		fixture();
 		await menu(t('probe.title'));
-		fireEvent.click(await screen.findByRole('menuitem', { name: t('canvas.settings', { name: t('probe.title') }) }));
+		fireEvent.click(
+			await screen.findByRole('menuitem', { name: t('canvas.settings', { name: t('probe.title') }) }),
+		);
 		await waitFor(() => expect(signal).toBeDefined());
 		expect(signal?.aborted).toBe(false);
 		cleanup();
@@ -469,15 +467,17 @@ test('the navigation toggle in the header does something or is not there: a boar
 });
 
 test('each tile is a region named by its visible title and nothing in the frame is a whole-region tooltip', async () => {
-	fixture([member, { ...member, memberId: 'probe:probe:two', instanceId: 'two' }], [
-		{ ...probe, instances: () => [{ id: 'default' }, { id: 'two' }] },
-	], {
-		v: 2,
-		lg: [
-			{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 },
-			{ i: 'widget:probe:probe:two', x: 6, y: 0, w: 6, h: 2 },
-		],
-	});
+	fixture(
+		[member, { ...member, memberId: 'probe:probe:two', instanceId: 'two' }],
+		[{ ...probe, instances: () => [{ id: 'default' }, { id: 'two' }] }],
+		{
+			v: 2,
+			lg: [
+				{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 },
+				{ i: 'widget:probe:probe:two', x: 6, y: 0, w: 6, h: 2 },
+			],
+		},
+	);
 	await waitFor(() => expect(document.querySelectorAll('[data-tile]').length).toBe(2));
 	const ids = new Set<string>();
 	for (const el of document.querySelectorAll<HTMLElement>('[data-tile]')) {

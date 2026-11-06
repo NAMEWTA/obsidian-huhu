@@ -2,14 +2,15 @@ import { CalendarCheck, Maximize2, RotateCw } from 'lucide-react';
 import type { App } from 'obsidian';
 import { useLayoutEffect, useState } from 'react';
 import { Button } from '../../../../ui/components/button';
-import { Input } from '../../../../ui/components/input';
+import { DateField } from '../../../../ui/components/huhu/date';
+import { TaskContent } from '../../../../ui/components/huhu/TaskContent';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { calendarDate } from '../../../../ui/components/huhu/calendar/CalendarMonth';
 import { cn } from '../../../../ui/lib/utils';
 import { t, getLanguage } from '../../../../shared/i18n';
 import type { VaultTask } from '../../platform/calendar/alltasks-scan';
 import type { CalendarTaskFilter, CalendarSnapshot } from '../../../task/api';
-import { IconButton } from '../board/controls';
+import { IconButton } from './calendar-controls';
 import { WidgetActions } from '../canvas/widget-frame';
 import type { DashboardRenderContext } from '../renderer/render-context';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
@@ -108,7 +109,7 @@ export function CalendarTile(props: CalendarTileProps) {
 					className="w-full gap-2 p-0"
 					title={t('calendar.mobileManualLoad')}
 					action={
-						<Button size="sm" variant="outline" aria-label={t('calendar.refresh')} onClick={props.onLoad}>
+						<Button size="sm" variant="secondary" aria-label={t('calendar.refresh')} onClick={props.onLoad}>
 							<RotateCw />
 							{t('calendar.refresh')}
 						</Button>
@@ -151,34 +152,28 @@ export function CalendarTile(props: CalendarTileProps) {
 										.sort(byDayTaskTime(props.selected))
 										.slice(0, 2)
 										.map((task) => (
-											<li
-												key={`${task.path}:${task.line}`}
-												className={cn(
-													'flex gap-1 text-xs',
-													task.checked && 'text-muted-foreground line-through',
-												)}
-											>
+											<li key={`${task.path}:${task.line}`} className={cn('flex gap-1 text-xs')}>
 												<span className="shrink-0 tabular-nums text-muted-foreground">
 													{taskDayTime(task, props.selected) ?? '·'}
 												</span>
-												<span className="truncate">
-													<InlineLinks
-														text={task.text}
-														app={props.app}
-														context={props.context}
-													/>
-												</span>
+												<TaskContent
+													completed={task.checked}
+													title={
+														<InlineLinks
+															text={task.text}
+															app={props.app}
+															context={props.context}
+														/>
+													}
+												/>
 											</li>
 										))}
 								</ul>
 							)}
-							<Input
-								type="date"
-								className="mt-auto min-h-8 w-full min-w-0 text-xs"
+							<DateField
 								aria-label={t('calendarUnified.chooseMonth')}
 								value={props.selected}
-								onChange={(event) => {
-									const iso = event.currentTarget.value;
+								onChange={(iso) => {
 									if (iso) {
 										props.onAnchor?.(calendarDate(iso));
 										choose(iso);

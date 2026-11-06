@@ -147,11 +147,17 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 								update(button.id, {
 									type: type as ShortcutType,
 									target: '',
-									icon: ICONS[button.type] === button.icon ? ICONS[type as ShortcutType] : button.icon,
-									...(type === 'agent' ? { agentId: button.agentId ?? '', prompt: button.prompt ?? '' } : {}),
+									icon:
+										ICONS[button.type] === button.icon ? ICONS[type as ShortcutType] : button.icon,
+									...(type === 'agent'
+										? { agentId: button.agentId ?? '', prompt: button.prompt ?? '' }
+										: {}),
 								})
 							}
-							options={SHORTCUT_TYPES.map((type) => ({ value: type, label: t(`shortcuts.type.${type}`) }))}
+							options={SHORTCUT_TYPES.map((type) => ({
+								value: type,
+								label: t(`shortcuts.type.${type}`),
+							}))}
 						/>
 						{button.type === 'agent' ? (
 							<>
@@ -202,7 +208,10 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 								store={store}
 								button={button}
 								onPick={(item) =>
-									update(button.id, { target: item.id, label: button.label || item.name.replace(/\.md$/, '').split('/').pop()! })
+									update(button.id, {
+										target: item.id,
+										label: button.label || item.name.replace(/\.md$/, '').split('/').pop()!,
+									})
 								}
 							/>
 						)}
@@ -210,7 +219,7 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 				)}
 			</DraftList>
 			<Button
-				variant="outline"
+				variant="secondary"
 				size="sm"
 				onClick={() =>
 					setDraft([

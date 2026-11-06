@@ -2,8 +2,6 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ArchiveCardGrid } from '../../src/modules/archives/ui/ArchiveCardGrid';
-import { PipelineConfig } from '../../src/modules/home/ui/pipeline/PipelineConfig';
-import { PortalContainerContext } from '../../src/ui/react/contexts';
 import { emptyPipeline } from '../../src/modules/home/core/pipeline/model';
 import { contrastRatio, rgbToHex, type Rgb } from '../../src/theme/color';
 import { spawn, spawnSync } from 'node:child_process';
@@ -147,18 +145,25 @@ test('the appearance renderer keeps host extensions out of the real iframe realm
 	assert.deepEqual(measured, { hostExtension: true, iframeExtension: false, source: true, rendered: true, visible: true, target: true, embed: true, disabled: true, copiedHandler: false, icons: true });
 }, 75_000);
 
-test('HUHU font lists keep selections behind native defaults and explicit host fonts first', async () => {
+test('HUHU uses Geist by default, applies interface choices and keeps native font overrides in host content', async () => {
+	const bundled = await build({ stdin: { contents: 'export { applyInterfaceTheme } from \"./src/theme/runtime\"; export { themeSettings } from \"./src/theme/settings\";', resolveDir: process.cwd() }, bundle: true, write: false, format: 'iife', globalName: 'HuhuFonts', platform: 'browser' });
+	const script = bundled.outputFiles[0]!.text.replaceAll('</script', '<\\/script');
 	const css = ['src/ui/styles/tokens.css', 'src/ui/styles/base.css', 'src/theme/styles/fonts.css']
 		.map(file => readFileSync(path.resolve(file), 'utf8')).join('\n');
-	const measured = await chrome<{ defaults: { sans: string; mono: string }; explicit: { sans: string; mono: string }; custom: { sans: string; mono: string }; missing: { sans: string; mono: string } }>(`<!doctype html>
-<html><head><style>
+	const measured = await chrome<{ initial: { sans: string; mono: string; hostSans: string; hostMono: string }; defaults: { sans: string; mono: string; hostSans: string; hostMono: string }; explicit: { sans: string; mono: string; hostSans: string; hostMono: string }; custom: { sans: string; mono: string; hostSans: string; hostMono: string }; missing: { sans: string; mono: string; hostSans: string; hostMono: string } }>(`<!doctype html>
+<html><head><script>${script}</script><style>
 /* The native default is an unavailable family, followed by the theme font. */
-body { --font-interface-override:'??'; --font-monospace-override:'??'; --font-interface:var(--font-interface-override),var(--font-interface-theme),sans-serif; --font-monospace:var(--font-monospace-override),var(--font-monospace-theme),monospace; }
+body { --font-interface-override:'??'; --font-monospace-override:'??'; --font-interface:var(--font-interface-override,var(--font-interface-theme)),var(--font-interface-theme),sans-serif; --font-monospace:var(--font-monospace-override,var(--font-monospace-theme)),var(--font-monospace-theme),monospace; }
 ${css}
 #mono { font-family:var(--nd-font-mono); }
 </style></head><body class="theme-light huhu-font-interface--inter huhu-font-mono--jetbrains">
-<div class="huhu-ui" id="surface">Sample <code id="mono">Code</code></div><pre id="out"></pre><script>
-const read = () => ({ sans:getComputedStyle(document.getElementById('surface')).fontFamily,mono:getComputedStyle(document.getElementById('mono')).fontFamily });
+<div class="huhu-ui" id="surface">Sample <code id="mono">Code</code></div><div id="host-sans" style="font-family:var(--font-interface)">Host</div><code id="host-mono" style="font-family:var(--font-monospace)">Host code</code><pre id="out"></pre><script>
+const surface = document.getElementById('surface');
+const read = () => ({ sans:getComputedStyle(surface).fontFamily,mono:getComputedStyle(document.getElementById('mono')).fontFamily,hostSans:getComputedStyle(document.getElementById('host-sans')).fontFamily,hostMono:getComputedStyle(document.getElementById('host-mono')).fontFamily });
+const apply = values => HuhuFonts.applyInterfaceTheme(surface, HuhuFonts.themeSettings.normalize(values));
+apply({});
+const initial = read();
+apply({fontInterface:'inter'});
 const defaults = read();
 document.body.style.setProperty('--font-interface-override','Arial');
 document.body.style.setProperty('--font-monospace-override','"Courier New"');
@@ -168,19 +173,26 @@ document.body.style.removeProperty('--font-monospace-override');
 document.body.className = 'theme-light huhu-font-interface--custom huhu-font-mono--custom';
 document.body.style.setProperty('--huhu-user-font-interface','Lora, Georgia');
 document.body.style.setProperty('--huhu-user-font-mono','Fira Code');
+apply({fontInterface:'custom',fontInterfaceCustom:'Lora, Georgia'});
 const custom = read();
 document.body.style.setProperty('--font-interface-override','initial');
 document.body.style.setProperty('--font-monospace-override','initial');
 const missing = read();
-document.getElementById('out').textContent = JSON.stringify({ defaults, explicit, custom, missing });
+document.getElementById('out').textContent = JSON.stringify({ initial, defaults, explicit, custom, missing });
 </script></body></html>`);
+	assert.ok(measured.initial.sans.startsWith('Geist'), measured.initial.sans);
+	assert.ok(measured.initial.mono.includes('Geist Mono'), measured.initial.mono);
 	assert.ok(measured.defaults.sans.includes('Inter'), measured.defaults.sans);
 	assert.ok(measured.defaults.mono.includes('JetBrains Mono'), measured.defaults.mono);
-	assert.ok(measured.explicit.sans.startsWith('Arial'), measured.explicit.sans);
-	assert.ok(measured.explicit.mono.startsWith('"Courier New"'), measured.explicit.mono);
+	assert.ok(measured.explicit.hostSans.startsWith('Arial'), measured.explicit.hostSans);
+	assert.equal(measured.explicit.sans, measured.defaults.sans);
+	assert.ok(measured.explicit.hostMono.startsWith('"Courier New"'), measured.explicit.hostMono);
+	assert.equal(measured.explicit.mono, measured.defaults.mono);
 	for (const state of [measured.custom, measured.missing]) {
 		assert.ok(state.sans.includes('Lora') && state.sans.includes('Georgia'), state.sans);
-		assert.ok(state.mono.includes('Fira Code'), state.mono);
+		assert.ok(state.hostMono.includes('Fira Code'), state.hostMono);
+		assert.ok(state.hostSans.includes('Lora') && state.hostSans.includes('Georgia'), state.hostSans);
+		assert.equal(state.mono, measured.initial.mono);
 	}
 }, 75_000);
 
@@ -219,8 +231,8 @@ type Tone = { text: string; background: string };
 test('archive text and paper differ in light and dark', async () => {
 	const measured = await chrome<{ light: Tone; dark: Tone }>(`<!doctype html>
 <html><head><link rel="stylesheet" href="${styles}"></head>
-<body class="theme-light huhu-themed huhu-theme--pearl">
-<div class="huhu-ui bg-background text-foreground" data-p9-archive><button class="text-foreground" data-p9-row>王</button></div>
+<body class="theme-light">
+<div class="huhu-ui bg-background text-foreground" data-theme="paper" data-p9-archive><button class="text-foreground" data-p9-row>王</button></div>
 <pre id="out"></pre>
 <script>
 function tone() {
@@ -230,6 +242,7 @@ function tone() {
 }
 const light = tone();
 document.body.classList.replace('theme-light', 'theme-dark');
+document.querySelector('[data-p9-archive]').dataset.theme = 'ink';
 const dark = tone();
 document.getElementById('out').textContent = JSON.stringify({ light, dark });
 </script></body></html>`);
@@ -249,17 +262,43 @@ test('pipeline configuration keeps vertical fields and separated footer actions'
 			scope: 'card' as const, stages: [],
 		}],
 	};
-	const markup = renderToStaticMarkup(createElement(PortalContainerContext.Provider, { value: {} as HTMLElement }, createElement(PipelineConfig, { app: { vault: { getAllLoadedFiles: () => [], on: () => ({}), offref: () => {} } } as never, initial, save: async () => {}, close: () => {} })));
+	const bundled = await build({
+		stdin: { contents: `
+			import { createElement } from 'react';
+			import { createRoot } from 'react-dom/client';
+			import { flushSync } from 'react-dom';
+			import { PipelineConfig } from './src/modules/home/ui/pipeline/PipelineConfig';
+			import { OwnerDocumentContext, PortalContainerContext } from './src/ui/react/contexts';
+			export function mount(initial) {
+				const container = document.getElementById('pipeline');
+				const portal = document.createElement('div');
+				portal.className = 'huhu-ui'; document.body.append(portal);
+				const root = createRoot(container);
+				flushSync(() => root.render(createElement(OwnerDocumentContext.Provider, { value: document },
+					createElement(PortalContainerContext.Provider, { value: portal }, createElement(PipelineConfig, {
+						app: { vault: { getAllLoadedFiles: () => [], on: () => ({}), offref: () => {} } },
+						initial, save: async () => {}, close: () => {},
+					})))));
+			}
+		`, resolveDir: process.cwd() },
+		bundle: true, write: false, format: 'iife', globalName: 'HuhuPipeline', platform: 'browser', jsx: 'automatic',
+		alias: { obsidian: path.resolve('scripts/obsidian-stub.ts') },
+		plugins: [{ name: 'client-only-skill-picker', setup(builder) {
+			builder.onLoad({ filter: /[\\/]quickbar[\\/]SkillList\.tsx$/ }, () => ({ contents: 'export const SkillList = () => null;', loader: 'tsx' }));
+		} }],
+	});
+	const script = bundled.outputFiles[0]!.text.replaceAll('</script', '<\\/script');
 	const measured = await chrome<{ stacks: Array<{ display: string; direction: string; gap: string }>; scope: { display: string; direction: string; gap: string }; footer: { display: string; wrap: string; gap: string; separation: number }; legacy: number }>(`<!doctype html>
 <html><head><link rel="stylesheet" href="${styles}"></head>
-<body style="--size-4-1:4px;--size-4-2:8px"><div class="huhu-ui" style="width:480px">${markup}</div><pre id="out"></pre>
-<script>
+<body style="--size-4-1:4px;--size-4-2:8px"><div class="huhu-ui" id="pipeline" style="width:480px"></div><pre id="out"></pre>
+<script>${script}</script><script>
+HuhuPipeline.mount(${JSON.stringify(initial)});
 const root = document.querySelector('.huhu-pipeline-config');
 const measure = e => { const s = getComputedStyle(e); return { display:s.display, direction:s.flexDirection, gap:s.gap }; };
 const footer = root.lastElementChild, buttons = footer.querySelectorAll('button');
 document.getElementById('out').textContent = JSON.stringify({
  stacks: [root, ...root.querySelectorAll('fieldset')].map(measure),
- scope: measure(root.querySelector('select').parentElement),
+ scope: measure(root.querySelector('fieldset:last-of-type [data-slot="select-trigger"]').parentElement),
  footer: { ...measure(footer), wrap:getComputedStyle(footer).flexWrap, separation:buttons[1].getBoundingClientRect().left-buttons[0].getBoundingClientRect().right },
  legacy: [...root.querySelectorAll('[class]'), root].flatMap(e => [...e.classList]).filter(name => name.startsWith('huhu-ui-') || name === 'huhu-field').length,
 });

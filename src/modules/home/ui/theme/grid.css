@@ -29,7 +29,7 @@
 /* The card, not its square grid cell, carries the lifted look: a ring and a deeper shadow. */
 .huhu-dashboard-root .react-grid-item.react-draggable-dragging > [data-slot='card'] {
 	box-shadow:
-		0 0 0 2px var(--ring),
+		0 0 0 2px var(--hu-accent),
 		var(--board-shadow-card-hover);
 }
 .huhu-dashboard-root .react-grid-item.dropping {
@@ -37,9 +37,9 @@
 }
 /* The cell the dragged or resized tile will land in. */
 .huhu-dashboard-root .react-grid-item.react-grid-placeholder {
-	border: 1px dashed color-mix(in srgb, var(--primary) 70%, transparent);
+	border: 1px dashed color-mix(in srgb, var(--hu-accent) 70%, transparent);
 	border-radius: var(--board-radius-lg);
-	background: color-mix(in srgb, var(--primary) 14%, transparent);
+	background: color-mix(in srgb, var(--hu-accent) 14%, transparent);
 	transition: transform 100ms ease;
 	user-select: none;
 }
@@ -55,8 +55,8 @@
 	position: absolute;
 	right: 0;
 	bottom: 0;
-	width: 20px;
-	height: 20px;
+	width: 44px;
+	height: 44px;
 	cursor: se-resize;
 	opacity: 0;
 	transition: opacity 120ms ease;
@@ -70,8 +70,8 @@
 @media (pointer: coarse) {
 	.huhu-dashboard-root .react-grid-item > .react-resizable-handle {
 		opacity: 1;
-		width: 28px;
-		height: 28px;
+		width: 44px;
+		height: 44px;
 	}
 }
 .huhu-dashboard-root .react-grid-item > .react-resizable-handle::after {
@@ -81,12 +81,12 @@
 	bottom: 5px;
 	width: 7px;
 	height: 7px;
-	border-right: 2px solid color-mix(in srgb, var(--muted-foreground) 80%, transparent);
-	border-bottom: 2px solid color-mix(in srgb, var(--muted-foreground) 80%, transparent);
+	border-right: 2px solid color-mix(in srgb, var(--hu-fg-2) 80%, transparent);
+	border-bottom: 2px solid color-mix(in srgb, var(--hu-fg-2) 80%, transparent);
 	border-bottom-right-radius: 2px;
 }
 .huhu-dashboard-root .react-grid-item > .react-resizable-handle:hover::after {
-	border-color: var(--primary);
+	border-color: var(--hu-accent);
 }
 .huhu-dashboard-root .react-resizable-hide > .react-resizable-handle {
 	display: none;
@@ -100,5 +100,5 @@
 /* A tile's body is the one thing that scrolls when its content is taller than the cell. */
 .huhu-dashboard-root .huhu-widget-body {
 	scrollbar-width: thin;
-	scrollbar-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent) transparent;
+	scrollbar-color: color-mix(in srgb, var(--hu-fg-2) 35%, transparent) transparent;
 }

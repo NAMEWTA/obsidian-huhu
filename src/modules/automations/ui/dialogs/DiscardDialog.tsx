@@ -33,11 +33,13 @@ export function DiscardDialog({
 			<AlertDialogContent onCloseAutoFocus={layer.onCloseAutoFocus} className="max-w-md">
 				<AlertDialogHeader>
 					<AlertDialogTitle className="text-sm">{t('automation.discardTitle')}</AlertDialogTitle>
-					<AlertDialogDescription className="text-xs">{t('automation.discardBody', { name })}</AlertDialogDescription>
+					<AlertDialogDescription className="text-xs">
+						{t('automation.discardBody', { name })}
+					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>{t('automation.keepEditing')}</AlertDialogCancel>
-					<Button variant="destructive" onClick={onConfirm}>
+					<Button variant="danger" onClick={onConfirm}>
 						{t('automation.discard')}
 					</Button>
 				</AlertDialogFooter>

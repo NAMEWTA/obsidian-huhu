@@ -30,7 +30,8 @@ test('the dialog is titled "New automation", opens the reminder prefilled and sa
 	expect(
 		(within(dialog).getByRole('textbox', { name: t('automation.notifyText') }) as HTMLTextAreaElement).value,
 	).toBe('Call Ann');
-	expect((within(dialog).getByLabelText(t('automation.time')) as HTMLInputElement).value).toBe('2030-01-02T09:30');
+	expect((within(dialog).getByLabelText(t('automation.time')) as HTMLInputElement).value).toBe('2030-01-02');
+	expect((within(dialog).getByLabelText(t('ui.date.time')) as HTMLInputElement).value).toBe('09:30');
 	await user.click(within(dialog).getByRole('button', { name: 'Create' }));
 	const saved = await result;
 	expect(saved).toMatchObject({
@@ -56,6 +57,7 @@ test('switching the action swaps the form; cancelling saves nothing', async () =
 	expect(within(dialog).getByRole('textbox', { name: t('automation.todoText') })).toBeTruthy();
 	expect(within(dialog).queryByRole('textbox', { name: t('automation.notifyText') })).toBeNull();
 	await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+	await user.click(await screen.findByRole('button', { name: t('automation.discard') }));
 	expect(await result).toBeUndefined();
 	expect(f.service.save).not.toHaveBeenCalled();
 	f.view.dispose();

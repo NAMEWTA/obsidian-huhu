@@ -21,7 +21,11 @@ vi.mock('../create/NewTabMenu', () => ({ NewTabMenu: () => null }));
 vi.mock('../quick-commands/QuickCommandsButton', () => ({ QuickCommandsButton: () => null }));
 vi.mock('../dashboard/AgentBoard', () => ({ AgentBoard: () => <div>board page</div> }));
 vi.mock('../usage/UsageStatsPage', () => ({ UsageStatsPage: () => <div>usage page</div> }));
-beforeEach(() => setLanguage('en'));
+beforeEach(() => {
+	setLanguage('en');
+	vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(1200);
+	vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(600);
+});
 const tabNames = () =>
 	within(screen.getByRole('tablist'))
 		.getAllByRole('tab')
@@ -116,8 +120,8 @@ test('narrow terminal splits are presentation only and never rewrite the origina
 	try {
 		await vi.waitFor(() =>
 			expect(
-				document.querySelector('[data-panel-group-direction]')?.getAttribute('data-panel-group-direction'),
-			).toBe('vertical'),
+				screen.getByRole('separator').getAttribute('aria-orientation'),
+			).toBe('horizontal'),
 		);
 		expect(f.workspace.store.getState().tabs[original.id]).toMatchObject({
 			paneLayout: { direction: 'row', ratio: 0.7 },
@@ -188,7 +192,7 @@ test('native keyboard resizing updates the same pane model while external ratio 
 		await userEvent.setup().keyboard('{ArrowRight}');
 		await vi.waitFor(() => expect(resize).toHaveBeenCalledTimes(2));
 		expect(f.workspace.store.getState().tabs[tab.id]).toMatchObject({
-			paneLayout: { direction: 'row', ratio: 0.7 },
+			paneLayout: { direction: 'row', ratio: 0.65 },
 		});
 	} finally {
 		rendered.unmount();
@@ -238,7 +242,7 @@ test('group splits keep their model through narrow and wide projection and nativ
 	const resize = vi.spyOn(f.workspace, 'resize');
 	const rendered = render(f.wrap(<WorkspaceLayout />));
 	const orientation = () =>
-		document.querySelector('[data-panel-group-direction]')!.getAttribute('data-panel-group-direction');
+		screen.getByRole('separator').getAttribute('aria-orientation') === 'vertical' ? 'horizontal' : 'vertical';
 	const changeWidth = (next: number) =>
 		act(() => {
 			width = next;
@@ -261,7 +265,7 @@ test('group splits keep their model through narrow and wide projection and nativ
 		screen.getByRole('separator').focus();
 		await userEvent.setup().keyboard('{ArrowRight}');
 		await vi.waitFor(() => expect(resize).toHaveBeenCalledTimes(2));
-		expect(f.workspace.store.getState().layout).toMatchObject({ direction: 'row', sizes: [75, 25] });
+		expect(f.workspace.store.getState().layout).toMatchObject({ direction: 'row', sizes: [70, 30] });
 	} finally {
 		rendered.unmount();
 		box.mockRestore();

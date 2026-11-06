@@ -59,7 +59,7 @@ export function CalendarNoteSummary({ note }: { note: NonNullable<CalendarAgenda
 					}}
 				/>
 			)}
-			<div className="text-[11px] font-medium text-muted-foreground">{t('calendarUnified.summary')}</div>
+			<div className="text-xs font-medium text-muted-foreground">{t('calendarUnified.summary')}</div>
 			<div className="truncate text-xs font-semibold">{note.title}</div>
 			{note.summary && <p className="m-0 line-clamp-3 text-xs text-muted-foreground">{note.summary}</p>}
 		</section>
@@ -162,7 +162,7 @@ export function CalendarAgenda(props: CalendarAgendaProps) {
 						{t(props.status === 'error' ? 'calendarUnified.failed' : 'calendarUnified.unavailable')}
 					</p>
 					{props.onRetry && (
-						<Button variant="outline" size="sm" onClick={props.onRetry}>
+						<Button variant="secondary" size="sm" onClick={props.onRetry}>
 							{t('calendarUnified.retry')}
 						</Button>
 					)}
@@ -273,7 +273,7 @@ export function CalendarAgenda(props: CalendarAgendaProps) {
 							/>
 							<Button
 								variant="ghost"
-								size="icon"
+								size="icon-md"
 								type="button"
 								aria-label={t('calendarUnified.taskTime')}
 								aria-pressed={timed}

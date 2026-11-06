@@ -1,21 +1,44 @@
 import path from 'node:path';
+import { gzipSync } from 'node:zlib';
+import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
+import { createDiffsLanguages } from './diffs-languages.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
-export const VERSIONING_WORKER_ENTRY = 'src/modules/versioning/ui/diff-worker.ts';
+export const VERSIONING_WORKER_ENTRY = fileURLToPath(import.meta.resolve('@pierre/diffs/worker/worker.js'));
+export const VERSIONING_PARSE_WORKER_ENTRY = 'src/modules/versioning/ui/diff/parse-worker.ts';
 
-/** A separate self-contained browser build: host CodeMirror externals are not available inside a worker. */
-export function buildVersioningWorker() {
-	return esbuild.build({ absWorkingDir: root, entryPoints: [VERSIONING_WORKER_ENTRY], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2021', minify: true, metafile: true, logLevel: 'silent' });
+/** Both workers are self-contained, with the same language/backend policy as the main graph. */
+export function buildVersioningWorker({ parse = false } = {}) {
+	return esbuild.build({
+		absWorkingDir: root,
+		entryPoints: [parse ? VERSIONING_PARSE_WORKER_ENTRY : VERSIONING_WORKER_ENTRY],
+		bundle: true,
+		write: false,
+		format: 'iife',
+		platform: 'browser',
+		target: 'es2021',
+		minify: true,
+		metafile: true,
+		logLevel: 'silent',
+		plugins: [createDiffsLanguages({ compressGrammars: false })],
+	});
 }
 
 export const versioningWorkerSource = {
 	name: 'huhu-versioning-worker',
 	setup(build) {
-		build.onResolve({ filter: /^virtual:versioning-diff-worker$/ }, () => ({ path: 'diff-worker', namespace: 'huhu-worker' }));
-		build.onLoad({ filter: /.*/, namespace: 'huhu-worker' }, async () => {
-			const result = await buildVersioningWorker();
-			return { loader: 'js', contents: `export default ${JSON.stringify(result.outputFiles[0].text)};`, watchFiles: Object.keys(result.metafile.inputs).map(file => path.resolve(root, file)) };
+		build.onResolve({ filter: /^virtual:versioning-(diff|parse)-worker$/ }, (args) => ({
+			path: args.path,
+			namespace: 'huhu-worker',
+		}));
+		build.onLoad({ filter: /.*/, namespace: 'huhu-worker' }, async (args) => {
+			const result = await buildVersioningWorker({ parse: args.path.includes('-parse-') });
+			return {
+				loader: 'js',
+				contents: `export default ${JSON.stringify(gzipSync(result.outputFiles[0].contents, { level: 9 }).toString('base64'))};`,
+				watchFiles: Object.keys(result.metafile.inputs).map((file) => path.resolve(root, file)),
+			};
 		});
 	},
 };

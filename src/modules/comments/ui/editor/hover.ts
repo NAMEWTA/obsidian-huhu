@@ -22,7 +22,7 @@ export class HoverTracker {
 	}
 	private target(event: MouseEvent) {
 		const node = event.target;
-		return node && 'nodeType' in node && (node as Node).nodeType === 1 ? (node as Element).closest<HTMLElement>('.huhu-comment-hl, .huhu-comment-marker') : null;
+		return node && 'nodeType' in node && (node as Node).nodeType === 1 ? (node as Element).closest<HTMLElement>('.huhu-comment-hl') : null;
 	}
 	private readonly onOver = (event: MouseEvent) => {
 		const target = this.target(event); if (!target?.dataset['commentIds']) return;

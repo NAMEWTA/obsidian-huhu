@@ -20,7 +20,7 @@ import {
 import { t } from '../../../shared/i18n/index';
 import { JsonStore } from '../../../shared/json-store';
 import type { TextStorage } from '../../../shared/storage/ports';
-import { latestOccurrence, validateSchedule } from './schedule';
+import { latestOccurrence, nextOccurrence, validateSchedule } from './schedule';
 import type { AutomationDefinitionsRepository } from './documents';
 import { actionAvailability, actionDefinition } from './actions/registry';
 import type { ActionHost } from './actions/definition';
@@ -64,6 +64,7 @@ const unavailableHost: ActionHost = {
 export class AutomationService {
 	loadError = '';
 	private loaded = false;
+	private definitionsReadable = false;
 	state: AutomationState = { definitions: [], runs: [], cursors: {} };
 	private sourceDefinitions: AutomationDefinition[] = [];
 	private savedDefinitions: AutomationDefinition[] = [];
@@ -258,7 +259,13 @@ export class AutomationService {
 				.then(([rows, saved]) => {
 					this.sourceDefinitions = rows;
 					this.savedDefinitions = saved;
+					this.definitionsReadable = true;
 					this.emit();
+				})
+				.catch((error: unknown) => {
+					this.definitionsReadable = false;
+					this.emit();
+					throw error;
 				})
 				.finally(() => {
 					this.refreshing = undefined;
@@ -333,6 +340,22 @@ export class AutomationService {
 		await this.commit((state) => {
 			state.runs = state.runs.filter(isActiveRun);
 		});
+	}
+
+	/** Read the scheduler's future triggers without admitting work or altering cursors. */
+	nextScheduled(now = Date.now()): { name: string; at: number } | null | undefined {
+		if (!this.loaded || !this.definitionsReadable || this.loadError || !this.executionEnabled || this.recoveryHold) return undefined;
+		let next: { name: string; at: number } | null = null;
+		try {
+			for (const definition of this.definitions) {
+				if (!definition.enabled || definition.deviceId !== this.deviceId) continue;
+				const at = nextOccurrence(definition.schedule, now);
+				if (at !== null && (next === null || at < next.at)) next = { name: definition.name, at };
+			}
+		} catch {
+			return undefined;
+		}
+		return next;
 	}
 
 	async tick(now = Date.now()): Promise<void> {

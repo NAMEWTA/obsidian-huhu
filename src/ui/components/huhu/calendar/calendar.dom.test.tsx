@@ -90,6 +90,7 @@ test('keyboard arrows rove focus without selecting or writing; selected dates an
 	const f = month();
 	const first = document.querySelector<HTMLElement>('[data-date="2026-10-12"]')!;
 	first.focus();
+	await vi.waitFor(() => expect(first.closest('[data-focused]')).not.toBeNull());
 	fireEvent.keyDown(first, { key: 'ArrowRight' });
 	await vi.waitFor(() => expect(document.activeElement?.getAttribute('data-date')).toBe('2026-10-13'));
 	expect(document.querySelector('[data-date="2026-10-13"]')!.getAttribute('tabindex')).toBe('0');
@@ -112,6 +113,7 @@ test.each([
 	const f = month({ weeks });
 	const day = document.querySelector<HTMLElement>('[data-date="2026-10-01"]')!;
 	day.focus();
+	await vi.waitFor(() => expect(day.closest('[data-focused]')).not.toBeNull());
 	fireEvent.keyDown(day, { key: 'PageDown' });
 	await vi.waitFor(() => expect(document.activeElement?.getAttribute('data-date')).toBe(next));
 	fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });

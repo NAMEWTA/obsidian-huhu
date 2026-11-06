@@ -126,7 +126,7 @@ export function JumpPalette({
 								)}
 								{tab.kind === 'terminal' && tab.agentId && <StatusDot state={tab.state} />}
 								<span className="min-w-0 flex-1 truncate">{tabTitle(tab, t)}</span>
-								{!query && <span className="text-xs text-muted-foreground">{index + 1}</span>}
+								{!query && <span className="text-xs text-[var(--hu-fg-2)]">{index + 1}</span>}
 							</CommandItem>
 						))}
 					</CommandGroup>

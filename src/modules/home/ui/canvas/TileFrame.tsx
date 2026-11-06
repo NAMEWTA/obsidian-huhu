@@ -24,6 +24,7 @@ const BACKGROUND_KEY: Readonly<Record<string, string>> = {
 
 export interface TileFrameProps {
 	store: BoardStore;
+	editing?: boolean;
 	source: BoardTileSource;
 	kind: TileKind | undefined;
 	/** The name the card shows: the user's own title first, then the kind's, a section's or a card's name. */
@@ -45,8 +46,10 @@ export interface TileFrameProps {
 
 /** One tile of the board: the card around the view that source names. Every tile kind uses the same frame. */
 export function TileFrame(props: TileFrameProps) {
-	const { store, source, kind, label, titleId, current, mobile, narrow, catalog, canConfigure, ...actions } = props;
-	const frame = source.type === 'widget' && source.member.provider === 'home' ? WIDGET_FRAME[source.member.kind] : undefined;
+	const { store, source, kind, label, titleId, current, mobile, narrow, catalog, canConfigure, editing, ...actions } =
+		props;
+	const frame =
+		source.type === 'widget' && source.member.provider === 'home' ? WIDGET_FRAME[source.member.kind] : undefined;
 	const data = useStore(store.state, (state) => state.data)!;
 	const rename =
 		source.type === 'section'
@@ -61,17 +64,15 @@ export function TileFrame(props: TileFrameProps) {
 				: undefined;
 	const background = useWidgetBackground(
 		store,
-		source.type === 'widget' && source.member.provider === 'home'
-			? (BACKGROUND_KEY[source.member.kind] ?? '')
-			: '',
+		source.type === 'widget' && source.member.provider === 'home' ? (BACKGROUND_KEY[source.member.kind] ?? '') : '',
 		{ frame: false },
 	);
 	return (
 		<WidgetCard
+			editing={editing}
 			title={label}
 			titleId={titleId}
 			icon={kind?.icon}
-			chrome={frame?.chrome}
 			bleed={frame?.bleed}
 			background={background.layer ? background : undefined}
 			onRename={rename}

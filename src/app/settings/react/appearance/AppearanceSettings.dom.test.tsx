@@ -1,9 +1,11 @@
+import { readFileSync } from 'node:fs';
 import { SettingsStore, type SettingsFile } from '../../../../shared/settings/store';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
 import type DashboardPlugin from '../../../main';
 import { TestProviders } from '../../../../ui/react/test-providers';
 import { setLanguage, t } from '../../../../shared/i18n';
+import { DEFAULT_CUSTOM } from '../../../../theme/custom';
 import { themeSettings, type ThemeSettings } from '../../../../theme/settings';
 import { AppearanceSettings } from './AppearanceSettings';
 
@@ -15,7 +17,10 @@ function fixture(initial: Partial<ThemeSettings> = {}) {
 	const listeners = new Set<() => void>();
 	const theme = {
 		get: () => value,
-		subscribe: (listener: () => void) => { listeners.add(listener); return () => listeners.delete(listener); },
+		subscribe: (listener: () => void) => {
+			listeners.add(listener);
+			return () => listeners.delete(listener);
+		},
 		update: async (recipe: (draft: ThemeSettings) => void | ThemeSettings) => {
 			const draft = structuredClone(value);
 			value = themeSettings.normalize(recipe(draft) ?? draft);
@@ -24,61 +29,58 @@ function fixture(initial: Partial<ThemeSettings> = {}) {
 	};
 	return { plugin: { theme } as unknown as DashboardPlugin, current: () => value, listeners };
 }
-const render_ = (plugin: DashboardPlugin) => render(<TestProviders><AppearanceSettings plugin={plugin} /></TestProviders>);
+const render_ = (plugin: DashboardPlugin) =>
+	render(
+		<TestProviders>
+			<AppearanceSettings plugin={plugin} />
+		</TestProviders>,
+	);
 
-test.each(['zh', 'en'] as const)('curated styles select independently and additional palettes stay reachable (%s)', async (language) => {
-	setLanguage(language);
-	const f = fixture();
-	const view = render_(f.plugin);
-	const themes = screen.getByRole('group', { name: t('appearance.theme') });
-	expect(themes.querySelectorAll('button').length).toBe(6);
-	const theme = (id: string) => within(themes).getByRole('button', { name: t(`appearance.preset.${id}`) });
-	expect(theme('default').getAttribute('aria-pressed')).toBe('true');
-	fireEvent.click(theme('claude-code'));
-	await waitFor(() => expect(f.current().preset).toBe('claude-code'));
-	expect(theme('claude-code').getAttribute('aria-pressed')).toBe('true');
-	const editors = screen.getByRole('group', { name: t('appearance.editor') });
-	expect(editors.querySelectorAll('button').length).toBe(5);
-	fireEvent.keyDown(screen.getByRole('combobox', { name: t('appearance.additionalEditors') }), { key: 'ArrowDown' });
-	fireEvent.click(await screen.findByRole('option', { name: t('appearance.scheme.dracula') }));
-	await waitFor(() => expect(f.current().editor).toBe('dracula'));
-	// The interface theme and the editor scheme are independent settings.
-	expect(f.current().preset).toBe('claude-code');
-	view.unmount();
-	expect(f.listeners.size).toBe(0);
-});
+test.each(['zh', 'en'] as const)(
+	'paper/ink interface and independent editor remain selectable (%s)',
+	async (language) => {
+		setLanguage(language);
+		const f = fixture();
+		const view = render_(f.plugin);
+		const themes = screen.getByRole('group', { name: t('appearance.theme') });
+		expect(themes.querySelectorAll('button').length).toBe(3);
+		fireEvent.click(within(themes).getByRole('button', { name: t('appearance.preset.ink') }));
+		await waitFor(() => expect(f.current().preset).toBe('ink'));
+		fireEvent.keyDown(screen.getByRole('combobox', { name: t('appearance.additionalEditors') }), {
+			key: 'ArrowDown',
+		});
+		fireEvent.click(await screen.findByRole('option', { name: t('appearance.scheme.dracula') }));
+		await waitFor(() => expect(f.current().editor).toBe('dracula'));
+		expect(f.current().preset).toBe('ink');
+		view.unmount();
+		expect(f.listeners.size).toBe(0);
+	},
+);
 
-test('an existing additional palette remains selected and SuliWorld-specific controls reflect the effective editor', async () => {
+test('SuliWorld decorations only follow the independent editor choice', async () => {
 	setLanguage('en');
-	const f = fixture({ preset: 'vscode', editor: 'nord' });
+	const f = fixture({ preset: 'paper', editor: 'suliworld' });
 	render_(f.plugin);
-	expect(screen.getByRole('combobox', { name: t('appearance.additionalThemes') }).textContent).toContain(t('appearance.preset.vscode'));
-	expect(screen.getByRole('combobox', { name: t('appearance.additionalEditors') }).textContent).toContain(t('appearance.scheme.nord'));
-	expect(screen.queryByRole('switch', { name: t('appearance.plainQuotes') })).toBeNull();
-	fireEvent.click(within(screen.getByRole('group', { name: t('appearance.theme') })).getByRole('button', { name: 'SuliWorld' }));
-	await waitFor(() => expect(f.current().preset).toBe('suliworld'));
-	expect(f.current().editor).toBe('nord');
-	expect(screen.getByRole('combobox', { name: t('appearance.suliworldVariant') })).not.toBeNull();
-	expect(screen.queryByRole('switch', { name: t('appearance.plainQuotes') })).toBeNull();
-	fireEvent.click(within(screen.getByRole('group', { name: t('appearance.editor') })).getByRole('button', { name: t('appearance.scheme.follow') }));
-	fireEvent.click(await screen.findByRole('switch', { name: t('appearance.plainQuotes') }));
+	fireEvent.click(screen.getByRole('switch', { name: t('appearance.plainQuotes') }));
 	await waitFor(() => expect(f.current().suliworldPlainQuotes).toBe(true));
+	expect(screen.getByRole('combobox', { name: t('appearance.suliworldVariant') })).not.toBeNull();
+	expect(f.current().preset).toBe('paper');
 });
 
-test('custom colours appear only for the custom theme and keep half-typed hex values', async () => {
+test('custom editor colours keep incomplete drafts and separate light/dark values', async () => {
 	setLanguage('en');
-	const f = fixture();
+	const f = fixture({ editor: 'custom' });
 	render_(f.plugin);
-	expect(screen.queryByRole('textbox', { name: `${t('appearance.customBackground')} (hex)` })).toBeNull();
-	fireEvent.click(within(screen.getByRole('group', { name: t('appearance.theme') })).getByRole('button', { name: t('appearance.preset.custom') }));
-	const hex = await screen.findByRole('textbox', { name: `${t('appearance.customBackground')} (hex)` });
-	fireEvent.change(hex, { target: { value: '#12' } });
-	expect((hex as HTMLInputElement).value).toBe('#12');
+	const input = screen.getByRole('textbox', { name: t('appearance.customBackground') });
+	fireEvent.change(input, { target: { value: '#12' } });
+	expect((input as HTMLInputElement).value).toBe('#12');
 	expect(f.current().custom.light.background).toBe('#ffffff');
-	fireEvent.change(hex, { target: { value: '#112233' } });
+	fireEvent.change(input, { target: { value: '#112233' } });
 	await waitFor(() => expect(f.current().custom.light.background).toBe('#112233'));
 	fireEvent.click(screen.getByRole('radio', { name: t('appearance.mode.dark') }));
-	fireEvent.change(screen.getByLabelText(t('appearance.customPrimary'), { selector: 'input[type=color]' }), { target: { value: '#aabbcc' } });
+	fireEvent.change(screen.getByLabelText(t('appearance.customPrimary'), { selector: 'input[type=color]' }), {
+		target: { value: '#aabbcc' },
+	});
 	await waitFor(() => expect(f.current().custom.dark.primary).toBe('#aabbcc'));
 	expect(f.current().custom.light.background).toBe('#112233');
 });
@@ -87,19 +89,25 @@ test('fonts: presets, a custom family list committed on blur, size and line heig
 	setLanguage('en');
 	const f = fixture({ fontText: 'custom', fontSize: 18 });
 	render_(f.plugin);
-	const family = screen.getByRole('textbox', { name: t('appearance.fontCustomLabel', { font: t('appearance.fontText') }) });
+	const family = screen.getByRole('textbox', {
+		name: t('appearance.fontCustomLabel', { font: t('appearance.fontText') }),
+	});
 	fireEvent.change(family, { target: { value: 'Lora; Georgia' } });
 	expect(f.current().fontTextCustom).toBe('');
 	fireEvent.blur(family);
 	await waitFor(() => expect(f.current().fontTextCustom).toBe('Lora Georgia'));
 	expect(screen.getByText('18px')).not.toBeNull();
-	fireEvent.click(screen.getAllByRole('button', { name: t('appearance.useDefault') }).find((button) => !button.hasAttribute('aria-pressed'))!);
+	fireEvent.click(
+		screen
+			.getAllByRole('button', { name: t('appearance.useDefault') })
+			.find((button) => !button.hasAttribute('aria-pressed'))!,
+	);
 	await waitFor(() => expect(f.current().fontSize).toBe(0));
 });
 
 test('reset restores the defaults', async () => {
 	setLanguage('en');
-	const f = fixture({ preset: 'soft', editor: 'nord', fontMono: 'fira', lineHeight: 1.8 });
+	const f = fixture({ preset: 'paper', editor: 'nord', fontMono: 'fira', lineHeight: 1.8 });
 	render_(f.plugin);
 	fireEvent.click(screen.getByRole('button', { name: t('appearance.reset') }));
 	await waitFor(() => expect(f.current()).toEqual(themeSettings.defaults()));
@@ -107,17 +115,43 @@ test('reset restores the defaults', async () => {
 
 test('reset style leaves user typography and selected styles intact', async () => {
 	setLanguage('en');
-	const f = fixture({ preset: 'suliworld', editor: 'follow', suliworldVariant: 'forest', suliworldCards: 'always', suliworldPlainEmbeds: true, headings: 'plain', fontText: 'kai', fontSize: 19, lineHeight: 1.9 });
+	const f = fixture({
+		preset: 'ink',
+		editor: 'suliworld',
+		suliworldVariant: 'forest',
+		suliworldCards: 'always',
+		suliworldPlainEmbeds: true,
+		headings: 'plain',
+		fontText: 'kai',
+		fontSize: 19,
+		lineHeight: 1.9,
+	});
 	render_(f.plugin);
 	fireEvent.click(screen.getByRole('button', { name: t('appearance.resetStyle') }));
-	await waitFor(() => expect(f.current()).toMatchObject({ preset: 'suliworld', editor: 'follow', suliworldVariant: 'cream', suliworldCards: 'dark', suliworldPlainEmbeds: false, headings: 'scheme', fontText: 'kai', fontSize: 19, lineHeight: 1.9 }));
+	await waitFor(() =>
+		expect(f.current()).toMatchObject({
+			preset: 'ink',
+			editor: 'suliworld',
+			suliworldVariant: 'forest',
+			suliworldCards: 'always',
+			suliworldPlainEmbeds: false,
+			headings: 'scheme',
+			fontText: 'kai',
+			fontSize: 19,
+			lineHeight: 1.9,
+		}),
+	);
 });
 
 test('invalid import preserves the active appearance; export uses the new version', async () => {
 	setLanguage('en');
-	const f = fixture({ preset: 'suliworld', suliworldVariant: 'forest', fontMono: 'fira' });
+	const f = fixture({ preset: 'ink', suliworldVariant: 'forest', fontMono: 'fira' });
 	const original = structuredClone(f.current());
-	const read = vi.spyOn(navigator.clipboard, 'readText').mockResolvedValue(JSON.stringify({ kind: 'huhu-appearance', version: 2, settings: { preset: 'future-theme' } }));
+	const read = vi
+		.spyOn(navigator.clipboard, 'readText')
+		.mockResolvedValue(
+			JSON.stringify({ kind: 'huhu-appearance', version: 2, settings: { preset: 'future-theme' } }),
+		);
 	const write = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
 	render_(f.plugin);
 	fireEvent.click(screen.getByRole('button', { name: t('appearance.import') }));
@@ -189,7 +223,10 @@ test('real SettingsStore publishes before failed persistence and Retry persists 
 	const store = new SettingsStore(
 		{ load: async (scope) => files[scope] ?? null, save },
 		{
-			timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: (timer) => window.clearTimeout(timer as number) },
+			timers: {
+				set: (fn, ms) => window.setTimeout(fn, ms),
+				clear: (timer) => window.clearTimeout(timer as number),
+			},
 			debounceMs: 0,
 		},
 	);
@@ -228,18 +265,31 @@ test('real SettingsStore publishes before failed persistence and Retry persists 
 test('continuous slider input preserves the last value while real persistence is pending', async () => {
 	setLanguage('en');
 	const files: Record<string, SettingsFile | null> = {
-		vault: { version: 1, namespaces: { theme: { ...themeSettings.defaults(), fontSize: 18 } } }, device: null,
+		vault: { version: 1, namespaces: { theme: { ...themeSettings.defaults(), fontSize: 18 } } },
+		device: null,
 	};
 	let release: (() => void) | undefined;
 	let first = true;
 	const save = vi.fn(async (scope: string, file: SettingsFile) => {
-		if (first) { first = false; await new Promise<void>((resolve) => { release = resolve; }); }
+		if (first) {
+			first = false;
+			await new Promise<void>((resolve) => {
+				release = resolve;
+			});
+		}
 		files[scope] = structuredClone(file);
 		return structuredClone(file);
 	});
-	const store = new SettingsStore({ load: async (scope) => files[scope] ?? null, save }, {
-		timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: (timer) => window.clearTimeout(timer as number) }, debounceMs: 0,
-	});
+	const store = new SettingsStore(
+		{ load: async (scope) => files[scope] ?? null, save },
+		{
+			timers: {
+				set: (fn, ms) => window.setTimeout(fn, ms),
+				clear: (timer) => window.clearTimeout(timer as number),
+			},
+			debounceMs: 0,
+		},
+	);
 	await store.load();
 	const theme = store.bind('theme', themeSettings);
 	const view = render_({ theme } as unknown as DashboardPlugin);
@@ -253,5 +303,91 @@ test('continuous slider input preserves the last value while real persistence is
 		release!();
 		await waitFor(() => expect(files.vault!.namespaces.theme!.fontSize).toBe(20));
 		await waitFor(() => expect(store.status).toBe('idle'));
-	} finally { release?.(); view.unmount(); await store.dispose(); }
+	} finally {
+		release?.();
+		view.unmount();
+		await store.dispose();
+	}
+});
+
+test('closing appearance before clipboard resolution prevents a late import write', async () => {
+	setLanguage('en');
+	const f = fixture();
+	let finish!: (text: string) => void;
+	const read = vi.spyOn(navigator.clipboard, 'readText').mockImplementation(
+		() =>
+			new Promise((resolve) => {
+				finish = resolve;
+			}),
+	);
+	const update = vi.spyOn(f.plugin.theme, 'update');
+	const view = render_(f.plugin);
+	fireEvent.click(screen.getByRole('button', { name: t('appearance.import') }));
+	await waitFor(() => expect(read).toHaveBeenCalledOnce());
+	view.unmount();
+	finish(
+		JSON.stringify({
+			kind: 'huhu-appearance',
+			version: 2,
+			settings: { ...themeSettings.defaults(), preset: 'ink' },
+		}),
+	);
+	await Promise.resolve();
+	await Promise.resolve();
+	expect(update).not.toHaveBeenCalled();
+	expect(f.current().preset).toBe('system');
+	read.mockRestore();
+});
+
+test('interface preview date and popover never persist settings', async () => {
+	setLanguage('en');
+	const f = fixture();
+	const update = vi.spyOn(f.plugin.theme, 'update');
+	render_(f.plugin);
+	const preview = document.querySelector('[data-interface-preview]') as HTMLElement;
+	const input = within(preview).getByRole('textbox', { name: t('appearance.previewDate') });
+	fireEvent.change(input, { target: { value: '2026-11-06' } });
+	fireEvent.blur(input);
+	fireEvent.click(within(preview).getByRole('button', { name: t('appearance.previewAction') }));
+	await screen.findByRole('dialog');
+	expect(update).not.toHaveBeenCalled();
+	expect(preview.querySelector('.huhu-portal-root [role=dialog]')).not.toBeNull();
+});
+
+
+test.each(['reset', 'copy'] as const)('custom %s persists only the selected mode colors with the real Store', async (action) => {
+	setLanguage('en');
+	const original: ThemeSettings = {
+		...themeSettings.defaults(), preset: 'ink', editor: 'custom', source: 'obsidian', accent: 'plum',
+		fontInterface: 'custom', fontInterfaceCustom: 'Interface Font', fontText: 'kai',
+		fontMono: 'fira', fontSize: 22, lineHeight: 1.8,
+		custom: { light: { background: '#123456', foreground: '#234567', primary: '#345678', border: '#456789', sidebar: '#56789a' },
+			dark: { background: '#112233', foreground: '#223344', primary: '#ff0000', border: '#445566', sidebar: '#556677' } },
+	};
+	const files: Record<string, SettingsFile | null> = { vault: { version: 1, namespaces: { theme: structuredClone(original) } }, device: null };
+	const store = new SettingsStore({ load: async scope => files[scope] ?? null, save: async (scope, file) => { files[scope] = structuredClone(file); return file; } }, {
+		timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: timer => window.clearTimeout(timer as number) }, debounceMs: 0,
+	});
+	await store.load();
+	const theme = store.bind('theme', themeSettings);
+	const style = document.createElement('style');
+	style.textContent = readFileSync('src/theme/styles/editor-schemes.css', 'utf8');
+	document.head.append(style);
+	const view = render_({ theme } as unknown as DashboardPlugin);
+	try {
+		if (action === 'reset') {
+			const row = screen.getByText(t('appearance.customReset')).closest('[data-slot=settings-row]')!;
+			fireEvent.click(within(row as HTMLElement).getByRole('button', { name: t('appearance.useDefault') }));
+		} else {
+			fireEvent.keyDown(screen.getByRole('combobox', { name: t('appearance.customFrom') }), { key: 'ArrowDown' });
+			fireEvent.click(await screen.findByRole('option', { name: t('appearance.scheme.suliworld') }));
+		}
+		const expected = structuredClone(original);
+		expected.custom.light = action === 'reset' ? { ...DEFAULT_CUSTOM.light } : {
+			background: '#fbf7f0', foreground: '#1b1a17', primary: '#a13816', border: '#b8431c', sidebar: '#1b1a17',
+		};
+		await waitFor(() => expect(theme.get()).toEqual(expected));
+		await waitFor(() => expect(files.vault!.namespaces.theme).toEqual(expected));
+		expect(document.querySelector('body > .huhu-editor--suliworld')).toBeNull();
+	} finally { view.unmount(); style.remove(); await store.dispose(); }
 });

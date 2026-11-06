@@ -1,3 +1,4 @@
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/expense-backfill-modal.ts
 import { useState } from 'react';
 import { Input } from '../../../../ui/components/input';
@@ -35,17 +36,19 @@ export function ExpenseEntryPanel({
 }) {
 	const t = useT(),
 		[date, setDate] = useState(initial?.date ?? expenseToday()),
+		[dateDraft, setDateDraft] = useState(initial?.date ?? expenseToday()),
 		[type, setType] = useState<ExpenseType>(initial?.type ?? 'expense'),
 		[amount, setAmount] = useState(initial ? String(initial.amount) : ''),
 		[category, setCategory] = useState(initial?.category ?? service.getOrderedCategories('expense')[0] ?? ''),
 		[note, setNote] = useState(initial?.note ?? ''),
 		[error, setError] = useState('');
 	const save = () => {
-		if (date > expenseToday()) {
+		if (dateDraft > expenseToday()) {
 			setError(t('expense.futureDate'));
 			return;
 		}
-		if (!onSave({ type, amount: Number(amount), category, note, date })) {
+		if (!parseDate(dateDraft)) return;
+		if (!onSave({ type, amount: Number(amount), category, note, date: dateDraft })) {
 			setError(t('expense.invalidAmount'));
 			return;
 		}
@@ -66,13 +69,19 @@ export function ExpenseEntryPanel({
 			<h2 className="m-0 text-base font-semibold">
 				{t(initial ? 'expense.editTitle' : 'expense.backfillTitle')}
 			</h2>
-			<Label className="grid gap-2">
-				{t('expense.dateLabel')}
-				<Input type="date" max={expenseToday()} value={date} onChange={(e) => setDate(e.target.value)} />
-			</Label>
+			<DateField
+				label={t('expense.dateLabel')}
+				onDraftChange={setDateDraft}
+				max={parseDate(expenseToday()) ?? undefined}
+				value={parseDate(date)}
+				onChange={(day) => {
+					setDate(day ?? '');
+					setDateDraft(day ?? '');
+				}}
+			/>
 			<ToggleGroup
 				type="single"
-				variant="outline"
+				variant="segmented"
 				className="w-full"
 				value={type}
 				onValueChange={(value) => {
@@ -99,11 +108,13 @@ export function ExpenseEntryPanel({
 					onChange={(e) => setAmount(sanitizeAmountInput(e.target.value))}
 				/>
 				<Choice
-					className="w-44 min-w-0 data-[size=sm]:h-9"
+					className="w-44 min-w-0 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					label={t('expense.colCategory')}
 					value={category}
 					onChange={setCategory}
-					options={service.getOrderedCategories(type).map((value) => ({ value, label: categoryLabel(value) }))}
+					options={service
+						.getOrderedCategories(type)
+						.map((value) => ({ value, label: categoryLabel(value) }))}
 				/>
 			</div>
 			<Label className="grid gap-2">
@@ -121,7 +132,7 @@ export function ExpenseEntryPanel({
 				</p>
 			)}
 			<div className="flex justify-end gap-2">
-				<Button type="button" variant="outline" onClick={close}>
+				<Button type="button" variant="secondary" onClick={close}>
 					{t('common.cancel')}
 				</Button>
 				<Button type="submit">{t('common.save')}</Button>

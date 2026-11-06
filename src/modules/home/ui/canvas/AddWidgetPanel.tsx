@@ -57,7 +57,7 @@ function Footprint({ kind, tier }: { kind: HomeWidgetKind; tier: HomeWidgetTier 
 	return (
 		<span
 			aria-hidden
-			className="relative block h-[44px] w-[88px] shrink-0 overflow-hidden rounded-[3px] border border-[var(--border)] bg-[var(--accent)]"
+			className="relative block h-[44px] w-[88px] shrink-0 overflow-hidden rounded-[3px] border border-[var(--hu-line)] bg-[var(--hu-hover)]"
 		>
 			<span
 				data-testid="footprint"
@@ -88,7 +88,7 @@ export function AddWidgetPanel({
 	return (
 		<DashboardDialog title={t('canvas.addWidget')} wide onClose={onClose} cancelLabel={t('common.close')}>
 			<div className="relative">
-				<Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+				<Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-[var(--hu-fg-2)]" />
 				<Input
 					autoFocus
 					className="pl-8"
@@ -100,7 +100,7 @@ export function AddWidgetPanel({
 			</div>
 			<div className="flex flex-wrap gap-1" role="group" aria-label={t('canvas.categories')}>
 				<Button
-					size="xs"
+					size="sm"
 					variant={category ? 'ghost' : 'secondary'}
 					aria-pressed={!category}
 					onClick={() => setCategory(undefined)}
@@ -110,7 +110,7 @@ export function AddWidgetPanel({
 				{categories.map((value) => (
 					<Button
 						key={value}
-						size="xs"
+						size="sm"
 						variant={category === value ? 'secondary' : 'ghost'}
 						aria-pressed={category === value}
 						onClick={() => setCategory(value)}
@@ -136,7 +136,7 @@ export function AddWidgetPanel({
 						<li
 							key={id}
 							data-widget-entry={kind.key}
-							className="flex flex-col gap-2 rounded-[var(--board-radius-md)] border border-[var(--border)] bg-[var(--board-bg-card)] p-3"
+							className="flex flex-col gap-2 rounded-[var(--board-radius-md)] border border-[var(--hu-line)] bg-[var(--board-bg-card)] p-3"
 						>
 							<div className="flex items-center gap-2">
 								<ObsidianIcon name={kind.icon} className="size-4 shrink-0" />
@@ -153,8 +153,8 @@ export function AddWidgetPanel({
 										<Tooltip key={value}>
 											<TooltipTrigger asChild>
 												<Button
-													size="xs"
-													variant={tier === value ? 'secondary' : 'outline'}
+													size="sm"
+													variant={tier === value ? 'secondary' : 'secondary'}
 													aria-pressed={tier === value}
 													aria-label={t(`canvas.size.${value}`)}
 													onClick={() => setTiers({ ...tiers, [id]: value })}
@@ -170,7 +170,7 @@ export function AddWidgetPanel({
 							<div className="flex flex-wrap gap-1">
 								{entry.available.length === 0 && !kind.create && (
 									<Button
-										size="xs"
+										size="sm"
 										disabled={entry.placed}
 										aria-label={t('home.widget.addNamed', { name: title })}
 										onClick={() =>
@@ -183,8 +183,8 @@ export function AddWidgetPanel({
 								{entry.available.map((instance) => (
 									<Button
 										key={instance.id}
-										size="xs"
-										variant="outline"
+										size="sm"
+										variant="secondary"
 										aria-label={t('home.widget.addNamed', { name: instance.label || title })}
 										onClick={() => onAdd(request({ instanceId: instance.id }))}
 									>
@@ -193,8 +193,8 @@ export function AddWidgetPanel({
 								))}
 								{kind.create && (
 									<Button
-										size="xs"
-										variant="outline"
+										size="sm"
+										variant="secondary"
 										aria-label={t('home.widget.createNamed', { name: title })}
 										onClick={() => onAdd(request({ create: true }))}
 									>
@@ -206,9 +206,7 @@ export function AddWidgetPanel({
 					);
 				})}
 				{shown.length === 0 && (
-					<li className="col-span-full p-4 text-center text-sm text-[var(--muted-foreground)]">
-						{t('canvas.empty')}
-					</li>
+					<li className="col-span-full p-4 text-center text-sm text-[var(--hu-fg-2)]">{t('canvas.empty')}</li>
 				)}
 			</ul>
 		</DashboardDialog>

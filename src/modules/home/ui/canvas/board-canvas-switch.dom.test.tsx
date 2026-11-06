@@ -15,6 +15,7 @@ import { BoardStore } from '../../services/board-store';
 import type { HomeHost } from '../../services/home-host';
 import { homeServices } from '../../services/instances';
 import { runShortcut, type ShortcutPorts } from '../../services/shortcut-run';
+import { DashboardPage } from '../DashboardPage';
 import { BoardCanvas } from './BoardCanvas';
 import { CaptureComposer } from '../inbox/CaptureComposer';
 
@@ -66,7 +67,7 @@ afterEach(() => {
 });
 
 /** Two real boards behind a real BoardStore/SyncEngine; reading B is held back so the switch can be observed mid-way. */
-async function twoBoards(kinds: HomeWidgetKind[], bText: string) {
+async function twoBoards(kinds: HomeWidgetKind[], bText: string, page = false) {
 	setLanguage('en');
 	const vault = memoryVault(
 		{ [A + '.md']: '---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n', [B + '.md']: bText },
@@ -85,8 +86,12 @@ async function twoBoards(kinds: HomeWidgetKind[], bText: string) {
 	render(
 		<TestProviders>
 			<DesignScope>
-			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
-		</DesignScope>
+				{page ? (
+					<DashboardPage store={store} context={{} as NativeSurfaceContext} />
+				) : (
+					<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+				)}
+			</DesignScope>
 		</TestProviders>,
 	);
 	let release: () => void = () => {};
@@ -114,7 +119,10 @@ test('a creation started on A cannot land on B while B opens: switching ends it 
 			return new Promise((resolve) => (finish = resolve));
 		},
 	};
-	const { vault, store, release, reached } = await twoBoards([maker], '---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n');
+	const { vault, store, release, reached } = await twoBoards(
+		[maker],
+		'---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n',
+	);
 	fireEvent.click(screen.getByRole('button', { name: t('canvas.addWidget') }));
 	fireEvent.click(screen.getByRole('button', { name: t('home.widget.createNamed', { name: t('probe.title') }) }));
 	await waitFor(() => expect(signal).toBeDefined());
@@ -258,8 +266,8 @@ test('while switching, the old page cannot write: its controls do nothing and th
 	render(
 		<TestProviders>
 			<DesignScope>
-			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
-		</DesignScope>
+				<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	let release: () => void = () => {};
@@ -337,8 +345,8 @@ test('when the way back fails too the page stays read-only with the reason, and 
 	render(
 		<TestProviders>
 			<DesignScope>
-			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
-		</DesignScope>
+				<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	const read = vault.adapter.read.bind(vault.adapter);
@@ -372,8 +380,8 @@ test('a delete confirmation opened on A is closed, not hidden, when a switch sta
 	render(
 		<TestProviders>
 			<DesignScope>
-			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
-		</DesignScope>
+				<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.pointerDown(screen.getByRole('button', { name: t('canvas.moreActions', { name: 'Notes' }) }), {
@@ -472,8 +480,8 @@ test('a capture finishing on A cannot clear the draft typed on B afterwards', as
 	render(
 		<TestProviders>
 			<DesignScope>
-			<CaptureComposer store={store.view(0)} count={0} onOpenToday={() => {}} />
-		</DesignScope>
+				<CaptureComposer store={store.view(0)} count={0} onOpenToday={() => {}} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.keyDown(type('A submitted'), { key: 'Enter' });
@@ -497,8 +505,8 @@ test('on the same board only the submitted draft is cleared: text typed during t
 	render(
 		<TestProviders>
 			<DesignScope>
-			<CaptureComposer store={store.view()} count={0} onOpenToday={() => {}} />
-		</DesignScope>
+				<CaptureComposer store={store.view()} count={0} onOpenToday={() => {}} />
+			</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.keyDown(type('first'), { key: 'Enter' });
@@ -602,3 +610,85 @@ test('a shortcut that turns stale while it is starting stops before its side eff
 	expect(notify).toHaveBeenCalledTimes(1);
 	expect(automation).not.toHaveBeenCalled();
 });
+
+test('real DashboardPage edits a real BoardStore grid: cancellation keeps disk, completion persists the new geometry', async () => {
+	const { store, vault, release } = await twoBoards([probe], '---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n', true);
+	try {
+		await act(async () => {
+			await store.sync.addToCanvas({ member }, { w: 6, h: 2 });
+		});
+		const before = structuredClone(store.state.getState().data!.grid);
+		const disk = vault.contents.get(A + '.md');
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+		fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, { key: 'ArrowRight', shiftKey: true });
+		expect(store.state.getState().data!.grid).toEqual(before);
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.cancel') }));
+		expect(vault.contents.get(A + '.md')).toBe(disk);
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+		fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, { key: 'ArrowRight', shiftKey: true });
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
+		await waitFor(() => expect(screen.queryByRole('button', { name: t('home.layout.done') })).toBeNull());
+		await store.sync.flush();
+		expect(store.state.getState().data!.grid!.lg[0]!.w).toBe(7);
+		expect(parse(vault.contents.get(A + '.md')!).grid!.lg[0]!.w).toBe(7);
+		const persisted = vault.contents.get(A + '.md');
+		const write = vault.adapter.write;
+		vault.adapter.write = async () => {
+			throw new Error('Controlled disk rejection');
+		};
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+		fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, { key: 'ArrowDown', shiftKey: true });
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
+		await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Controlled disk rejection'));
+		expect(vault.contents.get(A + '.md')).toBe(persisted);
+		expect(screen.getByRole('button', { name: t('home.layout.done') })).toBeTruthy();
+		vault.adapter.write = write;
+		fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
+		await waitFor(() => expect(screen.queryByRole('button', { name: t('home.layout.done') })).toBeNull());
+		expect(parse(vault.contents.get(A + '.md')!).grid!.lg[0]!.h).toBe(7);
+	} finally {
+		release();
+		await store.dispose();
+	}
+});
+
+test.each([false, true])(
+	'failed Done then Cancel restores real pending geometry, retaining independent content=%s',
+	async (independent) => {
+		const { store, vault, release } = await twoBoards(
+			[probe],
+			'---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n',
+			true,
+		);
+		try {
+			await act(async () => store.sync.addToCanvas({ member }, { w: 6, h: 6 }));
+			const before = structuredClone(store.state.getState().data!.grid),
+				disk = vault.contents.get(A + '.md');
+			const write = vault.adapter.write;
+			vault.adapter.write = async () => {
+				throw Error('Cancelled layout rejected');
+			};
+			fireEvent.click(screen.getByRole('button', { name: t('home.layout.edit') }));
+			fireEvent.keyDown(document.querySelector('[data-grid-action="move"]')!, {
+				key: 'ArrowDown',
+				shiftKey: true,
+			});
+			fireEvent.click(screen.getByRole('button', { name: t('home.layout.done') }));
+			await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Cancelled layout rejected'));
+			expect(vault.contents.get(A + '.md')).toBe(disk);
+			if (independent)
+				await act(async () => store.sync.addQuickAction(action('Independent content')).catch(() => {}));
+			vault.adapter.write = write;
+			fireEvent.click(screen.getByRole('button', { name: t('home.layout.cancel') }));
+			await act(() => store.sync.flush());
+			await waitFor(() => expect(screen.queryByRole('button', { name: t('home.layout.done') })).toBeNull());
+			expect(store.state.getState().data!.grid).toEqual(before);
+			const persisted = parse(vault.contents.get(A + '.md')!);
+			expect(persisted.grid).toEqual(before);
+			expect(persisted.quickActions.map((item) => item.name)).toEqual(independent ? ['Independent content'] : []);
+		} finally {
+			release();
+			await store.dispose();
+		}
+	},
+);

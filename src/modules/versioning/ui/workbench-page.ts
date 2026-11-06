@@ -1,8 +1,9 @@
+import './i18n';
 import type { PageCreate } from '../../../app/contracts/workbench-host';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
 import { SyncPresentation, type SyncPageHost } from './sync-presentation';
 import type { WorkbenchMode } from './GitWorkbench';
-import { createDiffWorker } from './diff-worker-factory';
+import { createDiffWorker } from './diff/workers';
 
 const requestedMode = (target: WorkbenchTarget): WorkbenchMode =>
 	target.section === 'history' || target.section === 'compare' ? target.section : 'changes';

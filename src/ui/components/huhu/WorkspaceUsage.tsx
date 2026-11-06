@@ -1,4 +1,3 @@
-import type { UsageSnapshot } from '../../../app/contracts/workbench';
 import { t } from '../../../shared/i18n';
 import { AgentIcon } from './AgentIcon';
 import { Button } from '../button';
@@ -8,7 +7,14 @@ export function WorkspaceUsage({
 	value,
 	onProvider,
 }: {
-	value: NonNullable<UsageSnapshot['workspace']>;
+	value: {
+		root: string;
+		total: number;
+		knownSessions: number;
+		sessions: number;
+		error?: string;
+		providers: readonly { id: string; name: string; total: number; knownSessions: number }[];
+	};
 	onProvider?: (id: string) => void;
 }) {
 	const number = (value: number) =>

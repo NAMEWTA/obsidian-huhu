@@ -256,8 +256,8 @@ test('the calendar shows the month, marks days that have a note and today', asyn
 	expect(grid.textContent).toContain('2026');
 	expect(within(grid as HTMLElement).queryByRole('button', { name: 'Daily · Day and note actions' })).toBeNull();
 	expect(within(grid as HTMLElement).queryByRole('button', { name: 'Periodic notes' })).toBeNull();
-	expect(day('2026-10-14').dataset.hasNote).toBe('true');
-	expect(day('2026-10-13').dataset.hasNote).toBeUndefined();
+	expect(day('2026-10-14').getAttribute('aria-label')).toContain('Journal exists');
+	expect(day('2026-10-13').getAttribute('aria-label')).not.toContain('Journal exists');
 	expect(day('2026-10-15').getAttribute('aria-current')).toBe('date');
 	// five weeks, Monday first: the grid starts on 28 September and ends on 1 November
 	expect(document.querySelectorAll('[data-date]')).toHaveLength(35);
@@ -281,7 +281,7 @@ test('clicking a day selects its agenda; explicit actions create or reuse the jo
 	t.view(<NavPane />);
 	await screen.findByText('Work');
 	fireEvent.click(day('2026-10-16'));
-	expect(day('2026-10-16').getAttribute('aria-selected')).toBe('true');
+	expect(day('2026-10-16').getAttribute('aria-pressed')).toBe('true');
 	expect(screen.getByRole('region', { name: '2026-10-16 · Day agenda' })).toBeTruthy();
 	expect(t.opened).toEqual([]);
 	expect(t.fake.files.size).toBe(1);
@@ -289,7 +289,7 @@ test('clicking a day selects its agenda; explicit actions create or reuse the jo
 	choose(await screen.findByRole('menuitem', { name: 'Create note' }));
 	await waitFor(() => expect(t.opened).toEqual(['huhu/journal/daily/2026/10/2026-10-16.md']));
 	expect(t.fake.has('huhu/journal/daily/2026/10/2026-10-16.md')).toBe(true);
-	await waitFor(() => expect(day('2026-10-16').dataset.hasNote).toBe('true'));
+	await waitFor(() => expect(day('2026-10-16').getAttribute('aria-label')).toContain('Journal exists'));
 	fireEvent.click(day('2026-10-14'));
 	expect(t.opened).toHaveLength(1);
 	expect(t.fake.files.size).toBe(2);
@@ -327,7 +327,7 @@ test('month arrows move the grid and Today returns', async () => {
 	fireEvent.click(screen.getByRole('button', { name: 'Previous period' }));
 	await waitFor(() => expect(screen.getByRole('grid', { name: 'September 2026' })).toBeTruthy());
 	fireEvent.click(screen.getByRole('button', { name: 'Today' }));
-	expect(day('2026-10-15').getAttribute('aria-selected')).toBe('true');
+	expect(day('2026-10-15').getAttribute('aria-pressed')).toBe('true');
 	expect(screen.getByRole('region', { name: '2026-10-15 · Day agenda' })).toBeTruthy();
 	fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Close' }));
 	await waitFor(() => expect(screen.getByRole('grid', { name: 'October 2026' })).toBeTruthy());

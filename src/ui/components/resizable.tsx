@@ -1,42 +1,49 @@
 // Adapted from shadcn/ui new-york-v4 (MIT), Copyright (c) 2023 shadcn.
-// Source recipe: shadcn-ui/ui, apps/v4/registry/new-york-v4/ui/resizable.tsx.
-// Recipe adaptation (no upstream revision recorded); React 19 / Radix UI 1.6.7, resizable 3.0.6.
+// Original recipe: shadcn-ui/ui, apps/v4/registry/new-york-v4/ui/resizable.tsx.
+// The inherited recipe did not record an upstream revision; none is inferred here.
+// HUHU adaptation uses installed react-resizable-panels 4.18.1 Group/Panel/Separator APIs.
+// API source: https://github.com/bvaughn/react-resizable-panels
 import type { ComponentProps } from 'react';
 import { GripVerticalIcon } from 'lucide-react';
-import * as ResizablePrimitive from 'react-resizable-panels';
+import { Group, Panel, Separator } from 'react-resizable-panels';
 import { cn } from '../lib/utils';
-export function ResizablePanelGroup({ className, ...props }: ComponentProps<typeof ResizablePrimitive.PanelGroup>) {
+
+/** v4 layout is keyed by Panel id. Numeric Panel sizes are pixels; use "50%" for percentages. */
+export function ResizablePanelGroup({ className, ...props }: ComponentProps<typeof Group>) {
 	return (
-		<ResizablePrimitive.PanelGroup
+		<Group
 			data-slot="resizable-panel-group"
-			className={cn('flex h-full w-full data-[panel-group-direction=vertical]:flex-col', className)}
+			resizeTargetMinimumSize={{ fine: 32, coarse: 44 }}
+			className={cn('h-full w-full', className)}
 			{...props}
 		/>
 	);
 }
-export function ResizablePanel(props: ComponentProps<typeof ResizablePrimitive.Panel>) {
-	return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />;
+export function ResizablePanel(props: ComponentProps<typeof Panel>) {
+	return <Panel data-slot="resizable-panel" {...props} />;
 }
 export function ResizableHandle({
 	withHandle,
 	className,
 	...props
-}: ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & { withHandle?: boolean }) {
+}: ComponentProps<typeof Separator> & { withHandle?: boolean }) {
 	return (
-		<ResizablePrimitive.PanelResizeHandle
+		<Separator
 			data-slot="resizable-handle"
-			hitAreaMargins={{ fine: 0, coarse: 0 }}
 			className={cn(
-				'relative flex w-[var(--nd-hit-size)] items-center justify-center bg-transparent after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden data-[panel-group-direction=vertical]:h-[var(--nd-hit-size)] data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:inset-y-auto data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:top-1/2 data-[panel-group-direction=vertical]:after:h-px data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0 [&[data-panel-group-direction=vertical]>div]:rotate-90',
+				'relative flex w-[var(--hu-hit)] items-center justify-center bg-transparent after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-[var(--hu-line)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] aria-[orientation=horizontal]:h-[var(--hu-hit)] aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:inset-y-auto aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:top-1/2 aria-[orientation=horizontal]:after:h-px aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:-translate-y-1/2 aria-[orientation=horizontal]:after:translate-x-0 [&[aria-orientation=horizontal]>div]:rotate-90',
 				className,
 			)}
 			{...props}
 		>
 			{withHandle && (
-				<div className="z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border">
+				<div
+					aria-hidden
+					className="flex h-4 w-3 items-center justify-center rounded-[var(--hu-radius-xs)] border border-[var(--hu-line)] bg-[var(--hu-sunken)]"
+				>
 					<GripVerticalIcon className="size-2.5" />
 				</div>
 			)}
-		</ResizablePrimitive.PanelResizeHandle>
+		</Separator>
 	);
 }

@@ -35,7 +35,7 @@ afterEach(async () => { try { for (const cleanup of cleanups.splice(0).reverse()
 async function fixture(withTemplate = false) {
 	const language = getLanguage(); setLanguage('en'); cleanups.push(() => setLanguage(language));
 	const path = (date: string) => `Notes/Journal/daily/${date.slice(0, 4)}/${date.slice(5, 7)}/${date}.md`;
-	const vault = memoryVault({ [path('2026-11-04')]: 'Fourth day full body', [path('2026-11-03')]: 'Third day full body', 'Different/daily/2026/11/2026-11-04.md': 'Different root body', ...(withTemplate ? { 'Templates/Daily.md': '# Daily template' } : {}) }, window);
+	const vault = memoryVault({ 'Notes/Journal/monthly/2026/2026-11.md': 'Monthly body real service', [path('2026-11-04')]: 'Fourth day full body', [path('2026-11-03')]: 'Third day full body', 'Different/daily/2026/11/2026-11-04.md': 'Different root body', ...(withTemplate ? { 'Templates/Daily.md': '# Daily template' } : {}) }, window);
 	const app = vault.app;
 	const abstract = app.vault.getAbstractFileByPath;
 	app.vault.getAbstractFileByPath = path => { const value = abstract(path); return value && !(value instanceof TFile) ? Object.assign(value, { children: [] }) : value; };
@@ -113,8 +113,8 @@ test('the production rail opens the real lazy module page and the identical peri
 test('diary routes survive shell normalization and restore the selected date after navigation and reopening', async () => {
 	const f = await fixture();
 	const raw = { feature: 'navigator', section: 'diary', resourceId: '2026-11-04' };
-	expect(normalizeWorkbenchState({ target: raw, lastTargets: { navigator: raw } }).lastTargets.navigator).toEqual(raw);
-	expect(normalizeTarget({ feature: 'navigator', section: 'unknown' })).toEqual({ feature: 'navigator' });
+	expect(normalizeWorkbenchState({ schema: 'huhu-workbench-ui/1', route: raw, navigation: { lastRoutes: { navigator: raw } } }).navigation.lastRoutes.navigator).toEqual(raw);
+	expect(normalizeTarget({ feature: 'navigator', section: 'unknown' })).toEqual({ feature: 'navigator', section: 'unknown' });
 	const page = await f.mount('2026-11-04');
 	await screen.findByText('Fourth day full body');
 	fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
@@ -293,4 +293,35 @@ test('a loaded text hit returns to the matching book date and a new search start
 	expect(screen.getByLabelText('Search diary text')).toHaveProperty('value', '');
 	expect(screen.queryByRole('button', { name: /2026-11-04 · Fourth day full body/ })).toBeNull();
 	f.assertReadOnly();
+});
+
+
+test.each([true, false])('writing raw dates preserve the requested identity, invalid=%s', async invalid => {
+ const f = await fixture();
+ const published = vi.spyOn(feedback, 'publishFeedback');
+ await f.mount('2026-11-04'); await screen.findByText('Fourth day full body');
+ fireEvent.click(screen.getByRole('button', { name: 'Search / Write' }));
+ fireEvent.click(screen.getByRole('button', { name: 'Write a note' }));
+ fireEvent.change(screen.getByLabelText('Writing date'), { target: { value: invalid ? '2026-02-31' : '2026-11-04' } });
+ fireEvent.blur(screen.getByLabelText('Writing date'));
+ fireEvent.change(screen.getByLabelText('Text'), { target: { value: 'Counter appended marker' } });
+ if (invalid) expect(screen.getByRole('button', { name: 'Save' })).toHaveProperty('disabled', true);
+ else await waitFor(() => expect(screen.getByRole('button', { name: 'Save' })).toHaveProperty('disabled', false));
+ fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+ await waitFor(() => expect(screen.queryByText('Saving. Duplicate submission is disabled.')).toBeNull());
+ await act(async () => { await new Promise(resolve => window.setTimeout(resolve, 30)); });
+ expect(f.vault.contents.get(f.path('2026-11-04'))?.includes('Counter appended marker')).toBe(!invalid);
+ if (invalid) expect(published.mock.calls.some(([, message]) => message.outcome === 'success')).toBe(false);
+});
+
+test.each(['2026-11-17', '2026-11-01'])('monthly book reads the containing periodic file when selecting %s', async date => {
+ const f = await fixture(); await f.mount('2026-11-04'); await screen.findByText('Fourth day full body');
+ fireEvent.keyDown(screen.getByRole('combobox'), { key: 'ArrowDown' });
+ fireEvent.click(await screen.findByRole('option', { name: 'Monthly' }));
+ await screen.findByText('Monthly body real service');
+ fireEvent.change(screen.getByLabelText('Jump to date'), { target: { value: date } });
+ fireEvent.blur(screen.getByLabelText('Jump to date'));
+ fireEvent.click(screen.getByRole('button', { name: 'Go' }));
+ expect(await screen.findByText('Monthly body real service')).toBeTruthy();
+ f.assertReadOnly();
 });

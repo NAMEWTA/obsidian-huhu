@@ -30,10 +30,10 @@ export function AccountsSection({ controller }: { controller: AgentController })
 	return (
 		<SettingsSection title={t('agent.manage.accounts')}>
 			<div className="flex items-center justify-between gap-3">
-				<p className="text-xs text-muted-foreground">{t('agent.stats.accountQuota')}</p>
+				<p className="text-xs text-[var(--hu-fg-2)]">{t('agent.stats.accountQuota')}</p>
 				<Button
 					size="sm"
-					variant="outline"
+					variant="secondary"
 					disabled={usage.refreshing}
 					onClick={() => {
 						void controller.usageStore.refresh().catch((error: unknown) => controller.workspace.report(error));
@@ -43,7 +43,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 				</Button>
 			</div>
 			{AGENT_CATALOG.map((a) => (
-				<section key={a.id} className="space-y-2 rounded-lg border border-border/50 p-3">
+				<section key={a.id} className="space-y-2 rounded-lg border border-[var(--hu-line)]/50 p-3">
 					<div className="flex items-center justify-between">
 						<h4 className="text-sm font-medium">{a.title}</h4>
 						<Button
@@ -63,7 +63,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 						.map((p) => (
 							<div
 								key={p.id}
-								className="space-y-2 rounded-md bg-muted/40 p-3 text-xs text-muted-foreground"
+								className="space-y-2 rounded-md bg-[var(--hu-sunken)]/40 p-3 text-xs text-[var(--hu-fg-2)]"
 							>
 								<span>{p.statusLabel}</span>
 								{p.windows.map((w) => (
@@ -104,7 +104,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 									{settings.accountLabels[a.id]?.[id] || id || t('agent.manage.defaultAccount')}
 									{!id && (
 										<span
-											className="ml-2 text-muted-foreground"
+											className="ml-2 text-[var(--hu-fg-2)]"
 											title={controller.systemAccountLocation(a.id)}
 										>
 											{t('agent.manage.systemLocation', {
@@ -114,7 +114,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 									)}
 								</span>
 								{settings.agents.agents[a.id].accountId === id && (
-									<span className="text-muted-foreground">
+									<span className="text-[var(--hu-fg-2)]">
 										{usage.providers.find((p) => p.id === a.id)?.statusLabel}
 										{usage.providers
 											.find((p) => p.id === a.id)
@@ -123,7 +123,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 									</span>
 								)}
 								<Button
-									size="xs"
+									size="sm"
 									variant={settings.agents.agents[a.id].accountId === id ? 'secondary' : 'ghost'}
 									onClick={() => {
 										void controller
@@ -140,7 +140,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 								{id && (
 									<>
 										<Button
-											size="xs"
+											size="sm"
 											variant="ghost"
 											onClick={() => {
 												setName(settings.accountLabels[a.id]?.[id] || id);
@@ -151,9 +151,9 @@ export function AccountsSection({ controller }: { controller: AgentController })
 											{t('agent.rename')}
 										</Button>
 										<Button
-											size="xs"
+											size="sm"
 											variant="ghost"
-											className="text-destructive"
+											className="text-[var(--hu-danger)]"
 											onClick={() => {
 												void controller
 													.removeAccount(a.id, id)
@@ -186,7 +186,7 @@ export function AccountsSection({ controller }: { controller: AgentController })
 							onChange={(e) => setName(e.target.value)}
 						/>
 						{error && (
-							<p role="alert" className="text-xs text-destructive">
+							<p role="alert" className="text-xs text-[var(--hu-danger)]">
 								{error}
 							</p>
 						)}

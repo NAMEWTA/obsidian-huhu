@@ -39,7 +39,10 @@ function SyncPageContent() {
 
 const SETTINGS = {};
 function fakePlugin() {
-	const pages: Record<string, () => Promise<(props: { resourceId?: string }) => React.JSX.Element>> = { agent: async () => AgentPage, versioning: async () => SyncPageContent };
+	const pages: Record<string, () => Promise<(props: { resourceId?: string }) => React.JSX.Element>> = {
+		agent: async () => AgentPage,
+		versioning: async () => SyncPageContent,
+	};
 	return {
 		app: { workspace: { containerEl: { doc: document } } },
 		moduleInstance: (id: string) => ({ settingsPage: pages[id] }),
@@ -73,8 +76,12 @@ test('a search matches label, description and category across all tabs and targe
 	expect(usage.map((item) => item.label)).toEqual(['Show usage', 'Show usage', 'Refresh interval']);
 	expect(usage[1]?.target).toMatchObject({ feature: 'settings', section: 'terminal', resourceId: 'usage' });
 	expect(usage[1]?.detail).toBe('Agents › Usage · Quota in the status bar');
-	expect((await searchSettings(plugin, CATEGORIES, 'template commits')).map((item) => item.target?.section)).toEqual(['versioning']);
-	expect((await searchSettings(plugin, CATEGORIES, 'git sync')).map((item) => item.label)).toEqual(['Commit message']);
+	expect((await searchSettings(plugin, CATEGORIES, 'template commits')).map((item) => item.target?.section)).toEqual([
+		'versioning',
+	]);
+	expect((await searchSettings(plugin, CATEGORIES, 'git sync')).map((item) => item.label)).toEqual([
+		'Commit message',
+	]);
 	expect(await searchSettings(plugin, CATEGORIES, 'nothing matches this')).toEqual([]);
 });
 
@@ -87,7 +94,13 @@ test('opening a result scrolls to the setting and highlights it', async () => {
 	const target = second!.target!;
 	render(
 		<TestProviders>
-			<SettingsPage plugin={plugin} category={target.section!} resourceId={target.resourceId} focusId={target.focusId} navigate={vi.fn()} />
+			<SettingsPage
+				plugin={plugin}
+				category={target.section!}
+				resourceId={target.resourceId}
+				focusId={target.focusId}
+				navigate={vi.fn()}
+			/>
 		</TestProviders>,
 	);
 	await screen.findByText('Quota in the status bar');
@@ -96,4 +109,15 @@ test('opening a result scrolls to the setting and highlights it', async () => {
 	expect(row.className).toContain('ring-2');
 	// The content area has no search field of its own.
 	expect(screen.queryByRole('searchbox')).toBeNull();
+});
+
+test('index cache belongs to the plugin instance, even for equal capability signatures', async () => {
+	resetSettingsIndex();
+	const first = fakePlugin();
+	await searchSettings(first, CATEGORIES, 'Commit');
+	const other = fakePlugin();
+	const OtherPage = () => <SettingsRow label="Different vault setting" control={<span />} />;
+	const load = async () => OtherPage;
+	other.moduleInstance = (() => ({ settingsPage: load })) as unknown as typeof other.moduleInstance;
+	expect((await searchSettings(other, CATEGORIES, 'Different vault')).length).toBeGreaterThan(0);
 });

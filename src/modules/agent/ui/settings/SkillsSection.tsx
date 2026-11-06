@@ -33,7 +33,7 @@ const MONOGRAMS: Partial<Record<SkillTargetId, string>> = { grok: 'GK', opencode
 function TargetGlyph({ target }: { target: SkillTargetId }) {
 	if (target === 'agents') return <Folder className="size-4" aria-hidden />;
 	if (target === 'claude-code' || target === 'codex' || target === 'gemini') return <AgentIcon agent={target} size={16} />;
-	return <span aria-hidden className="text-3xs font-semibold leading-none">{MONOGRAMS[target] ?? target.slice(0, 2).toUpperCase()}</span>;
+	return <span aria-hidden className="text-xs font-semibold leading-none">{MONOGRAMS[target] ?? target.slice(0, 2).toUpperCase()}</span>;
 }
 
 /** The text input and remembered names that exist beside discovery: extra directories for the picker and names saved by buttons. */
@@ -54,10 +54,10 @@ export function SkillsAdvanced({ handle, desktop, onChanged }: { handle: Setting
 							void handle.update((d) => { d.skillDirectories = next; }).then(() => onChanged?.()).catch(report);
 						}}
 					/>
-					<span className="block text-xs text-muted-foreground">{t('agent.skills.directoriesHint')}</span>
+					<span className="block text-xs text-[var(--hu-fg-2)]">{t('agent.skills.directoriesHint')}</span>
 				</label>
 			) : (
-				<p className="text-sm text-muted-foreground">{t('agent.skills.mobile')}</p>
+				<p className="text-sm text-[var(--hu-fg-2)]">{t('agent.skills.mobile')}</p>
 			)}
 			{AGENT_CATALOG.filter((a) => settings.knownSkills[a.id]?.length).map((a) => (
 				<SettingsRow
@@ -107,7 +107,7 @@ export function SkillsSection({ manager, handle }: { manager: SkillManager; hand
 			<SettingsSection title={t('agent.skills.heading')} description={t('agent.skills.intro')}>
 				<div className="flex flex-wrap items-center gap-2">
 					<div className="relative min-w-40 flex-1">
-						<Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+						<Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-[var(--hu-fg-2)]" aria-hidden />
 						<Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('agent.skills.search')} aria-label={t('agent.skills.search')} className="pl-8" />
 					</div>
 					<SegmentedControl
@@ -120,12 +120,12 @@ export function SkillsSection({ manager, handle }: { manager: SkillManager; hand
 							{ value: 'vault', label: t('agent.skills.scope.vault') },
 						]}
 					/>
-					<Button variant="outline" size="icon" aria-label={t('agent.skills.refresh')} title={t('agent.skills.refresh')} disabled={state.loading} onClick={() => run(manager.refresh())}>
+					<Button variant="secondary" size="icon-md" aria-label={t('agent.skills.refresh')} title={t('agent.skills.refresh')} disabled={state.loading} onClick={() => run(manager.refresh())}>
 						<RefreshCw className={cn(state.loading && 'animate-spin')} />
 					</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="icon" aria-label={t('agent.skills.openFolder')} title={t('agent.skills.openFolder')}>
+							<Button variant="secondary" size="icon-md" aria-label={t('agent.skills.openFolder')} title={t('agent.skills.openFolder')}>
 								<FolderOpen />
 							</Button>
 						</DropdownMenuTrigger>
@@ -138,9 +138,9 @@ export function SkillsSection({ manager, handle }: { manager: SkillManager; hand
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				{state.error && <p role="alert" className="text-sm text-destructive">{state.error}</p>}
+				{state.error && <p role="alert" className="text-sm text-[var(--hu-danger)]">{state.error}</p>}
 				{state.unavailable.length > 0 && (
-					<p className="text-xs text-muted-foreground" title={state.unavailable.join('\n')}>{t('agent.skills.unavailable', { count: state.unavailable.length })}</p>
+					<p className="text-xs text-[var(--hu-fg-2)]" title={state.unavailable.join('\n')}>{t('agent.skills.unavailable', { count: state.unavailable.length })}</p>
 				)}
 				{visible.length === 0 ? (
 					<EmptyState
@@ -175,7 +175,7 @@ export function SkillsSection({ manager, handle }: { manager: SkillManager; hand
 					<AlertDialogFooter>
 						<AlertDialogCancel>{t('ui.cancel')}</AlertDialogCancel>
 						<AlertDialogAction
-							className={buttonVariants({ variant: 'destructive' })}
+							className={buttonVariants({ variant: 'danger' })}
 							onClick={() => {
 								const current = confirm;
 								setConfirm(undefined);
@@ -206,24 +206,24 @@ function SkillCard({ record, titles, pending, onToggle, onUpdate, onOpen }: {
 	const updating = pending.includes(pendingId(record, '*'));
 	const source = record.source;
 	return (
-		<li className="flex min-w-0 flex-col gap-2 rounded-lg border border-border/50 bg-card p-3 text-card-foreground shadow-xs" data-skill={record.name}>
+		<li className="flex min-w-0 flex-col gap-2 rounded-lg border border-[var(--hu-line)]/50 bg-[var(--hu-raised)] p-3 text-card-foreground shadow-xs" data-skill={record.name}>
 			<div className="flex min-w-0 items-center gap-2">
-				<span aria-hidden className={cn('size-2 shrink-0 rounded-full', enabled ? 'bg-status-success' : 'bg-muted-foreground/40')} />
+				<span aria-hidden className={cn('size-2 shrink-0 rounded-full', enabled ? 'bg-[var(--hu-success)]' : 'bg-[var(--hu-fg-3)]/40')} />
 				<span className="min-w-0 flex-1 truncate text-sm font-medium" title={record.name}>{record.name}</span>
-				<Badge variant="outline" className="shrink-0">{t(`agent.skills.scope.${record.scope}`)}</Badge>
+				<Badge variant="neutral" className="shrink-0">{t(`agent.skills.scope.${record.scope}`)}</Badge>
 				{stale && (
-					<Button size="xs" variant="secondary" disabled={updating} title={t('agent.skills.updateHint')} onClick={onUpdate}>
+					<Button size="sm" variant="secondary" disabled={updating} title={t('agent.skills.updateHint')} onClick={onUpdate}>
 						{updating && <Loader2 className="animate-spin" />}
 						{t('agent.skills.update')}
 					</Button>
 				)}
 			</div>
-			<p className="m-0 line-clamp-2 min-h-8 text-xs text-muted-foreground" title={record.description || undefined}>
+			<p className="m-0 line-clamp-2 min-h-8 text-xs text-[var(--hu-fg-2)]" title={record.description || undefined}>
 				{record.description || t('agent.skills.noDescription')}
 			</p>
 			<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-				<div className="flex min-w-0 max-w-full items-center gap-1 text-xs text-muted-foreground">
-					<Button variant="ghost" size="icon-xs" aria-label={t('agent.skills.openSkill', { name: record.name })} title={source?.dir ?? record.locations[0]!.dir} onClick={() => onOpen((source ?? record.locations[0]!).dir)}>
+				<div className="flex min-w-0 max-w-full items-center gap-1 text-xs text-[var(--hu-fg-2)]">
+					<Button variant="ghost" size="icon-sm" aria-label={t('agent.skills.openSkill', { name: record.name })} title={source?.dir ?? record.locations[0]!.dir} onClick={() => onOpen((source ?? record.locations[0]!).dir)}>
 						<FolderOpen />
 					</Button>
 					<span className="min-w-0 truncate" title={source?.dir}>
@@ -267,8 +267,8 @@ function TargetButton({ record, target, title, cell, busy, onToggle }: {
 			aria-disabled={locked || busy}
 			onClick={() => { if (!locked && !busy) onToggle(); }}
 			className={cn(
-				'relative inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border outline-none transition-[transform,opacity] focus-visible:ring-[3px] focus-visible:ring-ring/50',
-				on ? 'border-border bg-accent text-accent-foreground' : 'border-transparent text-muted-foreground opacity-50 hover:opacity-100',
+				'relative inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border outline-none transition-[transform,opacity] focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50',
+				on ? 'border-[var(--hu-line)] bg-[var(--hu-accent-soft)] text-[var(--hu-accent-text)]' : 'border-transparent text-[var(--hu-fg-2)] opacity-50 hover:opacity-100',
 				cell.state === 'manual' && 'cursor-default border-dashed',
 				locked && cell.state === 'off' && 'cursor-not-allowed',
 			)}

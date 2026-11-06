@@ -51,7 +51,7 @@ const server = http.createServer((request, response) => {
 });
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const pageUrl = `http://127.0.0.1:${server.address().port}/au`;
-const modules = { home: true, agent: true, automations: true, notifications: true, archives: false, comments: false, icons: false, sync: false, navigator: false };
+const modules = { home: true, agent: true, automations: true, notifications: true, archives: false, comments: false, icons: false, versioning: false, navigator: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_AU_PORT || 19701),

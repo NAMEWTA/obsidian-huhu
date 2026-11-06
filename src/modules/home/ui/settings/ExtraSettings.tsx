@@ -1,7 +1,8 @@
+import { LocalDateTimeField } from '../widgets/LocalDateTimeField';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/settings.ts
 import { WidgetBackgroundEditor } from './WidgetBackgroundEditor';
 import { SkillList } from '../quickbar/SkillList';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Input } from '../../../../ui/components/input';
 import { Button } from '../../../../ui/components/button';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
@@ -114,10 +115,10 @@ export function GeneralExtras({ host, settings, update }: Props) {
 				}
 			/>
 			<div className="flex gap-2">
-				<Button variant="outline" onClick={() => run(() => backupBoards(host))}>
+				<Button variant="secondary" onClick={() => run(() => backupBoards(host))}>
 					{t('home.p1.backupNow')}
 				</Button>
-				<Button variant="outline" onClick={() => setRestore(true)}>
+				<Button variant="secondary" onClick={() => setRestore(true)}>
 					{t('home.p1.restore')}
 				</Button>
 			</div>
@@ -141,9 +142,11 @@ export function GeneralExtras({ host, settings, update }: Props) {
 	);
 }
 export function WidgetExtras({ host, settings, update }: Props) {
+	const invalidDates = useRef(new Set<string>());
 	const t = useT(),
 		[error, setError] = useState('');
 	const set = (change: (s: DashboardSettings) => void) => {
+		if (invalidDates.current.size) return;
 		void update(change).catch((e) => setError(String(e)));
 	};
 	const numbers = [
@@ -255,14 +258,17 @@ export function WidgetExtras({ host, settings, update }: Props) {
 								})
 							}
 						/>
-						<Input
-							type="datetime-local"
-							aria-label={t('home.p1.date')}
-							value={c.targetDate.length === 10 ? `${c.targetDate}T00:00` : c.targetDate}
-							onChange={(e) =>
+						<LocalDateTimeField
+							onValidityChange={(valid) => {
+								if (valid) invalidDates.current.delete(c.id);
+								else invalidDates.current.add(c.id);
+							}}
+							label={t('home.dashboard.date')}
+							value={c.targetDate}
+							onChange={(value) =>
 								set((s) => {
 									const v = s.countdowns.find((x) => x.id === c.id);
-									if (v) v.targetDate = e.target.value;
+									if (v) v.targetDate = value;
 								})
 							}
 						/>
@@ -301,7 +307,7 @@ export function WidgetExtras({ host, settings, update }: Props) {
 					</div>
 				))}
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() =>
 						set((s) => {
 							s.countdowns.push({

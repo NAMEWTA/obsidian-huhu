@@ -29,7 +29,7 @@ export function StatusDot({
 			`ui.${status ?? (state === 'done' ? 'completed' : state === 'permission' || state === 'waiting' ? 'question' : state)}`,
 		);
 	const icon = size === 'md' ? 'size-3' : 'size-2.5',
-		inner = size === 'md' ? 'size-2' : 'size-1.5';
+		inner = 'size-2';
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
@@ -40,7 +40,12 @@ export function StatusDot({
 					className={cn('inline-flex shrink-0 items-center justify-center', icon, className)}
 				>
 					{state === 'working' ? (
-						<AgentWorkingSpinner className={inner} />
+						<AgentWorkingSpinner
+							className={cn(
+								inner,
+								'animate-pulse shadow-[0_0_0_3px_var(--hu-warning-soft)] motion-reduce:animate-none',
+							)}
+						/>
 					) : state === 'waiting' || state === 'permission' ? (
 						<AgentQuestionIcon className={icon} />
 					) : state === 'unknown' ? (
@@ -52,7 +57,10 @@ export function StatusDot({
 					) : state === 'interrupted' ? (
 						<CirclePause className={cn('text-status-error', icon)} data-status-shape="interrupted" />
 					) : (
-						<span className={cn('block rounded-full bg-muted-foreground/50', inner)} data-status-shape="idle" />
+						<span
+							className={cn('block rounded-full bg-muted-foreground', inner)}
+							data-status-shape="idle"
+						/>
 					)}
 				</span>
 			</TooltipTrigger>

@@ -21,6 +21,7 @@ test('task creation no longer requires a dashboard or card and uses explicit dea
 	);
 	expect(screen.queryByRole('combobox', { name: 'Dashboard' })).toBeNull();
 	fireEvent.change(screen.getByLabelText(t('automation.taskDueDate')), { target: { value: '2026-09-30' } });
+	fireEvent.blur(screen.getByLabelText(t('automation.taskDueDate')));
 	fireEvent.change(screen.getByLabelText(t('automation.calendarTaskTime')), { target: { value: '14:30' } });
 	await user.click(screen.getByRole('button', { name: 'Save' }));
 	await waitFor(() =>

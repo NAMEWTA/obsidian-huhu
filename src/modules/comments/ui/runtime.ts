@@ -14,6 +14,7 @@ import { registerCommentCommands } from './commands';
 import type { CommentsEnv } from './env';
 import { CommentsOverlays } from './popover/overlay-host';
 import { commentsReadingProcessor, refreshReadingViews } from './reading';
+import type { EditorPanelHandle } from '../../../app/contracts/editor-context';
 import type { DocumentChangeParticipant } from '../../../shared/storage/document-mutation';
 export interface CommentsRuntime { readonly env: CommentsEnv; readonly panel: CommentsPanel; readonly index: CommentsIndex; readonly documentChanges: DocumentChangeParticipant; dispose(): void }
 export async function createCommentsRuntime(context: ModuleContext, settings: SettingsHandle<CommentsSettings>): Promise<CommentsRuntime> {
@@ -27,7 +28,7 @@ export async function createCommentsRuntime(context: ModuleContext, settings: Se
 	const env: CommentsEnv = { app, service, editors: new Set(), alive: () => alive, overlay: doc => overlays.get(doc), open: request => overlays.get(request.ownerDocument).open(request), openSettings: () => { void context.shell.open({ feature: 'settings', section: 'editor' }); }, exportHighlights: async rows => { const { exportHighlightCards } = await import('../services/export'); return exportHighlightCards(app, settings.get().exportFolder, rows); } };
 	const overlays = new CommentsOverlays(env);
 	const readingCleanups = new Set<() => void>();
-	const panels = new Set<() => void>();
+	const panels = new Set<EditorPanelHandle>();
 	context.editor.addExtension(commentsCmExtension(env));
 	context.editor.addPostProcessor(commentsReadingProcessor(env, readingCleanups));
 	registerCommentCommands(env, context.commands);
@@ -47,12 +48,15 @@ export async function createCommentsRuntime(context: ModuleContext, settings: Se
 	lifetime.register(settings.subscribe(() => { store.notify(); refreshReadingViews(env); }));
 	lifetime.register(store.subscribe(() => refreshReadingViews(env)));
 	void service.refresh();
-	const panel: CommentsPanel = { mount(container, documents) {
-		let unmount: (() => void) | undefined;
-		let mounted = true;
-		void import('./panel/mount').then(({ mountCommentsPanel }) => { if (mounted && alive) unmount = mountCommentsPanel(container, env, documents); });
-		const cleanup = () => { if (!mounted) return; mounted = false; unmount?.(); panels.delete(cleanup); };
-		panels.add(cleanup); return cleanup;
+	const panel: CommentsPanel = { mount(container, documents, initialVisible) {
+		let mounted = true, visible = initialVisible;
+		let child: EditorPanelHandle | undefined;
+		const handle: EditorPanelHandle = {
+			setVisible(next) { visible = next; child?.setVisible(next); },
+			dispose() { if (!mounted) return; mounted = false; child?.dispose(); panels.delete(handle); },
+		};
+		void import('./panel/mount').then(({ mountCommentsPanel }) => { if (mounted && alive) child = mountCommentsPanel(container, env, documents, visible); });
+		panels.add(handle); return handle;
 	} };
 	const index: CommentsIndex = { notes: () => service.state.getState().notes, subscribe: listener => service.state.subscribe(listener) };
 	const documentChanges: DocumentChangeParticipant = {
@@ -61,7 +65,7 @@ export async function createCommentsRuntime(context: ModuleContext, settings: Se
 		abort: (operationId, text) => store.abortDocumentChange(operationId, text),
 	};
 	return { env, panel, index, documentChanges, dispose() {
-		alive = false; overlays.dispose(); for (const cleanup of panels) cleanup(); for (const cleanup of readingCleanups) cleanup();
+		alive = false; overlays.dispose(); for (const handle of panels) handle.dispose(); for (const cleanup of readingCleanups) cleanup();
 		service.dispose(); activation.retire(store); refreshReadingViews(env);
 	} };
 }

@@ -1,12 +1,9 @@
 import { serviceKey } from '../../app/contracts/module';
-import type { EditorContextAccess } from '../../app/contracts/editor-context';
+import type { EditorPanelContribution } from '../../app/contracts/editor-context';
 import type { DocumentChangeParticipant } from '../../shared/storage/document-mutation';
 
 /** The comments side panel (`huhu-comments-view`) renders through this while the module is active. */
-export interface CommentsPanel {
-	/** Render the panel for the active note into `container`; returns the cleanup. */
-	mount(container: HTMLElement, documents?: EditorContextAccess): () => void;
-}
+export type CommentsPanel = EditorPanelContribution;
 
 /** A note with comments, from the comment index. */
 export interface CommentedNote {

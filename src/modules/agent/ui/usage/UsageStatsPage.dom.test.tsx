@@ -105,8 +105,8 @@ test('heatmap: 26 weeks as week-aligned blocks that start on Monday, five levels
 	for (const block of sundays) expect(Number(block.getAttribute('y'))).toBe(top + 6 * 14);
 	// Levels come from CSS variables, so the theme recolours them.
 	const fill = (level: number) => blocks.find((block) => block.dataset.level === String(level))?.getAttribute('fill');
-	expect(fill(0)).toBe('var(--muted)');
-	for (const level of [1, 2, 3, 4]) expect(fill(level)).toContain('var(--chart-1)');
+	expect(fill(0)).toBe('var(--hu-sunken)');
+	for (const level of [1, 2, 3, 4]) expect(fill(level)).toContain('var(--hu-chart-1)');
 	expect(new Set(blocks.map((block) => block.dataset.level))).toEqual(new Set(['0', '1', '2', '3', '4']));
 	// Month labels, the legend ends and the total are the library's, in the current language.
 	expect(heatmap.textContent).toContain('Mon');

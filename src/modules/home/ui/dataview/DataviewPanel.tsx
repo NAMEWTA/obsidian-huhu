@@ -1,5 +1,5 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/dataview-section.ts
-import { useOwnerDocument } from '../../../../ui/react/contexts';
+import { useOwnerDocument, useVisible } from '../../../../ui/react/contexts';
 import { p1Classes } from '../theme/p1-classes';
 import { Platform } from 'obsidian';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
@@ -39,7 +39,8 @@ export function DataviewPanel({
 	reloadRegister: (reload: () => void) => void;
 	change: ((config: DataviewConfig) => void) | null;
 }) {
-	const t = useT();
+	const t = useT(),
+		visible = useVisible();
 	const [result, setResult] = useState<QueryResult | null>(null),
 		[status, setStatus] = useState(Platform.isMobile ? 'manual' : 'scanning'),
 		[error, setError] = useState('');
@@ -48,6 +49,7 @@ export function DataviewPanel({
 	const epoch = useRef(0),
 		mounted = useRef(true);
 	const load = useCallback(async () => {
+		if (!visible) return;
 		const version = ++epoch.current;
 		if (!config.query.trim()) {
 			setStatus('emptyQuery');
@@ -77,8 +79,9 @@ export function DataviewPanel({
 				setStatus('error');
 			}
 		}
-	}, [context, config]);
+	}, [context, config, visible]);
 	useLayoutEffect(() => {
+		epoch.current++;
 		mounted.current = true;
 		reloadRegister(() => {
 			if (mounted.current) void load();
@@ -118,7 +121,7 @@ export function DataviewPanel({
 					icon={<Icon name="alert-triangle" />}
 					title={t('dataview.parseError', { message: error })}
 					action={
-						<Button variant="outline" size="sm" onClick={() => void load()}>
+						<Button variant="secondary" size="sm" onClick={() => void load()}>
 							{t('home.content.retry')}
 						</Button>
 					}
@@ -192,8 +195,8 @@ function ResultPanel({
 			{!needle && windowed.truncated && (
 				<Button
 					type="button"
-					variant="link"
-					size="xs"
+					variant="ghost"
+					size="sm"
 					className={p1Classes('dashboard-dataview-capped')}
 					onClick={() => setShown(windowed.next)}
 				>
@@ -227,7 +230,7 @@ function ResultPanel({
 				<span className="text-xs whitespace-nowrap text-muted-foreground">{count}</span>
 				<Choice
 					label={t('dataview.pageSize', { count: size })}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={String(size)}
 					onChange={(next) => {
 						const value = Number(next) || DEFAULT_PAGE_SIZE;
@@ -242,7 +245,7 @@ function ResultPanel({
 				/>
 				<ToggleGroup
 					type="single"
-					variant="outline"
+					variant="segmented"
 					value={mode}
 					onValueChange={(value) => {
 						if (!value) return;

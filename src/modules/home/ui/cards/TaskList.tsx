@@ -1,3 +1,4 @@
+import { cn } from '../../../../ui/lib/utils';
 import { observeBoardAction } from '../board/actions';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts
 import { useState } from 'react';
@@ -7,7 +8,7 @@ import { Bell, ChevronDown, GripVertical } from 'lucide-react';
 import { Checkbox } from '../../../../ui/components/checkbox';
 import { Input } from '../../../../ui/components/input';
 import { Progress } from '../../../../ui/components/progress';
-import { cn } from '../../../../ui/lib/utils';
+import { TaskContent } from '../../../../ui/components/huhu/TaskContent';
 import { useOwnerWindow, useT } from '../../../../ui/react/hooks';
 import type { BoardStore } from '../../services/board-store';
 import type { DashboardCard, TaskItem } from '../../core/board/types/model';
@@ -34,7 +35,7 @@ function TaskRow({ store, card, task, path }: { store: BoardStore; card: string;
 				opacity: isDragging ? 0.4 : undefined,
 			}}
 		>
-			<div className="group/task relative flex min-h-9 items-start gap-2 rounded-md py-1.5 pr-1 pl-5 hover:bg-accent/50">
+			<div className="group/task relative flex min-h-[var(--hu-row-h)] items-start gap-2 rounded-md py-1.5 pr-1 pl-5 hover:bg-accent/50">
 				<IconButton
 					label={t('home.dashboard.drag')}
 					className="absolute top-1.5 left-0 size-4 shrink-0 opacity-0 group-hover/task:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
@@ -51,15 +52,12 @@ function TaskRow({ store, card, task, path }: { store: BoardStore; card: string;
 						void observeBoardAction(store.sync.toggleTask(card, path, checked === true));
 					}}
 				/>
-				{time && <span className="text-xs tabular-nums text-muted-foreground">{time}</span>}
-				<div
-					className={cn(
-						'min-w-0 flex-1 text-sm leading-5 [&_p]:m-0',
-						task.checked && 'text-muted-foreground line-through',
-					)}
-				>
-					<MarkdownBody store={store} text={text} className="huhu-native markdown-rendered min-w-0" />
-				</div>
+				<TaskContent
+					className="min-w-0 flex-1 [&_p]:m-0"
+					completed={task.checked}
+					title={<MarkdownBody store={store} text={text} className="huhu-native markdown-rendered min-w-0" />}
+					metadata={time ? <span className="tabular-nums">{time}</span> : undefined}
+				/>
 				<div className="flex shrink-0 items-center opacity-0 group-hover/task:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100">
 					<IconButton
 						label={t('home.dashboard.reminder')}

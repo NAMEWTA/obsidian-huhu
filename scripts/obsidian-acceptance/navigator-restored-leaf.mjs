@@ -20,7 +20,7 @@ const workspace = {
 	active: 'l1',
 	lastOpenFiles: [],
 };
-const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: on, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: on, versioning: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_NAV_PORT || 9296),
@@ -57,6 +57,18 @@ try {
 		await delay(600);
 		await runtime.shot('restored-off-2-after-switch-on');
 	}
+	await until(`!!document.querySelector('[data-navigator-root]')`, 'production navigator root');
+	await c.evaluate(`window.probeNavigatorRoot=document.querySelector('[data-navigator-root]');true`);
+	for (let n=0;n<3;n++) {
+		await c.evaluate(`app.workspace.leftSplit.collapse();true`);await delay(100);
+		await c.evaluate(`app.workspace.leftSplit.expand();true`);await delay(100);
+		assert.ok(await c.evaluate(`document.querySelector('[data-navigator-root]')===probeNavigatorRoot&&document.querySelectorAll('[data-navigator-root]').length===1`),'hide/show keeps one production root');
+	}
+	await c.evaluate(`app.plugins.plugins.huhu.setModuleEnabled('navigator',false)`);
+	await until(`app.workspace.getLeavesOfType('huhu-navigator-view').length===0&&!document.querySelector('[data-navigator-root]')`, 'disable disposes leaf and root');
+	await c.evaluate(`app.plugins.plugins.huhu.setModuleEnabled('navigator',true)`);
+	await until(`app.workspace.getLeavesOfType('huhu-navigator-view').length===1&&document.querySelectorAll('[data-navigator-root]').length===1`, 'reenable restores exactly one root');
+	assert.deepEqual(await c.evaluate('huhuAcceptanceErrors'),[]);
 	console.log(JSON.stringify({ passed: true, evidence: runtime.evidence }));
 } finally {
 	await runtime.stop();

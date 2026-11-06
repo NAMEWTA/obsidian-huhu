@@ -10,7 +10,13 @@
     "npm:@xterm/headless",
     "npm:simple-icons",
     "npm:react-dom",
-    "npm:radix-ui"
+    "npm:radix-ui",
+    "npm:@pierre/diffs",
+    "npm:shiki",
+    "npm:@shikijs/core",
+    "npm:@shikijs/langs",
+    "npm:@shikijs/engine-javascript",
+    "npm:@shikijs/types"
   ],
   "moduleActivationBytes": {
     "health": 10240,
@@ -26,8 +32,8 @@
     "task": 167936,
     "versioning": 195584
   },
-  "outputBudgetReason": "2026-10-29 合入 NAMEWTA/terminal 后重新构建。实测 main.js 8251339 字节。增长来自终端工作台的 Space、会话、收件箱和备份。启动闭包仍不含 xterm、React 或 Radix。上限按 KiB 向上取整为 8059 KiB。",
-  "eagerBudgetReason": "2026-10-29 合入后实测启动闭包 135082 字节、111 个输入，含高亮入口、任务清单和终端模块的清单元数据。页面、Runner 和 xterm 仍懒加载。上限 132 KiB。",
-  "stylesBudgetReason": "2026-10-29 按合入后的 27 个样式源重写 styles.css，实测 1436333 字节，仍低于 1408 KiB 上限。",
-  "moduleActivationBudgetReason": "2026-10-29 合入终端工作台后实测并按 KiB 向上取整：agent 1384588（Space、PTY、收件箱、备份）、automations 219910、notifications 21285、task 166930。其余模块未超过既有上限。"
+  "outputBudgetReason": "2026-10-29 \u5408\u5165 NAMEWTA/terminal \u540e\u91cd\u65b0\u6784\u5efa\u3002\u5b9e\u6d4b main.js 8251339 \u5b57\u8282\u3002\u589e\u957f\u6765\u81ea\u7ec8\u7aef\u5de5\u4f5c\u53f0\u7684 Space\u3001\u4f1a\u8bdd\u3001\u6536\u4ef6\u7bb1\u548c\u5907\u4efd\u3002\u542f\u52a8\u95ed\u5305\u4ecd\u4e0d\u542b xterm\u3001React \u6216 Radix\u3002\u4e0a\u9650\u6309 KiB \u5411\u4e0a\u53d6\u6574\u4e3a 8059 KiB\u3002",
+  "eagerBudgetReason": "2026-10-29 \u5408\u5165\u540e\u5b9e\u6d4b\u542f\u52a8\u95ed\u5305 135082 \u5b57\u8282\u3001111 \u4e2a\u8f93\u5165\uff0c\u542b\u9ad8\u4eae\u5165\u53e3\u3001\u4efb\u52a1\u6e05\u5355\u548c\u7ec8\u7aef\u6a21\u5757\u7684\u6e05\u5355\u5143\u6570\u636e\u3002\u9875\u9762\u3001Runner \u548c xterm \u4ecd\u61d2\u52a0\u8f7d\u3002\u4e0a\u9650 132 KiB\u3002",
+  "stylesBudgetReason": "2026-10-29 \u6309\u5408\u5165\u540e\u7684 27 \u4e2a\u6837\u5f0f\u6e90\u91cd\u5199 styles.css\uff0c\u5b9e\u6d4b 1436333 \u5b57\u8282\uff0c\u4ecd\u4f4e\u4e8e 1408 KiB \u4e0a\u9650\u3002",
+  "moduleActivationBudgetReason": "2026-10-29 \u5408\u5165\u7ec8\u7aef\u5de5\u4f5c\u53f0\u540e\u5b9e\u6d4b\u5e76\u6309 KiB \u5411\u4e0a\u53d6\u6574\uff1aagent 1384588\uff08Space\u3001PTY\u3001\u6536\u4ef6\u7bb1\u3001\u5907\u4efd\uff09\u3001automations 219910\u3001notifications 21285\u3001task 166930\u3002\u5176\u4f59\u6a21\u5757\u672a\u8d85\u8fc7\u65e2\u6709\u4e0a\u9650\u3002"
 }

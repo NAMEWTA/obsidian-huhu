@@ -11,10 +11,10 @@ import {
 	Section,
 	Select,
 	TextField,
-	confirmAt,
+	useArchiveConfirm,
 	reordered,
 } from './common';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { App } from 'obsidian';
 import type { ArchivesApplication } from '../../services/generic/application';
 import {
@@ -127,7 +127,7 @@ function FormDesigner({
 					change({ ...form, groups: form.groups.map((item, index) => (index === groupIndex ? next : item)) });
 				return (
 					<Section key={group.id} title={displayLabel(group)}>
-						<div className="grid gap-2 sm:grid-cols-2">
+						<div className="grid gap-2 @min-[560px]:grid-cols-2">
 							<TextField
 								label={at('label')}
 								value={displayLabel(group)}
@@ -205,7 +205,7 @@ function FormDesigner({
 									/>
 								</details>
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() =>
 										update({
 											...group,
@@ -237,7 +237,7 @@ function FormDesigner({
 								move={(to) => change({ ...form, groups: reordered(form.groups, groupIndex, to) })}
 							/>
 							<Button
-								variant="outline"
+								variant="secondary"
 								onClick={() =>
 									change({ ...form, groups: form.groups.filter((_item, i) => i !== groupIndex) })
 								}
@@ -249,7 +249,7 @@ function FormDesigner({
 				);
 			})}
 			<Button
-				variant="outline"
+				variant="secondary"
 				onClick={() =>
 					change({
 						...form,
@@ -305,7 +305,7 @@ function RelationDesigner({
 				types={types}
 				change={(targetTypes) => patch({ targetTypes })}
 			/>
-			<div className="grid gap-3 sm:grid-cols-2">
+			<div className="grid gap-3 @min-[560px]:grid-cols-2">
 				<TextField
 					label={at('forwardLabel')}
 					value={displayRelationLabel(definition, true)}
@@ -407,7 +407,7 @@ function RelationDesigner({
 					</div>
 				))}
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() =>
 						patch({
 							contextRoles: [
@@ -439,6 +439,8 @@ export function DefinitionStudio({
 	guard(this: void, callback: (() => Promise<boolean>) | undefined): void;
 }) {
 	useT();
+	const publishing = useRef(false);
+	const confirm = useArchiveConfirm(owner);
 	const version = useArchiveVersion(application),
 		[revisions, setRevisions] = useState<DefinitionRevision[]>([]),
 		[draft, setDraft] = useState<Definition>(),
@@ -484,11 +486,16 @@ export function DefinitionStudio({
 	}, [revisions]);
 	const dirty = !!draft && canonical(draft) !== canonical(base);
 	useEffect(() => {
-		guard(dirty ? () => confirmAt(owner, at('leaveDesigner'), at('designer')) : undefined);
+		guard(
+			dirty || busy
+				? () => (publishing.current ? Promise.resolve(false) : confirm(at('leaveDesigner'), at('designer')))
+				: undefined,
+		);
 		return () => guard(undefined);
-	}, [dirty, guard, owner]);
+	}, [dirty, busy, guard, confirm]);
 	const load = async (definition: Definition) => {
-		if (dirty && !(await confirmAt(owner, at('leaveDesigner'), at('designer')))) return;
+		if (publishing.current) return;
+		if (dirty && !(await confirm(at('leaveDesigner'), at('designer')))) return;
 		setDraft(copy(definition));
 		setBase(copy(definition));
 		setParents(revisionGraph(revisions.filter((item) => item.definition.id === definition.id)).heads);
@@ -503,7 +510,8 @@ export function DefinitionStudio({
 		setError(undefined);
 	};
 	const publish = async () => {
-		if (!draft || !preview || preview.fingerprint !== canonical(draft)) return;
+		if (publishing.current || !draft || !preview || preview.fingerprint !== canonical(draft)) return;
+		publishing.current = true;
 		setBusy(true);
 		setError(undefined);
 		try {
@@ -519,6 +527,7 @@ export function DefinitionStudio({
 		} catch (error) {
 			setError(error);
 		} finally {
+			publishing.current = false;
 			setBusy(false);
 		}
 	};
@@ -530,9 +539,10 @@ export function DefinitionStudio({
 		<div className="space-y-4">
 			<h2 className="text-xl font-semibold">{at('designer')}</h2>
 			<p className="text-sm text-muted-foreground">{at('initializeHint')}</p>
-			<div className="grid gap-3 sm:grid-cols-3">
+			<div className="grid gap-3 @min-[880px]:grid-cols-3">
 				<Select
 					label={at('definition')}
+					disabled={busy}
 					value={draft?.id ?? ''}
 					options={[
 						['', at('none')],
@@ -550,6 +560,7 @@ export function DefinitionStudio({
 				/>
 				<Select
 					label={at('newDefinition')}
+					disabled={busy}
 					value={kind}
 					options={['type', 'form', 'template', 'relation-type', 'view'].map((key) => [key, at(key)])}
 					onChange={(kind) => setKind(kind as Definition['kind'])}
@@ -588,7 +599,7 @@ export function DefinitionStudio({
 					)}
 					{draft.kind === 'type' && (
 						<>
-							<div className="grid gap-3 sm:grid-cols-2">
+							<div className="grid gap-3 @min-[560px]:grid-cols-2">
 								<TextField
 									label={at('folder')}
 									value={draft.folder}
@@ -805,7 +816,7 @@ export function DefinitionStudio({
 										v{revision.displayVersion} · {revision.revisionId}
 									</code>
 									<Button
-										variant="outline"
+										variant="secondary"
 										size="sm"
 										onClick={() => {
 											void load(revision.definition);
@@ -818,7 +829,7 @@ export function DefinitionStudio({
 					</Section>
 					<div className="flex flex-wrap gap-2">
 						<Button
-							variant="outline"
+							variant="secondary"
 							onClick={() => {
 								try {
 									validateDefinition(draft, types);

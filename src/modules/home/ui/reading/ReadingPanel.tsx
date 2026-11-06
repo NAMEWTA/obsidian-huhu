@@ -110,7 +110,7 @@ export function ReadingPanel({
 					icon={<BookOpen />}
 					title={t('reading.empty')}
 					action={
-						<Button variant="outline" onClick={add}>
+						<Button variant="secondary" onClick={add}>
 							<Plus />
 							{t('reading.selectBook')}
 						</Button>
@@ -155,7 +155,7 @@ export function ReadingPanel({
 											<DropdownMenuTrigger asChild>
 												<Button
 													variant="ghost"
-													size="icon-xs"
+													size="icon-sm"
 													aria-label={t('reading.moreActions', { title: book.title })}
 												>
 													<Ellipsis />

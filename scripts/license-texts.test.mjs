@@ -13,6 +13,12 @@ test('SPDX alternatives choose an allowed branch and preserve AND obligations', 
 	for (const expression of ['GPL-3.0 AND MIT', 'UNKNOWN', 'MIT OR', '(MIT', 'MIT WITH unknown-exception']) assert.throws(() => selectedLicenses(expression));
 });
 
+test('SPDX identifiers are case-insensitive while operators stay case-sensitive', () => {
+	assert.deepEqual(selectedLicenses('apache-2.0'), ['Apache-2.0']);
+	assert.deepEqual(selectedLicenses('(mit OR Apache-2.0) AND unicode-3.0'), ['MIT', 'Unicode-3.0']);
+	for (const expression of ['mit or ISC', 'mit and ISC', 'gpl-3.0 AND mit', 'unknown']) assert.throws(() => selectedLicenses(expression));
+});
+
 test('all required texts survive selection and a missing additional notice fails', () => {
 	const dir = mkdtempSync(path.join(tmpdir(), 'huhu-notice-'));
 	try {

@@ -20,7 +20,10 @@ export function selectedLicenses(expression) {
 		}
 		const id = tokens[cursor++];
 		if (!id || ['AND', 'OR', ')'].includes(id)) throw new Error(`Invalid license expression: ${expression}`);
-		return allowed.includes(id) ? [id] : null;
+		// SPDX 2.3.1 Annex D.2: identifiers ignore case; operators do not.
+		// https://spdx.github.io/spdx-spec/v2.3.1/SPDX-license-expressions/#d2-case-sensitivity
+		const canonical = allowed.find(candidate => candidate.toLowerCase() === id.toLowerCase());
+		return canonical ? [canonical] : null;
 	}
 	function and() {
 		let value = atom();

@@ -117,7 +117,7 @@ test.each([
 	[480, 160, true, true],
 	[480, 320, true, false],
 	[800, 320, true, false],
- [800, 300, true, false],
+	[800, 300, true, false],
 ] as const)(
 	'size %s by %s keeps an explicit selected date and suitable month window',
 	(width, height, month, short) => {
@@ -147,6 +147,7 @@ test('S mode has arbitrary date navigation and distinguishes failure, loading, e
 	expect(calls.load).toHaveBeenCalledOnce();
 	const picker = screen.getByLabelText(t('calendarUnified.chooseMonth'));
 	fireEvent.change(picker, { target: { value: '2027-02-03' } });
+	fireEvent.blur(picker);
 	expect(calls.select).toHaveBeenCalledWith('2027-02-03');
 	expect(calls.day).toHaveBeenCalledWith('2027-02-03');
 	cleanup();

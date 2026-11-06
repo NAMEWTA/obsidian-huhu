@@ -1,15 +1,10 @@
-import {
-	lazy,
-	Suspense,
-	useEffect,
-	useState,
-	type ComponentType,
-} from 'react';
+import { messages as huhuUiMessages } from '../../../shared/i18n/lazy/huhu-ui';
+import { registerMessages } from '../../../shared/i18n';
+import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import type DashboardPlugin from '../../main';
 import type { SettingsPageHost } from '../../contracts/module';
 import type { WorkbenchTarget } from '../../contracts/workbench';
 import { t } from '../../../shared/i18n';
-import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
 import { PRODUCT_MODULES } from '../nav';
 import { AboutSettings } from './BuiltInSettings';
 import { AppearanceSettings } from './appearance/AppearanceSettings';
@@ -60,7 +55,7 @@ export function ModuleSettings({
 	if (loaded.loader === load && loaded.Component)
 		return <loaded.Component key={resourceId} resourceId={resourceId} />;
 	return (
-		<p role="status" data-settings-pending className="text-xs text-muted-foreground">
+		<p role="status" data-settings-pending className="text-sm text-muted-foreground">
 			{t('workbench.loading')}
 		</p>
 	);
@@ -81,7 +76,7 @@ export function CategoryContent({
 	if (section.id === 'general') return <GeneralSettings plugin={plugin} navigate={navigate} />;
 	if (section.id === 'about') return <AboutSettings version={plugin.manifest.version} />;
 	return (
-		<SettingsSection title={section.label}>
+		<div className="min-w-0">
 			{section.id === 'components' ? (
 				<Suspense fallback={<p>{t('workbench.loading')}</p>}>
 					<ComponentGallery />
@@ -91,6 +86,8 @@ export function CategoryContent({
 			) : (
 				<ModuleSettings plugin={plugin} category={section.id} resourceId={resourceId} />
 			)}
-		</SettingsSection>
+		</div>
 	);
 }
+
+registerMessages(huhuUiMessages);

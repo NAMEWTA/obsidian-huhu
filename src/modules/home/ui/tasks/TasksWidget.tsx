@@ -9,7 +9,7 @@ export function TasksWidget({ store: _store }: { store: BoardStore }) {
 	useEffect(() => (host.current && views ? views.mount(host.current, { compact: true }) : undefined), [views]);
 	return (
 		<div ref={host} className="h-full min-h-0">
-			{!views && <p role="status">{t('task.unavailable')}</p>}
+			{!views && <p role="status">{t('home.widget.unavailable')}</p>}
 		</div>
 	);
 }

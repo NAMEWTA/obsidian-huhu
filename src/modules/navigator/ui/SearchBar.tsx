@@ -48,9 +48,9 @@ export function SearchBar({ compact = false }: { compact?: boolean }) {
 	};
 
 	return (
-		<div role="search" className={cn('flex min-w-0 items-center gap-1', compact ? 'min-w-32 flex-1' : 'shrink-0 border-b border-sidebar-border px-2 py-1')} data-navigator-search>
+		<div role="search" className={cn('flex min-w-0 items-center gap-1', compact ? 'min-w-32 flex-1' : 'shrink-0 border-b border-[var(--hu-line)] px-2 py-1')} data-navigator-search>
 			<div className="relative min-w-0 flex-1">
-				<Search aria-hidden className="pointer-events-none absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+				<Search aria-hidden className="pointer-events-none absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-[var(--hu-fg-3)]" />
 				<Input
 					ref={input}
 					type="text"
@@ -59,7 +59,7 @@ export function SearchBar({ compact = false }: { compact?: boolean }) {
 					aria-label={t('navigator.searchLabel')}
 					spellCheck={false}
 					autoComplete="off"
-					className={cn('h-8 pl-7 text-[13px]', search.open && search.query && 'pr-7')}
+					className={cn('h-8 pl-7 text-sm', search.open && search.query && 'pr-[calc(var(--hu-hit)+4px)]')}
 					onChange={(event) => { service.setSearchQuery(event.target.value); if (!search.open) service.openSearch(); }}
 					onKeyDown={onKeyDown}
 				/>
@@ -69,7 +69,7 @@ export function SearchBar({ compact = false }: { compact?: boolean }) {
 						variant="ghost"
 						size="icon-sm"
 						aria-label={t('navigator.searchClear')}
-						className="absolute right-0.5 top-1/2 size-6 -translate-y-1/2 text-muted-foreground [&_svg]:size-3.5"
+						className="absolute right-0.5 top-1/2 size-[var(--hu-hit)] -translate-y-1/2 text-[var(--hu-fg-3)] [&_svg]:size-3.5 min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]"
 						onClick={() => { service.setSearchQuery(''); input.current?.focus(); }}
 					>
 						<X />
@@ -85,10 +85,10 @@ export function SearchBar({ compact = false }: { compact?: boolean }) {
 						disabled={!query}
 						aria-label={t(saved ? 'navigator.searchUnsave' : 'navigator.searchSave')}
 						aria-pressed={saved}
-						className="text-muted-foreground [&_svg]:size-4"
+						className="text-[var(--hu-fg-3)] [&_svg]:size-4 min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]"
 						onClick={() => service.toggleShortcut(makeShortcut('search', query))}
 					>
-						<Star className={cn(saved && 'fill-current text-foreground')} />
+						<Star className={cn(saved && 'fill-current text-[var(--hu-fg)]')} />
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent>{t(saved ? 'navigator.searchUnsave' : 'navigator.searchSave')}</TooltipContent>

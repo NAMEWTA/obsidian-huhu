@@ -11,8 +11,8 @@ import { heatmapDays } from '../../core/stats/heatmap';
  * dark themes (and Minimal) recolour the grid without the component knowing the theme.
  */
 const LEVELS = [
-	'var(--muted)',
-	...[25, 45, 70, 100].map((share) => `color-mix(in oklab, var(--chart-1) ${share}%, var(--muted))`),
+	'var(--hu-sunken)',
+	...[25, 45, 70, 100].map((share) => `color-mix(in oklab, var(--hu-chart-1) ${share}%, var(--hu-sunken))`),
 ];
 const THEME: ThemeInput = { light: LEVELS, dark: LEVELS };
 
@@ -91,7 +91,7 @@ export function UsageHeatmap({
 		[t, total, format, range],
 	);
 	return (
-		<div ref={frame} className="text-muted-foreground" data-usage-heatmap="">
+		<div ref={frame} className="text-[var(--hu-fg-2)]" data-usage-heatmap="">
 			<ActivityCalendar
 				data={days}
 				theme={THEME}

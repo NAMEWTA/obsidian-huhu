@@ -2,7 +2,13 @@ import { classifyGitOutput, detailOf, GitError, rawOf } from './errors';
 import type { RefEntry } from './refs';
 import { pathWithinScope, safeRepoPath, type GitResult, type GitRunner, type GitRunOptions } from './ports';
 import { parsePathList, parseStatus, type RepoStatus } from './status';
-import type { FileHistoryEntry, FileHistoryPage, HistoryOptions, RevisionFileChange } from './history';
+import type {
+	FileHistoryEntry,
+	FileHistoryPage,
+	HistoryOptions,
+	RepositoryEndpoint,
+	RevisionFileChange,
+} from './history';
 
 /** A merge, rebase, cherry-pick or revert that stopped and waits for the user. */
 export type RepoOperation = 'merge' | 'rebase' | 'cherry-pick' | 'revert';
@@ -540,6 +546,90 @@ export class GitRepo {
 		return parseRevisionFiles(result.stdout.split('\0'));
 	}
 
+	/** Read-only comparisons across commits, index and worktree. No checkout or index refresh. */
+	async compareFiles(
+		left: RepositoryEndpoint,
+		right: RepositoryEndpoint,
+		signal?: AbortSignal,
+	): Promise<RevisionFileChange[]> {
+		const pin = async (endpoint: RepositoryEndpoint) =>
+			endpoint.kind === 'commit'
+				? await this.requireCommit(endpoint.commit, signal)
+				: endpoint.kind === 'empty'
+					? await this.emptyTree(signal)
+					: endpoint.kind;
+		const [a, b] = await Promise.all([pin(left), pin(right)]);
+		if (a === b) return [];
+		let args: string[];
+		if (a === 'worktree') args = b === 'index' ? ['-R'] : ['-R', b];
+		else if (b === 'worktree') args = a === 'index' ? [] : [a];
+		else if (a === 'index') args = ['--cached', '-R', b];
+		else if (b === 'index') args = ['--cached', a];
+		else args = [a, b];
+		const options = { signal, maxOutputBytes: 8 * 1024 * 1024, env: { GIT_OPTIONAL_LOCKS: '0' } };
+		const common = ['-z', '--find-renames', '--no-ext-diff', '--no-textconv', '--no-relative'];
+		const names = await this.git(['diff', '--name-status', ...common, ...args, '--'], options);
+		const files = parseRevisionFiles(names.stdout.split('\0'));
+		const stats = await this.git(['diff', '--numstat', ...common, ...args, '--'], options);
+		const fields = stats.stdout.split('\0');
+		const counts = new Map<string, { additions: number | null; deletions: number | null }>();
+		for (let i = 0; i < fields.length; i++) {
+			const field = fields[i]!;
+			if (!field) continue;
+			const match = /^(\d+|-)\t(\d+|-)\t(.*)$/s.exec(field);
+			if (!match) throw new GitError('unknown', 'invalid diff statistics');
+			let path = match[3]!;
+			if (!path) {
+				i++;
+				path = fields[++i] ?? '';
+			}
+			counts.set(path, {
+				additions: match[1] === '-' ? null : Number(match[1]),
+				deletions: match[2] === '-' ? null : Number(match[2]),
+			});
+		}
+		return files.map((file) => ({ ...file, ...counts.get(file.path) }));
+	}
+
+	/** Git's binary apply validates the complete old blob under its index lock (no fuzzy hunk match).
+	 * Protocol: https://git-scm.com/docs/git-apply . Encoding here is only the binary transport,
+	 * not a second diff algorithm. Other entries and worktree bytes remain untouched.
+	 */
+	async replaceIndexContent(
+		path: string,
+		expectedOid: string | null,
+		content: string | null,
+		signal?: AbortSignal,
+		createMode: '100644' | '100755' = '100644',
+	): Promise<void> {
+		assertHistoryPath(path);
+		if (expectedOid !== null && !isObjectId(expectedOid)) throw new GitError('unknown', 'invalid index proof');
+		const record = await this.git(['ls-files', '--stage', '-z', '--', `:(literal)${path}`], {
+			signal,
+			env: { GIT_OPTIONAL_LOCKS: '0' },
+		});
+		const match = /^(100644|100755) ([0-9a-f]+) 0\t/.exec(record.stdout);
+		if (
+			expectedOid === null
+				? !!record.stdout
+				: !match || match[2] !== expectedOid || record.stdout.split('\0').filter(Boolean).length !== 1
+		)
+			throw new GitError('local-changes', 'index source changed');
+		if (expectedOid === null && content === null) return;
+		const oid =
+			content === null
+				? null
+				: (await this.git(['hash-object', '-w', '--stdin'], { input: content, signal })).stdout.trim();
+		if (oid !== null && !isObjectId(oid)) throw new GitError('unknown', 'invalid new blob');
+		if (oid === expectedOid) return;
+		const zeros = '0'.repeat((expectedOid ?? oid)!.length),
+			mode = match?.[1] ?? createMode;
+		const modeHeader =
+			expectedOid === null ? `new file mode ${mode}\n` : content === null ? `deleted file mode ${mode}\n` : '';
+		const patch = `diff --git ${gitQuotedPath('a/' + path)} ${gitQuotedPath('b/' + path)}\n${modeHeader}index ${expectedOid ?? zeros}..${oid ?? zeros}${modeHeader ? '' : ` ${mode}`}\nGIT binary patch\n${await gitLiteral(content ?? '')}\n`;
+		await this.git(['apply', '--cached', '--binary', '--whitespace=nowarn', '-'], { input: patch, signal });
+	}
+
 	/** Every page stays on the first page's immutable tip and replays rename metadata before slicing. */
 	async fileHistory(path: string, options: HistoryOptions = {}): Promise<FileHistoryPage> {
 		assertHistoryPath(path);
@@ -715,4 +805,41 @@ function parseFileHistory(output: string, path: string): FileHistoryEntry[] {
 		if (file?.status === 'A') break;
 	}
 	return entries;
+}
+
+/** Git binary literal lines are a length prefix plus base85-encoded zlib bytes. */
+async function gitLiteral(text: string): Promise<string> {
+	const bytes = new TextEncoder().encode(text);
+	const compressed = new Uint8Array(
+		await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer(),
+	);
+	const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~';
+	let output = `literal ${bytes.length}\n`;
+	for (let start = 0; start < compressed.length; start += 52) {
+		const block = compressed.subarray(start, start + 52);
+		output += String.fromCharCode(block.length <= 26 ? 64 + block.length : 70 + block.length);
+		for (let i = 0; i < block.length; i += 4) {
+			let value = 0;
+			for (let j = 0; j < 4; j++) value = value * 256 + (block[i + j] ?? 0);
+			let encoded = '';
+			for (let j = 0; j < 5; j++) {
+				encoded = alphabet[value % 85]! + encoded;
+				value = Math.floor(value / 85);
+			}
+			output += encoded;
+		}
+		output += '\n';
+	}
+	return output;
+}
+
+/** Git paths use C quoting, including octal UTF-8 bytes (JSON's Unicode escapes are not Git quoting). */
+function gitQuotedPath(value: string): string {
+	let result = '"';
+	for (const byte of new TextEncoder().encode(value)) {
+		if (byte === 34 || byte === 92) result += '\\' + String.fromCharCode(byte);
+		else if (byte >= 32 && byte < 127) result += String.fromCharCode(byte);
+		else result += '\\' + byte.toString(8).padStart(3, '0');
+	}
+	return result + '"';
 }

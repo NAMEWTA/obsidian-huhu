@@ -11,11 +11,11 @@ import { useWindowClock } from './use-record-clock';
 
 type BadgeKind = 'holiday' | 'work' | 'weekend' | 'festival';
 const BADGE_VARIANT = {
-	holiday: 'destructive',
-	work: 'outline',
-	weekend: 'secondary',
-	festival: 'secondary',
-} as const satisfies Record<BadgeKind, 'destructive' | 'outline' | 'secondary'>;
+	holiday: 'error',
+	work: 'neutral',
+	weekend: 'accent',
+	festival: 'accent',
+} as const satisfies Record<BadgeKind, 'error' | 'neutral' | 'accent'>;
 
 /** The lunar date large, the stem-branch line under it, and the almanac at the bottom (all of it from the medium size). */
 export function LunarPanel({
@@ -51,7 +51,11 @@ export function LunarPanel({
 	}
 	const zh = getLanguage() === 'zh',
 		comma = data.almanac.indexOf('，'),
-		almanac = zh ? (comma < 0 ? [data.almanac] : [data.almanac.slice(0, comma + 1), data.almanac.slice(comma + 1)]) : [];
+		almanac = zh
+			? comma < 0
+				? [data.almanac]
+				: [data.almanac.slice(0, comma + 1), data.almanac.slice(comma + 1)]
+			: [];
 	const badges = [
 		data.holiday?.holiday ? { kind: 'holiday' as const, text: data.holiday.name || t('lunar.holiday') } : null,
 		data.holiday?.type === 3 ? { kind: 'work' as const, text: t('lunar.makeupWork') } : null,
@@ -67,14 +71,19 @@ export function LunarPanel({
 			</WidgetActions>
 			<div className="flex min-w-0 flex-col gap-1">
 				<div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-					<span className="leading-none font-semibold [font-size:clamp(1.5rem,min(9cqw,24cqh),3rem)]">{data.lunarDate}</span>
+					<span className="leading-none font-semibold [font-size:clamp(1.5rem,min(9cqw,24cqh),3rem)]">
+						{data.lunarDate}
+					</span>
 					{badges.map((badge, i) => (
 						<Badge key={i} variant={BADGE_VARIANT[badge.kind]} data-lunar-badge={badge.kind}>
 							{badge.text}
 						</Badge>
 					))}
 				</div>
-				<p className="m-0 truncate text-xs text-muted-foreground [@container(min-height:12.5rem)]:text-sm" data-lunar-meta>
+				<p
+					className="m-0 truncate text-xs text-muted-foreground [@container(min-height:12.5rem)]:text-sm"
+					data-lunar-meta
+				>
 					{t('lunar.year', { value: data.ganZhiYear })} · {data.zodiac}
 					<span className="hidden @min-[24rem]:inline">
 						{' · '}

@@ -21,7 +21,15 @@ import {
 import { renameMediaFile } from './media-utils';
 
 /** A file that cannot be shown keeps its place in the grid and says why. */
-export function MediaUnavailable({ name, compact = false, missing = false }: { name: string; compact?: boolean; missing?: boolean }) {
+export function MediaUnavailable({
+	name,
+	compact = false,
+	missing = false,
+}: {
+	name: string;
+	compact?: boolean;
+	missing?: boolean;
+}) {
 	const text = missing ? t('media.fileMissing') : t('media.loadFailed', { name });
 	return (
 		<div
@@ -31,7 +39,11 @@ export function MediaUnavailable({ name, compact = false, missing = false }: { n
 			className="flex size-full min-h-0 flex-col items-center justify-center gap-1 overflow-hidden bg-muted p-1 text-center text-xs text-foreground"
 		>
 			<ImageOff className="size-5 shrink-0" aria-hidden />
-			{!compact && <span className="line-clamp-2 block w-full min-w-0 max-w-full break-words [overflow-wrap:anywhere]">{text}</span>}
+			{!compact && (
+				<span className="line-clamp-2 block w-full min-w-0 max-w-full break-words [overflow-wrap:anywhere]">
+					{text}
+				</span>
+			)}
 		</div>
 	);
 }
@@ -86,7 +98,10 @@ function Thumb({ app, result, kind, large }: { app: App; result: MediaFileResult
 	const [visible, setVisible] = useState(false);
 	const src = resolveVaultImage(app, result.path);
 	// The load result belongs to one source; a replaced file starts loading again.
-	const [loaded, setLoaded] = useState<{ src: string | null; status: 'ready' | 'failed' }>({ src: null, status: 'ready' });
+	const [loaded, setLoaded] = useState<{ src: string | null; status: 'ready' | 'failed' }>({
+		src: null,
+		status: 'ready',
+	});
 	const state = loaded.src === src ? loaded.status : 'loading';
 	const setState = (status: 'ready' | 'failed') => setLoaded({ src, status });
 	useLayoutEffect(() => {
@@ -127,14 +142,19 @@ function Thumb({ app, result, kind, large }: { app: App; result: MediaFileResult
 				<div className="flex size-full items-center justify-center">
 					<Film className="size-[30%] min-h-4 min-w-4" aria-hidden />
 					{large && formatFileSize(result.size) && (
-						<span className="pointer-events-none absolute right-1 bottom-7 rounded bg-background/90 px-1.5 text-[11px] leading-4 text-foreground">
+						<span className="pointer-events-none absolute right-1 bottom-7 rounded bg-background/90 px-1.5 text-xs leading-4 text-foreground">
 							{formatFileSize(result.size)}
 						</span>
 					)}
 				</div>
 			)}
 			{visible && (
-				<MediaVideo key={src} src={src} className="block size-full object-cover" onError={() => setState('failed')} />
+				<MediaVideo
+					key={src}
+					src={src}
+					className="block size-full object-cover"
+					onError={() => setState('failed')}
+				/>
 			)}
 			{large && (
 				<span className="pointer-events-none absolute top-1/2 left-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-foreground">
@@ -148,17 +168,25 @@ function TagChips({ tags, limit }: { tags: string[]; limit: number }) {
 	return (
 		<>
 			{tags.slice(0, limit).map((tag) => (
-				<span key={tag} className="max-w-24 truncate rounded bg-secondary px-1.5 text-[11px] leading-4 text-secondary-foreground">
+				<span
+					key={tag}
+					className="max-w-24 truncate rounded bg-secondary px-1.5 text-xs leading-4 text-secondary-foreground"
+				>
 					{tag}
 				</span>
 			))}
 			{tags.length > limit && (
-				<span className="rounded px-1 text-[11px] leading-4 text-muted-foreground">+{tags.length - limit}</span>
+				<span className="rounded px-1 text-xs leading-4 text-muted-foreground">+{tags.length - limit}</span>
 			)}
 		</>
 	);
 }
-function RowAction({ label, className, children, ...props }: { label: string; className?: string; children: ReactNode } & Omit<React.ComponentProps<typeof Button>, 'children'>) {
+function RowAction({
+	label,
+	className,
+	children,
+	...props
+}: { label: string; className?: string; children: ReactNode } & Omit<React.ComponentProps<typeof Button>, 'children'>) {
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
@@ -210,10 +238,17 @@ function MediaName({ app, result, refresh }: { app: App; result: MediaFileResult
 	if (!editing)
 		return (
 			<div className="flex min-w-0 items-center gap-1">
-				<span className="min-w-0 flex-1 truncate text-sm text-foreground" onDoubleClick={() => setEditing(true)}>
+				<span
+					className="min-w-0 flex-1 truncate text-sm text-foreground"
+					onDoubleClick={() => setEditing(true)}
+				>
 					{result.basename}
 				</span>
-				<RowAction label={t('media.renameFile', { name: result.basename })} className="size-8 bg-transparent" onClick={() => setEditing(true)}>
+				<RowAction
+					label={t('media.renameFile', { name: result.basename })}
+					className="size-8 bg-transparent"
+					onClick={() => setEditing(true)}
+				>
 					<Pencil />
 				</RowAction>
 			</div>
@@ -313,7 +348,11 @@ export function MediaViews({
 						)}
 						<RowAction
 							label={`${t('media.delete')}: ${result.basename}`}
-							className={cn(grid && 'absolute top-1 left-1', grid && reveal, !grid && 'bg-transparent hover:text-destructive')}
+							className={cn(
+								grid && 'absolute top-1 left-1',
+								grid && reveal,
+								!grid && 'bg-transparent hover:text-destructive',
+							)}
 							onClick={() => remove(result.file)}
 						>
 							<Trash2 />
@@ -325,7 +364,8 @@ export function MediaViews({
 						key={result.path}
 						className="group relative aspect-square overflow-hidden rounded-md border border-border bg-card motion-safe:transition-transform motion-safe:hover:-translate-y-0.5"
 					>
-						<button
+						<Button
+							variant="ghost"
 							type="button"
 							aria-label={result.basename}
 							data-hit-control
@@ -333,8 +373,11 @@ export function MediaViews({
 							onClick={() => open(index)}
 						>
 							<Thumb app={app} result={result} kind={kind} large />
-						</button>
-						<div data-media-caption className="pointer-events-none absolute inset-x-0 bottom-0 bg-background/90 px-2 py-1 text-foreground">
+						</Button>
+						<div
+							data-media-caption
+							className="pointer-events-none absolute inset-x-0 bottom-0 bg-background/90 px-2 py-1 text-foreground"
+						>
 							<div className="truncate text-xs leading-4">{result.basename}</div>
 							{result.tags.length > 0 && size !== 'small' && (
 								<div className="flex flex-wrap gap-1 pt-0.5">
@@ -345,8 +388,12 @@ export function MediaViews({
 						{actions}
 					</li>
 				) : (
-					<li key={result.path} className="flex items-start gap-2.5 rounded-md border border-border bg-card p-2">
-						<button
+					<li
+						key={result.path}
+						className="flex items-start gap-2.5 rounded-md border border-border bg-card p-2"
+					>
+						<Button
+							variant="ghost"
 							type="button"
 							aria-label={result.basename}
 							data-hit-control
@@ -354,7 +401,7 @@ export function MediaViews({
 							onClick={() => open(index)}
 						>
 							<Thumb app={app} result={result} kind={kind} large={false} />
-						</button>
+						</Button>
 						<div className="min-w-0 flex-1">
 							<MediaName app={app} result={result} refresh={refresh} />
 							<div className="text-xs text-muted-foreground [overflow-wrap:anywhere]">
@@ -370,15 +417,17 @@ export function MediaViews({
 									{links.slice(0, 5).map((file) => (
 										<Button
 											key={file.path}
-											variant="outline"
-											size="xs"
+											variant="secondary"
+											size="sm"
 											className="max-w-36"
 											onClick={() => openNote?.(file)}
 										>
 											{file.basename}
 										</Button>
 									))}
-									{links.length > 5 && <span className="px-1 text-xs text-muted-foreground">+{links.length - 5}</span>}
+									{links.length > 5 && (
+										<span className="px-1 text-xs text-muted-foreground">+{links.length - 5}</span>
+									)}
 								</div>
 							)}
 						</div>

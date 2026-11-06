@@ -85,7 +85,7 @@ export function IconPickerContent({
 						<>
 							{t('iconic.iconPicker.overrulePrefix')}
 							<Button
-								variant="link"
+								variant="ghost"
 								onClick={() =>
 									plugin.openRuleEditor(overruled.item.category, overruled.rule!, (rule) => {
 										const changed = rule
@@ -134,7 +134,7 @@ export function IconPickerContent({
 						e.preventDefault();
 						openColorPicker(colorMode);
 					}}
-					className="h-8 w-10 rounded-md border border-input bg-transparent p-1"
+					className="min-h-11 min-w-11 rounded-md border border-input bg-transparent p-1"
 				/>
 				<Choice
 					label={t('iconic.settings.colorPicker1.name')}
@@ -179,6 +179,7 @@ export function IconPickerContent({
 					onChange={(e) => setQuery(e.target.value)}
 					onFocus={(e) => e.target.select()}
 					onKeyDown={(e) => {
+						if (e.nativeEvent.isComposing) return;
 						if (e.key === 'Enter' && results[0]) {
 							e.preventDefault();
 							save(results[0][0]);
@@ -214,7 +215,7 @@ export function IconPickerContent({
 				{results.map(([id, name, keywords]) => (
 					<Tooltip key={id}>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" aria-label={name} onClick={() => save(id)}>
+							<Button variant="ghost" size="icon-md" aria-label={name} onClick={() => save(id)}>
 								<IconPreview icon={id} color={color} />
 							</Button>
 						</TooltipTrigger>
@@ -227,7 +228,7 @@ export function IconPickerContent({
 			</div>
 			<div className="flex flex-wrap items-center gap-2">
 				{(initialIcon || color) && (
-					<Button variant="destructive" onClick={() => save(null, null)}>
+					<Button variant="danger" onClick={() => save(null, null)}>
 						{t(items.length === 1 ? 'iconic.menu.removeIcon' : 'iconic.menu.removeIcons', {
 							'#': items.length,
 						})}
@@ -254,7 +255,7 @@ export function IconPickerContent({
 					{t('iconic.iconPicker.toggleEmojis')}
 				</Toggle>
 				<span className="flex-1" />
-				<Button variant="outline" onClick={close}>
+				<Button variant="secondary" onClick={close}>
 					{t('iconic.iconPicker.cancel')}
 				</Button>
 				<Button onClick={() => save(initialIcon)}>{t('iconic.iconPicker.save')}</Button>

@@ -12,6 +12,7 @@ import { Choice } from '../../../../ui/components/huhu/Choice';
 import { Skeleton } from '../../../../ui/components/skeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../../../ui/components/collapsible';
 import { ConfirmDialog } from '../../../../ui/components/huhu/ConfirmDialog';
+import { useVisible } from '../../../../ui/react/contexts';
 import { useT } from '../../../../ui/react/hooks';
 import { colorOptions } from '../../core/highlight-colors';
 import { filterHighlightRows, sortHighlightRows, groupHighlightRows, type HighlightRow, type HighlightGroupBy } from '../../core/catalog';
@@ -27,15 +28,16 @@ function NoteThreads({ env, path, filter, sort, selectMode, selected, onSelect, 
 }) {
 	useStore(env.service.state, state => state.revision);
 	const [error, setError] = useState(false);
+	const visible = useVisible();
 	const t = useT();
-	useEffect(() => { let live = true; void env.service.load(path).catch(() => { if (live) setError(true); }); return () => { live = false; }; }, [env, path]);
+	useEffect(() => { if (!visible) return; let live = true; void env.service.load(path).catch(() => { if (live) setError(true); }); return () => { live = false; }; }, [env, path, visible]);
 	const rows = sortHighlightRows(filterHighlightRows(env.service.store.threadsFor(path).map(thread => ({ path, thread })),
 		{ search: '', color: 'all', status: filter, showArchived }), sort);
 	return <div className="space-y-2">
-		{error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
+		{error && <p role="alert" className="text-xs text-[var(--hu-danger)]">{t('editor.comments.storageFailed')}</p>}
 		{rows.map(row => <ThreadCard key={row.thread.id} env={env} path={path} thread={row.thread}
 			selected={selected.has(row.thread.id)} onSelect={selectMode ? onSelect : undefined} />)}
-		{!rows.length && !error && <p className="py-4 text-center text-xs text-muted-foreground">{t('editor.comments.empty')}</p>}
+		{!rows.length && !error && <p className="py-4 text-center text-xs text-[var(--hu-fg-3)]">{t('editor.comments.empty')}</p>}
 	</div>;
 }
 function VaultSection({ env, path, open, total, filter, sort, selectMode, selected, onSelect, showArchived }: {
@@ -44,18 +46,18 @@ function VaultSection({ env, path, open, total, filter, sort, selectMode, select
 }) {
 	const [expanded, setExpanded] = useState(false);
 	return <Collapsible open={expanded} onOpenChange={setExpanded}>
-		<CollapsibleTrigger asChild><Button variant="ghost" className="h-auto w-full justify-between whitespace-normal text-left text-xs">
-			<span>{path}</span><span className="ml-2 text-muted-foreground">{open}/{total}</span></Button></CollapsibleTrigger>
+		<CollapsibleTrigger asChild><Button variant="ghost" className="h-auto w-full justify-between whitespace-normal text-left text-xs min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]">
+			<span>{path}</span><span className="ml-2 text-[var(--hu-fg-3)]">{open}/{total}</span></Button></CollapsibleTrigger>
 		<CollapsibleContent>{expanded && <NoteThreads env={env} path={path} filter={filter} sort={sort} selectMode={selectMode}
 			selected={selected} onSelect={onSelect} showArchived={showArchived} />}</CollapsibleContent>
 	</Collapsible>;
 }
 type PanelProps = { env: CommentsEnv; documents?: EditorContextAccess; container?: HTMLElement };
 export function CommentsPanel(props: PanelProps) {
-	return <DesignScope className="huhu-comments-panel flex h-full min-h-0 flex-col bg-background text-foreground"><PanelBody {...props} /></DesignScope>;
+	return <DesignScope className="huhu-comments-panel flex h-full min-h-0 flex-col bg-[var(--hu-canvas)] text-[var(--hu-fg)]"><PanelBody {...props} /></DesignScope>;
 }
 function PanelBody({ env, documents, container }: PanelProps) {
-	const notice = useDesignNotice();
+	const notice = useDesignNotice(), panelVisible = useVisible();
 	const [exportError, setExportError] = useState(false);
 	const state = useStore(env.service.state);
 	const path = useSyncExternalStore(listener => documents?.subscribe(listener) ?? (() => undefined), () => documents && container?.ownerDocument.defaultView ? documents.current(container.ownerDocument.defaultView)?.path ?? null : state.path);
@@ -79,7 +81,7 @@ function PanelBody({ env, documents, container }: PanelProps) {
 	const loading = eager && (loadResult?.signature !== sourcePaths || loadResult?.attempt !== attempt);
 	const loadError = !loading && eager && !!loadResult?.error;
 	useEffect(() => {
-		if (!eager) return;
+		if (!eager || !panelVisible) return;
 		let active = true;
 		const paths = sourcePaths ? sourcePaths.split('\n') : [];
 		void (async () => {
@@ -91,7 +93,7 @@ function PanelBody({ env, documents, container }: PanelProps) {
 			if (active) setLoadResult({ signature: sourcePaths, error: hasError, attempt });
 		})();
 		return () => { active = false; };
-	}, [env, eager, sourcePaths, attempt]);
+	}, [env, eager, sourcePaths, attempt, panelVisible]);
 	const selectedChanged = (id: string, checked: boolean) => setSelected(old => {
 		const next = new Set(old); if (checked) next.add(id); else next.delete(id); return next;
 	});
@@ -116,11 +118,11 @@ function PanelBody({ env, documents, container }: PanelProps) {
 		}
 		setSelected(old => new Set([...old].filter(id => !done.has(id)))); setBusy(false);
 	};
-	const bulkButtons = <div className="space-y-2 border-b border-border p-2 text-xs" aria-busy={busy}>
+	const bulkButtons = <div className="space-y-2 border-b border-[var(--hu-line)] p-2 text-xs" aria-busy={busy}>
 		<div className="flex flex-wrap items-center gap-2">
 			<span>{t('editor.highlights.selectedCount', { count: selectedRows.length })}</span>
-			<Button size="xs" variant="outline" onClick={() => setSelected(new Set(visible.map(row => row.thread.id)))}>{t('editor.highlights.selectVisible')}</Button>
-			<Button size="xs" variant="ghost" onClick={() => setSelected(new Set())}>{t('editor.highlights.clear')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" onClick={() => setSelected(new Set(visible.map(row => row.thread.id)))}>{t('editor.highlights.selectVisible')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="ghost" onClick={() => setSelected(new Set())}>{t('editor.highlights.clear')}</Button>
 		</div>
 		<HighlightPalette settings={settings} disabled={busy || !selectedRows.length} onSelect={(id, hex) => {
 			void runBulk(row => row.thread.kind === 'range' ? env.service.recolor(row.thread.id, id, hex) : Promise.resolve());
@@ -128,24 +130,24 @@ function PanelBody({ env, documents, container }: PanelProps) {
 		<div className="flex flex-wrap items-center gap-1">
 			<Input value={tags} aria-label={t('editor.highlights.tags')} onChange={event => setTags(event.target.value)}
 				className="h-8 min-w-0 flex-1 text-xs" placeholder={t('editor.highlights.tagsHint')} />
-			<Button size="xs" disabled={busy || !selectedRows.length} onClick={() => { void runBulk(row => env.service.tags(row.thread.id, [...(row.thread.tags ?? []), ...tags.split(',')])); }}>{t('editor.highlights.addTags')}</Button>
-			<Button size="xs" variant="outline" disabled={busy || !selectedRows.length} onClick={() => { void runBulk(row => env.service.archive(row.thread.id, true)); }}>{t('editor.highlights.archive')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" disabled={busy || !selectedRows.length} onClick={() => { void runBulk(row => env.service.tags(row.thread.id, [...(row.thread.tags ?? []), ...tags.split(',')])); }}>{t('editor.highlights.addTags')}</Button>
+			<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" disabled={busy || !selectedRows.length} onClick={() => { void runBulk(row => env.service.archive(row.thread.id, true)); }}>{t('editor.highlights.archive')}</Button>
 			<ConfirmDialog title={t('editor.comments.delete')} description={t('editor.highlights.deleteSelectedConfirm', { count: selectedRows.length })} destructive
 				onConfirm={() => runBulk(row => env.service.remove(row.thread.id))}>
-				<Button size="xs" variant="destructive" disabled={busy || !selectedRows.length}>{t('editor.comments.delete')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="danger" disabled={busy || !selectedRows.length}>{t('editor.comments.delete')}</Button>
 			</ConfirmDialog>
 		</div>
-		{busy && <p role="status" className="text-muted-foreground">{t('editor.highlights.working')}</p>}
-		{bulkError && <p role="alert" className="text-destructive">{t('editor.highlights.partialFailure')}</p>}
+		{busy && <p role="status" className="text-[var(--hu-fg-3)]">{t('editor.highlights.working')}</p>}
+		{bulkError && <p role="alert" className="text-[var(--hu-danger)]">{t('editor.highlights.partialFailure')}</p>}
 	</div>;
 	return <div className="flex h-full min-h-0 flex-col">
-		<div className="space-y-2 border-b border-border p-3">
+		<div className="space-y-2 border-b border-[var(--hu-line)] p-3">
 			<div className="flex flex-wrap items-center justify-between gap-1">
 				<h2 className="min-w-0 break-words text-sm font-medium">{t('editor.comments.title')} ({count})</h2>
 				<div className="flex gap-1">
 					<Action label={t('editor.comments.refresh')} onClick={() => { void env.service.refresh(); }}><RefreshCw /></Action>
 					<Action label={t('editor.highlights.bulk')} onClick={() => setSelectMode(!selectMode)}><CheckSquare /></Action>
-					<DropdownMenu><DropdownMenuTrigger asChild><Button size="icon-xs" variant="ghost" aria-label={t('editor.comments.more')}><MoreHorizontal /></Button></DropdownMenuTrigger>
+					<DropdownMenu><DropdownMenuTrigger asChild><Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="icon-sm" variant="ghost" aria-label={t('editor.comments.more')}><MoreHorizontal /></Button></DropdownMenuTrigger>
 						<DropdownMenuContent align="end"><DropdownMenuLabel>{t('editor.comments.sort')}</DropdownMenuLabel>
 							<DropdownMenuRadioGroup value={sort} onValueChange={v => setSort(v as SortOrder)}>{(['position', 'created', 'activity'] as const).map(value =>
 								<DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
@@ -167,32 +169,32 @@ function PanelBody({ env, documents, container }: PanelProps) {
 			<ToggleGroup type="single" value={filter} onValueChange={value => { if (value) setFilter(value as ThreadFilter); }} className="w-full flex-wrap">
 				{(['all', 'open', 'resolved'] as const).map(value => <ToggleGroupItem key={value} value={value} className="flex-auto text-xs">{t(`editor.comments.${value}`)}</ToggleGroupItem>)}
 			</ToggleGroup>
-			<Button variant="ghost" size="xs" className="text-muted-foreground" onClick={() => setShowArchived(!showArchived)}>
+			<Button variant="ghost" size="sm" className="text-[var(--hu-fg-3)] min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" onClick={() => setShowArchived(!showArchived)}>
 				{showArchived ? t('editor.highlights.hideArchived') : t('editor.highlights.showArchived')}</Button>
 		</div>
 		{selectMode && bulkButtons}
 		<div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
-			{store.damagedFiles.length > 0 && <p role="alert" className="text-xs text-destructive">{t('editor.comments.damaged')}</p>}
-			{exportError && <div role="alert" className="text-xs text-destructive">{t('editor.highlights.exportFailed')}</div>}
-			{state.error && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-destructive"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
-				<Button size="xs" variant="outline" onClick={() => { void env.service.refresh(); }}>{t('editor.comments.retry')}</Button></div>}
-			{loading && <div role="status" aria-busy="true" className="space-y-2"><span className="text-xs text-muted-foreground">{t('editor.highlights.loading')}</span><Skeleton className="h-12" /><Skeleton className="h-12" /></div>}
-			{loadError && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-destructive"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
-				<Button size="xs" variant="outline" onClick={() => setAttempt(value => value + 1)}>{t('editor.comments.retry')}</Button></div>}
-			{scope === 'current' && !path ? <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p>
+			{store.damagedFiles.length > 0 && <p role="alert" className="text-xs text-[var(--hu-danger)]">{t('editor.comments.damaged')}</p>}
+			{exportError && <div role="alert" className="text-xs text-[var(--hu-danger)]">{t('editor.highlights.exportFailed')}</div>}
+			{state.error && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-[var(--hu-danger)]"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" onClick={() => { void env.service.refresh(); }}>{t('editor.comments.retry')}</Button></div>}
+			{loading && <div role="status" aria-busy="true" className="space-y-2"><span className="text-xs text-[var(--hu-fg-3)]">{t('editor.highlights.loading')}</span><Skeleton className="h-12" /><Skeleton className="h-12" /></div>}
+			{loadError && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-[var(--hu-danger)]"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" onClick={() => setAttempt(value => value + 1)}>{t('editor.comments.retry')}</Button></div>}
+			{scope === 'current' && !path ? <p className="py-8 text-center text-xs text-[var(--hu-fg-3)]">{t('editor.comments.noFile')}</p>
 				: lazyVault ? <>
 					{existing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} selectMode={selectMode} selected={selected} onSelect={selectedChanged} showArchived={showArchived} />)}
-					{missing.length > 0 && <h3 className="text-xs text-status-warning">{t('editor.comments.missingNotes')}</h3>}
+					{missing.length > 0 && <h3 className="text-xs text-[var(--hu-warning)]">{t('editor.comments.missingNotes')}</h3>}
 					{missing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} selectMode={selectMode} selected={selected} onSelect={selectedChanged} showArchived={showArchived} />)}
 				</> : grouped.map(group => <section key={group.key} className="space-y-2">
-					{(groupBy !== 'file' || scope === 'vault') && <h3 className="truncate text-xs font-medium text-muted-foreground" title={group.key}>{group.key === '__untagged__' ? t('editor.highlights.untagged') : group.key}</h3>}
+					{(groupBy !== 'file' || scope === 'vault') && <h3 className="truncate text-xs font-medium text-[var(--hu-fg-3)]" title={group.key}>{group.key === '__untagged__' ? t('editor.highlights.untagged') : group.key}</h3>}
 					{group.items.map(row => <ThreadCard key={row.thread.id} env={env} path={row.path} thread={row.thread}
 						selected={selected.has(row.thread.id)} onSelect={selectMode ? selectedChanged : undefined} />)}
 				</section>)}
 			{!lazyVault && !loading && !(scope === 'current' && !path) && !visible.length && (rows.length > 0
-				? <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><p>{t('editor.highlights.noResults')}</p>
-					<Button size="xs" variant="outline" onClick={() => { setSearch(''); setColor('all'); setFilter('all'); setShowArchived(false); }}>{t('editor.highlights.clearFilters')}</Button></div>
-				: scope === 'current' && !state.error && <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>)}
+				? <div className="space-y-2 py-6 text-center text-xs text-[var(--hu-fg-3)]"><p>{t('editor.highlights.noResults')}</p>
+					<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="secondary" onClick={() => { setSearch(''); setColor('all'); setFilter('all'); setShowArchived(false); }}>{t('editor.highlights.clearFilters')}</Button></div>
+				: scope === 'current' && !state.error && <div className="space-y-2 py-6 text-center text-xs text-[var(--hu-fg-3)]"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>)}
 		</div>
 	</div>;
 }

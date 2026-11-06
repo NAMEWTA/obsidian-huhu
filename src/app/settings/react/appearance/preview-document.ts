@@ -56,7 +56,10 @@ export function mountStylePreview({
 		.join(' ');
 	target.body.classList.add(`theme-${mode}`, 'huhu-appearance-preview');
 	if (narrow) target.body.classList.add('is-mobile', 'is-phone');
-	target.body.style.cssText = source.body.style.cssText;
+	target.body.removeAttribute('style');
+	for (const name of Array.from(source.body.style)) {
+		if (name.startsWith('--font-')) target.body.style.setProperty(name, source.body.style.getPropertyValue(name));
+	}
 	for (const name of THEME_VARS) target.body.style.removeProperty(name);
 	const state = themeBodyState(resolveTheme(settings), mode);
 	target.body.classList.add(...state.classes);

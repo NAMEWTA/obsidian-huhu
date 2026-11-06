@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Check, Eye, Inbox as InboxIcon, RefreshCw, Send, X } from 'lucide-react';
 import { useStore } from 'zustand';
 import { Badge } from '../../../../ui/components/badge';
@@ -122,6 +122,20 @@ export function InboxPanel({
 	const [body, setBody] = useState('');
 	const [source, setSource] = useState('agent-ui');
 	const [sendState, setSendState] = useState('');
+	const [actionBusy, setActionBusy] = useState(false);
+	const action = useRef<{ token: object; owner: string } | undefined>(undefined);
+	const mounted = useRef(true);
+	const currentOwner = useRef('');
+	currentOwner.current = JSON.stringify([scope, selectedKey, spaces.records.selectedSpaceId]);
+	useEffect(() => { mounted.current = true; return () => { mounted.current = false; action.current = undefined; }; }, []);
+	useEffect(() => { action.current = undefined; setActionBusy(false); setSelected(undefined); setVerification(undefined); setSendState(''); }, [scope, selectedKey, spaces.records.selectedSpaceId]);
+	const beginAction = () => {
+		if (action.current) return undefined;
+		const next = { token: {}, owner: currentOwner.current };
+		action.current = next; setActionBusy(true); return next;
+	};
+	const isCurrentAction = (next: NonNullable<typeof action.current>) => mounted.current && action.current === next && next.owner === currentOwner.current;
+	const finishAction = (next: NonNullable<typeof action.current>) => { if (isCurrentAction(next)) { action.current = undefined; setActionBusy(false); } };
 	const [refreshTick, setRefreshTick] = useState(0);
 	useEffect(() => {
 		return presentation?.subscribe(() => setObservations(presentation.state())) ?? (() => {});
@@ -218,32 +232,44 @@ export function InboxPanel({
 
 	const read = async (message: InboxMessageSummary) => {
 		if (!inbox) return;
+		const operation = beginAction();
+		if (!operation) return;
 		try {
 			setError('');
 			setVerification(undefined);
-			setSelected(await inbox.readMessage(message.messageId, message.recipient));
+			const result = await inbox.readMessage(message.messageId, message.recipient);
+			if (!isCurrentAction(operation)) return;
+			setSelected(result);
 		} catch (reason) {
+			if (!isCurrentAction(operation)) return;
 			setError(reason instanceof Error ? reason.message : String(reason));
-		}
+		} finally { finishAction(operation); }
 	};
 	const ack = async (message: InboxMessageSummary) => {
 		if (!inbox) return;
+		const operation = beginAction();
+		if (!operation) return;
 		try {
 			setError('');
 			setVerification(undefined);
 			const result = await inbox.ackMessage(message.messageId, message.recipient, { viewId });
+			if (!isCurrentAction(operation)) return;
 			if (result.value) setSelected(result.value);
 			setRefreshTick((value) => value + 1);
 		} catch (reason) {
+			if (!isCurrentAction(operation)) return;
 			setError(reason instanceof Error ? reason.message : String(reason));
-		}
+		} finally { finishAction(operation); }
 	};
 	const verify = async (observation: InboxObservation) => {
 		if (!inbox) return;
+		const operation = beginAction();
+		if (!operation) return;
 		try {
 			setError('');
 			setVerification(undefined);
 			const fresh = await inbox.freshPrimary();
+			if (!isCurrentAction(operation)) return;
 			const message = fresh.freshness === 'fresh' ? fresh.records?.inbox?.messages.find((row) => row.messageId === observation.messageId) : undefined;
 			let status: 'saved' | 'verified' | 'not-found' | 'conflict' | 'unknown';
 			if (fresh.freshness === 'unknown' || !fresh.records) status = 'unknown';
@@ -264,33 +290,38 @@ export function InboxPanel({
 			}
 			if (!message && status === 'not-found') setError(t('agent.inbox.verifyMissing'));
 		} catch (reason) {
+			if (!isCurrentAction(operation)) return;
 			setError(reason instanceof Error ? reason.message : String(reason));
-		}
+		} finally { finishAction(operation); }
 	};
 	const send = async () => {
 		if (!inbox || !target || !body.trim()) return;
+		const operation = beginAction();
+		if (!operation) return;
 		const messageId = makeMessageId();
 		setSendState(t('agent.inbox.sending'));
 		setError('');
 		try {
 			const result = await inbox.sendMessage({ messageId, recipient: target, source: source.trim() || 'agent-ui', body, viewId });
+			if (!isCurrentAction(operation)) return;
 			setSendState(result.status === 'saved' ? t('agent.inbox.savedWithId', { id: messageId }) : t('agent.inbox.unknownWithId', { id: messageId }));
 			if (result.status === 'saved') setBody('');
 			setRefreshTick((value) => value + 1);
 		} catch (reason) {
+			if (!isCurrentAction(operation)) return;
 			setSendState('');
 			setError(reason instanceof Error ? reason.message : String(reason));
-		}
+		} finally { finishAction(operation); }
 	};
 	const dismissObservation = (attemptId: string) => {
 		if (presentation?.remove(attemptId)) setObservations(presentation.state());
 	};
 
 	return (
-		<section className="flex h-full min-h-0 min-w-0 flex-col bg-card text-foreground" aria-label={t('agent.inbox.title')} data-agent-inbox="">
-		<header className="flex min-h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-3">
+		<section className="flex h-full min-h-0 min-w-0 flex-col bg-[var(--hu-raised)] text-[var(--hu-fg)]" aria-label={t('agent.inbox.title')} data-agent-inbox="">
+		<header className="flex min-h-11 shrink-0 items-center justify-between gap-2 border-b border-[var(--hu-line)] px-3">
 			<div className="flex min-w-0 items-center gap-2">
-				<InboxIcon className="size-4 text-muted-foreground" aria-hidden="true" />
+				<InboxIcon className="size-4 text-[var(--hu-fg-2)]" aria-hidden="true" />
 				<h2 className="min-w-0 truncate text-sm font-medium">{t('agent.inbox.title')}</h2>
 				<span className="sr-only" data-inbox-availability="true">{t('agent.inbox.passive')}</span>
 			</div>
@@ -299,7 +330,7 @@ export function InboxPanel({
 			</Button>
 		</header>
 		<div className="scrollbar-sleek flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 text-xs">
-			<p className="text-muted-foreground">{t('agent.inbox.passive')}</p>
+			<p className="text-[var(--hu-fg-2)]">{t('agent.inbox.passive')}</p>
 			<label htmlFor={`${id}-scope`}>{t('agent.inbox.scope')}</label>
 			<Select value={scope} onValueChange={(value) => { setScope(value as Scope); setSelectedKey(''); }}>
 				<SelectTrigger id={`${id}-scope`} className="w-full"><SelectValue /></SelectTrigger>
@@ -312,18 +343,18 @@ export function InboxPanel({
 			<label htmlFor={`${id}-recipient`}>{t('agent.inbox.recipient')}</label>
 			<Select value={safeSelectedKey} onValueChange={setSelectedKey} disabled={spaces.loading || !!spaces.error || !recipients.length}>
 				<SelectTrigger id={`${id}-recipient`} className="w-full"><SelectValue placeholder={t('agent.inbox.chooseRecipient')} /></SelectTrigger>
-				<SelectContent>{recipients.map((row) => <SelectItem key={recipientKey(row)} value={recipientKey(row)} className="whitespace-normal break-words"><span className="block">{row.label}</span><span className="block text-xs text-muted-foreground">{row.state}</span></SelectItem>)}</SelectContent>
+				<SelectContent>{recipients.map((row) => <SelectItem key={recipientKey(row)} value={recipientKey(row)} className="whitespace-normal break-words"><span className="block">{row.label}</span><span className="block text-xs text-[var(--hu-fg-2)]">{row.state}</span></SelectItem>)}</SelectContent>
 			</Select>
 			<div className="flex items-center justify-between gap-2">
 				<strong>{t('agent.inbox.messages')}</strong>
-				<Button variant="ghost" size="icon-xs" aria-label={t('agent.inbox.refresh')} onClick={() => setRefreshTick((value) => value + 1)}><RefreshCw className="size-3" /></Button>
+				<Button variant="ghost" size="icon-sm" aria-label={t('agent.inbox.refresh')} onClick={() => setRefreshTick((value) => value + 1)}><RefreshCw className="size-3" /></Button>
 			</div>
-			{loading ? <p role="status">{t('agent.inbox.loadingMessages')}</p> : error ? <p role="alert" className="break-words">{error}</p> : !target ? <p className="text-muted-foreground">{t('agent.inbox.selectRecipient')}</p> : !rows.length ? <div className="rounded-md border border-border p-3 text-muted-foreground"><p>{t('agent.inbox.empty')}</p></div> : <div className="divide-y divide-border rounded-md border border-border">{rows.map((message) => <article key={message.messageId} className="space-y-2 p-3" data-message-id={message.messageId}><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="break-all font-mono text-[10px] text-muted-foreground">{message.messageId}</p><p className="mt-1 break-words text-[11px] text-muted-foreground">{message.source} · #{message.sendSequence}</p></div><Badge variant={message.acked ? 'outline' : 'secondary'}>{message.acked ? t('agent.inbox.acknowledged') : t('agent.inbox.unread')}</Badge></div><p className="break-words text-[11px] text-muted-foreground">{message.recipient.spaceId} · {message.recipient.sessionId}</p><div className="flex flex-wrap gap-2"><Button variant="outline" size="xs" onClick={() => void read(message)}><Eye className="size-3" />{t('agent.inbox.read')}</Button>{!message.acked && <Button variant="secondary" size="xs" onClick={() => void ack(message)}><Check className="size-3" />{t('agent.inbox.ack')}</Button>}</div></article>)}</div>}
-			{selected && <div className="space-y-2 rounded-md border border-border bg-background p-3" data-inbox-detail=""><p className="font-medium">{t('agent.inbox.detail')}</p><p className="break-all font-mono text-[10px] text-muted-foreground">{selected.messageId}</p><p className="whitespace-pre-wrap break-words">{selected.body}</p><p className="break-words text-[11px] text-muted-foreground">{selected.recipient.spaceId} · {selected.recipient.sessionId} · {selected.source}</p><p>{selected.ack ? t('agent.inbox.acknowledged') : t('agent.inbox.readOnly')}</p>{selected.references.length > 0 && <p className="break-words text-[11px] text-muted-foreground">{selected.references.length} reference(s)</p>}</div>}
-			{verification && <p className="break-words text-[11px]" data-inbox-verification={verification.status}>{verification.status === 'saved' ? t('agent.inbox.savedWithId', { id: verification.messageId }) : verification.status === 'verified' ? t('agent.inbox.completed') : verification.status === 'not-found' ? t('agent.inbox.verifyMissing') : verification.status === 'conflict' ? t('agent.inbox.error') : t('agent.inbox.unknown')}</p>}
-			{observations.some((observation) => observation.status === 'pending' || observation.status === 'unknown') && <div className="space-y-2 border-t border-border pt-3"><h3 className="font-medium">{t('agent.inbox.pendingTitle')}</h3>{observations.filter((observation) => observation.status === 'pending' || observation.status === 'unknown').map((observation) => <article key={observation.attemptId} className="space-y-1 rounded-md border border-border p-2" data-observation-id={observation.attemptId}><div className="flex items-center justify-between gap-2"><Badge variant="outline">{observationLabel(t, observation)}</Badge><span className="break-all font-mono text-[10px] text-muted-foreground">{observation.messageId}</span></div><p className="break-words">{observation.body ?? t('agent.inbox.ackAttempt')}</p><p className="break-words text-[11px] text-muted-foreground">{observation.recipient.spaceId} · {observation.recipient.sessionId}</p>{observation.diagnostic && <p role="alert" className="break-words text-[11px]">{observation.diagnostic}</p>}<Button variant="outline" size="xs" onClick={() => void verify(observation)}>{t('agent.inbox.verify')}</Button></article>)}</div>}
-			{observations.some((observation) => observation.status === 'completed' || observation.status === 'none') && <div className="space-y-2 border-t border-border pt-3"><h3 className="font-medium">{t('agent.inbox.settledTitle')}</h3>{observations.filter((observation) => observation.status === 'completed' || observation.status === 'none').map((observation) => <article key={observation.attemptId} className="flex items-center justify-between gap-2 rounded-md border border-border p-2" data-settled-observation-id={observation.attemptId}><div className="min-w-0"><Badge variant="outline">{observationLabel(t, observation)}</Badge><p className="break-all font-mono text-[10px] text-muted-foreground">{observation.messageId}</p></div><Button variant="ghost" size="xs" onClick={() => dismissObservation(observation.attemptId)}>{t('agent.inbox.dismiss')}</Button></article>)}</div>}
-			<div className="space-y-2 border-t border-border pt-3"><h3 className="font-medium">{t('agent.inbox.sendTitle')}</h3><label htmlFor={`${id}-source`}>{t('agent.inbox.source')}</label><Input id={`${id}-source`} value={source} onChange={(event) => setSource(event.target.value)} maxLength={512} /><label htmlFor={`${id}-body`}>{t('agent.inbox.body')}</label><Textarea id={`${id}-body`} value={body} onChange={(event) => setBody(event.target.value)} maxLength={16384} rows={4} placeholder={t('agent.inbox.bodyPlaceholder')} /><Button disabled={!inbox || !target || !body.trim() || !!recipient?.archived} onClick={() => void send()}><Send className="size-4" />{t('agent.inbox.send')}</Button>{sendState && <p role="status" className="break-words">{sendState}</p>}</div>
+			{loading ? <p role="status">{t('agent.inbox.loadingMessages')}</p> : error ? <p role="alert" className="break-words">{error}</p> : !target ? <p className="text-[var(--hu-fg-2)]">{t('agent.inbox.selectRecipient')}</p> : !rows.length ? <div className="rounded-md border border-[var(--hu-line)] p-3 text-[var(--hu-fg-2)]"><p>{t('agent.inbox.empty')}</p></div> : <div className="divide-y divide-border rounded-md border border-[var(--hu-line)]">{rows.map((message) => <article key={message.messageId} className="space-y-2 p-3" data-message-id={message.messageId}><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="break-all font-mono text-sm text-[var(--hu-fg-2)]">{message.messageId}</p><p className="mt-1 break-words text-sm text-[var(--hu-fg-2)]">{message.source} · #{message.sendSequence}</p></div><Badge variant={message.acked ? 'neutral' : 'accent'}>{message.acked ? t('agent.inbox.acknowledged') : t('agent.inbox.unread')}</Badge></div><p className="break-words text-sm text-[var(--hu-fg-2)]">{message.recipient.spaceId} · {message.recipient.sessionId}</p><div className="flex flex-wrap gap-2"><Button variant="secondary" size="sm" disabled={actionBusy} onClick={() => void read(message)}><Eye className="size-3" />{t('agent.inbox.read')}</Button>{!message.acked && <Button variant="secondary" size="sm" disabled={actionBusy} onClick={() => void ack(message)}><Check className="size-3" />{t('agent.inbox.ack')}</Button>}</div></article>)}</div>}
+			{selected && <div className="space-y-2 rounded-md border border-[var(--hu-line)] bg-[var(--hu-canvas)] p-3" data-inbox-detail=""><p className="font-medium">{t('agent.inbox.detail')}</p><p className="break-all font-mono text-sm text-[var(--hu-fg-2)]">{selected.messageId}</p><p className="whitespace-pre-wrap break-words">{selected.body}</p><p className="break-words text-sm text-[var(--hu-fg-2)]">{selected.recipient.spaceId} · {selected.recipient.sessionId} · {selected.source}</p><p>{selected.ack ? t('agent.inbox.acknowledged') : t('agent.inbox.readOnly')}</p>{selected.references.length > 0 && <p className="break-words text-sm text-[var(--hu-fg-2)]">{t('agent.inbox.referenceCount', { count: selected.references.length })}</p>}</div>}
+			{verification && <p className="break-words text-sm" data-inbox-verification={verification.status}>{verification.status === 'saved' ? t('agent.inbox.savedWithId', { id: verification.messageId }) : verification.status === 'verified' ? t('agent.inbox.completed') : verification.status === 'not-found' ? t('agent.inbox.verifyMissing') : verification.status === 'conflict' ? t('agent.inbox.error') : t('agent.inbox.unknown')}</p>}
+			{observations.some((observation) => observation.status === 'pending' || observation.status === 'unknown') && <div className="space-y-2 border-t border-[var(--hu-line)] pt-3"><h3 className="font-medium">{t('agent.inbox.pendingTitle')}</h3>{observations.filter((observation) => observation.status === 'pending' || observation.status === 'unknown').map((observation) => <article key={observation.attemptId} className="space-y-1 rounded-md border border-[var(--hu-line)] p-2" data-observation-id={observation.attemptId}><div className="flex items-center justify-between gap-2"><Badge variant="neutral">{observationLabel(t, observation)}</Badge><span className="break-all font-mono text-sm text-[var(--hu-fg-2)]">{observation.messageId}</span></div><p className="break-words">{observation.body ?? t('agent.inbox.ackAttempt')}</p><p className="break-words text-sm text-[var(--hu-fg-2)]">{observation.recipient.spaceId} · {observation.recipient.sessionId}</p>{observation.diagnostic && <p role="alert" className="break-words text-sm">{observation.diagnostic}</p>}<Button variant="secondary" size="sm" disabled={actionBusy} onClick={() => void verify(observation)}>{t('agent.inbox.verify')}</Button></article>)}</div>}
+			{observations.some((observation) => observation.status === 'completed' || observation.status === 'none') && <div className="space-y-2 border-t border-[var(--hu-line)] pt-3"><h3 className="font-medium">{t('agent.inbox.settledTitle')}</h3>{observations.filter((observation) => observation.status === 'completed' || observation.status === 'none').map((observation) => <article key={observation.attemptId} className="flex items-center justify-between gap-2 rounded-md border border-[var(--hu-line)] p-2" data-settled-observation-id={observation.attemptId}><div className="min-w-0"><Badge variant="neutral">{observationLabel(t, observation)}</Badge><p className="break-all font-mono text-sm text-[var(--hu-fg-2)]">{observation.messageId}</p></div><Button variant="ghost" size="sm" onClick={() => dismissObservation(observation.attemptId)}>{t('agent.inbox.dismiss')}</Button></article>)}</div>}
+			<div className="space-y-2 border-t border-[var(--hu-line)] pt-3"><h3 className="font-medium">{t('agent.inbox.sendTitle')}</h3><label htmlFor={`${id}-source`}>{t('agent.inbox.source')}</label><Input id={`${id}-source`} value={source} onChange={(event) => setSource(event.target.value)} maxLength={512} /><label htmlFor={`${id}-body`}>{t('agent.inbox.body')}</label><Textarea id={`${id}-body`} value={body} onChange={(event) => setBody(event.target.value)} maxLength={16384} rows={4} placeholder={t('agent.inbox.bodyPlaceholder')} /><Button busy={actionBusy} disabled={!inbox || !target || !body.trim() || !!recipient?.archived} onClick={() => void send()}><Send className="size-4" />{t('agent.inbox.send')}</Button>{sendState && <p role="status" className="break-words">{sendState}</p>}</div>
 		</div>
 	</section>
 );

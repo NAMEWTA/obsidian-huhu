@@ -42,11 +42,11 @@ export function vaultPreviewSource(app: App, tracker: MetadataTracker): PreviewS
 
 /** Timers on `win` and idle callbacks where available, so work yields to input. */
 export function windowScheduler(win: Window): Scheduler {
-	const idle = (win as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+	const idle = (win as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback?.bind(win);
 	return {
 		now: () => win.performance.now(),
 		yield: () => new Promise<void>((resolve) => {
-			if (idle) idle.call(win, () => resolve(), { timeout: 60 });
+			if (idle) idle(() => resolve(), { timeout: 60 });
 			else win.setTimeout(resolve, 4);
 		}),
 		later(callback, ms) {

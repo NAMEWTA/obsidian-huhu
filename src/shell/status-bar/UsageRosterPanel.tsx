@@ -4,7 +4,15 @@ import { ChevronRight, RefreshCw } from 'lucide-react';
 import type { StatusBarPreferences, UsageSnapshot, WorkbenchTarget } from '../../app/contracts/workbench';
 import { t } from '../../shared/i18n';
 import { useOwnerDocument } from '../../ui/react/contexts';
-import { DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuItem } from '../../ui/components/dropdown-menu';
+import {
+	DropdownMenuSub,
+	DropdownMenuSubTrigger,
+	DropdownMenuSubContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
+	DropdownMenuItem,
+} from '../../ui/components/dropdown-menu';
 import { SegmentedControl } from '../../ui/components/huhu/SettingsFormControls';
 import { AgentIcon } from '../../ui/components/huhu/AgentIcon';
 import { maxUsed, shownPercent, usageTone } from './ProviderSegment';
@@ -14,7 +22,7 @@ export function UsageRosterPanel({
 	onPreferences,
 	refresh,
 	navigate,
- selectAccount,
+	selectAccount,
 }: {
 	selectAccount?: (provider: string, accountId: string) => void;
 	snapshot: UsageSnapshot;
@@ -50,16 +58,16 @@ export function UsageRosterPanel({
 	return (
 		<div className="w-[360px] max-w-full text-xs">
 			<div className="flex items-center justify-between px-3.5 pb-2 pt-3">
-				<span className="text-[13px] font-semibold text-foreground">{t('shell.usage')}</span>
+				<span className="text-sm font-semibold text-foreground">{t('shell.usage')}</span>
 				<div className="flex items-center gap-2 text-muted-foreground">
-					<span className="text-[11px]">{t('shell.allAgents')}</span>
+					<span className="text-xs">{t('shell.allAgents')}</span>
 					<DropdownMenuItem
 						onSelect={(e) => {
 							e.preventDefault();
 							refresh();
 						}}
 						aria-label={t('shell.refreshUsage')}
-						className="size-5 justify-center p-0"
+						className="size-[var(--hu-hit)] justify-center p-0"
 					>
 						<RefreshCw
 							size={12}
@@ -85,73 +93,108 @@ export function UsageRosterPanel({
 			{[...snapshot.providers]
 				.sort((a, b) => maxUsed(b) - maxUsed(a))
 				.map((p) => {
- const Row = p.accounts ? DropdownMenuSubTrigger : DropdownMenuItem;
- const row = (
-					<Row
-						key={p.id}
-						onSelect={p.accounts ? undefined : () => navigate({ feature: 'terminal', section: 'usage', resourceId: p.id })}
-						className="w-full cursor-pointer rounded-none px-3.5 py-2.5"
-					>
-						<div data-usage-mode={preferences.usageMode} className="flex min-w-0 flex-1 flex-col gap-1">
-							<div className="flex items-center gap-2.5">
-								<span className="flex size-5 shrink-0 items-center justify-center rounded-md border border-border bg-secondary">
-									<AgentIcon agent={p.id === 'gemini' ? 'gemini-cli' : p.id} size={14} />
-								</span>
-								<span className="min-w-0 shrink truncate text-[13px] font-medium text-foreground">
-									{p.name}
-									{p.account && (
-										<span className="font-normal text-muted-foreground"> · {p.account}</span>
-									)}
-								</span>
-								<span className="shrink-0 text-[11px] text-muted-foreground">
-									{!p.windows.length
-										? (p.statusLabel ?? p.status)
-										: preferences.usageMode === 'compact'
-											? `${shownPercent(maxUsed(p), preferences.usageDisplay)}%`
-											: resetLabel(p.windows.flatMap((w) => (w.resetsAt ? [w.resetsAt] : [])))}
-								</span>
-							</div>
-							{!!p.windows.length && preferences.usageMode === 'verbose' && (
-								<div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pl-[30px]">
-									{p.windows.map((w) => (
-										<span key={w.label} className="flex shrink-0 items-center gap-1.5">
-											<span className="text-[10px] text-muted-foreground">{w.label}</span>
-											<span className="h-[5px] w-7 overflow-hidden rounded-full bg-muted">
-												<span
-													className="block h-full rounded-full bg-muted-foreground/40"
-													style={{
-														width: `${shownPercent(w.usedPercent, preferences.usageDisplay)}%`,
-													}}
-												/>
-											</span>
-											<span className={`tabular-nums text-[11px] ${usageTone(w.usedPercent)}`}>
-												{shownPercent(w.usedPercent, preferences.usageDisplay)}%
-											</span>
-										</span>
-									))}
+					const Row = p.accounts ? DropdownMenuSubTrigger : DropdownMenuItem;
+					const row = (
+						<Row
+							key={p.id}
+							onSelect={
+								p.accounts
+									? undefined
+									: () => navigate({ feature: 'terminal', section: 'usage', resourceId: p.id })
+							}
+							className="w-full cursor-pointer rounded-none px-3.5 py-2.5"
+						>
+							<div data-usage-mode={preferences.usageMode} className="flex min-w-0 flex-1 flex-col gap-1">
+								<div className="flex items-center gap-2.5">
+									<span className="flex size-5 shrink-0 items-center justify-center rounded-md border border-border bg-secondary">
+										<AgentIcon agent={p.id === 'gemini' ? 'gemini-cli' : p.id} size={14} />
+									</span>
+									<span className="min-w-0 shrink truncate text-sm font-medium text-foreground">
+										{p.name}
+										{p.account && (
+											<span className="font-normal text-muted-foreground"> · {p.account}</span>
+										)}
+									</span>
+									<span className="shrink-0 text-xs text-muted-foreground">
+										{!p.windows.length
+											? (p.statusLabel ?? p.status)
+											: preferences.usageMode === 'compact'
+												? `${shownPercent(maxUsed(p), preferences.usageDisplay)}%`
+												: resetLabel(
+														p.windows.flatMap((w) => (w.resetsAt ? [w.resetsAt] : [])),
+													)}
+									</span>
 								</div>
-							)}
-						</div>
-						{!p.accounts && <ChevronRight size={14} className="text-muted-foreground" />}
-					</Row>
- );
- return p.accounts ? <DropdownMenuSub key={p.id}>{row}<DropdownMenuSubContent className="w-56">
- <DropdownMenuRadioGroup value={p.accountId ?? ''} onValueChange={id => selectAccount?.(p.id, id)}>{p.accounts.map(account => <DropdownMenuRadioItem key={account.id} value={account.id}>{account.name}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
- <DropdownMenuSeparator /><DropdownMenuItem onSelect={() => navigate({ feature: 'settings', section: 'terminal', resourceId: 'accounts' })}>{t('shell.addAccount')}</DropdownMenuItem>
- <DropdownMenuItem onSelect={() => navigate({ feature: 'settings', section: 'terminal', resourceId: 'accounts' })}>{t('shell.manageAccounts')}</DropdownMenuItem>
- </DropdownMenuSubContent></DropdownMenuSub> : row;
- })}
+								{!!p.windows.length && preferences.usageMode === 'verbose' && (
+									<div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pl-[30px]">
+										{p.windows.map((w) => (
+											<span key={w.label} className="flex shrink-0 items-center gap-1.5">
+												<span className="text-xs text-muted-foreground">{w.label}</span>
+												<span className="h-[5px] w-7 overflow-hidden rounded-full bg-muted">
+													<span
+														className="block h-full rounded-full bg-muted-foreground/40"
+														style={{
+															width: `${shownPercent(w.usedPercent, preferences.usageDisplay)}%`,
+														}}
+													/>
+												</span>
+												<span className={`tabular-nums text-xs ${usageTone(w.usedPercent)}`}>
+													{shownPercent(w.usedPercent, preferences.usageDisplay)}%
+												</span>
+											</span>
+										))}
+									</div>
+								)}
+							</div>
+							{!p.accounts && <ChevronRight size={14} className="text-muted-foreground" />}
+						</Row>
+					);
+					return p.accounts ? (
+						<DropdownMenuSub key={p.id}>
+							{row}
+							<DropdownMenuSubContent className="w-56">
+								<DropdownMenuRadioGroup
+									value={p.accountId ?? ''}
+									onValueChange={(id) => selectAccount?.(p.id, id)}
+								>
+									{p.accounts.map((account) => (
+										<DropdownMenuRadioItem key={account.id} value={account.id}>
+											{account.name}
+										</DropdownMenuRadioItem>
+									))}
+								</DropdownMenuRadioGroup>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									onSelect={() =>
+										navigate({ feature: 'settings', section: 'terminal', resourceId: 'accounts' })
+									}
+								>
+									{t('shell.addAccount')}
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onSelect={() =>
+										navigate({ feature: 'settings', section: 'terminal', resourceId: 'accounts' })
+									}
+								>
+									{t('shell.manageAccounts')}
+								</DropdownMenuItem>
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
+					) : (
+						row
+					);
+				})}
 			<div className="border-t border-border/70" />
 			<DropdownMenuItem
 				onSelect={() => navigate({ feature: 'terminal', section: 'usage' })}
-				className="w-full cursor-pointer justify-between rounded-none px-3.5 py-2.5 text-[13px] text-foreground"
+				className="w-full cursor-pointer justify-between rounded-none px-3.5 py-2.5 text-sm text-foreground"
 			>
 				{t('shell.usageDetails')}
 				<ChevronRight size={14} className="text-muted-foreground" />
 			</DropdownMenuItem>
 			<DropdownMenuItem
 				onSelect={() => navigate({ feature: 'settings', section: 'terminal' })}
-				className="w-full cursor-pointer justify-between rounded-none px-3.5 py-2.5 text-[13px] text-foreground"
+				className="w-full cursor-pointer justify-between rounded-none px-3.5 py-2.5 text-sm text-foreground"
 			>
 				{t('shell.manageAccounts')}
 				<ChevronRight size={14} className="text-muted-foreground" />

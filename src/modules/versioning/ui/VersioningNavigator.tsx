@@ -35,8 +35,9 @@ export function ChoiceList<T>({
 }: ChoiceListProps<T>) {
 	const ownerDocument = useOwnerDocument();
 	const viewport = useRef<HTMLDivElement>(null);
+	const rowMetric = useRef<HTMLSpanElement>(null);
 	const focusFrame = useRef(0);
-	const [dimensions, setDimensions] = useState({ top: 0, height: 512, row: Math.max(rowHeight ?? 32, 32) });
+	const [dimensions, setDimensions] = useState({ top: 0, height: 512, row: Math.max(rowHeight ?? 44, 44) });
 	const virtual = items.length > 150;
 	const start = virtual
 		? Math.max(0, Math.min(items.length - 1, Math.floor(dimensions.top / dimensions.row) - 8))
@@ -53,10 +54,15 @@ export function ChoiceList<T>({
 			setDimensions((value) => ({
 				...value,
 				height: element.clientHeight || 512,
-				row: Math.max(rowHeight ?? 32, media.matches ? 44 : 32),
+				row: Math.max(
+					rowHeight ?? 0,
+					rowMetric.current?.getBoundingClientRect().height || 44,
+					media.matches ? 44 : 32,
+				),
 			}));
 		const observer = new ownerWindow.ResizeObserver(measure);
 		observer.observe(element);
+		if (rowMetric.current) observer.observe(rowMetric.current);
 		media.addEventListener('change', measure);
 		const frame = ownerWindow.requestAnimationFrame(measure);
 		return () => {
@@ -94,6 +100,12 @@ export function ChoiceList<T>({
 				setDimensions((value) => ({ ...value, top }));
 			}}
 		>
+			<span
+				ref={rowMetric}
+				aria-hidden
+				className="pointer-events-none absolute w-0"
+				style={{ height: 'var(--hu-list-row-h)' }}
+			/>
 			<ul
 				className="relative m-0 list-none p-0"
 				aria-label={label}
@@ -155,6 +167,8 @@ export function ChoiceList<T>({
 }
 
 export interface NavigationFile {
+	additions?: number | null;
+	deletions?: number | null;
 	key: string;
 	path: string;
 	from?: string;
@@ -260,6 +274,16 @@ export function FileNavigator({
 											: row.file.path.slice(0, Math.max(0, row.file.path.lastIndexOf('/')))}
 									</span>
 								</span>
+								{row.file.additions !== undefined && (
+									<span className="shrink-0 font-mono text-xs text-status-success">
+										+{row.file.additions ?? '—'}
+									</span>
+								)}
+								{row.file.deletions !== undefined && (
+									<span className="shrink-0 font-mono text-xs text-destructive">
+										−{row.file.deletions ?? '—'}
+									</span>
+								)}
 								<StatusLetter status={row.file.status} />
 							</>
 						)

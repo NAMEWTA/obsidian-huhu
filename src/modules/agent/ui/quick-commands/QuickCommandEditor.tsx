@@ -133,9 +133,9 @@ export function QuickCommandEditor({
 							{ value: 'vault', label: t('agent.quick.vault') },
 						]}
 					/>
-					<p className="text-xs text-muted-foreground">{t('agent.quick.scopeHint')}</p>
+					<p className="text-xs text-[var(--hu-fg-2)]">{t('agent.quick.scopeHint')}</p>
 					{error && (
-						<p role="alert" className="text-xs text-destructive">
+						<p role="alert" className="text-xs text-[var(--hu-danger)]">
 							{error}
 						</p>
 					)}

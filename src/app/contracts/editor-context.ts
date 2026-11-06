@@ -26,6 +26,11 @@ export interface EditorContextAccess {
 	subscribe(listener: () => void): () => void;
 }
 
+/** An independently mounted root receives visibility explicitly across the React root boundary. */
+export interface EditorPanelHandle {
+	setVisible(visible: boolean): void;
+	dispose(): void;
+}
 export interface EditorPanelContribution {
-	mount(container: HTMLElement, documents: EditorContextAccess): () => void;
+	mount(container: HTMLElement, documents: EditorContextAccess, visible: boolean): EditorPanelHandle;
 }

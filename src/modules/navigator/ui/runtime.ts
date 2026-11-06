@@ -3,7 +3,7 @@ import { VISIBLE_NAMES } from '../../../shared/storage/vault-layout';
 import { Notice, Platform, TFile, moment, normalizePath } from 'obsidian';
 import { AUTOMATION_COMPOSER } from '../../automations/api';
 import { TASK_CALENDAR } from '../../task/api';
-import { registerMoment } from '../core/moment-format';
+import { registerMoment, type MomentApi } from '../core/moment-format';
 import type { ModuleContext } from '../../../app/contracts/module';
 import { vaultIdentity } from '../../../host/obsidian/storage/device-id';
 import { t } from '../../../shared/i18n';
@@ -77,7 +77,7 @@ export async function createNavigatorRuntime(
 ): Promise<NavigatorRuntime> {
 	const { app, lifetime } = context;
 	// Date formats are Obsidian's own Moment, so they behave as in the core Daily notes plugin.
-	registerMoment(moment);
+	registerMoment(moment as unknown as MomentApi);
 	const win = app.workspace.containerEl.ownerDocument.defaultView ?? window;
 	let alive = true;
 	const report = (error: unknown) => {

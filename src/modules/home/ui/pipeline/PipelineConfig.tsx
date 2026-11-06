@@ -1,3 +1,4 @@
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../../../ui/components/select';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/pipeline-section.ts
 import { useState } from 'react';
 import type { App } from 'obsidian';
@@ -8,7 +9,6 @@ import { Button } from '../../../../ui/components/button';
 import { Label } from '../../../../ui/components/label';
 import { FolderField, FolderListField, TextField } from '../sections/P1Controls';
 import { SkillList } from '../quickbar/SkillList';
-
 const lines = (value: string) => [
 	...new Set(
 		value
@@ -17,7 +17,6 @@ const lines = (value: string) => [
 			.filter(Boolean),
 	),
 ];
-
 /** Workflow configuration lives in its section; cancellation never writes the board. */
 export function PipelineConfig({
 	app,
@@ -54,7 +53,7 @@ export function PipelineConfig({
 		}
 	};
 	return (
-		<section className="huhu-pipeline-config flex min-w-0 flex-col gap-[var(--size-4-2)]">
+		<section className="huhu-pipeline-config flex min-w-0 flex-col gap-[var(--hu-space-2)]">
 			<h4>{t('home.pipeline.configure')}</h4>
 			<FolderField
 				app={app}
@@ -68,7 +67,7 @@ export function PipelineConfig({
 				onInput={(statusField) => patch({ statusField })}
 			/>
 			{draft.stages.map((item) => (
-				<fieldset key={item.id} className="flex min-w-0 flex-col gap-[var(--size-4-2)]">
+				<fieldset key={item.id} className="flex min-w-0 flex-col gap-[var(--hu-space-2)]">
 					<legend>{item.label || t('home.pipeline.stage')}</legend>
 					<TextField
 						label={t('home.pipeline.stageLabel')}
@@ -89,7 +88,8 @@ export function PipelineConfig({
 						onChange={(path) => {
 							const root = draft.rootFolder.replace(/\/+$/, '');
 							if (!path || path === root) stage(item.id, { folder: undefined });
-							else if (root && path.startsWith(`${root}/`)) stage(item.id, { folder: path.slice(root.length + 1) });
+							else if (root && path.startsWith(`${root}/`))
+								stage(item.id, { folder: path.slice(root.length + 1) });
 							else setError(t('home.pipeline.stageFolderOutside'));
 						}}
 					/>
@@ -149,28 +149,36 @@ export function PipelineConfig({
 				}
 			/>
 			{draft.skills.map((skill) => (
-				<fieldset key={skill.id} className="flex min-w-0 flex-col gap-[var(--size-4-2)]">
+				<fieldset key={skill.id} className="flex min-w-0 flex-col gap-[var(--hu-space-2)]">
 					<legend>{skill.label}</legend>
-					<label className="flex min-w-0 flex-col gap-[var(--size-4-1)]">
+					<label className="flex min-w-0 flex-col gap-[var(--hu-space-1)]">
 						<span>{t('home.pipeline.skillScope')}</span>
-						<select
-							value={skill.scope}
-							onChange={(event) =>
+						<Select
+							value={skill.scope || '__none__'}
+							onValueChange={(event) =>
 								patch({
 									skills: draft.skills.map((item) =>
 										item.id === skill.id
 											? {
 													...item,
-													scope: event.currentTarget.value === 'stage' ? 'stage' : 'card',
+													scope:
+														(event === '__none__' ? '' : event) === 'stage'
+															? 'stage'
+															: 'card',
 												}
 											: item,
 									),
 								})
 							}
 						>
-							<option value="card">{t('home.pipeline.cardScope')}</option>
-							<option value="stage">{t('home.pipeline.stageScope')}</option>
-						</select>
+							<SelectTrigger>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="card">{t('home.pipeline.cardScope')}</SelectItem>
+								<SelectItem value="stage">{t('home.pipeline.stageScope')}</SelectItem>
+							</SelectContent>
+						</Select>
 					</label>
 					<TextField
 						label={t('home.pipeline.skillStages')}
@@ -188,12 +196,12 @@ export function PipelineConfig({
 				</fieldset>
 			))}
 			{error && <p role="alert">{error}</p>}
-			<div className="flex min-w-0 flex-wrap items-center gap-[var(--size-4-2)]">
+			<div className="flex min-w-0 flex-wrap items-center gap-[var(--hu-space-2)]">
 				<Button disabled={pending} onClick={close}>
 					{t('common.cancel')}
 				</Button>
 				<Button
-					variant="default"
+					variant="primary"
 					disabled={pending}
 					onClick={() => {
 						void submit();

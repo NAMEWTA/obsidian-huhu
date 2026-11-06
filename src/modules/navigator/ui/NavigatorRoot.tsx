@@ -13,7 +13,7 @@ export function NavigatorRoot() {
 	const env = useEnv();
 	const settings = useNavigatorSettings(env.service);
 	return (
-		<DesignScope className="flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground" data-navigator-root>
+		<DesignScope className="flex h-full min-h-0 flex-col bg-[var(--hu-surface)] text-[var(--hu-fg)]" data-navigator-root>
 			<div className="min-h-0 flex-1">
 				{settings.layout === 'single' ? <SinglePane view={settings.singleView} /> : <DualPane />}
 			</div>
@@ -27,8 +27,8 @@ function DualPane() {
 	const win = useOwnerWindow();
 	const timer = useRef<number | undefined>(undefined);
 	useEffect(() => () => win.clearTimeout(timer.current), [win]);
-	const persist = (sizes: number[]) => {
-		const size = sizes[0];
+	const persist = (sizes: { [id: string]: number }) => {
+		const size = sizes['navigator-nav'];
 		if (size === undefined || Math.abs(size - env.service.settings.get().navSize) < 0.5) return;
 		win.clearTimeout(timer.current);
 		timer.current = win.setTimeout(() => {
@@ -36,12 +36,12 @@ function DualPane() {
 		}, 250);
 	};
 	return (
-		<ResizablePanelGroup key={settings.orientation} direction={settings.orientation} onLayout={persist}>
-			<ResizablePanel id="navigator-nav" order={1} defaultSize={settings.navSize} minSize={settings.orientation === 'horizontal' ? 25 : 15}>
+		<ResizablePanelGroup key={settings.orientation} orientation={settings.orientation} onLayoutChanged={persist}>
+			<ResizablePanel id="navigator-nav" defaultSize={`${settings.navSize}%`} minSize={settings.orientation === 'horizontal' ? '25%' : '15%'}>
 				<NavPane />
 			</ResizablePanel>
 			<ResizableHandle />
-			<ResizablePanel id="navigator-list" order={2} minSize={settings.orientation === 'horizontal' ? 30 : 20}>
+			<ResizablePanel id="navigator-list" minSize={settings.orientation === 'horizontal' ? '30%' : '20%'}>
 				<ListPane />
 			</ResizablePanel>
 		</ResizablePanelGroup>
@@ -49,7 +49,7 @@ function DualPane() {
 }
 
 function SinglePane({ view }: { view: 'nav' | 'list' }) {
-	const slide = 'absolute inset-0 transition-transform duration-(--anim-duration-moderate) motion-reduce:transition-none';
+	const slide = 'absolute inset-0 transition-transform duration-[var(--hu-dur-base)] motion-reduce:transition-none';
 	return (
 		<div className="relative h-full overflow-hidden">
 			<div className={cn(slide, view === 'nav' ? 'translate-x-0' : '-translate-x-full')} inert={view !== 'nav'}>

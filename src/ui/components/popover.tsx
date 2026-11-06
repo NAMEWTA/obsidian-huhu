@@ -6,6 +6,7 @@ import * as React from 'react';
 import * as PopoverPrimitive from 'radix-ui/popover';
 
 import { usePortalContainer } from '../react/contexts';
+import { useOverlayStyle, FloatingLayer, FloatingOwner } from '../react/modal-layer';
 import { cn } from '../lib/utils';
 import { handleImeOverlayEscape } from '../react/ime';
 
@@ -13,7 +14,11 @@ import { handleImeOverlayEscape } from '../react/ime';
 const consumerPreventedWheelEvents = new WeakSet<WheelEvent>();
 
 function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-	return <PopoverPrimitive.Root data-slot="popover" {...props} />;
+	return (
+		<FloatingOwner>
+			<PopoverPrimitive.Root data-slot="popover" {...props} />
+		</FloatingOwner>
+	);
 }
 
 function PopoverTrigger(props: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
@@ -157,33 +162,38 @@ function PopoverContent({
 	);
 
 	return (
-		<PopoverPrimitive.Portal container={portalContainer}>
-			<PopoverPrimitive.Content
-				data-slot="popover-content"
-				align={align}
-				sideOffset={sideOffset}
-				// HUHU semantic surface tokens follow the host theme and the optional Orca palette.
-				className={cn(
-					'z-[var(--layer-menu)] overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-floating md:backdrop-blur-2xl outline-none    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
-					wheelScroll && 'popover-wheel-scroll',
-					className,
-				)}
-				ref={setContentRef}
-				// Why: Electron's -webkit-app-region: drag on the titlebar captures
-				// clicks at the OS level regardless of z-index. Without no-drag,
-				// popovers that visually overlap the titlebar are unclickable.
-				style={
-					{
-						...style,
-						WebkitAppRegion: 'no-drag',
-					} as React.CSSProperties
-				}
-				onWheel={handleConsumerWheel}
-				onWheelCapture={handleConsumerWheelCapture}
-				{...props}
-				onEscapeKeyDown={(event) => handleImeOverlayEscape(event, props.onEscapeKeyDown)}
-			/>
-		</PopoverPrimitive.Portal>
+		<FloatingLayer>
+			<PopoverPrimitive.Portal container={portalContainer}>
+				<PopoverPrimitive.Content
+					data-slot="popover-content"
+					align={align}
+					sideOffset={sideOffset}
+					// HUHU semantic surfaces come from the approved theme palette.
+					className={cn(
+						'z-[var(--hu-overlay-layer)] overflow-hidden rounded-[var(--hu-radius-lg)] border border-[var(--hu-line)] bg-[var(--hu-raised)] text-popover-foreground shadow-floating  outline-none    data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+						wheelScroll && 'popover-wheel-scroll',
+						className,
+					)}
+					ref={setContentRef}
+					// Why: Electron's -webkit-app-region: drag on the titlebar captures
+					// clicks at the OS level regardless of z-index. Without no-drag,
+					// popovers that visually overlap the titlebar are unclickable.
+					style={
+						{
+							...useOverlayStyle(style, 1),
+							WebkitAppRegion: 'no-drag',
+						} as React.CSSProperties
+					}
+					onWheel={handleConsumerWheel}
+					onWheelCapture={handleConsumerWheelCapture}
+					{...props}
+					onEscapeKeyDown={(event) => {
+						handleImeOverlayEscape(event, props.onEscapeKeyDown);
+						event.stopPropagation();
+					}}
+				/>
+			</PopoverPrimitive.Portal>
+		</FloatingLayer>
 	);
 }
 

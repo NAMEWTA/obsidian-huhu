@@ -44,7 +44,7 @@ export function ExternalWidget({
 	return (
 		<div className="dashboard-external-widget h-full min-h-0 w-full">
 			{error && (
-				<p role="alert" className="m-0 p-3 text-xs text-[var(--destructive)]">
+				<p role="alert" className="m-0 p-3 text-xs text-[var(--hu-danger)]">
 					{t('home.widget.failed', { detail: error })}
 				</p>
 			)}

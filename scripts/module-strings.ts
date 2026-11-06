@@ -42,3 +42,20 @@ for (const messages of [
 	registerMessages(messages);
 
 registerMessages(nativeStrings);
+
+import { messages as aboutUI } from '../src/shared/i18n/lazy/huhu-ui';
+registerMessages(aboutUI);
+import { messages as agentUI } from '../src/modules/agent/ui/i18n';
+registerMessages(agentUI);
+import { messages as navigatorUI } from '../src/modules/navigator/ui/i18n';
+registerMessages(navigatorUI);
+import { messages as taskUI } from '../src/modules/task/ui/i18n';
+registerMessages(taskUI);
+import { messages as versioningUI } from '../src/modules/versioning/ui/i18n';
+registerMessages(versioningUI);
+
+// Pure UI dictionaries are preloaded here only for ordinary tests.
+import '../src/modules/notifications/ui/i18n';
+import '../src/modules/safe/ui/i18n';
+import '../src/modules/health/ui/i18n';
+import '../src/modules/home/ui/i18n';

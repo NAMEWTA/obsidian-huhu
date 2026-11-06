@@ -36,7 +36,7 @@ const FEATURES: ReadonlyArray<{ key: string; icon: Icon }> = [
 
 function ExternalButton({ href, icon: Glyph, label, primary }: { href: string; icon: Icon; label: string; primary?: boolean }) {
 	return (
-		<Button asChild variant={primary ? 'default' : 'outline'} size="sm">
+		<Button asChild variant={primary ? 'primary' : 'secondary'} size="sm">
 			<a href={href} target="_blank" rel="noopener noreferrer" className="no-underline hover:no-underline">
 				<Glyph className="size-4" />
 				{label}
@@ -63,9 +63,9 @@ export function AboutSettings({ version }: { version: string }) {
 					</div>
 					<p className="m-0">{t('about.lead')}</p>
 					<div className="flex flex-wrap items-center gap-2">
-						<Badge variant="secondary">{t('about.version', { version })}</Badge>
-						<Badge variant="outline">{t('about.license')}</Badge>
-						<Badge variant="outline">{t('about.author')}</Badge>
+						<Badge variant="neutral">{t('about.version', { version })}</Badge>
+						<Badge variant="neutral">{t('about.license')}</Badge>
+						<Badge variant="neutral">{t('about.author')}</Badge>
 					</div>
 					<div className="flex flex-wrap gap-2">
 						<ExternalButton primary href={REPO} icon={Star} label={t('about.star')} />

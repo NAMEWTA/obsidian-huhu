@@ -1,16 +1,17 @@
 import type { App } from 'obsidian';
-import { openReactDialog } from '../../../../ui/react/dialog';
+import { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { ContainerProviders } from '../../../../ui/react/providers';
+import { restoreFocus } from '../../../../ui/react/modal-layer';
 import { t } from '../../../../shared/i18n';
 import type { AutomationDefinition } from '../../../../shared/automation/types';
 import type { AutomationComposeRequest } from '../../api';
 import type { AutomationViewHost } from '../panel-contract';
 import { EditorView } from '../editor/EditorView';
+import { RetainedEditorDialog } from '../editor/RetainedEditorDialog';
+import { DiscardDialog } from '../dialogs/DiscardDialog';
 
-/**
- * Show the "New automation" dialog in the window the request names (the one of the most recent leaf by
- * default). It holds the same form as the automation board's editor, so the form follows the chosen action.
- * Resolves when the dialog closes: to the saved definition, or to `undefined` when nothing was saved.
- */
+/** The public composer owns one retained form root; canonical Dialog owns its modal/focus behavior. */
 export function openComposer(
 	app: App,
 	host: AutomationViewHost,
@@ -18,35 +19,129 @@ export function openComposer(
 	signal?: AbortSignal,
 ): Promise<AutomationDefinition | undefined> {
 	return new Promise((resolve) => {
-		let saved: AutomationDefinition | undefined;
-		const win = request.ownerWindow ?? app.workspace.getMostRecentLeaf()?.view.containerEl.win ?? app.workspace.containerEl.win;
-		const doc = win.document;
-		// Follow the surface that asked, so the dialog stays with it when that surface moves or closes.
-		const owner = doc.activeElement?.closest<HTMLElement>('[role="dialog"], .huhu-ui') ?? doc.body;
 		if (signal?.aborted) return resolve(undefined);
-		const dialog = openReactDialog(owner, {
-			title: t('automation.new'),
-			className:
-				'flex h-[min(46rem,calc(100vh-2rem))] w-[min(62rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-[62rem]',
-			headerClassName: 'shrink-0 border-b border-border/50 px-6 py-4',
-			content: (close) => (
-				<EditorView
-					dialog
-					request={{ action: request.action, source: request.source, prefill: request.prefill }}
-					host={host}
-					onSaved={(definition) => {
-						saved = definition;
-						close();
-					}}
-					onClose={close}
-				/>
-			),
-			onClose: () => {
-				signal?.removeEventListener('abort', stop);
+		const win =
+				request.ownerWindow ??
+				app.workspace.getMostRecentLeaf()?.view.containerEl.win ??
+				app.workspace.containerEl.win,
+			doc = win.document;
+		const recent = app.workspace?.getMostRecentLeaf?.()?.view.containerEl;
+		const owner =
+			doc.activeElement?.closest<HTMLElement>('[role="dialog"], .huhu-ui') ??
+			(recent?.ownerDocument === doc ? recent : doc.body);
+		const previous = doc.activeElement as HTMLElement | null;
+		const logicalLeaf =
+			owner.closest<HTMLElement>('[data-huhu-leaf]') ??
+			(recent?.ownerDocument === doc
+				? (recent.querySelector<HTMLElement>('[data-huhu-leaf]') ??
+					recent.closest<HTMLElement>('.workspace-leaf-content'))
+				: null);
+		const container = doc.createElement('div');
+		container.className = 'huhu-ui';
+		doc.body.append(container);
+		const root = createRoot(container),
+			controller = new AbortController();
+		let closed = false,
+			dirty = false,
+			currentDoc = doc,
+			shown = true;
+		let observer: MutationObserver | undefined;
+		const visibleOwner = () => {
+			for (let node: HTMLElement | null = owner; node; node = node.parentElement) {
+				const style = node.ownerDocument.defaultView?.getComputedStyle(node);
+				if (node.hidden || style?.display === 'none' || style?.visibility === 'hidden') return false;
+			}
+			return true;
+		};
+		const finish = (saved?: AutomationDefinition) => {
+			if (closed) return;
+			closed = true;
+			controller.abort();
+			observer?.disconnect();
+			currentDoc.defaultView?.removeEventListener('unload', stop);
+			signal?.removeEventListener('abort', stop);
+			queueMicrotask(() => {
+				const physicalDoc = container.ownerDocument;
+				root.unmount();
+				container.remove();
+				if (owner.isConnected && visibleOwner()) restoreFocus(physicalDoc, previous, owner);
 				resolve(saved);
-			},
-		});
-		const stop = () => dialog.close();
+			});
+		};
+		const stop = () => finish();
+		function Body({ visible }: { visible: boolean }) {
+			const [discarding, setDiscarding] = useState(false);
+			if (!visible && discarding) setDiscarding(false);
+			const close = () => {
+				if (dirty) setDiscarding(true);
+				else finish();
+			};
+			return (
+				<ContainerProviders container={container} visible={visible}>
+					<RetainedEditorDialog visible={visible} title={t('automation.new')} onClose={close}>
+						<EditorView
+							dialog
+							request={{ action: request.action, source: request.source, prefill: request.prefill }}
+							host={host}
+							signal={controller.signal}
+							logicalLeaf={logicalLeaf}
+							onDirty={(value) => {
+								dirty = value;
+							}}
+							onSaved={(definition) => {
+								if (closed || controller.signal.aborted) return;
+								dirty = false;
+								finish(definition);
+							}}
+							onClose={close}
+						/>
+						{discarding && visible && (
+							<DiscardDialog
+								name={t('automation.new')}
+								onCancel={() => setDiscarding(false)}
+								onConfirm={() => {
+									dirty = false;
+									finish();
+								}}
+							/>
+						)}
+					</RetainedEditorDialog>
+				</ContainerProviders>
+			);
+		}
+		const render = () => root.render(<Body visible={shown} />);
+		const follow = () => {
+			if (closed) return;
+			if (!owner.isConnected) return finish();
+			const nextDoc = owner.ownerDocument,
+				nextVisible = visibleOwner();
+			let changed = nextVisible !== shown;
+			if (nextDoc !== currentDoc) {
+				currentDoc.defaultView?.removeEventListener('unload', stop);
+				currentDoc = nextDoc;
+				currentDoc.body.append(container);
+				watch();
+				changed = true;
+			}
+			shown = nextVisible;
+			if (changed) render();
+		};
+		const watch = () => {
+			observer?.disconnect();
+			const Observer = currentDoc.defaultView!.MutationObserver;
+			observer = new Observer(follow);
+			observer.observe(currentDoc.body, {
+				subtree: true,
+				childList: true,
+				attributes: true,
+				attributeFilter: ['hidden', 'inert', 'style', 'class'],
+			});
+			currentDoc.defaultView?.addEventListener('unload', stop, { once: true });
+		};
+		shown = visibleOwner();
+		watch();
 		signal?.addEventListener('abort', stop, { once: true });
+		render();
+		if (signal?.aborted) stop();
 	});
 }

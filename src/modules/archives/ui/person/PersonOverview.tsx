@@ -54,7 +54,7 @@ export function PersonOverview({
 		invalid = true;
 	}
 	return (
-		<div className="grid min-w-0 gap-4 sm:grid-cols-2">
+		<div className="grid min-w-0 gap-4 @min-[560px]:grid-cols-2">
 			<section data-person-recent className="min-w-0 space-y-3 rounded-lg border bg-card py-3">
 				<h3 className="font-semibold">{at('person.recent')}</h3>
 				{invalid ? (
@@ -71,7 +71,7 @@ export function PersonOverview({
 				) : (
 					<p className="text-sm text-muted-foreground">{at('person.empty')}</p>
 				)}
-				<Button variant="outline" onClick={journal}>
+				<Button variant="secondary" onClick={journal}>
 					{at('person.allNotes')}
 				</Button>
 			</section>
@@ -108,8 +108,8 @@ export function PersonOverview({
 														: relation.relationTypeId}
 												</span>
 												<Button
-													variant="link"
-													className="h-auto max-w-full whitespace-normal break-all px-0"
+													variant="ghost"
+													className="h-auto min-h-[var(--hu-ctl-h)] max-w-full whitespace-normal break-all px-0"
 													onClick={() => open(other)}
 												>
 													{application.runtime.index.get(other)?.name ?? at('missing')} ·{' '}
@@ -125,7 +125,7 @@ export function PersonOverview({
 						)}
 					</>
 				)}
-				<Button variant="outline" onClick={relations}>
+				<Button variant="secondary" onClick={relations}>
 					{at('person.viewRelationships')}
 				</Button>
 			</section>

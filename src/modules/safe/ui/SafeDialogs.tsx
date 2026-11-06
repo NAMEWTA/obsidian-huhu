@@ -2,7 +2,14 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentProp
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Label } from '../../../ui/components/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../../../ui/components/dialog';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '../../../ui/components/dialog';
 import { useT } from '../../../ui/react/hooks';
 import { SafeError, validateMasterPassword, type SafeErrorCode } from '../core/model';
 import type { SafeService } from '../services/safe-service';
@@ -38,16 +45,30 @@ export function safeErrorKey(error: unknown): string {
 }
 
 /** Secret values live in the input property, never in an HTML value/defaultValue attribute. */
-export function SecretInput({ value, ...props }: Omit<ComponentProps<typeof Input>, 'value' | 'defaultValue'> & { value: string }) {
+export function SecretInput({
+	value,
+	...props
+}: Omit<ComponentProps<typeof Input>, 'value' | 'defaultValue'> & { value: string }) {
 	const ref = useRef<HTMLInputElement>(null);
 	useLayoutEffect(() => {
 		if (ref.current && ref.current.value !== value) ref.current.value = value;
 	}, [value]);
 	useLayoutEffect(() => {
 		const input = ref.current;
-		return () => { if (input) input.value = ''; };
+		return () => {
+			if (input) input.value = '';
+		};
 	}, []);
-	return <Input {...props} ref={ref} type={props.type ?? 'password'} autoComplete="off" autoCapitalize="off" spellCheck={false} />;
+	return (
+		<Input
+			{...props}
+			ref={ref}
+			type={props.type ?? 'password'}
+			autoComplete="off"
+			autoCapitalize="off"
+			spellCheck={false}
+		/>
+	);
 }
 
 /** Every UI completion is tied to the mounted session, including file dialog completions. */
@@ -59,7 +80,9 @@ export function useSafeAction(service: SafeService) {
 	const [epoch] = useState(() => service.store.getState().generation);
 	useEffect(() => {
 		mounted.current = true;
-		return () => { mounted.current = false; };
+		return () => {
+			mounted.current = false;
+		};
 	}, []);
 	const current = () => mounted.current && service.store.getState().generation === epoch;
 	const run = async (action: () => Promise<void>, done?: () => void): Promise<void> => {
@@ -82,7 +105,11 @@ export function useSafeAction(service: SafeService) {
 
 export function SafeErrorMessage({ error }: { error: string }) {
 	const t = useT();
-	return error ? <p role="alert" className="text-sm text-destructive">{t(error)}</p> : null;
+	return error ? (
+		<p role="alert" className="text-sm text-destructive">
+			{t(error)}
+		</p>
+	) : null;
 }
 
 /** Dialog titles name the dialog; they take the foreground colour, whatever colour a theme gives headings. */
@@ -96,23 +123,85 @@ export function ChangePasswordDialog({ service, onClose }: { service: SafeServic
 	const [confirmation, setConfirmation] = useState('');
 	const action = useSafeAction(service);
 	const submit = () => {
-		if (password !== confirmation) { action.setError('safe.passwordMismatch'); return; }
+		if (password !== confirmation) {
+			action.setError('safe.passwordMismatch');
+			return;
+		}
 		void action.run(async () => {
 			validateMasterPassword(password);
 			await service.changePassword(oldPassword, password);
 		}, onClose);
 	};
-	return <Dialog open onOpenChange={open => { if (!open && !action.busy) onClose(); }}>
-		<DialogContent showCloseButton={!action.busy} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()}>
-			<DialogHeader className="gap-1"><DialogTitle className={DIALOG_TITLE_CLASS}>{t('safe.changeTitle')}</DialogTitle><DialogDescription className="text-xs">{t('safe.changeDescription')}</DialogDescription></DialogHeader>
-			<form className="grid gap-3" onSubmit={event => { event.preventDefault(); submit(); }} aria-busy={action.busy}>
-				<div className="grid gap-1.5"><Label htmlFor={`${id}-current`}>{t('safe.currentPassword')}</Label><SecretInput id={`${id}-current`} value={oldPassword} onChange={event => setOldPassword(event.currentTarget.value)} required disabled={action.busy} autoFocus /></div>
-				<div className="grid gap-1.5"><Label htmlFor={`${id}-new`}>{t('safe.newPassword')}</Label><SecretInput id={`${id}-new`} value={password} onChange={event => setPassword(event.currentTarget.value)} aria-describedby={`${id}-hint`} required disabled={action.busy} /></div>
-				<div className="grid gap-1.5"><Label htmlFor={`${id}-confirm`}>{t('safe.confirmPassword')}</Label><SecretInput id={`${id}-confirm`} value={confirmation} onChange={event => setConfirmation(event.currentTarget.value)} required disabled={action.busy} /></div>
-				<p id={`${id}-hint`} className="text-xs text-muted-foreground">{t('safe.masterHint')} {t('safe.oldBackups')}</p>
-				<SafeErrorMessage error={action.error} />
-				<DialogFooter><Button type="button" variant="outline" disabled={action.busy} onClick={onClose}>{t('safe.cancel')}</Button><Button type="submit" disabled={action.busy}>{t(action.busy ? 'safe.busy' : 'safe.changePassword')}</Button></DialogFooter>
-			</form>
-		</DialogContent>
-	</Dialog>;
+	return (
+		<Dialog
+			open
+			onOpenChange={(open) => {
+				if (!open && !action.busy) onClose();
+			}}
+		>
+			<DialogContent
+				showCloseButton={!action.busy}
+				onPointerDownCapture={() => service.touch()}
+				onKeyDownCapture={() => service.touch()}
+			>
+				<DialogHeader className="gap-1">
+					<DialogTitle className={DIALOG_TITLE_CLASS}>{t('safe.changeTitle')}</DialogTitle>
+					<DialogDescription className="text-xs">{t('safe.changeDescription')}</DialogDescription>
+				</DialogHeader>
+				<form
+					className="grid gap-3"
+					onSubmit={(event) => {
+						event.preventDefault();
+						submit();
+					}}
+					aria-busy={action.busy}
+				>
+					<div className="grid gap-1.5">
+						<Label htmlFor={`${id}-current`}>{t('safe.currentPassword')}</Label>
+						<SecretInput
+							id={`${id}-current`}
+							value={oldPassword}
+							onChange={(event) => setOldPassword(event.currentTarget.value)}
+							required
+							disabled={action.busy}
+							autoFocus
+						/>
+					</div>
+					<div className="grid gap-1.5">
+						<Label htmlFor={`${id}-new`}>{t('safe.newPassword')}</Label>
+						<SecretInput
+							id={`${id}-new`}
+							value={password}
+							onChange={(event) => setPassword(event.currentTarget.value)}
+							aria-describedby={`${id}-hint`}
+							required
+							disabled={action.busy}
+						/>
+					</div>
+					<div className="grid gap-1.5">
+						<Label htmlFor={`${id}-confirm`}>{t('safe.confirmPassword')}</Label>
+						<SecretInput
+							id={`${id}-confirm`}
+							value={confirmation}
+							onChange={(event) => setConfirmation(event.currentTarget.value)}
+							required
+							disabled={action.busy}
+						/>
+					</div>
+					<p id={`${id}-hint`} className="text-xs text-muted-foreground">
+						{t('safe.masterHint')} {t('safe.oldBackups')}
+					</p>
+					<SafeErrorMessage error={action.error} />
+					<DialogFooter>
+						<Button type="button" variant="secondary" disabled={action.busy} onClick={onClose}>
+							{t('safe.cancel')}
+						</Button>
+						<Button type="submit" disabled={action.busy}>
+							{t(action.busy ? 'safe.busy' : 'safe.changePassword')}
+						</Button>
+					</DialogFooter>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
 }

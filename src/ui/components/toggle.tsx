@@ -7,27 +7,22 @@ import * as TogglePrimitive from 'radix-ui/toggle';
 import { cn } from '../lib/utils';
 
 const toggleVariants = cva(
-	"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+	"inline-flex items-center justify-center gap-1.5 rounded-md text-sm font-medium whitespace-nowrap text-[var(--hu-fg-2)] outline-none hover:bg-[var(--hu-hover)] hover:text-[var(--hu-fg)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-[var(--hu-accent-soft)] data-[state=on]:text-[var(--hu-accent-text)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 	{
 		variants: {
 			variant: {
 				default: 'bg-transparent',
-				outline: 'border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground',
-				// Why not bg-accent: on a light popover it is nearly the surface colour (STYLEGUIDE, list rows).
+				outline: 'border border-[var(--hu-control-line)] bg-[var(--hu-raised)]',
 				segmented:
-					'bg-transparent text-muted-foreground transition-[transform,opacity] hover:bg-foreground/6 hover:text-foreground data-[state=on]:bg-foreground/12 data-[state=on]:text-foreground dark:hover:bg-accent/50 dark:data-[state=on]:bg-accent',
+					'rounded-sm bg-transparent data-[state=on]:bg-[var(--hu-raised)] data-[state=on]:text-[var(--hu-fg)] data-[state=on]:shadow-[var(--hu-shadow-card)]',
 			},
 			size: {
-				default: 'h-9 min-w-9 px-2',
-				xs: 'h-6 min-w-6 px-2 text-xs',
-				sm: 'h-8 min-w-8 px-1.5',
-				lg: 'h-10 min-w-10 px-2.5',
+				md: 'h-[var(--hu-ctl-h)] min-w-[max(var(--hu-ctl-h),var(--hu-hit))] px-3',
+				sm: 'h-[var(--hu-ctl-h)] min-w-[max(var(--hu-ctl-h),var(--hu-hit))] px-2',
+				lg: 'h-[var(--hu-ctl-h-lg)] min-w-[max(var(--hu-ctl-h-lg),var(--hu-hit))] px-4',
 			},
 		},
-		defaultVariants: {
-			variant: 'default',
-			size: 'default',
-		},
+		defaultVariants: { variant: 'default', size: 'md' },
 	},
 );
 
@@ -41,7 +36,7 @@ function Toggle({
 	return (
 		<TogglePrimitive.Root
 			data-slot="toggle"
-			data-hit-control={size === 'xs' || undefined}
+			data-hit-control
 			ref={ref}
 			className={cn(toggleVariants({ variant, size, className }))}
 			{...props}

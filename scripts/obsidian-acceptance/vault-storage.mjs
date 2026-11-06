@@ -14,8 +14,8 @@ const check = (name, actual) => { rows.push({ name, passed: !!actual }); assert.
 const until = async read => { const end = Date.now() + 25000; while (Date.now() < end) { if (await read()) return; await delay(100); } throw new Error('Acceptance condition timed out'); };
 try {
 	runtime = await launchFreshVault({ root: process.argv[2], port: 9439, settings: { version: 1, namespaces: {
-		app: { language: 'zh', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','sync'].map(id => [id, false])) },
-		sync: { autoPullOnBoot: false, autoSaveInterval: 0, autoPullInterval: 0, autoPushInterval: 0 },
+		app: { language: 'zh', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','versioning'].map(id => [id, false])) },
+		versioning: { autoPullOnBoot: false, autoSaveInterval: 0, autoPullInterval: 0, autoPushInterval: 0 },
 	} } });
 	let c = runtime.connection;
 	const first = await c.evaluate(`${plugin}.storageIdentity`);
@@ -30,7 +30,7 @@ try {
 	const deviceSettings = JSON.parse(await fs.readFile(path.join(runtime.vault, '.huhu/config/devices', first.deviceId + '.json'), 'utf8'));
 	check('preferences-persist-in-device-file', deviceSettings.namespaces['local-ui'].values['huhu.dashboard.media-thumb-size'] === 'large');
 	execFileSync('git', ['init', '-q'], { cwd: runtime.vault, windowsHide: true });
-	await c.evaluate(`${plugin}.setModuleEnabled('sync', true)`);
+	await c.evaluate(`${plugin}.setModuleEnabled('versioning', true)`);
 	const folder = path.join(runtime.vault, '.huhu/sync', first.deviceId);
 	await until(async () => (await fs.readdir(folder).catch(() => [])).some(name => name.endsWith('.json')));
 	const stateName = (await fs.readdir(folder)).find(name => name.endsWith('.json'));
@@ -41,7 +41,7 @@ try {
 	await c.evaluate(`app.commands.executeCommandById('huhu:sync-pause-toggle')`);
 	await until(async () => JSON.parse(await fs.readFile(stateFile, 'utf8')).paused === '');
 	check('native-command-saves-in-vault', true);
-	await c.evaluate(`${plugin}.openWorkbench({feature:'sync',section:'changes'},window)`);
+	await c.evaluate(`${plugin}.openWorkbench({feature:'versioning',section:'changes'},window)`);
 	await runtime.shot('vault-sync-state');
 	errors.push(...await c.evaluate('huhuAcceptanceErrors'));
 	await runtime.restart(); c = runtime.connection;

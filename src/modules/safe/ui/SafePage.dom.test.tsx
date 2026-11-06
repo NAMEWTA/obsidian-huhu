@@ -14,27 +14,65 @@ import type { SafeService, SafeState } from '../services/safe-service';
 import { messages } from '../i18n';
 import { SafePage } from './SafePage';
 
-const cred = (n: number, username: string, password: string, notes = '') => ({ id: `c000000${n}-1111-4111-8111-111111111111`, username, password, notes, phone: '', email: '', relations: [], updatedAt: '2026-10-21T00:00:00.000Z' });
+const cred = (n: number, username: string, password: string, notes = '') => ({
+	id: `c000000${n}-1111-4111-8111-111111111111`,
+	username,
+	password,
+	notes,
+	phone: '',
+	email: '',
+	relations: [],
+	updatedAt: '2026-10-21T00:00:00.000Z',
+});
 const entry: SafeEntry = {
 	id: 'e164e6ed-3986-4c8c-a7ef-4349727dfdf3',
-	title: 'Private mailbox', url: 'https://private.example.test', notes: '', icon: null, tags: [],
+	title: 'Private mailbox',
+	url: 'https://private.example.test',
+	notes: '',
+	icon: null,
+	tags: [],
 	credentials: [cred(1, 'person@example.test', 'secret-password-sentinel', '仅在内存中检索')],
-	createdAt: '2026-10-21T00:00:00.000Z', updatedAt: '2026-10-21T00:00:00.000Z', deletedAt: null,
+	createdAt: '2026-10-21T00:00:00.000Z',
+	updatedAt: '2026-10-21T00:00:00.000Z',
+	deletedAt: null,
 };
 const apple: SafeEntry = {
-	...entry, id: 'a164e6ed-3986-4c8c-a7ef-4349727dfdf3', title: 'Apple', url: 'https://appleid.apple.com',
-	credentials: [cred(2, 'first@icloud.test', 'apple-secret-one', '主账号'), cred(3, 'second@icloud.test', 'apple-secret-two', '孩子的')],
+	...entry,
+	id: 'a164e6ed-3986-4c8c-a7ef-4349727dfdf3',
+	title: 'Apple',
+	url: 'https://appleid.apple.com',
+	credentials: [
+		cred(2, 'first@icloud.test', 'apple-secret-one', '主账号'),
+		cred(3, 'second@icloud.test', 'apple-secret-two', '孩子的'),
+	],
 	updatedAt: '2026-10-22T00:00:00.000Z',
 };
 
 function setup(status: SafeState['status'] = 'unlocked', entries: SafeEntry[] = [entry], mode: SafeViewMode = 'list') {
-	const store = createStore<SafeState>(() => ({ status, entries: status === 'unlocked' ? entries : [], busy: false, error: null, generation: 1 }));
+	const store = createStore<SafeState>(() => ({
+		status,
+		entries: status === 'unlocked' ? entries : [],
+		busy: false,
+		error: null,
+		generation: 1,
+	}));
 	let policy = DEFAULT_LOCK_POLICY;
 	const stub = {
 		store,
-		lock: vi.fn(() => store.setState(state => ({ status: 'locked', entries: [], generation: state.generation + 1, busy: false }))),
-		checkDeadline: vi.fn(() => true), touch: vi.fn(), clearError: vi.fn(), leave: vi.fn(),
-		lockPolicy: vi.fn(() => policy), subscribePolicy: vi.fn(() => () => {}),
+		lock: vi.fn(() =>
+			store.setState((state) => ({
+				status: 'locked',
+				entries: [],
+				generation: state.generation + 1,
+				busy: false,
+			})),
+		),
+		checkDeadline: vi.fn(() => true),
+		touch: vi.fn(),
+		clearError: vi.fn(),
+		leave: vi.fn(),
+		lockPolicy: vi.fn(() => policy),
+		subscribePolicy: vi.fn(() => () => {}),
 		saveEntry: vi.fn(async (_input: EntryInput, _base?: SafeEntry, _id?: string) => {}),
 		generatePassword: vi.fn(() => 'Aa2!Bb3@Cc4#'),
 		renameTag: vi.fn(async (_from: string, _to: string | null) => {}),
@@ -49,27 +87,79 @@ function setup(status: SafeState['status'] = 'unlocked', entries: SafeEntry[] = 
 		prepareRestore: vi.fn(async (_raw: string, _password: string) => ({ token: 'verified-token', entryCount: 3 })),
 		commitRestore: vi.fn(async (_token: string) => {}),
 		cancelRestore: vi.fn(),
-		prepareImport: vi.fn(async (_raw: string, _password: string) => ({ token: 'import-token', entryCount: 4, summary: { addedEntries: 2, mergedEntries: 1, skippedEntries: 1, addedCredentials: 1, updatedCredentials: 0, skippedCredentials: 0, skippedTrashed: 0 } as MergeSummary })),
-		commitImport: vi.fn(async (_token: string) => ({ addedEntries: 2, mergedEntries: 1, skippedEntries: 1, addedCredentials: 1, updatedCredentials: 0, skippedCredentials: 0, skippedTrashed: 0 } as MergeSummary)),
+		prepareImport: vi.fn(async (_raw: string, _password: string) => ({
+			token: 'import-token',
+			entryCount: 4,
+			summary: {
+				addedEntries: 2,
+				mergedEntries: 1,
+				skippedEntries: 1,
+				addedCredentials: 1,
+				updatedCredentials: 0,
+				skippedCredentials: 0,
+				skippedTrashed: 0,
+			} as MergeSummary,
+		})),
+		commitImport: vi.fn(
+			async (_token: string) =>
+				({
+					addedEntries: 2,
+					mergedEntries: 1,
+					skippedEntries: 1,
+					addedCredentials: 1,
+					updatedCredentials: 0,
+					skippedCredentials: 0,
+					skippedTrashed: 0,
+				}) as MergeSummary,
+		),
 		cancelImport: vi.fn(),
 		probe: vi.fn(async () => {}),
 		create: vi.fn(async (_password: string) => {}),
 		unlock: vi.fn(async (_password: string) => {}),
 	};
 	let current = mode;
-	const prefs: SafePreferences = { viewMode: () => current, setViewMode: vi.fn(next => { current = next; }), subscribe: () => () => {} };
+	const prefs: SafePreferences = {
+		viewMode: () => current,
+		setViewMode: vi.fn((next) => {
+			current = next;
+		}),
+		subscribe: () => () => {},
+	};
 	const service = stub as unknown as SafeService;
-	const page = (visible: boolean) => <StrictMode><TestProviders><VisibilityContext value={visible}><SafePage service={service} preferences={prefs} /></VisibilityContext></TestProviders></StrictMode>;
+	const page = (visible: boolean) => (
+		<StrictMode>
+			<TestProviders>
+				<VisibilityContext value={visible}>
+					<SafePage service={service} preferences={prefs} />
+				</VisibilityContext>
+			</TestProviders>
+		</StrictMode>
+	);
 	const view = render(page(true));
-	return { ...stub, service, prefs, setVisible: (visible: boolean) => view.rerender(page(visible)), setPolicy: (next: typeof policy) => { policy = next; } };
+	return {
+		...stub,
+		service,
+		prefs,
+		setVisible: (visible: boolean) => view.rerender(page(visible)),
+		setPolicy: (next: typeof policy) => {
+			policy = next;
+		},
+	};
 }
 
 async function openEditor(name: RegExp) {
+	if (screen.queryByRole('region', { name: 'Account details' }))
+		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 	await userEvent.click(screen.getByRole('button', { name }));
-	await userEvent.click(within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', { name: 'Edit entry' }));
+	await userEvent.click(
+		within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', { name: 'Edit entry' }),
+	);
 }
 
-beforeEach(() => { registerMessages(messages); setLanguage('en'); });
+beforeEach(() => {
+	registerMessages(messages);
+	setLanguage('en');
+});
 
 test('search matches notes and account fields, excludes passwords, and never renders a secret in the list', async () => {
 	setup('unlocked', [entry, apple]);
@@ -93,7 +183,7 @@ test('the list shows the account count, expands to each account and copies from 
 	expect(screen.queryByText('second@icloud.test')).toBeNull();
 	await userEvent.click(expand);
 	expect(screen.getByText('second@icloud.test')).toBeTruthy();
-	const rows = screen.getAllByRole('listitem').filter(item => item.textContent?.includes('second@icloud.test'));
+	const rows = screen.getAllByRole('listitem').filter((item) => item.textContent?.includes('second@icloud.test'));
 	await userEvent.click(within(rows.at(-1)!).getByRole('button', { name: 'Copy password' }));
 	expect(service.copy).toHaveBeenCalledWith('apple-secret-two', window);
 	expect(document.body.innerHTML).not.toContain('apple-secret-two');
@@ -122,11 +212,28 @@ test('the editor masks secrets, preserves exact input and removes every sensitiv
 	await userEvent.click(screen.getByRole('button', { name: 'Copy password 1' }));
 	expect(service.copy).toHaveBeenCalledWith(exact, window);
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
-	expect(service.saveEntry).toHaveBeenCalledWith({
-		title: entry.title, url: entry.url, notes: '', icon: null, tags: [],
-		credentials: [{ id: entry.credentials[0]!.id, username: 'person@example.test', password: exact, notes: '仅在内存中检索', phone: '', email: '', relations: [] }],
-	}, entry);
-	await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+	expect(service.saveEntry).toHaveBeenCalledWith(
+		{
+			title: entry.title,
+			url: entry.url,
+			notes: '',
+			icon: null,
+			tags: [],
+			credentials: [
+				{
+					id: entry.credentials[0]!.id,
+					username: 'person@example.test',
+					password: exact,
+					notes: '仅在内存中检索',
+					phone: '',
+					email: '',
+					relations: [],
+				},
+			],
+		},
+		entry,
+	);
+	await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Edit entry' })).toBeNull());
 	await openEditor(/^Private mailbox/);
 	const removedInput = screen.getByLabelText('Password 1') as HTMLInputElement;
 	await act(async () => service.lock());
@@ -169,7 +276,7 @@ test('accounts can be added, reordered and removed in the editor, and the last o
 	expect((screen.getByLabelText('Username 1') as HTMLInputElement).value).toBe('third@icloud.test');
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	const saved = service.saveEntry.mock.calls[0]![0];
-	expect(saved.credentials.map(item => item.username)).toEqual(['third@icloud.test', 'second@icloud.test']);
+	expect(saved.credentials.map((item) => item.username)).toEqual(['third@icloud.test', 'second@icloud.test']);
 	expect(saved.credentials[0]!.id).not.toBe(apple.credentials[0]!.id);
 });
 
@@ -180,7 +287,14 @@ test('an entry keeps at least one account and accepts an entirely blank planned 
 	await userEvent.click(screen.getByRole('button', { name: 'Add account' }));
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	expect(service.saveEntry).toHaveBeenCalledOnce();
-	expect(service.saveEntry.mock.calls[0]![0].credentials[1]).toMatchObject({ username: '', password: '', phone: '', email: '', notes: '', relations: [] });
+	expect(service.saveEntry.mock.calls[0]![0].credentials[1]).toMatchObject({
+		username: '',
+		password: '',
+		phone: '',
+		email: '',
+		notes: '',
+		relations: [],
+	});
 });
 
 test('IME Enter does not save, and failed saving keeps the draft without showing raw errors', async () => {
@@ -222,17 +336,21 @@ test('the lock screen states the rules that are actually in force', async () => 
 test('the lock screen follows custom rules', async () => {
 	const service = setup('locked');
 	expect(service.lockPolicy).toHaveBeenCalled();
-	expect(lockPolicyOf({ idlePreset: 'never', idleCustomMinutes: 30, lockOnSwitch: true, lockOnClose: true }).idleMs).toBeNull();
+	expect(
+		lockPolicyOf({ idlePreset: 'never', idleCustomMinutes: 30, lockOnSwitch: true, lockOnClose: true }).idleMs,
+	).toBeNull();
 });
 
 test('creation requires matching master passwords and unlocking displays only the fixed authentication error', async () => {
 	const service = setup('absent');
-	fireEvent.change(screen.getByLabelText('Master password', { exact: true }), { target: { value: 'long master password' } });
+	fireEvent.change(screen.getByLabelText('Master password', { exact: true }), {
+		target: { value: 'long master password' },
+	});
 	fireEvent.change(screen.getByLabelText('Confirm master password'), { target: { value: 'different password' } });
 	await userEvent.click(screen.getByRole('button', { name: 'Create safe' }));
 	expect(service.create).not.toHaveBeenCalled();
 	expect(screen.getByRole('alert').textContent).toMatch(/do not match/);
-	await act(async () => service.store.setState(state => ({ status: 'locked', generation: state.generation + 1 })));
+	await act(async () => service.store.setState((state) => ({ status: 'locked', generation: state.generation + 1 })));
 	service.unlock.mockRejectedValue(new SafeError('unlock-failed'));
 	fireEvent.change(screen.getByLabelText('Master password', { exact: true }), { target: { value: 'wrong secret' } });
 	await userEvent.click(screen.getByRole('button', { name: 'Unlock' }));
@@ -260,6 +378,8 @@ test('replacing the safe authenticates the backup and needs an explicit in-page 
 
 test('a merge import previews the result, then reports what was added, merged and skipped', async () => {
 	const service = setup();
+	if (screen.queryByRole('region', { name: 'Account details' }))
+		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Safe actions' }));
 	await userEvent.click(screen.getByRole('menuitem', { name: /Import encrypted backup/ }));
 	await userEvent.click(screen.getByRole('button', { name: 'Choose backup file' }));
@@ -280,7 +400,12 @@ test('a merge import previews the result, then reports what was added, merged an
 test('a file dialog resolving after lock cannot reopen a backup form or restore a stale session', async () => {
 	const service = setup('locked');
 	let resolve!: (value: string) => void;
-	service.pickBackup.mockImplementation(() => new Promise<string>(done => { resolve = done; }));
+	service.pickBackup.mockImplementation(
+		() =>
+			new Promise<string>((done) => {
+				resolve = done;
+			}),
+	);
 	await userEvent.click(screen.getByRole('button', { name: 'Restore encrypted backup' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Choose backup file' }));
 	await act(async () => service.lock());
@@ -294,6 +419,8 @@ test('trash requires confirmation before permanent deletion and sanitizes a fail
 	const service = setup();
 	service.deleteEntry.mockRejectedValue(new Error('private-path-and-secret'));
 	await act(async () => service.store.setState({ entries: [{ ...entry, deletedAt: entry.updatedAt }] }));
+	if (screen.queryByRole('region', { name: 'Account details' }))
+		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Safe actions' }));
 	await userEvent.click(screen.getByRole('menuitem', { name: 'Trash' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Delete permanently' }));
@@ -305,7 +432,10 @@ test('trash requires confirmation before permanent deletion and sanitizes a fail
 });
 
 test('a single-account record uses the same disclosure and shows contacts without leaking its password', async () => {
-	const record = { ...entry, credentials: [{ ...entry.credentials[0]!, phone: '+886 123', email: 'contact@private.test' }] };
+	const record = {
+		...entry,
+		credentials: [{ ...entry.credentials[0]!, phone: '+886 123', email: 'contact@private.test' }],
+	};
 	setup('unlocked', [record]);
 	const disclosure = screen.getByRole('button', { name: 'Show accounts of Private mailbox' });
 	expect(disclosure.getAttribute('aria-expanded')).toBe('false');
@@ -338,7 +468,18 @@ test('phone/email are optional exact values; the generator confirms replacement 
 	expect(password.type).toBe('password');
 	expect(document.body.innerHTML).not.toContain('Aa2!Bb3@Cc4#');
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
-	expect(service.saveEntry).toHaveBeenCalledWith(expect.objectContaining({ credentials: [expect.objectContaining({ phone: ' +886 001 ', email: ' contact@example.test ', password: 'Aa2!Bb3@Cc4#' })] }), entry);
+	expect(service.saveEntry).toHaveBeenCalledWith(
+		expect.objectContaining({
+			credentials: [
+				expect.objectContaining({
+					phone: ' +886 001 ',
+					email: ' contact@example.test ',
+					password: 'Aa2!Bb3@Cc4#',
+				}),
+			],
+		}),
+		entry,
+	);
 });
 
 test('empty planned passwords generate immediately; same-draft account relations use the identity passed to save', async () => {
@@ -354,7 +495,9 @@ test('empty planned passwords generate immediately; same-draft account relations
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	const [draft, base, id] = service.saveEntry.mock.calls[0]!;
 	expect(base).toBeUndefined();
-	expect(draft.credentials[0]!.relations).toEqual([{ entryId: id, credentialId: draft.credentials[1]!.id, kind: 'related' }]);
+	expect(draft.credentials[0]!.relations).toEqual([
+		{ entryId: id, credentialId: draft.credentials[1]!.id, kind: 'related' },
+	]);
 });
 
 test('cross-entry account relation selection never contains passwords and locking clears contacts and relation editor', async () => {
@@ -364,7 +507,9 @@ test('cross-entry account relation selection never contains passwords and lockin
 	await userEvent.click(screen.getByRole('button', { name: 'Apple · second@icloud.test' }));
 	expect(document.body.innerHTML).not.toContain('apple-secret-two');
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
-	expect(service.saveEntry.mock.calls[0]![0].credentials[0]!.relations).toEqual([{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'related' }]);
+	expect(service.saveEntry.mock.calls[0]![0].credentials[0]!.relations).toEqual([
+		{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'related' },
+	]);
 	await openEditor(/^Private mailbox/);
 	fireEvent.change(screen.getByLabelText('Phone 1'), { target: { value: 'private-phone-draft' } });
 	act(() => service.lock());
@@ -374,7 +519,10 @@ test('cross-entry account relation selection never contains passwords and lockin
 });
 
 test('custom tags support multi-select, immediate intersection filtering and global rename controls', async () => {
-	const service = setup('unlocked', [{ ...entry, tags: ['AI', 'Company'] }, { ...apple, tags: ['AI'] }]);
+	const service = setup('unlocked', [
+		{ ...entry, tags: ['AI', 'Company'] },
+		{ ...apple, tags: ['AI'] },
+	]);
 	const filters = within(screen.getByRole('group', { name: 'Filter by tags (match all selected)' }));
 	await userEvent.click(filters.getByRole('button', { name: 'AI' }));
 	await userEvent.click(filters.getByRole('button', { name: 'Company' }));
@@ -384,6 +532,8 @@ test('custom tags support multi-select, immediate intersection filtering and glo
 	await userEvent.click(screen.getByRole('button', { name: 'Add tag' }));
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	expect(service.saveEntry.mock.calls[0]![0].tags).toEqual(['AI', 'Company', 'Finance']);
+	if (screen.queryByRole('region', { name: 'Account details' }))
+		await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 	await userEvent.click(screen.getByRole('button', { name: 'Safe actions' }));
 	await userEvent.click(screen.getByRole('menuitem', { name: 'Manage tags' }));
 	const field = screen.getByLabelText('Rename tag AI');
@@ -392,15 +542,30 @@ test('custom tags support multi-select, immediate intersection filtering and glo
 	expect(service.renameTag).toHaveBeenCalledWith('AI', 'Models');
 });
 
-test.each(['locked', 'unlocked'] as const)('the %s vault page is one design scope with its own overlay root', status => {
-	setup(status);
-	expect(document.querySelectorAll('.huhu-ui.huhu-design:not(.huhu-portal-root)')).toHaveLength(1);
-	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
-	expect(document.querySelector('.huhu-design section[aria-label]')).toBeTruthy();
-});
+test.each(['locked', 'unlocked'] as const)(
+	'the %s vault page is one design scope with its own overlay root',
+	(status) => {
+		setup(status);
+		expect(document.querySelectorAll('.huhu-ui.huhu-design:not(.huhu-portal-root)')).toHaveLength(1);
+		expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
+		expect(document.querySelector('.huhu-design section[aria-label]')).toBeTruthy();
+	},
+);
 
 test('workspace selection shows full account details and clears a revealed secret on back and lock', async () => {
-	const record = { ...apple, notes: 'Platform note\n'.repeat(100), credentials: [{ ...apple.credentials[0]!, phone: '+886 exact', email: 'contact@example.test', notes: 'Account note\n'.repeat(200) }, apple.credentials[1]!] };
+	const record = {
+		...apple,
+		notes: 'Platform note\n'.repeat(100),
+		credentials: [
+			{
+				...apple.credentials[0]!,
+				phone: '+886 exact',
+				email: 'contact@example.test',
+				notes: 'Account note\n'.repeat(200),
+			},
+			apple.credentials[1]!,
+		],
+	};
 	const f = setup('unlocked', [record]);
 	await userEvent.click(screen.getByRole('button', { name: /^Apple/ }));
 	const detail = within(screen.getByRole('region', { name: 'Account details' }));
@@ -422,8 +587,23 @@ test('workspace selection shows full account details and clears a revealed secre
 });
 
 test('workspace links and backlinks navigate by both stable IDs, while missing targets remain diagnostic', async () => {
-	const source = { ...entry, credentials: [{ ...entry.credentials[0]!, relations: [{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'login' as const }, { entryId: 'missing', credentialId: 'missing-account', kind: 'related' as const }] }] };
-	setup('unlocked', [source, apple, { ...apple, id: 'duplicate-title', credentials: [cred(9, 'second@icloud.test', 'different-secret')] }]);
+	const source = {
+		...entry,
+		credentials: [
+			{
+				...entry.credentials[0]!,
+				relations: [
+					{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'login' as const },
+					{ entryId: 'missing', credentialId: 'missing-account', kind: 'related' as const },
+				],
+			},
+		],
+	};
+	setup('unlocked', [
+		source,
+		apple,
+		{ ...apple, id: 'duplicate-title', credentials: [cred(9, 'second@icloud.test', 'different-secret')] },
+	]);
 	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	let detail = within(screen.getByRole('region', { name: 'Account details' }));
 	expect(detail.getByText('Target account unavailable (deleted or not imported)')).toBeTruthy();
@@ -431,17 +611,34 @@ test('workspace links and backlinks navigate by both stable IDs, while missing t
 	detail = within(screen.getByRole('region', { name: 'Account details' }));
 	expect(detail.getByText(apple.credentials[1]!.id)).toBeTruthy();
 	await userEvent.click(detail.getByRole('button', { name: 'Private mailbox · person@example.test' }));
-	expect(within(screen.getByRole('region', { name: 'Account details' })).getByText(source.credentials[0]!.id)).toBeTruthy();
+	expect(
+		within(screen.getByRole('region', { name: 'Account details' })).getByText(source.credentials[0]!.id),
+	).toBeTruthy();
 });
 
 test('favorites filter is an existing tag and relation navigation escapes filters without writing entries', async () => {
-	const source = { ...entry, tags: ['favorite'], credentials: [{ ...entry.credentials[0]!, relations: [{ entryId: apple.id, credentialId: apple.credentials[0]!.id, kind: 'related' as const }] }] };
+	const source = {
+		...entry,
+		tags: ['favorite'],
+		credentials: [
+			{
+				...entry.credentials[0]!,
+				relations: [{ entryId: apple.id, credentialId: apple.credentials[0]!.id, kind: 'related' as const }],
+			},
+		],
+	};
 	const f = setup('unlocked', [source, apple]);
 	await userEvent.click(screen.getByRole('button', { name: 'Favorites · favorite' }));
 	expect(screen.queryByRole('button', { name: /^Apple/ })).toBeNull();
 	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
-	await userEvent.click(within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', { name: 'Apple · first@icloud.test' }));
-	expect(within(screen.getByRole('region', { name: 'Account details' })).getByText(apple.credentials[0]!.id)).toBeTruthy();
+	await userEvent.click(
+		within(screen.getByRole('region', { name: 'Account details' })).getByRole('button', {
+			name: 'Apple · first@icloud.test',
+		}),
+	);
+	expect(
+		within(screen.getByRole('region', { name: 'Account details' })).getByText(apple.credentials[0]!.id),
+	).toBeTruthy();
 	expect(f.saveEntry).not.toHaveBeenCalled();
 	expect(f.store.getState().entries).toEqual([source, apple]);
 });
@@ -461,12 +658,14 @@ test('choosing another account and reordering entries preserves the stable selec
 
 test('card more accounts expands the remaining accounts and opens the fourth stable ID', async () => {
 	const fourth = cred(5, 'fourth@icloud.test', 'fourth-private-secret');
-	const record = { ...apple, credentials: [...apple.credentials, cred(4, 'third@icloud.test', 'third-private-secret'), fourth] };
+	const record = {
+		...apple,
+		credentials: [...apple.credentials, cred(4, 'third@icloud.test', 'third-private-secret'), fourth],
+	};
 	setup('unlocked', [record], 'cards');
 	expect(screen.queryByRole('button', { name: fourth.username })).toBeNull();
 	const more = screen.getByRole('button', { name: '1 more accounts' });
-	more.focus();
-	await userEvent.keyboard('{Enter}');
+	await userEvent.click(more);
 	expect(screen.queryByRole('region', { name: 'Account details' })).toBeNull();
 	expect(document.activeElement).toBe(screen.getByRole('button', { name: fourth.username }));
 	await userEvent.keyboard('{Enter}');

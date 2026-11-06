@@ -1,83 +1,193 @@
-/* Tokens derive from Obsidian's variables. A themed body (theme/styles/presets.css) sets both those and the
- * --nt-* tokens used where dbx-style palettes carry a distinct surface (card, popover, accent, charts). */
-.huhu-ui {
-	--background: var(--background-primary);
-	--foreground: var(--text-normal);
-	--card: var(--nt-card, var(--background-primary-alt));
-	--popover: var(--nt-popover, var(--background-secondary));
-	--primary: var(--interactive-accent);
-	--primary-foreground: var(--text-on-accent);
-	--secondary: var(--nt-secondary, var(--interactive-normal));
-	--muted: var(--nt-surface-muted, var(--background-secondary));
-	--muted-foreground: var(--text-muted);
-	--accent: var(--nt-accent, var(--background-modifier-hover));
-	--destructive: var(--text-error);
-	--destructive-foreground: var(--nt-destructive-foreground, var(--text-on-accent));
-	--border: var(--background-modifier-border);
-	--input: var(--nt-input, var(--background-modifier-border));
-	--ring: var(--nt-ring, var(--interactive-accent));
-	--sidebar: var(--nt-sidebar, var(--background-secondary));
-	--sidebar-accent: var(--nt-sidebar-accent, var(--background-modifier-hover));
-	--sidebar-border: var(--nt-sidebar-border, var(--background-modifier-border));
-	--status-success: var(--color-green);
-	--status-warning: var(--color-orange);
-	--status-error: var(--color-red);
-	--status-info: var(--color-blue);
-	--status-working: var(--color-yellow);
-	--agent-question: var(--color-orange);
-	--card-foreground: var(--text-normal);
-	--popover-foreground: var(--text-normal);
-	--secondary-foreground: var(--text-normal);
-	--accent-foreground: var(--nt-accent-foreground, var(--text-normal));
-	--sidebar-foreground: var(--nt-sidebar-foreground, var(--text-normal));
-	--sidebar-muted-foreground: var(--nt-sidebar-muted-foreground, var(--text-muted));
-	--sidebar-accent-foreground: var(--nt-sidebar-accent-foreground, var(--nt-accent-foreground, var(--text-normal)));
-	--chart-1: var(--nt-chart-1, var(--color-blue));
-	--chart-2: var(--nt-chart-2, var(--color-cyan));
-	--chart-3: var(--nt-chart-3, var(--color-green));
-	--chart-4: var(--nt-chart-4, var(--color-yellow));
-	--chart-5: var(--nt-chart-5, var(--color-purple));
-	/* Text and scrims that sit on user photos stay light/dark in every theme. */
-	--on-image: oklch(1 0 0);
-	--scrim: oklch(0 0 0);
-	--radius: var(--nt-radius, 0.625rem);
-	/* Keep the host override as the first font in a complete list. Obsidian's
-	 * default override is an unavailable family, so treating it as the whole
-	 * value would discard HUHU's chosen font and every CJK/system fallback. */
-	--nd-font-sans: var(--font-interface-override, var(--huhu-font-sans-user, "Geist")), var(--huhu-font-sans-user, "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", sans-serif), var(--font-interface, sans-serif);
-	--nd-font-mono: var(--font-monospace-override, var(--huhu-font-mono-user, "Geist Mono")), var(--huhu-font-mono-user, "Geist Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Cascadia Code", "Noto Sans Mono CJK SC", monospace), var(--font-monospace, monospace);
+/* Approved DESIGN revision 3 / UI-002 palette. Host mappings are contrast-checked by ThemeRuntime. */
+.huhu-ui{
+ --background:var(--hu-surface);
+ --foreground:var(--hu-fg);
+ --card:var(--hu-raised);
+ --card-foreground:var(--hu-fg);
+ --popover:var(--hu-raised);
+ --popover-foreground:var(--hu-fg);
+ --primary:var(--hu-accent);
+ --primary-foreground:var(--hu-accent-fg);
+ --secondary:var(--hu-raised);
+ --secondary-foreground:var(--hu-fg);
+ --muted:var(--hu-sunken);
+ --muted-foreground:var(--hu-fg-3);
+ --accent:var(--hu-accent-soft);
+ --accent-foreground:var(--hu-accent-text);
+ --destructive:var(--hu-danger);
+ --destructive-foreground:var(--hu-danger-fg);
+ --border:var(--hu-line);
+ --input:var(--hu-control-line);
+ --ring:var(--hu-accent);
+ --sidebar:var(--hu-canvas);
+ --sidebar-foreground:var(--hu-fg);
+ --sidebar-muted-foreground:var(--hu-fg-3);
+ --sidebar-accent:var(--hu-accent-soft);
+ --sidebar-accent-foreground:var(--hu-accent-text);
+ --sidebar-border:var(--hu-line);
+ --status-success:var(--hu-success);
+ --status-warning:var(--hu-warning);
+ --status-error:var(--hu-danger);
+ --status-info:var(--hu-info);
+ --status-working:var(--hu-warning);
+ --agent-question:var(--hu-warning);
+ --chart-1:var(--hu-chart-1);
+ --chart-2:var(--hu-chart-2);
+ --chart-3:var(--hu-chart-3);
+ --chart-4:var(--hu-chart-4);
+ --chart-5:var(--hu-chart-5);
+ --nd-font-sans:var(--hu-font-ui); --nd-font-mono:var(--hu-font-mono); --radius:var(--hu-radius-lg);
+ --on-image:#FFFFFF; --scrim:#000000;
+ --hu-selection:var(--hu-accent-soft); --hu-focus:var(--hu-accent);
+ --hu-term-cursor:var(--hu-term-fg); --hu-term-selection:var(--hu-accent-soft);
+ --hu-diff-add-bg:color-mix(in srgb,var(--hu-success) 9%,var(--hu-surface));
+ --hu-diff-del-bg:color-mix(in srgb,var(--hu-danger) 8%,var(--hu-surface));
+ --hu-diff-add-em:color-mix(in srgb,var(--hu-success) 24%,var(--hu-surface));
+ --hu-diff-del-em:color-mix(in srgb,var(--hu-danger) 22%,var(--hu-surface));
+ --hu-diff-gutter:var(--hu-sunken); --hu-diff-sel:color-mix(in srgb,var(--hu-accent) 14%,transparent);
+ --hu-term-ansi-0:var(--hu-sunken);
+ --hu-term-ansi-1:var(--hu-danger);
+ --hu-term-ansi-2:var(--hu-success);
+ --hu-term-ansi-3:var(--hu-warning);
+ --hu-term-ansi-4:var(--hu-info);
+ --hu-term-ansi-5:var(--hu-chart-4);
+ --hu-term-ansi-6:var(--hu-accent);
+ --hu-term-ansi-7:var(--hu-fg-2);
+ --hu-term-ansi-8:var(--hu-fg-3);
+ --hu-term-ansi-9:var(--hu-danger);
+ --hu-term-ansi-10:var(--hu-success);
+ --hu-term-ansi-11:var(--hu-warning);
+ --hu-term-ansi-12:var(--hu-info);
+ --hu-term-ansi-13:var(--hu-chart-4);
+ --hu-term-ansi-14:var(--hu-accent);
+ --hu-term-ansi-15:var(--hu-fg);
+  /* Type families */
+  --hu-font-ui:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",sans-serif;
+  --hu-read-body:17px; --hu-read-line-height:1.95;
+  --hu-font-read:"Iowan Old Style","Palatino Linotype",Georgia,"Songti SC","Noto Serif CJK SC","Source Han Serif SC","STSong",serif;
+  --hu-font-mono:"Geist Mono","JetBrains Mono","SF Mono",Menlo,Consolas,"Noto Sans Mono CJK SC",monospace;
+
+  /* Type scale: size / line-height */
+  --hu-text-xs:12px;  --hu-lh-xs:18px;   /* meta, captions, counts */
+  --hu-text-sm:13px;  --hu-lh-sm:20px;   /* dense lists, tree, tables */
+  --hu-text-md:14px;  --hu-lh-md:22px;   /* body, forms */
+  --hu-text-lg:16px;  --hu-lh-lg:24px;   /* section / detail title, page h1 */
+  --hu-text-xl:20px;  --hu-lh-xl:28px;   /* dialog title, stat value */
+  --hu-text-2xl:28px; --hu-lh-2xl:36px;  /* display: home greeting, reading title */
+  --hu-weight-regular:400; --hu-weight-medium:500; --hu-weight-semibold:600;
+
+  /* Space: 4px grid */
+  --hu-space-0-5:2px; --hu-space-1:4px; --hu-space-1-5:6px; --hu-space-2:8px; --hu-space-3:12px;
+  --hu-space-4:16px; --hu-space-5:20px; --hu-space-6:24px; --hu-space-8:32px; --hu-space-10:40px; --hu-space-12:48px;
+
+  /* Shape */
+  --hu-radius-xs:4px;   /* checkbox, kbd, tiny tag */
+  --hu-radius-sm:6px;   /* badge, tree row, menu item, sm button */
+  --hu-radius-md:8px;   /* controls */
+  --hu-radius-lg:12px;  /* card, panel, popover */
+  --hu-radius-xl:16px;  /* dialog, sheet */
+  --hu-radius-full:999px;
+
+  /* Layout */
+  --hu-host-tabs-h:38px; --hu-host-status-h:24px;
+  --hu-rail-w:52px;
+  --hu-panel-w:272px; --hu-panel-min:220px; --hu-panel-max:480px;
+  --hu-header-h:52px;
+  --hu-detail-w:360px; --hu-detail-max:440px;
+  --hu-page-pad:24px; --hu-page-pad-narrow:16px;
+  --hu-content-max:1120px; --hu-form-max:640px;
+
+  /* Density: compact (default) */
+  --hu-ctl-h:32px; --hu-ctl-h-lg:36px; --hu-row-h:32px; --hu-list-row-h:44px; --hu-card-pad:16px;
+  --hu-hit:32px;
+
+  /* Motion */
+  --hu-dur-fast:120ms; --hu-dur-base:180ms; --hu-ease:cubic-bezier(.2,.8,.2,1);
+
+  /* Layers */
+  --hu-z-sticky:10; --hu-z-panel:20;
+
+  /* Focus */
+  --hu-focus-width:2px; --hu-focus-offset:2px;
 }
 
-/* DESIGN-0002: content-region tokens. Existing consumers retain their current contract. */
-.huhu-ui.huhu-design {
-	--ui-space-1: 4px;
-	--ui-space-2: 8px;
-	--ui-space-3: 12px;
-	--ui-space-4: 16px;
-	--ui-space-5: 20px;
-	--ui-space-6: 24px;
-	--ui-space-8: 32px;
-	--ui-text-page: 20px;
-	--ui-text-title: 16px;
-	--ui-text-body: 14px;
-	--ui-text-dense: 13px;
-	--ui-text-meta: 12px;
-	--ui-line-height: 1.5;
-	--ui-control-compact: 32px;
-	--ui-control-default: 36px;
-	--ui-control-large: 40px;
-	--ui-hit-desktop: 32px;
-	--ui-hit-touch: 44px;
-	--ui-radius-badge: 6px;
-	--ui-radius-control: 8px;
-	--ui-radius-panel: 12px;
-	--ui-radius-dialog: 14px;
-	--ui-radius-checkbox: 5px;
-	--ui-focus-width: 3px;
-	--ui-focus-offset: 1px;
-	--ui-motion-duration: min(var(--anim-duration-fast, 120ms), 120ms);
-	--ui-input-boundary: var(--text-muted);
-	/* Keep chosen HUHU palettes intact; the host's default accent can fail white-text AA. */
-	--ui-primary: var(--nt-primary, color-mix(in oklab, var(--interactive-accent) 75%, black));
-	--ui-primary-foreground: var(--nt-primary-foreground, var(--text-on-accent));
+/* ---------- Paper · light (default) ---------- */
+.huhu-ui,.huhu-ui[data-theme="paper"]{
+  color-scheme:light;
+  --hu-canvas:#F2EFE8;       /* rail, secondary panel, host chrome */
+  --hu-surface:#FBFAF7;      /* main page */
+  --hu-raised:#FFFFFF;       /* cards, inputs, popovers, dialogs */
+  --hu-sunken:#EFEBE3;       /* wells, segmented track, code */
+  --hu-overlay:rgb(30 24 14 / .32);
+  --hu-hover:rgb(56 44 24 / .055);
+  --hu-press:rgb(56 44 24 / .095);
+  --hu-line:#E7E2D8;         /* decorative dividers */
+  --hu-line-strong:#DAD4C8;  /* card borders */
+  --hu-control-line:#8C8577; /* form boundaries >= 3:1 */
+  --hu-fg:#1D1A16;           /* body text 16.6:1 */
+  --hu-fg-2:#4F4A42;         /* secondary 8.4:1 */
+  --hu-fg-3:#6B655B;         /* meta 5.5:1 */
+  --hu-fg-4:#A29B8F;         /* decorative only; meaningful labels use fg-3 */
+  --hu-shadow-card:0 1px 2px rgb(40 30 12 / .05);
+  --hu-shadow-pop:0 16px 40px -12px rgb(40 30 12 / .26),0 3px 8px rgb(40 30 12 / .08),0 0 0 1px rgb(40 30 12 / .07);
+  --hu-success:#2F6E3F; --hu-success-soft:#E6F0E6;
+  --hu-warning:#8F5710; --hu-warning-soft:#F7ECDB;
+  --hu-danger:#A93A2A; --hu-danger-fg:#FFFFFF;  --hu-danger-soft:#F7E4DF;
+  --hu-info:#335A9A;    --hu-info-soft:#E5EBF5;
+  --hu-term-bg:#F5F2EB; --hu-term-fg:#2A2620; --hu-term-dim:#857E72;
+  --hu-chart-1:var(--hu-accent); --hu-chart-2:#B08A3E; --hu-chart-3:#7C8F6A; --hu-chart-4:#9A6B8A; --hu-chart-5:#6E8BA8;
+  --hu-highlight:#F6E7B8;
 }
+/* ---------- Ink · dark ---------- */
+.huhu-ui[data-theme="ink"]{
+  color-scheme:dark;
+  --hu-canvas:#171614;
+  --hu-surface:#1D1C19;
+  --hu-raised:#25231F;
+  --hu-sunken:#131210;
+  --hu-overlay:rgb(0 0 0 / .55);
+  --hu-hover:rgb(255 246 230 / .055);
+  --hu-press:rgb(255 246 230 / .095);
+  --hu-line:#2C2A25;
+  --hu-line-strong:#38352F;
+  --hu-control-line:#7A746A;
+  --hu-fg:#EDE9E1;
+  --hu-fg-2:#C2BBAF;
+  --hu-fg-3:#9C958A;
+  --hu-fg-4:#6C665C;
+  --hu-shadow-card:0 1px 2px rgb(0 0 0 / .3);
+  --hu-shadow-pop:0 18px 44px -12px rgb(0 0 0 / .7),0 3px 10px rgb(0 0 0 / .35),0 0 0 1px rgb(255 246 230 / .07);
+  --hu-success:#7CBE8A; --hu-success-soft:rgb(124 190 138 / .14);
+  --hu-warning:#E2A55A; --hu-warning-soft:rgb(226 165 90 / .14);
+  --hu-danger:#EE8B7B; --hu-danger-fg:#2A0E09;  --hu-danger-soft:rgb(238 139 123 / .14);
+  --hu-info:#8FB0EA;    --hu-info-soft:rgb(143 176 234 / .14);
+  --hu-term-bg:#141311; --hu-term-fg:#E6E1D8; --hu-term-dim:#8C867B;
+  --hu-chart-2:#D6B36A; --hu-chart-3:#A3B88F; --hu-chart-4:#C79AB8; --hu-chart-5:#93AECB;
+  --hu-highlight:rgb(214 179 106 / .28);
+}
+
+/* ---------- Accent families (light / dark) ---------- */
+.huhu-ui,.huhu-ui[data-accent="teal"]{--hu-accent:#2C6669;--hu-accent-hover:#24575A;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#E3EEEC;--hu-accent-text:#22585B;--hu-accent-line:#9CC0BD}
+.huhu-ui[data-accent="indigo"]{--hu-accent:#3B57A3;--hu-accent-hover:#324A8C;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#E6EAF6;--hu-accent-text:#334C90;--hu-accent-line:#A9B7DF}
+.huhu-ui[data-accent="pine"]{--hu-accent:#356E43;--hu-accent-hover:#2C5D38;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#E4EFE5;--hu-accent-text:#2E603A;--hu-accent-line:#A2C3A8}
+.huhu-ui[data-accent="ochre"]{--hu-accent:#9A4E26;--hu-accent-hover:#844220;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#F5E8DF;--hu-accent-text:#86431F;--hu-accent-line:#D7B19B}
+.huhu-ui[data-accent="plum"]{--hu-accent:#764689;--hu-accent-hover:#663C76;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#EFE6F2;--hu-accent-text:#683D79;--hu-accent-line:#C6ACD0}
+.huhu-ui[data-accent="graphite"]{--hu-accent:#34312D;--hu-accent-hover:#24221F;--hu-accent-fg:#FFFFFF;--hu-accent-soft:#E9E6E0;--hu-accent-text:#34312D;--hu-accent-line:#B9B3A8}
+.huhu-ui[data-theme="ink"][data-accent="teal"],.huhu-ui[data-theme="ink"]:not([data-accent]){--hu-accent:#6FB4AF;--hu-accent-hover:#86C3BE;--hu-accent-fg:#0F1F1E;--hu-accent-soft:rgb(111 180 175 / .15);--hu-accent-text:#8DCBC6;--hu-accent-line:rgb(111 180 175 / .45)}
+.huhu-ui[data-theme="ink"][data-accent="indigo"]{--hu-accent:#93A9EA;--hu-accent-hover:#A9BBF0;--hu-accent-fg:#111A33;--hu-accent-soft:rgb(147 169 234 / .15);--hu-accent-text:#A9BBF0;--hu-accent-line:rgb(147 169 234 / .45)}
+.huhu-ui[data-theme="ink"][data-accent="pine"]{--hu-accent:#7FBD8C;--hu-accent-hover:#95CBA0;--hu-accent-fg:#10220F;--hu-accent-soft:rgb(127 189 140 / .15);--hu-accent-text:#98CDA3;--hu-accent-line:rgb(127 189 140 / .45)}
+.huhu-ui[data-theme="ink"][data-accent="ochre"]{--hu-accent:#E39C72;--hu-accent-hover:#EAB08D;--hu-accent-fg:#2A140A;--hu-accent-soft:rgb(227 156 114 / .15);--hu-accent-text:#EBB08F;--hu-accent-line:rgb(227 156 114 / .45)}
+.huhu-ui[data-theme="ink"][data-accent="plum"]{--hu-accent:#C59DD8;--hu-accent-hover:#D2B1E1;--hu-accent-fg:#24132B;--hu-accent-soft:rgb(197 157 216 / .15);--hu-accent-text:#D3B3E2;--hu-accent-line:rgb(197 157 216 / .45)}
+.huhu-ui[data-theme="ink"][data-accent="graphite"]{--hu-accent:#D9D4CB;--hu-accent-hover:#E8E4DC;--hu-accent-fg:#1A1917;--hu-accent-soft:rgb(217 212 203 / .12);--hu-accent-text:#E3DED5;--hu-accent-line:rgb(217 212 203 / .4)}
+
+/* ---------- Density: comfortable ---------- */
+.huhu-ui[data-density="comfortable"]{--hu-ctl-h:36px;--hu-ctl-h-lg:40px;--hu-row-h:36px;--hu-list-row-h:52px;--hu-card-pad:20px}
+/* Explicit interface size steps; CJK floor 12px. */
+.huhu-ui[data-ui-size="13"]{--hu-text-md:13px;--hu-lh-md:20px;--hu-text-sm:12px;--hu-lh-sm:18px;--hu-text-lg:15px}
+.huhu-ui[data-ui-size="15"]{--hu-text-md:15px;--hu-lh-md:24px;--hu-text-sm:14px;--hu-lh-sm:22px;--hu-text-lg:17px;--hu-lh-lg:26px}
+@media (pointer:coarse){.huhu-ui{--hu-hit:44px}}
+@media (prefers-reduced-motion:reduce){.huhu-ui{--hu-dur-fast:0ms;--hu-dur-base:0ms}}
+.huhu-ui[data-motion="reduce"]{--hu-dur-fast:0ms;--hu-dur-base:0ms}
+
+
+/* Standard shadcn aliases have one palette owner. */

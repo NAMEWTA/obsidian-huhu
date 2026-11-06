@@ -32,7 +32,7 @@ const shell = async marker => {
 	await c.evaluate('ac.sessions.end(rs.id,true);true'); await until('!rs.running');
 };
 try {
-	runtime = await launchFreshVault({ root, pluginSource, port: 9463, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','sync'].map(id=>[id,false])) } } } }); c = runtime.connection;
+	runtime = await launchFreshVault({ root, pluginSource, port: 9463, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','versioning'].map(id=>[id,false])) } } } }); c = runtime.connection;
 	// Configure only the disposable profile when the validation host uses a proxy.
 	if (process.env.HTTPS_PROXY) await c.evaluate("require('@electron/remote').session.defaultSession.setProxy({proxyRules:process.env.HTTPS_PROXY})");
 	for (const file of ['main.js','manifest.json','styles.css']) check('installed-real-asset-' + file, sha(await fs.readFile(path.join(runtime.vault,'.obsidian/plugins/huhu',file))) === sha(await fs.readFile(path.join(pluginSource,file))));

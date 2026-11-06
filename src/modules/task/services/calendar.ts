@@ -9,7 +9,7 @@ import type {
 } from '../api';
 import { TaskError, type TaskView, type TaskResult } from '../core/model';
 import { calendarTaskTime, matchesTaskCalendarFilter } from '../core/calendar';
-import { zonedStamp, wallTime, validDate } from '../core/time';
+import { zonedStamp, wallTime, validDate, TaskWallTimeError } from '../core/time';
 import { TASK_STORE_PATH } from '../../../shared/storage/vault-layout';
 export function calendarRow(task: TaskView, line = 0): CalendarTask {
 	const stamp = (at: number | undefined) => (at === undefined ? undefined : zonedStamp(at, task.timezone));
@@ -164,6 +164,8 @@ export function createTaskCalendar(tasks: TaskService, views: TaskViews): TaskCa
 		async createTask(input) {
 			try {
 				const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+				const options = input.strictTime ? { disambiguation: 'reject' as const } : undefined;
+				if (input.strictTime && input.time) wallTime(input.date, input.time, timezone, options);
 				const result = await tasks.execute(
 					{
 						kind: 'create',
@@ -182,6 +184,7 @@ export function createTaskCalendar(tasks: TaskService, views: TaskViews): TaskCa
 											input.reminder.slice(0, 10),
 											input.reminder.slice(11),
 											timezone,
+										options,
 										),
 									}
 								: {}),
@@ -192,7 +195,10 @@ export function createTaskCalendar(tasks: TaskService, views: TaskViews): TaskCa
 				if (!result.ok) return errorResult(result);
 				return { status: 'created', task: calendarRow(tasks.get(result.receipt.taskId!)!) };
 			} catch (error) {
-				return failure(error);
+				const result = failure(error);
+				return input.strictTime && error instanceof TaskWallTimeError
+					? { ...result, timeReason: error.reason }
+					: result;
 			}
 		},
 		async toggleTask(row, checked) {

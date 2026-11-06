@@ -16,7 +16,7 @@ registerMessages(messages);
 export default function createCommentsModule(context: ModuleContext): ModuleInstance {
 	const settings = context.settings.bind('comments', commentsSettings);
 	let runtime: CommentsRuntime | undefined;
-	const panel: CommentsPanel = { mount: (container, documents) => runtime?.panel.mount(container, documents) ?? (() => undefined) };
+	const panel: CommentsPanel = { mount: (container, documents, visible) => runtime?.panel.mount(container, documents, visible) ?? { setVisible() {}, dispose() {} } };
 	const documentChanges: DocumentChangeParticipant = {
 		prepare: (change, undo) => runtime ? runtime.documentChanges.prepare(change, undo) : Promise.reject(new Error('Comment module is inactive')),
 		commit: (operationId, text) => runtime ? runtime.documentChanges.commit(operationId, text) : Promise.reject(new Error('Comment module is inactive')),

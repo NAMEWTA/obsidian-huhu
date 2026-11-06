@@ -1,7 +1,7 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/calendar-grid.ts
 import { Button } from '../../../../ui/components/button';
-import { widgetClasses } from '../theme/widget-classes';
-import { IconButton } from '../board/controls';
+import { calendarClasses as widgetClasses } from './calendar-styles';
+import { IconButton } from './calendar-controls';
 import { X } from 'lucide-react';
 import { Platform, type App } from 'obsidian';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
@@ -93,6 +93,7 @@ export function CalendarModalPanel({
 		openDay(iso, days.get(iso) ?? [], false);
 	};
 	const opts = {
+		onAnchor: setAnchor,
 		compact: false,
 		weekStart,
 		selected,
@@ -201,7 +202,7 @@ export function CalendarModalPanel({
 					<div role="alert" className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
 						{t('calendarUnified.failed')}
 						<Button
-							variant="outline"
+							variant="secondary"
 							size="sm"
 							onClick={() => {
 								void live.reload();

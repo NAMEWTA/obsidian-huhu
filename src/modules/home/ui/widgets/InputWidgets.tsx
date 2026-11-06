@@ -80,14 +80,14 @@ export function FileSearchWidget({ store }: { store: BoardStore }) {
 							/>
 						</div>
 						<IconButton
-							variant="outline"
-							size="icon"
+							variant="secondary"
+							size="icon-md"
 							label={t('fileSearchWidget.recent')}
 							onClick={() => show(true)}
 						>
 							<History />
 						</IconButton>
-						<Button size="icon" aria-label={t('fileSearchWidget.title')} onClick={submit}>
+						<Button size="icon-md" aria-label={t('fileSearchWidget.title')} onClick={submit}>
 							<Search />
 						</Button>
 					</div>

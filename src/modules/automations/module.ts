@@ -131,6 +131,7 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 			return () => listeners.delete(listener);
 		},
 		actions: () => runtime?.actions() ?? [],
+		nextScheduled: () => runtime?.service.nextScheduled(),
 		runAction: async (id) => {
 			if (!runtime) throw new AutomationError('moduleOff');
 			await runtime.runAction(id);

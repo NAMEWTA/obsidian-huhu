@@ -9,11 +9,14 @@ import { getLanguage, t } from '../../../../shared/i18n/index';
 export interface MonthGridOptions {
 	/** Compact mode (in-column): tiny cells, capped task list, tasks non-interactive. */
 	compact: boolean;
+	onAnchor?: (date: Date) => void;
 	weekStart?: WeekStart;
 	canSplit?: boolean;
 	onPeriodNote?: (iso: string, action: CalendarNoteAction) => void;
 	selected?: string;
-	dayState?: (iso: string) => { status: 'existing' | 'missing' | 'disabled' | 'unavailable'; active: boolean } | undefined;
+	dayState?: (
+		iso: string,
+	) => { status: 'existing' | 'missing' | 'disabled' | 'unavailable'; active: boolean } | undefined;
 	app: App;
 	onToggle?: (task: VaultTask, nextChecked: boolean) => void;
 	/** Open a task's source note, optionally scrolling to the task's line. */
@@ -106,7 +109,12 @@ export interface BarEntry {
 }
 
 /** Clamp a task's multi-day span to the visible week (columns + continuation). */
-export function clampBarToWeek(task: VaultTask, span: { start: string; end: string }, anyVisibleDay: Date, firstDay: WeekStart = 1): BarEntry {
+export function clampBarToWeek(
+	task: VaultTask,
+	span: { start: string; end: string },
+	anyVisibleDay: Date,
+	firstDay: WeekStart = 1,
+): BarEntry {
 	const monday = startOfWeek(anyVisibleDay, firstDay);
 	const weekStartIso = toIsoDate(monday);
 	const weekEndIso = toIsoDate(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6));

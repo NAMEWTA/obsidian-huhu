@@ -44,10 +44,24 @@ export function zonedStamp(at: number, timezone: string): string {
 	const get = (key: string) => parts.find((part) => part.type === key)?.value ?? '';
 	return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}`;
 }
-/** Gaps are rejected; folds choose the earlier occurrence. Callers can always supply an explicit instant for reminders. */
-export function wallTime(date: string, time: string, timezone: string): number {
-	if (!validDate(date) || !validTime(time)) throw new TaskError('invalid-input', 'Invalid local date/time');
-	validateTimezone(timezone);
+export type TaskWallTimeReason = 'invalid-date-time' | 'invalid-zone' | 'nonexistent-time' | 'ambiguous-time';
+export class TaskWallTimeError extends TaskError {
+	constructor(
+		readonly reason: TaskWallTimeReason,
+		message: string,
+	) {
+		super('invalid-input', message);
+	}
+}
+/** Existing scheduling keeps earlier-fold semantics; interactive callers can explicitly reject ambiguous times. */
+export function wallTime(date: string, time: string, timezone: string, options?: { disambiguation: 'reject' }): number {
+	if (!validDate(date) || !validTime(time))
+		throw new TaskWallTimeError('invalid-date-time', 'Invalid local date/time');
+	try {
+		validateTimezone(timezone);
+	} catch {
+		throw new TaskWallTimeError('invalid-zone', 'Invalid IANA timezone');
+	}
 	const target = Date.parse(`${date}T${time}:00Z`),
 		offsets = new Set<number>();
 	for (const hours of [-36, -24, -12, 0, 12, 24, 36]) {
@@ -59,7 +73,10 @@ export function wallTime(date: string, time: string, timezone: string): number {
 		.map((offset) => target - offset)
 		.filter((at) => zonedStamp(at, timezone) === `${date} ${time}`)
 		.sort((a, b) => a - b);
-	if (!candidates.length) throw new TaskError('invalid-input', 'Local time does not exist in this timezone');
+	if (!candidates.length)
+		throw new TaskWallTimeError('nonexistent-time', 'Local time does not exist in this timezone');
+	if (options?.disambiguation === 'reject' && candidates.length > 1)
+		throw new TaskWallTimeError('ambiguous-time', 'Local time occurs more than once in this timezone');
 	return candidates[0]!;
 }
 export function addDays(date: string, days: number): string {

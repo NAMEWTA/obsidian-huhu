@@ -14,7 +14,7 @@ const check = (name, passed, detail) => { rows.push({ name, passed, detail }); a
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 const until = async expression => { const end = Date.now() + 30000; while (Date.now() < end) { if (await c.evaluate(expression)) return; await delay(80); } throw Error('Timed out: ' + expression); };
 const open = async () => {
-	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'sync',section:'changes'})`);
+	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'versioning',section:'changes'})`);
 	await until(`app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(l=>l.view.getNativeSurfaces()).some(s=>s.getViewType()==='huhu-sync-page'&&s.host.service()?.snapshot.phase==='ready')`);
 	await c.evaluate(`window.ss=app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(l=>l.view.getNativeSurfaces()).find(s=>s.getViewType()==='huhu-sync-page').host.service();true`);
 	// Observe delivery while still invoking Obsidian's Notice adapter; the toast DOM belongs to the host.
@@ -22,7 +22,7 @@ const open = async () => {
 };
 try {
 	runtime = await launchFreshVault({ root, port: 9456, files: { 'note.md': 'base\n', '.gitignore': '.obsidian/\n.huhu/\n' }, settings: {
-		version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','sync'].map(id => [id,false])) } },
+		version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','comments','versioning'].map(id => [id,false])) } },
 	} }); c = runtime.connection;
 	await fs.writeFile(path.join(root, 'gitconfig'), '[init]\n defaultBranch = main\n[user]\n name = Tester\n email = tester@example.com\n[commit]\n gpgsign = false\n');
 	const remote = path.join(root, 'remote.git'), peer = path.join(root, 'peer');
@@ -32,7 +32,7 @@ try {
 	git(root, 'clone', '-q', remote, peer); await fs.writeFile(path.join(peer, 'note.md'), 'remote edit\n');
 	git(peer, 'add', 'note.md'); git(peer, 'commit', '-qm', 'remote'); git(peer, 'push', '-q');
 	await fs.writeFile(path.join(runtime.vault, 'note.md'), 'unstaged local edit\n');
-	await c.evaluate(`app.plugins.plugins.huhu.setModuleEnabled('sync',true)`); await open();
+	await c.evaluate(`app.plugins.plugins.huhu.setModuleEnabled('versioning',true)`); await open();
 	const report = await c.evaluate(`ss.pull({auto:true})`);
 	check('zero-exit-autostash-is-a-failed-pull', !report.ok && report.steps[0].state === 'conflict' && report.steps[0].count === 1, report);
 	await until(`document.querySelector('.workspace-leaf-content[data-type="huhu-workbench-view"]')?.textContent.includes('note.md')`);

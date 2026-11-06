@@ -32,19 +32,19 @@ export function QuickCommandsButton({ controller, groupId }: { controller: Agent
 	};
 	return (
 		<>
-			<div className="my-auto flex min-h-7 shrink-0 items-center rounded-md text-muted-foreground @max-[20rem]/strip:hidden">
+			<div className="my-auto flex min-h-7 shrink-0 items-center rounded-md text-[var(--hu-fg-2)] @max-[20rem]/strip:hidden">
 				{/* In a narrow tab strip the label goes (the button keeps its name for assistive tech and the tooltip); in a very narrow one the whole control makes room for the tabs. */}
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
 							variant="ghost"
-							size="xs"
+							size="sm"
 							className="h-7 max-w-40 gap-1 rounded-r-none px-1.5"
 							aria-label={label}
 							onClick={() => (recent ? run(recent.id) : setEditor(true))}
 						>
 							<Play className="size-3.5" />
-							<span className="hidden min-w-0 truncate text-[12px] font-medium @[44rem]/strip:inline">{label}</span>
+							<span className="hidden min-w-0 truncate text-sm font-medium @[44rem]/strip:inline">{label}</span>
 						</Button>
 					</TooltipTrigger>
 					<TooltipContent>{label}</TooltipContent>
@@ -53,7 +53,7 @@ export function QuickCommandsButton({ controller, groupId }: { controller: Agent
 					<DropdownMenuTrigger asChild>
 						<Button
 							variant="ghost"
-							size="icon-xs"
+							size="icon-sm"
 							className="h-7 rounded-l-none"
 							aria-label={t('agent.quick.menu')}
 						>

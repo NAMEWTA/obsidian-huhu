@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="paper" data-accent="teal" data-density="compact">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="HUHU 个人工作台 UI-002 终版原型：暖中性纸感主题、统一组件与全模块交互。演示数据，离线运行。">
+<title>HUHU 工作台 · UI-002 终版原型</title>
+<link rel="stylesheet" href="../../final/styles.css">
+</head>
+<body>
+<div class="app" id="app" data-width="wide">
+  <header class="host-tabs" id="host-tabs" role="tablist" aria-label="Obsidian 标签页（模拟宿主）"></header>
+  <div class="workbench" id="workbench">
+    <main class="page" id="main" tabindex="-1">
+      <header class="page-head"><h1 id="page-title">HUHU 工作台</h1></header>
+      <div class="page-pad"><p>这是 HUHU 个人工作台的终版交互原型：图标轨、二级导航、主工作区与按需右侧详情，覆盖首页、任务、日记、档案、自动化、智能体、保险箱、版本、体检、通知、设置和宿主笔记场景。原型需要启用 JavaScript；所有数据均为演示数据，不会访问真实库、进程或网络。</p><button class="btn btn-primary" type="button">进入工作台</button></div>
+    </main>
+  </div>
+  <footer class="host-status" id="host-status" aria-label="Obsidian 状态栏（模拟宿主）"></footer>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="../../final/app.js"></script>
+</body>
+</html>

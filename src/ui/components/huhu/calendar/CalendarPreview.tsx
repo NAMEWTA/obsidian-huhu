@@ -2,7 +2,8 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { t } from '../../../../shared/i18n';
 import { usePortalContainer } from '../../../react/contexts';
-import { cn } from '../../../lib/utils';
+import { TaskContent } from '../TaskContent';
+import { FloatingOwner, useOverlayStyle } from '../../../react/modal-layer';
 
 export interface CalendarPreviewContent {
 	date: string;
@@ -19,6 +20,7 @@ interface OpenPreview {
 function Preview({ value, close }: { value: OpenPreview; close(this: void): void }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const portal = usePortalContainer();
+	const overlayStyle = useOverlayStyle(undefined, 1);
 	useLayoutEffect(() => {
 		const node = ref.current,
 			win = value.anchor.ownerDocument.defaultView;
@@ -45,8 +47,9 @@ function Preview({ value, close }: { value: OpenPreview; close(this: void): void
 	return createPortal(
 		<div
 			ref={ref}
+			style={overlayStyle}
 			role="tooltip"
-			className="pointer-events-none fixed z-[var(--layer-menu)] max-h-[70vh] w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border border-border bg-popover p-3 text-popover-foreground shadow-floating"
+			className="pointer-events-none fixed max-h-[70vh] w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border border-border bg-popover p-3 text-popover-foreground shadow-floating"
 			data-calendar-preview={value.content.date}
 		>
 			<div className="mb-2 text-xs font-semibold text-muted-foreground">{value.content.date}</div>
@@ -55,12 +58,9 @@ function Preview({ value, close }: { value: OpenPreview; close(this: void): void
 					<p className="m-0 text-xs text-muted-foreground">{t('calendarUnified.empty')}</p>
 				) : (
 					value.content.tasks.slice(0, 6).map((task) => (
-						<div
-							key={task.id}
-							className={cn('flex gap-2 text-xs', task.checked && 'text-muted-foreground line-through')}
-						>
+						<div key={task.id} className="flex gap-2 text-xs">
 							<span className="shrink-0 tabular-nums text-muted-foreground">{task.time || '·'}</span>
-							<span className="line-clamp-2">{task.text}</span>
+							<TaskContent className="line-clamp-2" title={task.text} completed={task.checked} />
 						</div>
 					))
 				)}
@@ -91,7 +91,11 @@ export function useCalendarPreview(load: (iso: string) => Promise<CalendarPrevie
 	}, []);
 	useLayoutEffect(() => close, [close, resetKey]);
 	return {
-		content: value ? <Preview value={value} close={close} /> : null,
+		content: value ? (
+			<FloatingOwner>
+				<Preview value={value} close={close} />
+			</FloatingOwner>
+		) : null,
 		close,
 		hover: (iso: string, anchor: HTMLElement) => {
 			close();

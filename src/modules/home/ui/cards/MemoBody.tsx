@@ -175,7 +175,7 @@ export function MemoBody({
 			<MarkdownBody
 				text={text}
 				store={store}
-				className="huhu-native markdown-rendered min-w-0 text-[13px] leading-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+				className="huhu-native markdown-rendered min-w-0 text-sm leading-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
 			/>
 		</div>
 	);

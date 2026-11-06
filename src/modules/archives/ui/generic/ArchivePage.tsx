@@ -1,4 +1,16 @@
-import { displayLabel, at, ct, Button, Check, ErrorBox, Input, Section, Select, TextField, confirmAt } from './common';
+import {
+	displayLabel,
+	at,
+	ct,
+	Button,
+	Check,
+	ErrorBox,
+	Input,
+	Section,
+	Select,
+	TextField,
+	useArchiveConfirm,
+} from './common';
 import { VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -28,6 +40,12 @@ import { Diagnostics, UpgradePanel } from './RecoveryPanel';
 import { QueryBuilder } from './QueryBuilder';
 import { useArchiveVersion } from './hooks';
 import type { ArchivePageState } from './page-state';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../../../ui/components/tabs';
+import { SegmentedControl } from '../../../../ui/components/huhu/SegmentedControl';
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
+import { Notice } from '../../../../ui/components/huhu/Notice';
+import { Skeleton } from '../../../../ui/components/skeleton';
+import { RevisionPanel } from './RevisionPanel';
 
 const PersonReadingPage = lazy(() => import('../person/PersonReadingPage'));
 
@@ -49,23 +67,45 @@ export function Resources({
 		[busy, setBusy] = useState(false),
 		[revision, setRevision] = useState(0),
 		input = useRef<HTMLInputElement>(null);
-	void revision; // Local attachment imports invalidate the render without mutating the archive entity.
-	let resources: ReturnType<typeof application.entities.resources> = [],
+	const version = useArchiveVersion(application),
+		alive = useRef(true);
+	useEffect(() => {
+		alive.current = true;
+		return () => {
+			alive.current = false;
+		};
+	}, []);
+	const unavailable =
+		!application.runtime.ready ||
+		application.runtime.loading ||
+		application.catalog.snapshot().diagnostics.some((item) => item.code === 'read-failed');
+	const [snapshot, setSnapshot] = useState<{
+		id: string;
+		key: string;
+		items: ReturnType<typeof application.entities.resources>;
+	}>();
+	const key = version + ':' + revision;
+	let items: ReturnType<typeof application.entities.resources> = [],
 		resourceError: unknown;
 	try {
-		resources = application.entities
-			.resources(entity.id)
-			.filter((item) => item.relativePath.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+		items = application.entities.resources(entity.id);
+		if (!unavailable && (snapshot?.key !== key || snapshot.id !== entity.id))
+			setSnapshot({ id: entity.id, key, items });
 	} catch (error) {
 		resourceError = error;
+		if (unavailable && snapshot?.id === entity.id) items = snapshot.items;
 	}
+	const resources = items.filter((item) =>
+		item.relativePath.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+	);
 	const open = async (path: string) => {
 		const file = app.vault.getFileByPath(path);
 		if (file) await openNoteAt(app, file, { owner: owner.ownerDocument.defaultView ?? undefined });
 	};
 	return (
 		<Section title={at('resources')}>
-			<ErrorBox error={error ?? resourceError} />
+			<ErrorBox error={error ?? (unavailable ? undefined : resourceError)} />
+			{unavailable && <Notice tone="warning" title={at('staleResults')} />}
 			<Input
 				aria-label={ct('searchResources')}
 				placeholder={ct('searchResources')}
@@ -78,28 +118,32 @@ export function Resources({
 			<div className="flex flex-wrap items-end gap-2">
 				<TextField label={at('newNoteName')} value={noteName} onChange={setNoteName} />
 				<Button
-					variant="outline"
-					disabled={busy || !noteName.trim()}
+					variant="secondary"
+					disabled={busy || unavailable || !noteName.trim()}
 					onClick={() => {
 						setBusy(true);
 						void application.entities
 							.createNote({ operationId: crypto.randomUUID(), id: entity.id, name: noteName, body: '' })
 							.then(async (receipt) => {
+								if (!alive.current) return;
 								setNoteName('');
 								setRevision((value) => value + 1);
 								await open(receipt.path);
 							}, setError)
-							.finally(() => setBusy(false));
+							.finally(() => {
+								if (alive.current) setBusy(false);
+							});
 					}}
 				>
 					{at('newNote')}
 				</Button>
-				<Button variant="outline" disabled={busy} onClick={() => input.current?.click()}>
+				<Button variant="secondary" disabled={busy || unavailable} onClick={() => input.current?.click()}>
 					{at('import')}
 				</Button>
 				<input
 					ref={input}
 					type="file"
+					disabled={busy || unavailable}
 					multiple
 					className="sr-only"
 					aria-label={at('import')}
@@ -114,6 +158,7 @@ export function Resources({
 								files.map((file) => ({ name: file.name, read: () => file.arrayBuffer() })),
 							)
 							.then((results) => {
+								if (!alive.current) return;
 								setRevision((value) => value + 1);
 								const failed = results.filter((result) => result.error);
 								if (failed.length)
@@ -124,7 +169,9 @@ export function Resources({
 										),
 									);
 							}, setError)
-							.finally(() => setBusy(false));
+							.finally(() => {
+								if (alive.current) setBusy(false);
+							});
 					}}
 				/>
 			</div>
@@ -141,7 +188,7 @@ export function Resources({
 							className="flex flex-wrap items-center justify-between gap-2"
 						>
 							<Button
-								variant="link"
+								variant="ghost"
 								onClick={() => {
 									void open(resource.path).catch(setError);
 								}}
@@ -154,14 +201,14 @@ export function Resources({
 			</div>
 			<div className="flex gap-2">
 				<Button
-					variant="outline"
+					variant="secondary"
 					disabled={!offset}
 					onClick={() => setOffset((value) => Math.max(0, value - 60))}
 				>
 					{ct('previous')}
 				</Button>
 				<Button
-					variant="outline"
+					variant="secondary"
 					disabled={offset + 60 >= resources.length}
 					onClick={() => setOffset((value) => value + 60)}
 				>
@@ -190,12 +237,41 @@ export function ArchivePage({
 	guard(this: void, callback: (() => Promise<boolean>) | undefined): void;
 }) {
 	useT();
+	const confirm = useArchiveConfirm(owner, state.selectedId);
+	const [detailTab, setDetailTab] = useState('fields');
+	const lifecycle = useRef({ request: 0, mounted: true });
+	useEffect(() => {
+		const current = lifecycle.current;
+		current.mounted = true;
+		return () => {
+			current.mounted = false;
+			current.request++;
+		};
+	}, []);
+	const childLeave = useRef<(() => Promise<boolean>) | undefined>(undefined);
+	const detailGuard = useCallback(
+		(callback: (() => Promise<boolean>) | undefined) => {
+			childLeave.current = callback;
+			guard(callback);
+		},
+		[guard],
+	);
 	const application = host.application,
 		version = useArchiveVersion(application),
-		catalog = application.catalog.snapshot(),
+		liveCatalog = application.catalog.snapshot(),
+		catalogKey = JSON.stringify([
+			version,
+			liveCatalog.types.map((type) => [type.id, type.revisionId, type.count, type.enabled]),
+			[...liveCatalog.forms, ...liveCatalog.views, ...liveCatalog.templates, ...liveCatalog.relationTypes].map(
+				(revision) => revision.revisionId,
+			),
+		]),
+		[catalogSnapshot, setCatalogSnapshot] = useState(() => ({ key: catalogKey, catalog: liveCatalog })),
 		[result, setResult] = useState<QueryResult>(),
+		[queryLoading, setQueryLoading] = useState(true),
+		[staleResults, setStaleResults] = useState(false),
 		[selectedRecord, setSelected] = useState<EntitySummary>(),
-		[personSnapshot, setPersonSnapshot] = useState<{ entity: EntitySummary; type: ArchiveTypeDefinition }>(),
+		[recordSnapshot, setRecordSnapshot] = useState<{ entity: EntitySummary; type: ArchiveTypeDefinition }>(),
 		[error, setError] = useState<unknown>(),
 		[session, setSession] = useState<FormSession>(),
 		[drafts, setDrafts] = useState<FormSession[]>([]),
@@ -204,20 +280,27 @@ export function ArchivePage({
 		[busy, setBusy] = useState(false),
 		[generation, setGeneration] = useState(0);
 	// A rescan replaces the index before revisions arrive. Keep the same person's editor mounted.
-	const recoveringPerson =
+	const recovering =
 		!application.runtime.ready ||
 		application.runtime.loading ||
-		catalog.diagnostics.some((item) => item.code === 'read-failed');
+		application.runtime.index.diagnostics().some((item) => item.code === 'read-failed');
+	const catalog = recovering ? catalogSnapshot.catalog : liveCatalog;
+	if (!recovering && catalogSnapshot.key !== catalogKey)
+		setCatalogSnapshot({ key: catalogKey, catalog: liveCatalog });
 	const selected =
 		selectedRecord ??
-		(personSnapshot && personSnapshot.entity.id === state.selectedId ? personSnapshot.entity : undefined);
+		(recordSnapshot && recordSnapshot.entity.id === state.selectedId ? recordSnapshot.entity : undefined);
 	const view = catalog.views.find((item) => item.definition.id === state.section)?.definition,
 		viewDefinition = view?.kind === 'view' ? view : undefined;
 	const typeId =
 		viewDefinition?.typeId ??
 		(catalog.types.some((type) => type.id === state.section) ? state.section : undefined) ??
-		catalog.types.find((type) => type.enabled)?.id;
-	const schema = typeId ? application.runtime.index.definition(typeId) : undefined,
+		(state.section ? undefined : catalog.types.find((type) => type.enabled)?.id);
+	const liveSchema = typeId ? application.runtime.index.definition(typeId) : undefined;
+	const [schemaSnapshot, setSchemaSnapshot] = useState(liveSchema);
+	if (!recovering && liveSchema && liveSchema.revisionId !== schemaSnapshot?.revisionId)
+		setSchemaSnapshot(liveSchema);
+	const schema = liveSchema ?? (recovering && schemaSnapshot?.definition.id === typeId ? schemaSnapshot : undefined),
 		type = schema?.definition.kind === 'type' ? schema.definition : undefined;
 	useEffect(() => setTemplateId(type?.defaultTemplateId ?? ''), [typeId, type?.defaultTemplateId]);
 	const query: EntityQuery = {
@@ -235,17 +318,45 @@ export function ArchivePage({
 	};
 	const queryKey = JSON.stringify(query),
 		selectedId = state.selectedId;
+	const resultQuery = useRef<string | null>(null);
 	useEffect(() => {
 		let alive = true;
+		setQueryLoading(true);
+		if (resultQuery.current !== queryKey) {
+			setResult(undefined);
+			setStaleResults(false);
+		}
 		void application.query.entities(JSON.parse(queryKey) as EntityQuery).then(
 			(value) => {
 				if (alive) {
-					setResult(value);
-					setError(undefined);
+					if (value.diagnostics.some((item) => item.code === 'read-failed')) {
+						if (resultQuery.current === queryKey) setStaleResults(true);
+						else {
+							setResult(undefined);
+							resultQuery.current = null;
+							setStaleResults(false);
+						}
+						setError(new ArchiveError('read-failed'));
+					} else {
+						setResult(value);
+						resultQuery.current = queryKey;
+						setStaleResults(false);
+						setError(undefined);
+					}
+					setQueryLoading(false);
 				}
 			},
 			(error) => {
-				if (alive) setError(error);
+				if (alive) {
+					setError(error);
+					if (resultQuery.current === queryKey) setStaleResults(true);
+					else {
+						setResult(undefined);
+						resultQuery.current = null;
+						setStaleResults(false);
+					}
+					setQueryLoading(false);
+				}
 			},
 		);
 		return () => {
@@ -264,12 +375,11 @@ export function ArchivePage({
 						!application.runtime.loading &&
 						!application.catalog.snapshot().diagnostics.some((item) => item.code === 'read-failed')
 					)
-						setPersonSnapshot(undefined);
+						setRecordSnapshot(undefined);
 					const definition = value
 						? application.runtime.index.schema(value.schemaRevisionId)?.definition
 						: undefined;
-					if (value?.typeId === 'type-person' && definition?.kind === 'type')
-						setPersonSnapshot({ entity: value, type: definition });
+					if (value && definition?.kind === 'type') setRecordSnapshot({ entity: value, type: definition });
 				}
 			},
 			(error) => {
@@ -300,18 +410,24 @@ export function ArchivePage({
 		const target = `${state.section}:${state.selectedId}`;
 		if (target !== previousTarget.current) {
 			previousTarget.current = target;
+			lifecycle.current.request++;
+			setBusy(false);
 			setSession(undefined);
 			setShowUpgrade(false);
 		}
 	}, [state.section, state.selectedId]);
 	const begin = async (restored?: FormSession) => {
+		const request = ++lifecycle.current.request;
+		setBusy(true);
+		const current = () => lifecycle.current.mounted && request === lifecycle.current.request;
 		try {
 			if (restored) {
-				setSession(restored);
+				if (current()) setSession(restored);
 				return;
 			}
 			if (selectedId) {
-				setSession(await application.commands.beginEdit(selectedId));
+				const session = await application.commands.beginEdit(selectedId);
+				if (current()) setSession(session);
 				return;
 			}
 			if (!type || !schema) throw new ArchiveError('missing-or-forked-definition');
@@ -334,9 +450,11 @@ export function ArchivePage({
 				templateId,
 			};
 			await application.commands.saveDraft(next);
-			setSession(next);
+			if (current()) setSession(next);
 		} catch (error) {
-			setError(error);
+			if (current()) setError(error);
+		} finally {
+			if (current()) setBusy(false);
 		}
 	};
 	const open = useCallback(
@@ -349,7 +467,26 @@ export function ArchivePage({
 		setSession(undefined);
 		setGeneration((value) => value + 1);
 	};
-	const editorType = session ? application.runtime.index.schema(session.schemaRevisionId)?.definition : undefined;
+	const [editorSnapshot, setEditorSnapshot] = useState<{
+		id: string;
+		type: ArchiveTypeDefinition;
+		forms: FormTemplate[];
+	}>();
+	if (session && editorSnapshot?.id !== session.id) {
+		const definition = application.runtime.index.schema(session.schemaRevisionId)?.definition;
+		if (definition?.kind === 'type')
+			setEditorSnapshot({
+				id: session.id,
+				type: definition,
+				forms: catalog.forms
+					.map((item) => item.definition)
+					.filter(
+						(definition): definition is FormTemplate =>
+							definition.kind === 'form' && definition.typeId === session.typeId,
+					),
+			});
+	}
+	const editorType = editorSnapshot?.id === session?.id ? editorSnapshot?.type : undefined;
 	if (session && editorType?.kind === 'type')
 		return (
 			<RecordEditor
@@ -357,12 +494,7 @@ export function ArchivePage({
 				initial={session}
 				application={application}
 				type={editorType}
-				forms={catalog.forms
-					.map((item) => item.definition)
-					.filter(
-						(definition): definition is FormTemplate =>
-							definition.kind === 'form' && definition.typeId === session.typeId,
-					)}
+				forms={editorSnapshot?.forms ?? []}
 				owner={owner}
 				app={app}
 				guard={guard}
@@ -371,14 +503,17 @@ export function ArchivePage({
 					closeEditor();
 					void navigate(session.typeId, receipt.id).catch(setError);
 				}}
-				cancel={closeEditor}
+				cancel={() => {
+					setSession((current) => (current?.id === session.id ? undefined : current));
+					setGeneration((value) => value + 1);
+				}}
 			/>
 		);
 	if (session)
 		return (
 			<>
 				<p role="alert">{at('unknownDefinition')}</p>
-				<Button variant="outline" onClick={closeEditor}>
+				<Button variant="secondary" onClick={closeEditor}>
 					{ct('back')}
 				</Button>
 			</>
@@ -390,11 +525,11 @@ export function ArchivePage({
 	const selectedType =
 		selectedSchema?.kind === 'type'
 			? selectedSchema
-			: recoveringPerson &&
-				  personSnapshot &&
-				  personSnapshot.entity.id === selectedId &&
-				  selected?.schemaRevisionId === personSnapshot.entity.schemaRevisionId
-				? personSnapshot.type
+			: recovering &&
+				  recordSnapshot &&
+				  recordSnapshot.entity.id === selectedId &&
+				  selected?.schemaRevisionId === recordSnapshot.entity.schemaRevisionId
+				? recordSnapshot.type
 				: undefined;
 	const readSource = async (path: string) => {
 		if (!underRoot(application.runtime.root, path)) return;
@@ -404,7 +539,11 @@ export function ArchivePage({
 	if (selectedId && selected && selectedType && selected.typeId === 'type-person')
 		return (
 			<Suspense fallback={<p role="status">{ct('loading')}</p>}>
-				<ErrorBox error={error} />
+				<ErrorBox
+					error={
+						recovering && error instanceof ArchiveError && error.code === 'read-failed' ? undefined : error
+					}
+				/>
 				<PersonReadingPage
 					key={selected.id}
 					application={application}
@@ -427,7 +566,7 @@ export function ArchivePage({
 						<>
 							<div className="flex flex-wrap gap-2">
 								<Button
-									variant="outline"
+									variant="secondary"
 									disabled={busy}
 									onClick={() => {
 										setBusy(true);
@@ -435,8 +574,7 @@ export function ArchivePage({
 											.impact(selected.id)
 											.then(async (impact) => {
 												if (
-													!(await confirmAt(
-														owner,
+													!(await confirm(
 														`${at('impact')}: ${at('relations')} ${impact.relations}, ${at('contextRoles')} ${impact.contexts}, ${at('resources')} ${impact.attachments}, ${at('reminder')} ${impact.reminders}`,
 														at(selected.lifecycle === 'archived' ? 'activate' : 'archive'),
 													))
@@ -458,7 +596,7 @@ export function ArchivePage({
 								</Button>
 								{currentType?.definition.kind === 'type' &&
 									currentType.revisionId !== selected.schemaRevisionId && (
-										<Button variant="outline" onClick={() => setShowUpgrade(!showUpgrade)}>
+										<Button variant="secondary" onClick={() => setShowUpgrade(!showUpgrade)}>
 											{at('upgrade')}
 										</Button>
 									)}
@@ -468,7 +606,7 @@ export function ArchivePage({
 								.map((draft) => (
 									<Button
 										key={draft.id}
-										variant="outline"
+										variant="secondary"
 										onClick={() => {
 											void begin(draft);
 										}}
@@ -491,7 +629,7 @@ export function ArchivePage({
 					}
 					actions={
 						host.newReminder ? (
-							<Button variant="outline" onClick={() => host.newReminder?.(selected)}>
+							<Button variant="secondary" onClick={() => host.newReminder?.(selected)}>
 								{at('reminder')}
 							</Button>
 						) : undefined
@@ -503,7 +641,7 @@ export function ArchivePage({
 		return (
 			<div className="space-y-4">
 				<Button
-					variant="outline"
+					variant="secondary"
 					onClick={() => {
 						void navigate(state.section).catch(setError);
 					}}
@@ -522,7 +660,7 @@ export function ArchivePage({
 							</div>
 							<div className="flex flex-wrap gap-2">
 								<Button
-									disabled={!selectedType || busy}
+									disabled={!selectedType || busy || recovering}
 									onClick={() => {
 										void begin();
 									}}
@@ -530,7 +668,7 @@ export function ArchivePage({
 									{ct('edit')}
 								</Button>
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() => {
 										void readSource(selected.path).catch(setError);
 									}}
@@ -538,12 +676,12 @@ export function ArchivePage({
 									{at('openRaw')}
 								</Button>
 								{host.newReminder && (
-									<Button variant="outline" onClick={() => host.newReminder?.(selected)}>
+									<Button variant="secondary" onClick={() => host.newReminder?.(selected)}>
 										{at('reminder')}
 									</Button>
 								)}
 								<Button
-									variant="outline"
+									variant="secondary"
 									disabled={busy}
 									onClick={() => {
 										setBusy(true);
@@ -551,14 +689,9 @@ export function ArchivePage({
 											.impact(selected.id)
 											.then(async (impact) => {
 												if (
-													!(await confirmAt(
-														owner,
+													!(await confirm(
 														`${at('impact')}: ${at('relations')} ${impact.relations}, ${at('contextRoles')} ${impact.contexts}, ${at('resources')} ${impact.attachments}, ${at('reminder')} ${impact.reminders}`,
-														at(
-															selected.lifecycle === 'archived'
-																? 'activate'
-																: 'archive',
-														),
+														at(selected.lifecycle === 'archived' ? 'activate' : 'archive'),
 													))
 												)
 													return;
@@ -578,7 +711,7 @@ export function ArchivePage({
 								</Button>
 								{currentType?.definition.kind === 'type' &&
 									currentType.revisionId !== selected.schemaRevisionId && (
-										<Button variant="outline" onClick={() => setShowUpgrade(!showUpgrade)}>
+										<Button variant="secondary" onClick={() => setShowUpgrade(!showUpgrade)}>
 											{at('upgrade')}
 										</Button>
 									)}
@@ -592,7 +725,7 @@ export function ArchivePage({
 							.map((draft) => (
 								<Button
 									key={draft.id}
-									variant="outline"
+									variant="secondary"
 									onClick={() => {
 										void begin(draft);
 									}}
@@ -611,29 +744,57 @@ export function ArchivePage({
 								finished={() => setShowUpgrade(false)}
 							/>
 						)}
-						{selectedType ? (
-							<Section title={at('fields')}>
-								<RecordValues type={selectedType} values={selected.values} />
-							</Section>
-						) : (
-							<p role="alert">{at('unknownDefinition')}</p>
-						)}
-						<RelationPanel
-							key={selected.id}
-							application={application}
-							entity={selected}
-							owner={owner}
-							app={app}
-							guard={guard}
-							open={open}
-						/>
-						<Resources application={application} entity={selected} app={app} owner={owner} />
+						<Tabs
+							value={detailTab}
+							onValueChange={(value) => {
+								void (async () => {
+									if (!childLeave.current || (await childLeave.current())) setDetailTab(value);
+								})().catch(setError);
+							}}
+						>
+							<TabsList className="max-w-full overflow-x-auto">
+								<TabsTrigger value="fields">{at('fields')}</TabsTrigger>
+								<TabsTrigger value="relations">{at('relations')}</TabsTrigger>
+								<TabsTrigger value="revisions">{at('revisions')}</TabsTrigger>
+								<TabsTrigger value="resources">{at('resources')}</TabsTrigger>
+							</TabsList>
+							<TabsContent value="fields">
+								{selectedType ? (
+									<Section title={at('fields')}>
+										<RecordValues type={selectedType} values={selected.values} />
+									</Section>
+								) : (
+									<p role="alert">{at('unknownDefinition')}</p>
+								)}
+							</TabsContent>
+							<TabsContent value="relations">
+								<RelationPanel
+									key={selected.id}
+									application={application}
+									entity={selected}
+									owner={owner}
+									app={app}
+									guard={detailGuard}
+									open={open}
+								/>
+							</TabsContent>
+							<TabsContent value="revisions">
+								<RevisionPanel
+									application={application}
+									typeId={selected.typeId}
+									currentRevision={selected.schemaRevisionId}
+								/>
+							</TabsContent>
+							<TabsContent value="resources">
+								<Resources application={application} entity={selected} app={app} owner={owner} />
+							</TabsContent>
+						</Tabs>
 					</>
 				) : (
 					<>
 						<p role="status">{application.runtime.loading ? ct('loading') : ct('missing')}</p>
 						<Button
-							variant="outline"
+							variant="secondary"
 							onClick={() => {
 								void readSource(selectedId).catch(setError);
 							}}
@@ -651,6 +812,24 @@ export function ArchivePage({
 				)}
 			</div>
 		);
+	if (state.section && !typeId)
+		return (
+			<Notice
+				tone="error"
+				title={at('unknownDefinition')}
+				action={
+					<Button
+						variant="secondary"
+						onClick={() => {
+							void navigate('archive-recovery').catch(setError);
+						}}
+					>
+						{at('recovery')}
+					</Button>
+				}
+			/>
+		);
+
 	const layout =
 			state.layout ??
 			viewDefinition?.layout ??
@@ -664,12 +843,12 @@ export function ArchivePage({
 			[]
 		).filter((id) => id !== type?.nameFieldId);
 	return (
-		<div className="space-y-4">
+		<div data-archive-list aria-busy={queryLoading} className="space-y-5">
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<h2 className="text-xl font-semibold">{displayLabel(viewDefinition ?? type, at('type'))}</h2>
 				<div className="flex flex-wrap gap-2">
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							void navigate('archive-designer').catch(setError);
 						}}
@@ -677,7 +856,7 @@ export function ArchivePage({
 						{at('designer')}
 					</Button>
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							void navigate('archive-recovery').catch(setError);
 						}}
@@ -685,7 +864,7 @@ export function ArchivePage({
 						{at('recovery')}
 					</Button>
 					<Button
-						disabled={!type?.enabled || application.runtime.loading}
+						disabled={!type?.enabled || recovering}
 						onClick={() => {
 							void begin();
 						}}
@@ -695,17 +874,36 @@ export function ArchivePage({
 				</div>
 			</div>
 			<ErrorBox error={error} />
-			{!catalog.isComplete && (
-				<p role="status" className="text-sm text-muted-foreground">
-					{at('incomplete')}
-				</p>
+			{queryLoading && !result && (
+				<div role="status" aria-label={ct('loading')} className="space-y-3">
+					{[0, 1, 2].map((id) => (
+						<Skeleton key={id} className="h-[var(--hu-list-row-h)] w-full" />
+					))}
+				</div>
+			)}
+			{(staleResults || !liveCatalog.isComplete) && (
+				<Notice
+					tone="warning"
+					title={at(staleResults ? 'staleResults' : 'incomplete')}
+					action={
+						<Button
+							variant="secondary"
+							disabled={queryLoading}
+							onClick={() => {
+								void application.runtime.reload().catch(setError);
+							}}
+						>
+							{ct('retry')}
+						</Button>
+					}
+				/>
 			)}
 			{drafts
 				.filter((draft) => draft.creating && draft.typeId === typeId)
 				.map((draft) => (
 					<Button
 						key={draft.id}
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							void begin(draft);
 						}}
@@ -713,19 +911,19 @@ export function ArchivePage({
 						{at('restoreDraft')} · {displayValue(draft.draft[type?.nameFieldId ?? ''] ?? draft.entityId)}
 					</Button>
 				))}
-			<div className="grid gap-3 sm:grid-cols-2">
+			<div className="grid gap-3 @min-[560px]:grid-cols-2">
 				<Input
 					aria-label={at('search')}
 					placeholder={at('search')}
 					value={state.search}
 					onChange={(event) => updateState({ search: event.target.value, offset: 0 })}
 				/>
-				<Select
-					label={at('layout')}
+				<SegmentedControl
+					ariaLabel={at('layout')}
 					value={layout}
-					options={['table', 'card'].map((key) => [key, at(key)])}
+					options={(['table', 'card'] as const).map((value) => ({ value, label: at(value) }))}
 					onChange={(layout) => {
-						updateState({ layout: layout as 'table' | 'card' });
+						updateState({ layout });
 						if (typeId)
 							void host.settings
 								.update((settings) => {
@@ -761,7 +959,9 @@ export function ArchivePage({
 				/>
 			</div>
 			<details className="rounded-md border p-3">
-				<summary className="cursor-pointer text-sm">{at('filter')}</summary>
+				<summary className="flex min-h-[var(--hu-hit)] cursor-pointer items-center text-sm">
+					{at('filter')}
+				</summary>
 				<div className="mt-3 space-y-3">
 					<div className="flex flex-wrap gap-3">
 						{(['active', 'draft', 'archived'] as const).map((value) => (
@@ -799,7 +999,7 @@ export function ArchivePage({
 						onChange={(filter) => updateState({ filter, offset: 0 })}
 					/>
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() =>
 							updateState({
 								filter: undefined,
@@ -820,7 +1020,26 @@ export function ArchivePage({
 						{at('total')}: {result.total}
 						{!result.isComplete ? ` · ${at('incomplete')}` : ''}
 					</p>
-					{layout === 'table' ? (
+					{result.total === 0 && result.isComplete ? (
+						<EmptyState
+							title={ct(
+								state.search || state.filter || viewDefinition?.query.filter ? 'noResults' : 'empty',
+							)}
+							action={
+								<Button
+									variant="secondary"
+									onClick={() => {
+										if (state.search || state.filter)
+											updateState({ search: '', filter: undefined, offset: 0 });
+										else void begin();
+									}}
+									disabled={!type?.enabled || recovering}
+								>
+									{state.search || state.filter ? at('clear') : at('newRecord')}
+								</Button>
+							}
+						/>
+					) : layout === 'table' ? (
 						<Table>
 							<TableHeader>
 								<TableRow>
@@ -844,7 +1063,11 @@ export function ArchivePage({
 								{result.items.map((item) => (
 									<TableRow key={item.path} data-path={item.path}>
 										<TableCell>
-											<Button variant="link" onClick={() => open(item.id)}>
+											<Button
+												variant="ghost"
+												className="h-auto min-h-[var(--hu-ctl-h)] max-w-full justify-start whitespace-normal break-words text-left"
+												onClick={() => open(item.id)}
+											>
 												{item.name}
 											</Button>
 										</TableCell>
@@ -866,8 +1089,8 @@ export function ArchivePage({
 									className="space-y-2 rounded-lg border bg-card p-4"
 								>
 									<Button
-										variant="link"
-										className="h-auto whitespace-normal break-words text-lg"
+										variant="ghost"
+										className="h-auto min-h-[var(--hu-ctl-h)] whitespace-normal break-words text-lg"
 										onClick={() => open(item.id)}
 									>
 										{item.name}
@@ -891,7 +1114,7 @@ export function ArchivePage({
 					)}
 					<div className="flex flex-wrap items-center justify-between gap-3">
 						<Button
-							variant="outline"
+							variant="secondary"
 							disabled={state.offset === 0}
 							onClick={() => updateState({ offset: Math.max(0, state.offset - 50) })}
 						>
@@ -901,7 +1124,7 @@ export function ArchivePage({
 							{Math.floor(state.offset / 50) + 1} / {Math.max(1, Math.ceil(result.total / 50))}
 						</span>
 						<Button
-							variant="outline"
+							variant="secondary"
 							disabled={state.offset + 50 >= result.total}
 							onClick={() => updateState({ offset: state.offset + 50 })}
 						>
@@ -910,7 +1133,7 @@ export function ArchivePage({
 					</div>
 				</>
 			) : (
-				<p role="status">{ct('loading')}</p>
+				!error && <p role="status">{ct('loading')}</p>
 			)}
 		</div>
 	);

@@ -1,11 +1,21 @@
 // Row layout after the shadcn community tree pattern (MIT): chevron, indent guides, icon slot, truncated label, badge.
 // Keyboard model, focus management and ARIA tree roles come from Headless Tree (@headless-tree/core + react, MIT),
 // Copyright (c) Lukas Bach; long lists are windowed with @tanstack/react-virtual (MIT).
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+	type KeyboardEvent,
+	type ReactNode,
+} from 'react';
 import { hotkeysCoreFeature, selectionFeature, syncDataLoaderFeature, type ItemInstance } from '@headless-tree/core';
 import { useTree } from '@headless-tree/react';
 import { useVirtualizer, type Virtualizer } from '@tanstack/react-virtual';
 import { ChevronRight, File, Folder, FolderOpen } from 'lucide-react';
+import { useDensityRowHeight } from '../react/use-density';
 import { cn } from '../lib/utils';
 import { ObsidianIcon } from './huhu/ObsidianIcon';
 
@@ -51,8 +61,6 @@ export interface TreeProps {
 	search?: string;
 	/** With a `search`, these ids are the matches instead of the label test (a search that also looked inside files). */
 	matchIds?: ReadonlySet<string>;
-	/** What a click on a folder row does: flip it (default), or only open it. */
-	folderClick?: 'toggle' | 'expand';
 	/** Text shown when there are no rows. */
 	emptyText?: ReactNode;
 	/** Windowing starts above this many visible rows. */
@@ -60,9 +68,28 @@ export interface TreeProps {
 	className?: string;
 }
 
+// Keep Headless Tree's navigation engine, but exclude action controls at its native entry point.
+// React bubble handlers run after the library's native tree listener.
+const treeHotkeysFeature: typeof hotkeysCoreFeature = {
+	...hotkeysCoreFeature,
+	onTreeMount(tree, element) {
+		hotkeysCoreFeature.onTreeMount?.(tree, element);
+		const data = tree.getDataRef<{ keydownHandler?: (event: KeyboardEvent<HTMLElement>['nativeEvent']) => void }>();
+		const original = data.current.keydownHandler;
+		if (!original) return;
+		element.removeEventListener('keydown', original);
+		const keydown = (event: KeyboardEvent<HTMLElement>['nativeEvent']) => {
+			const target = event.target as HTMLElement | null;
+			if (target?.closest('[data-slot=tree-actions]')) return;
+			original(event);
+		};
+		data.current.keydownHandler = keydown;
+		element.addEventListener('keydown', keydown);
+	},
+};
+
 const ROOT_ID = '\u0000tree-root';
 const INDENT = 14;
-const ROW_HEIGHT = 28;
 const EMPTY: readonly string[] = [];
 
 interface TreeModel {
@@ -78,7 +105,12 @@ const ROOT_NODE: TreeNode = { id: ROOT_ID, label: '', children: [] };
 /** Flatten the nodes into lookup tables, keeping only matches and their ancestors while searching. */
 function buildModel(nodes: readonly TreeNode[], search: string, matchIds?: ReadonlySet<string>): TreeModel {
 	const needle = search.trim().toLocaleLowerCase();
-	const model: TreeModel = { byId: new Map([[ROOT_ID, ROOT_NODE]]), children: new Map(), parent: new Map(), matchedAncestors: [] };
+	const model: TreeModel = {
+		byId: new Map([[ROOT_ID, ROOT_NODE]]),
+		children: new Map(),
+		parent: new Map(),
+		matchedAncestors: [],
+	};
 	const ancestors = new Set<string>();
 	/** Adds a node when it, a descendant or an ancestor matches. `all` means an ancestor matched, so the whole subtree stays. */
 	const add = (node: TreeNode, parentId: string, all: boolean): boolean => {
@@ -103,11 +135,10 @@ function buildModel(nodes: readonly TreeNode[], search: string, matchIds?: Reado
 
 function ancestorsOf(model: TreeModel, id: string): string[] {
 	const result: string[] = [];
-	for (let parent = model.parent.get(id); parent && parent !== ROOT_ID; parent = model.parent.get(parent)) result.push(parent);
+	for (let parent = model.parent.get(id); parent && parent !== ROOT_ID; parent = model.parent.get(parent))
+		result.push(parent);
 	return result;
 }
-
-const sameSet = (left: readonly string[], right: readonly string[]) => left.length === right.length && left.every((id, index) => id === right[index]);
 
 export function Tree({
 	nodes,
@@ -120,7 +151,6 @@ export function Tree({
 	onActivate,
 	search = '',
 	matchIds,
-	folderClick = 'toggle',
 	emptyText,
 	virtualizeAfter = 200,
 	className,
@@ -130,26 +160,37 @@ export function Tree({
 	// Headless Tree rebuilds whenever the expanded array changes identity, so a controlled array is stabilized by content.
 	const controlledKey = expandedIds ? expandedIds.join('\u0001') : undefined;
 	const controlled = useMemo(() => (expandedIds ? [...expandedIds] : undefined), [controlledKey]); // eslint-disable-line react-hooks/exhaustive-deps -- keyed by content
-	const expanded = controlled ?? innerExpanded;
+	const manualExpanded = controlled ?? innerExpanded;
+	const expanded = useMemo(
+		() => (search.trim() ? [...new Set([...manualExpanded, ...model.matchedAncestors])] : manualExpanded),
+		[manualExpanded, model, search],
+	);
 	const expandedRef = useRef(expanded);
 	expandedRef.current = expanded;
 	const changeExpanded = useCallback(
 		(next: string[]) => {
-			if (!controlled) setInnerExpanded(next);
-			onExpandedChange?.(next);
+			// Headless Tree updates the effective list, which includes search-only ancestors.
+			// Apply only its actual delta to manual state, preserving pre-search choices.
+			const effective = expandedRef.current;
+			const removed = new Set(effective.filter((id) => !next.includes(id)));
+			const added = next.filter((id) => !effective.includes(id));
+			const manualNext = [...manualExpanded.filter((id) => !removed.has(id)), ...added];
+			if (!controlled) setInnerExpanded(manualNext);
+			onExpandedChange?.(manualNext);
 		},
-		[controlled, onExpandedChange],
+		[controlled, manualExpanded, onExpandedChange],
 	);
 	const [focused, setFocused] = useState<string | null>(null);
 	const selectedItems = useMemo(() => (selectedId ? [selectedId] : []), [selectedId]);
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const rowHeight = useDensityRowHeight(scrollRef);
 	const virtualizerRef = useRef<Virtualizer<HTMLDivElement, Element> | null>(null);
 	const focusedRef = useRef(focused);
 	focusedRef.current = focused;
 
 	const tree = useTree<TreeNode>({
 		rootItemId: ROOT_ID,
-		features: [syncDataLoaderFeature, selectionFeature, hotkeysCoreFeature],
+		features: [syncDataLoaderFeature, selectionFeature, treeHotkeysFeature],
 		dataLoader: {
 			getItem: (id) => model.byId.get(id) ?? ROOT_NODE,
 			getChildren: (id) => model.children.get(id) ?? [],
@@ -170,15 +211,6 @@ export function Tree({
 		if (focusedRef.current && !model.byId.has(focusedRef.current)) setFocused(null);
 	}, [tree, model]);
 
-	// While searching, open the folders that lead to a match. User toggles made afterwards stick until the search changes.
-	useEffect(() => {
-		if (!search.trim()) return;
-		const current = expandedRef.current;
-		const next = [...current, ...model.matchedAncestors.filter((id) => !current.includes(id))];
-		if (!sameSet(current, next)) changeExpanded(next);
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- only the search and its result decide
-	}, [model, search]);
-
 	// A row selected from outside is revealed: its ancestors open and it scrolls into view.
 	useEffect(() => {
 		if (!selectedId || !model.byId.has(selectedId)) return;
@@ -192,11 +224,14 @@ export function Tree({
 	const virtualizer = useVirtualizer({
 		count: virtual ? items.length : 0,
 		getScrollElement: () => scrollRef.current,
-		estimateSize: () => ROW_HEIGHT,
+		estimateSize: () => rowHeight,
 		overscan: 12,
 		getItemKey: (index) => items[index]?.getId() ?? index,
 	});
 	virtualizerRef.current = virtualizer;
+	useLayoutEffect(() => {
+		virtualizer.measure();
+	}, [virtualizer, rowHeight]);
 
 	useEffect(() => {
 		if (!selectedId) return;
@@ -210,21 +245,38 @@ export function Tree({
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- follow the selection, not every re-render
 	}, [selectedId, items.length, virtual]);
 
+	useLayoutEffect(() => {
+		for (const action of scrollRef.current?.querySelectorAll<HTMLElement>(
+			'[data-slot=tree-actions] :is(button,a,input,select,textarea,[tabindex])',
+		) ?? [])
+			action.tabIndex = -1;
+	});
+
 	const typeahead = useRef({ text: '', at: 0 });
 	const choose = (item: ItemInstance<TreeNode>, activate: boolean) => {
 		const node = item.getItemData();
 		item.setFocused();
 		onSelect?.(node.id, node);
-		if (item.isFolder()) {
-			if (item.isExpanded() && folderClick === 'toggle') item.collapse();
-			else if (!item.isExpanded()) item.expand();
-		}
+
 		if (activate) onActivate?.(node.id, node);
 	};
 	const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+		if ((event.target as HTMLElement).closest('[data-slot=tree-actions]')) return;
 		const id = (event.target as HTMLElement).closest<HTMLElement>('[data-tree-id]')?.dataset.treeId;
 		if (id === undefined) return;
 		const item = tree.getItemInstance(id);
+		if (event.key === 'F2') {
+			const action = item
+				.getElement()
+				?.querySelector<HTMLElement>(
+					'[data-slot=tree-actions] :is(button,a,input,select,textarea,[tabindex]):not([disabled])',
+				);
+			if (action) {
+				event.preventDefault();
+				action.focus();
+			}
+			return;
+		}
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 			choose(item, true);
@@ -252,14 +304,16 @@ export function Tree({
 	};
 	// Headless Tree listens for key releases on the main window's document; forward them from the tree's own window.
 	const onKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-		tree.getDataRef<{ keyupHandler?: (event: KeyboardEvent<HTMLElement>['nativeEvent']) => void }>().current.keyupHandler?.(event.nativeEvent);
+		tree.getDataRef<{
+			keyupHandler?: (event: KeyboardEvent<HTMLElement>['nativeEvent']) => void;
+		}>().current.keyupHandler?.(event.nativeEvent);
 	};
 
 	if (!items.length) {
 		// Items arrive one layout pass after the data; only a model without rows is really empty.
 		if (model.children.get(ROOT_ID)?.length) return null;
 		return emptyText ? (
-			<p role="status" className={cn('px-3 py-2 text-xs text-muted-foreground', className)}>
+			<p role="status" className={cn('px-3 py-2 text-xs text-[var(--hu-fg-3)]', className)}>
 				{emptyText}
 			</p>
 		) : null;
@@ -279,15 +333,18 @@ export function Tree({
 				data-slot="tree-item"
 				data-tree-id={node.id}
 				aria-selected={selected}
+				aria-expanded={folder ? open : undefined}
 				title={node.title ?? node.label}
 				className={cn(
-					'group flex h-7 w-full cursor-pointer select-none items-center gap-1.5 rounded-md pr-2 text-[13px] outline-none',
-					'hover:bg-accent/50 focus-visible:ring-[3px] focus-visible:ring-inset focus-visible:ring-ring/50',
-					selected && 'bg-accent text-accent-foreground hover:bg-accent',
+					'group flex w-full cursor-pointer select-none items-center gap-1.5 rounded-[var(--hu-radius-sm)] pr-2 text-[length:var(--hu-text-sm)] leading-[var(--hu-lh-sm)] text-[var(--hu-fg)] outline-none',
+					'hover:bg-[var(--hu-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)]',
+					selected &&
+						'bg-[var(--hu-accent-soft)] text-[var(--hu-accent-text)] hover:bg-[var(--hu-accent-soft)]',
 					position && 'absolute top-0 left-0',
 					!position && 'relative',
 				)}
 				style={{
+					height: rowHeight,
 					paddingLeft: 4 + meta.level * INDENT,
 					...(position ? { transform: `translateY(${position.start}px)` } : null),
 				}}
@@ -301,13 +358,15 @@ export function Tree({
 					<span
 						key={index}
 						aria-hidden
-						className="pointer-events-none absolute inset-y-0 w-px bg-border/60"
+						className="pointer-events-none absolute inset-y-0 w-px bg-[var(--hu-line)]"
 						style={{ left: 4 + index * INDENT + 8 }}
 					/>
 				))}
 				<span
 					aria-hidden
-					className="flex size-4 shrink-0 items-center justify-center text-muted-foreground"
+					data-slot="tree-toggle"
+					style={{ width: 'var(--hu-hit)' }}
+					className="flex h-full shrink-0 items-center justify-center text-[var(--hu-fg-3)]"
 					onClick={
 						folder
 							? (event) => {
@@ -321,14 +380,19 @@ export function Tree({
 				>
 					{folder && (
 						<ChevronRight
-							className={cn('size-3.5 transition-transform motion-reduce:transition-none', open && 'rotate-90')}
+							className={cn(
+								'size-3.5 transition-transform duration-[var(--hu-dur-fast)] ease-[var(--hu-ease)] motion-reduce:transition-none',
+								open && 'rotate-90',
+							)}
 						/>
 					)}
 				</span>
 				<TreeIcon node={node} folder={folder} open={open} />
-				<span className="min-w-0 truncate text-left">{node.label}</span>
+				<span className="min-w-0 truncate text-left">{highlight(node.label, search)}</span>
 				{node.description ? (
-					<span className="min-w-0 flex-1 truncate text-left text-2xs text-muted-foreground">{node.description}</span>
+					<span className="min-w-0 flex-1 truncate text-left text-[length:var(--hu-text-xs)] text-[var(--hu-fg-3)]">
+						{node.description}
+					</span>
 				) : (
 					<span className="flex-1" />
 				)}
@@ -338,13 +402,40 @@ export function Tree({
 						className="hidden shrink-0 items-center group-hover:flex group-focus-within:flex"
 						onClick={(event) => event.stopPropagation()}
 						onDoubleClick={(event) => event.stopPropagation()}
-						onKeyDown={(event) => event.stopPropagation()}
+						onKeyDown={(event) => {
+							event.stopPropagation();
+							if (event.defaultPrevented) return;
+							const target = event.target as HTMLElement;
+							if (
+								target.matches('input,select,textarea,[contenteditable=true]') &&
+								event.key !== 'Escape'
+							)
+								return;
+							if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+								event.preventDefault();
+								const actions = Array.from(
+									event.currentTarget.querySelectorAll<HTMLElement>(
+										'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]',
+									),
+								).filter((action) => !action.hasAttribute('disabled'));
+								const index = actions.indexOf(event.target as HTMLElement);
+								actions[
+									(index + (event.key === 'ArrowRight' ? 1 : -1) + actions.length) % actions.length
+								]?.focus();
+							}
+							if (event.key === 'Escape') {
+								event.preventDefault();
+								item.getElement()?.focus();
+							}
+						}}
 					>
 						{node.actions}
 					</span>
 				)}
 				{node.badge !== undefined && node.badge !== '' && node.badge !== null && (
-					<span className="shrink-0 text-2xs tabular-nums text-muted-foreground">{node.badge}</span>
+					<span className="shrink-0 text-[length:var(--hu-text-xs)] tabular-nums text-[var(--hu-fg-3)]">
+						{node.badge}
+					</span>
 				)}
 			</div>
 		);
@@ -381,12 +472,12 @@ function rowProps(item: ItemInstance<TreeNode>): Record<string, unknown> {
 
 function TreeIcon({ node, folder, open }: { node: TreeNode; folder: boolean; open: boolean }) {
 	const style = node.iconColor ? { color: node.iconColor } : undefined;
-	const tone = node.iconColor ? undefined : 'text-muted-foreground';
+	const tone = node.iconColor ? undefined : 'text-[var(--hu-fg-3)]';
 	if (node.avatar !== undefined) {
 		return (
 			<span
 				aria-hidden
-				className="flex size-4 shrink-0 items-center justify-center rounded-full bg-secondary text-[9px] font-medium leading-none text-secondary-foreground"
+				className="flex size-4 shrink-0 items-center justify-center rounded-full bg-[var(--hu-sunken)] text-[length:var(--hu-text-xs)] font-medium leading-none text-[var(--hu-fg-2)]"
 				style={style}
 			>
 				{node.avatar}
@@ -403,4 +494,18 @@ function TreeIcon({ node, folder, open }: { node: TreeNode; folder: boolean; ope
 	}
 	const Fallback = folder ? (open ? FolderOpen : Folder) : File;
 	return <Fallback aria-hidden className={cn('size-4 shrink-0', tone)} style={style} />;
+}
+
+function highlight(label: string, search: string): ReactNode {
+	const needle = search.trim();
+	if (!needle) return label;
+	const at = label.toLocaleLowerCase().indexOf(needle.toLocaleLowerCase());
+	if (at < 0) return label;
+	return (
+		<>
+			{label.slice(0, at)}
+			<mark className="bg-[var(--hu-highlight)] text-[var(--hu-fg)]">{label.slice(at, at + needle.length)}</mark>
+			{label.slice(at + needle.length)}
+		</>
+	);
 }

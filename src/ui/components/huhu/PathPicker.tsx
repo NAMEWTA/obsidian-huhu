@@ -90,13 +90,30 @@ export function PathPicker({
 			const hit = fuzzyPathMatch(query, item.path);
 			if (hit) scored.push({ key: `${item.kind}:${item.path}`, path: item.path, kind: item.kind, hit });
 		}
-		scored.sort((a, b) => (b.hit?.score ?? 0) - (a.hit?.score ?? 0) || a.path.length - b.path.length || a.path.localeCompare(b.path));
+		scored.sort(
+			(a, b) =>
+				(b.hit?.score ?? 0) - (a.hit?.score ?? 0) ||
+				a.path.length - b.path.length ||
+				a.path.localeCompare(b.path),
+		);
 		const result = scored.slice(0, MAX_ROWS);
-		if (canCreate && normalized.ok && normalized.path && !items.some((item) => item.path === normalized.path && (!kind || item.kind === kind)))
-			result.push({ key: `create:${normalized.path}`, path: normalized.path, kind: kind === 'file' ? 'file' : 'folder', create: true, hit: null });
+		if (
+			canCreate &&
+			normalized.ok &&
+			normalized.path &&
+			!items.some((item) => item.path === normalized.path && (!kind || item.kind === kind))
+		)
+			result.push({
+				key: `create:${normalized.path}`,
+				path: normalized.path,
+				kind: kind === 'file' ? 'file' : 'folder',
+				create: true,
+				hit: null,
+			});
 		return result;
 	}, [items, kind, draft, normalized.ok, normalized.ok ? normalized.path : '', canCreate]); // eslint-disable-line react-hooks/exhaustive-deps -- `normalized` is derived from `draft`
 
+	const visible = open && !disabled && (rows.length > 0 || invalid);
 	const commit = (path: string) => {
 		setTyped(null);
 		setOpen(false);
@@ -114,7 +131,8 @@ export function PathPicker({
 		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 			event.preventDefault();
 			if (!open) return setOpen(true);
-			if (rows.length) setActive((current) => (current + (event.key === 'ArrowDown' ? 1 : -1) + rows.length) % rows.length);
+			if (rows.length)
+				setActive((current) => (current + (event.key === 'ArrowDown' ? 1 : -1) + rows.length) % rows.length);
 		} else if (event.key === 'Enter') {
 			event.preventDefault();
 			const row = open ? rows[active] : undefined;
@@ -127,7 +145,7 @@ export function PathPicker({
 	};
 
 	return (
-		<Popover open={open && !disabled && (rows.length > 0 || invalid)} onOpenChange={setOpen}>
+		<Popover open={visible} onOpenChange={setOpen}>
 			<PopoverAnchor asChild>
 				<div className={cn('min-w-0 max-w-full', className)}>
 					<Input
@@ -137,12 +155,13 @@ export function PathPicker({
 						spellCheck={false}
 						autoComplete="off"
 						role="combobox"
-						aria-expanded={open}
-						aria-controls={listId}
+						aria-expanded={visible}
+						aria-controls={visible ? listId : undefined}
 						aria-autocomplete="list"
-						aria-activedescendant={open && rows[active] ? `${listId}-${active}` : undefined}
+						aria-activedescendant={visible && rows[active] ? `${listId}-${active}` : undefined}
 						aria-label={label ?? t('ui.choosePath')}
 						aria-invalid={invalid || undefined}
+						aria-describedby={invalid ? `${listId}-error` : undefined}
 						placeholder={placeholder ?? t('ui.pathPlaceholder')}
 						onChange={(event) => {
 							setTyped(event.currentTarget.value);
@@ -157,7 +176,7 @@ export function PathPicker({
 						onKeyDown={onKeyDown}
 					/>
 					{invalid && (
-						<p role="alert" className="mt-1 text-xs text-destructive">
+						<p id={`${listId}-error`} role="alert" className="mt-1 text-xs text-destructive">
 							{t('ui.pathInvalid')}
 						</p>
 					)}
@@ -170,10 +189,15 @@ export function PathPicker({
 				onOpenAutoFocus={(event) => event.preventDefault()}
 				onCloseAutoFocus={(event) => event.preventDefault()}
 				onInteractOutside={(event) => {
-					if (event.target instanceof Node && input.current?.contains(event.target)) event.preventDefault();
+					if (event.target === input.current) event.preventDefault();
 				}}
 			>
-				<div id={listId} role="listbox" aria-label={label ?? t('ui.choosePath')} className="max-h-64 overflow-y-auto scrollbar-sleek">
+				<div
+					id={listId}
+					role="listbox"
+					aria-label={label ?? t('ui.choosePath')}
+					className="max-h-64 overflow-y-auto scrollbar-sleek"
+				>
 					{rows.map((row, index) => (
 						<div
 							key={row.key}
@@ -182,18 +206,36 @@ export function PathPicker({
 							aria-selected={index === active}
 							data-active={index === active || undefined}
 							className={cn(
-								'flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-muted-foreground',
+								'flex cursor-pointer select-none items-center gap-2 min-h-[var(--hu-ctl-h)] rounded-sm px-2 py-1 text-sm text-muted-foreground',
 								index === active && 'bg-accent text-accent-foreground',
 							)}
 							// A mousedown would blur the field and close the list before the click lands.
 							onMouseDown={(event) => event.preventDefault()}
-							title={row.create ? t(row.kind === 'file' ? 'ui.pathCreateFileHint' : 'ui.pathCreateHint') : row.path}
+							title={
+								row.create
+									? t(row.kind === 'file' ? 'ui.pathCreateFileHint' : 'ui.pathCreateHint')
+									: row.path
+							}
 							onMouseEnter={() => setActive(index)}
 							onClick={() => commit(row.path)}
 						>
-							{row.create ? row.kind === 'file' ? <FilePlus className="size-4 shrink-0" /> : <FolderPlus className="size-4 shrink-0" /> : row.kind === 'folder' ? <Folder className="size-4 shrink-0" /> : <File className="size-4 shrink-0" />}
+							{row.create ? (
+								row.kind === 'file' ? (
+									<FilePlus className="size-4 shrink-0" />
+								) : (
+									<FolderPlus className="size-4 shrink-0" />
+								)
+							) : row.kind === 'folder' ? (
+								<Folder className="size-4 shrink-0" />
+							) : (
+								<File className="size-4 shrink-0" />
+							)}
 							<span className="min-w-0 flex-1 truncate">
-								{row.create ? t('ui.pathCreate', { path: row.path }) : <Highlighted text={row.path} hit={row.hit} />}
+								{row.create ? (
+									t('ui.pathCreate', { path: row.path })
+								) : (
+									<Highlighted text={row.path} hit={row.hit} />
+								)}
 							</span>
 						</div>
 					))}

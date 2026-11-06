@@ -41,7 +41,7 @@ export function PathList({
 						<div key={item.id} className="flex items-center gap-2 py-2">
 							<Button
 								variant="ghost"
-								size="icon"
+								size="icon-md"
 								aria-label={t('iconic.iconPicker.changeIcon')}
 								onClick={() =>
 									IconPicker.openSingle(plugin, item, (icon, color) => {

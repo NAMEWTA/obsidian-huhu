@@ -298,6 +298,7 @@ describe('immutable Git note history', { timeout: 30_000 }, () => {
 		});
 		try {
 			await sync.connect();
+			await assert.rejects(sync.openWorktreeInSystem('note.md', 'wrong-repository'), /outside-index/);
 			const gate = sync.restoreGate();
 			const baseline = await gate.capture();
 			const head = git(f.cwd, 'rev-parse', 'HEAD');
@@ -368,3 +369,122 @@ describe('immutable Git note history', { timeout: 30_000 }, () => {
 		if (endpoint.status === 'binary') assert.equal(endpoint.reason, 'symlink');
 	});
 });
+
+test('multi-endpoint statistics and rename queries preserve HEAD, branch and exact index bytes', async () => {
+	const f = fixture('multi-endpoint');
+	write(f.cwd, 'old.md', 'one\ntwo\nthree\nfour\n');
+	write(f.cwd, 'other.md', 'unchanged\n');
+	const first = f.commit('initial');
+	git(f.cwd, 'mv', 'old.md', 'new.md');
+	write(f.cwd, 'new.md', 'one\nchanged\nthree\nfour\n');
+	git(f.cwd, 'add', '--', 'new.md');
+	write(f.cwd, 'other.md', 'worktree\n');
+	const indexPath = path.join(f.cwd, '.git', 'index');
+	const index = readFileSync(indexPath);
+	const before = git(f.cwd, 'rev-parse', 'HEAD');
+	const branch = git(f.cwd, 'symbolic-ref', 'HEAD');
+	const staged = await f.service.compareFiles({ kind: 'commit', commit: first }, { kind: 'index' });
+	assert.match(staged[0]!.status, /^R\d+$/);
+	assert.deepEqual(
+		staged.map((file) => ({ ...file, status: 'R' })),
+		[{ path: 'new.md', from: 'old.md', status: 'R', additions: 1, deletions: 1 }],
+	);
+	assert.deepEqual(await f.service.compareFiles({ kind: 'index' }, { kind: 'worktree' }), [
+		{ path: 'other.md', status: 'M', additions: 1, deletions: 1 },
+	]);
+	assert.deepEqual(await f.service.compareFiles({ kind: 'worktree' }, { kind: 'index' }), [
+		{ path: 'other.md', status: 'M', additions: 1, deletions: 1 },
+	]);
+	write(f.cwd, 'untracked.md', 'new\nlast');
+	assert.deepEqual(await f.service.compareFiles({ kind: 'index' }, { kind: 'worktree' }), [
+		{ path: 'other.md', status: 'M', additions: 1, deletions: 1 },
+		{ path: 'untracked.md', status: 'A', additions: 2, deletions: 0 },
+	]);
+	assert.deepEqual(await f.service.compareFiles({ kind: 'worktree' }, { kind: 'index' }), [
+		{ path: 'other.md', status: 'M', additions: 1, deletions: 1 },
+		{ path: 'untracked.md', status: 'D', additions: 0, deletions: 2 },
+	]);
+	assert.deepEqual(
+		await f.service.compareFiles({ kind: 'commit', commit: first }, { kind: 'commit', commit: first }),
+		[],
+	);
+	assert.equal((await f.service.compareFiles({ kind: 'empty' }, { kind: 'commit', commit: first })).length, 2);
+	assert.equal(git(f.cwd, 'rev-parse', 'HEAD'), before);
+	assert.equal(git(f.cwd, 'symbolic-ref', 'HEAD'), branch);
+	assert.deepEqual(readFileSync(indexPath), index);
+}, 30_000);
+
+test('conflict restore admission stays file-bound; ordinary restores and stale source tokens refuse', async () => {
+	const f = fixture('conflict-admission');
+	write(f.cwd, 'note.md', 'base\n');
+	f.commit('base');
+	git(f.cwd, 'checkout', '-qb', 'incoming');
+	write(f.cwd, 'note.md', 'incoming\n');
+	f.commit('incoming');
+	git(f.cwd, 'checkout', 'main');
+	write(f.cwd, 'note.md', 'current\n');
+	f.commit('current');
+	try {
+		git(f.cwd, 'merge', 'incoming');
+	} catch {
+		/* Expected real stopped merge. */
+	}
+	const sync = new SyncService({
+		host: desktopGitHost(f.cwd, 'conflict-device'),
+		settings: { get: () => syncSettings.defaults() } as unknown as SettingsHandle<SyncSettings>,
+		dialogs: { confirmUpstream: async () => true },
+		notify() {},
+		describe: () => '',
+	});
+	try {
+		await sync.connect();
+		const gate = sync.restoreGate(),
+			admission = await sync.conflictAdmission('note.md');
+		const head = git(f.cwd, 'rev-parse', 'HEAD'),
+			index = readFileSync(path.join(f.cwd, '.git', 'index'));
+		let writes = 0;
+		await assert.rejects(
+			gate.run('ordinary', async () => {
+				writes++;
+			}),
+			/conflict/,
+		);
+		assert.equal(writes, 0);
+		await assert.rejects(sync.conflictAdmission('other.md'), /conflict/);
+		await assert.rejects(
+			gate.run(
+				'spoof',
+				async () => {
+					writes++;
+				},
+				{ ...admission, targetPath: 'other.md' },
+			),
+			/source changed/,
+		);
+		await gate.run(
+			'verified-conflict',
+			async () => {
+				writes++;
+			},
+			admission,
+		);
+		assert.equal(writes, 1);
+		write(f.cwd, 'note.md', 'new editor change\n');
+		await assert.rejects(
+			gate.run(
+				'stale',
+				async () => {
+					writes++;
+				},
+				admission,
+			),
+			/source changed/,
+		);
+		assert.equal(writes, 1);
+		assert.equal(git(f.cwd, 'rev-parse', 'HEAD'), head);
+		assert.deepEqual(readFileSync(path.join(f.cwd, '.git', 'index')), index);
+		assert.ok(git(f.cwd, 'ls-files', '-u').includes('note.md'));
+	} finally {
+		await sync.dispose();
+	}
+}, 30_000);

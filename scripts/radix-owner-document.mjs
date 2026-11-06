@@ -222,4 +222,7 @@ export const modalTransforms = {
 	'react-style-singleton/dist/es2015/hook.js': adaptStyleHook,
 	'react-style-singleton/dist/es2015/singleton.js': adaptStyleSingleton,
 };
-export const radixOwnerDocument = guardedAdapter('radix-owner-document', modalTransforms);
+export function createRadixOwnerDocument(graphCounts) {
+	return guardedAdapter('radix-owner-document', modalTransforms, graphCounts);
+}
+export const radixOwnerDocument = createRadixOwnerDocument();

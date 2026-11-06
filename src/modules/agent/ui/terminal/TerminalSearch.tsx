@@ -27,7 +27,7 @@ export function TerminalSearch({
 	};
 	return (
 		<div
-			className="absolute top-2 right-2 z-[var(--layer-popover)] flex max-w-[calc(100%-1rem)] flex-wrap items-center gap-1 rounded-md border bg-popover p-1 shadow-sm"
+			className="absolute top-2 right-2 z-[var(--hu-z-panel)] flex max-w-[calc(100%-1rem)] flex-wrap items-center gap-1 rounded-md border bg-popover p-1 shadow-sm"
 			onKeyDown={(event) => {
 				event.stopPropagation();
 				if (event.nativeEvent.isComposing) return;
@@ -63,7 +63,7 @@ export function TerminalSearch({
 					<TooltipTrigger asChild>
 						<Button
 							variant={options[key] ? 'secondary' : 'ghost'}
-							size="icon-xs"
+							size="icon-sm"
 							aria-label={t(label)}
 							aria-pressed={options[key]}
 							onClick={() => {
@@ -86,18 +86,18 @@ export function TerminalSearch({
 			).map(({ direction, label, icon: Icon }) => (
 				<Tooltip key={direction}>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="icon-xs" aria-label={t(label)} onClick={() => search(direction)}>
+						<Button variant="ghost" size="icon-sm" aria-label={t(label)} onClick={() => search(direction)}>
 							<Icon className="size-4" />
 						</Button>
 					</TooltipTrigger>
 					<TooltipContent>{t(label)}</TooltipContent>
 				</Tooltip>
 			))}
-			<Button variant="ghost" size="icon-xs" aria-label={t('agent.close')} onClick={close}>
+			<Button variant="ghost" size="icon-sm" aria-label={t('agent.close')} onClick={close}>
 				<X className="size-3" />
 			</Button>
 			{missing && (
-				<span role="status" className="w-full px-1 text-xs text-destructive">
+				<span role="status" className="w-full px-1 text-xs text-[var(--hu-danger)]">
 					{t('agent.searchNoMatch')}
 				</span>
 			)}

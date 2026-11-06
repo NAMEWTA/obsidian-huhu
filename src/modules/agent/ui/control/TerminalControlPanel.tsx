@@ -139,10 +139,9 @@ export function TerminalControlPanel({
 		params: ControlRequest['params'] = {},
 		after?: Readonly<ActivityWaitBaseline>,
 	) {
-		if (!selected || !valid || !timeoutValid) return;
+		if (!selected || !valid || !timeoutValid || active.current) return;
 		const target = Object.freeze({ ...selected.target });
 		const sequence = ++epoch.current.value;
-		active.current?.abort();
 		const abort = new AbortController();
 		active.current = abort;
 		setError('');
@@ -266,11 +265,11 @@ export function TerminalControlPanel({
 	const nextCursor = read?.nextCursor;
 	return (
 		<section
-			className="flex h-full min-h-0 min-w-0 flex-col bg-card text-foreground"
+			className="flex h-full min-h-0 min-w-0 flex-col bg-[var(--hu-raised)] text-[var(--hu-fg)]"
 			aria-label={t('agent.coordination.title')}
 			data-terminal-control=""
 		>
-			<header className="flex min-h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-3">
+			<header className="flex min-h-11 shrink-0 items-center justify-between gap-2 border-b border-[var(--hu-line)] px-3">
 				<h2 className="min-w-0 truncate text-sm font-medium">{t('agent.coordination.title')}</h2>
 				<Button
 					variant="ghost"
@@ -283,8 +282,8 @@ export function TerminalControlPanel({
 				</Button>
 			</header>
 			<div className="scrollbar-sleek flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 text-xs">
-				<p className="text-muted-foreground">{t('agent.coordination.sameVault')}</p>
-				<p className="text-muted-foreground">{t('agent.coordination.supportLimit')}</p>
+				<p className="text-[var(--hu-fg-2)]">{t('agent.coordination.sameVault')}</p>
+				<p className="text-[var(--hu-fg-2)]">{t('agent.coordination.supportLimit')}</p>
 				<label htmlFor={id + '-scope'}>{t('agent.coordination.scope')}</label>
 				<Select
 					value={allSpaces ? 'all' : 'current'}
@@ -362,13 +361,13 @@ export function TerminalControlPanel({
 				</Select>
 				{!spaces.loading && !rows.length && <p>{t('agent.coordination.empty')}</p>}
 				{selected && (
-					<div className="space-y-1 rounded-md border border-border bg-background p-2">
+					<div className="space-y-1 rounded-md border border-[var(--hu-line)] bg-[var(--hu-canvas)] p-2">
 						<p className="break-words font-medium">{selected.title}</p>
 						<p className="break-words">
 							{spaces.records.spaces[selected.target.spaceId]?.name ?? selected.spaceName} ·{' '}
 							{selected.provider ?? t('agent.shell')}
 						</p>
-						<p className="break-all font-mono text-muted-foreground">
+						<p className="break-all font-mono text-[var(--hu-fg-2)]">
 							{selected.target.sessionId}
 							<br />
 							{selected.target.runtimeId}
@@ -410,7 +409,7 @@ export function TerminalControlPanel({
 						</SelectItem>
 					</SelectContent>
 				</Select>
-				<p className="text-muted-foreground">
+				<p className="text-[var(--hu-fg-2)]">
 					{mode === 'agent.prompt'
 						? editor?.status === 'ready'
 							? t('agent.coordination.finalGate')
@@ -446,7 +445,7 @@ export function TerminalControlPanel({
 						))}
 					</SelectContent>
 				</Select>
-				<p className="text-muted-foreground">{t('agent.coordination.doneMeaning')}</p>
+				<p className="text-[var(--hu-fg-2)]">{t('agent.coordination.doneMeaning')}</p>
 				<label htmlFor={id + '-timeout'}>{t('agent.coordination.timeout')}</label>
 				<Input
 					id={id + '-timeout'}
@@ -479,13 +478,13 @@ export function TerminalControlPanel({
 					</Button>
 				</div>
 				{busy === 'waiting' && (
-					<Button variant="outline" size="sm" className={hit} onClick={() => active.current?.abort()}>
+					<Button variant="secondary" size="sm" className={hit} onClick={() => active.current?.abort()}>
 						{t('agent.coordination.cancelWait')}
 					</Button>
 				)}
 				{continuation && canContinue && (
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						className={hit}
 						disabled={!valid || !!busy || !timeoutValid}
@@ -501,13 +500,13 @@ export function TerminalControlPanel({
 					{result?.observation?.status === 'matched' && <p>{t('agent.coordination.matched')}</p>}
 				</div>
 				{error && (
-					<p role="alert" className="break-words text-destructive">
+					<p role="alert" className="break-words text-[var(--hu-danger)]">
 						{error}
 					</p>
 				)}
 				<div className="flex flex-wrap gap-2">
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						className={hit}
 						disabled={!valid || !!busy}
@@ -526,7 +525,7 @@ export function TerminalControlPanel({
 						{t('agent.coordination.locate')}
 					</Button>
 					<Button
-						variant="outline"
+						variant="secondary"
 						size="sm"
 						className={hit}
 						disabled={!valid || !!busy}
@@ -536,7 +535,7 @@ export function TerminalControlPanel({
 					</Button>
 				</div>
 				{read && (
-					<div className="space-y-2 border-t border-border pt-2">
+					<div className="space-y-2 border-t border-[var(--hu-line)] pt-2">
 						<p>{t('agent.coordination.screenOnly')}</p>
 						<p className="break-all font-mono">{selected?.target.runtimeId}</p>
 						<p>
@@ -549,12 +548,12 @@ export function TerminalControlPanel({
 								? t('agent.coordination.truncated')
 								: t('agent.coordination.completeRange')}
 						</p>
-						<pre className="scrollbar-sleek max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-md bg-background p-2 font-mono text-xs">
+						<pre className="scrollbar-sleek max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-md bg-[var(--hu-canvas)] p-2 font-mono text-xs">
 							{typeof read.text === 'string' ? read.text : ''}
 						</pre>
 						{typeof nextCursor === 'string' && (
 							<Button
-								variant="outline"
+								variant="secondary"
 								size="sm"
 								className={hit}
 								disabled={!valid || !!busy}

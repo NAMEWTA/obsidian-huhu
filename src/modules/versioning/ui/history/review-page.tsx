@@ -1,3 +1,4 @@
+import '../i18n';
 import type { PageCreate } from '../../../../app/contracts/workbench-host';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { ReactSurface } from '../../../../ui/react/surface';
@@ -5,11 +6,11 @@ import { DesignScope } from '../../../../ui/react/design-scope';
 import { t } from '../../../../shared/i18n';
 import type { NoteHistoryHost } from './NoteHistoryPanel';
 import { NoteReviewPage } from './NoteReviewPage';
-import type { DiffLayout } from '../diff-model';
-import { createDiffWorker } from '../diff-worker-factory';
+import type { DiffLayout } from '../diff/preferences';
+import { createDiffWorker } from '../diff/workers';
 
 const layoutValue = (value: unknown): DiffLayout | undefined =>
-	value === 'side-by-side' || value === 'stacked' || value === 'unified' ? value : undefined;
+	value === 'side-by-side' || value === 'stacked' ? value : undefined;
 
 class ReviewSurface extends ReactSurface {
 	constructor(
@@ -32,18 +33,18 @@ class ReviewSurface extends ReactSurface {
 	protected renderContent() {
 		return (
 			<DesignScope className="flex h-full min-h-0 flex-col">
-			<NoteReviewPage
-				key={this.id}
-				id={this.id}
-				host={this.host}
-				context={this.context}
-				layout={this.layout}
-				onLayoutChange={(layout) => {
-					this.layout = layout;
-					this.context.changed?.();
-				}}
-				createWorker={() => createDiffWorker(this.contentEl.win)}
-			/>
+				<NoteReviewPage
+					key={this.id}
+					id={this.id}
+					host={this.host}
+					context={this.context}
+					layout={this.layout}
+					onLayoutChange={(layout) => {
+						this.layout = layout;
+						this.context.changed?.();
+					}}
+					createWorker={() => createDiffWorker(this.contentEl.win)}
+				/>
 			</DesignScope>
 		);
 	}

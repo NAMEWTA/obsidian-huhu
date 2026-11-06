@@ -13,6 +13,9 @@ export function adaptSonnerStyles(source) {
 	return contents;
 }
 
-export const sonnerStyles = guardedAdapter('sonner-external-styles', {
-	'sonner/dist/index.mjs': adaptSonnerStyles,
-});
+export function createSonnerStyles(graphCounts) {
+	return guardedAdapter('sonner-external-styles', {
+		'sonner/dist/index.mjs': adaptSonnerStyles,
+	}, graphCounts);
+}
+export const sonnerStyles = createSonnerStyles();

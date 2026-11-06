@@ -147,7 +147,7 @@ export function CalendarPanel() {
 	};
 	return (
 		<section
-			className="flex max-h-[75%] min-h-16 flex-col gap-2 overflow-y-auto border-t border-sidebar-border px-2 pb-2 pt-1 text-sidebar-foreground"
+			className="flex max-h-[75%] min-h-16 flex-col gap-2 overflow-y-auto border-t border-[var(--hu-line)] px-2 pb-2 pt-1 text-[var(--hu-fg)]"
 			data-navigator-calendar
 		>
 			<CalendarMonth

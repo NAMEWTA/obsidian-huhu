@@ -8,7 +8,7 @@ export function IconButton({ label, ...props }: ComponentProps<typeof Button> & 
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button variant="ghost" size="icon-xs" aria-label={label} {...props} />
+				<Button variant="ghost" size="icon-sm" aria-label={label} {...props} />
 			</TooltipTrigger>
 			<TooltipContent>{label}</TooltipContent>
 		</Tooltip>
@@ -37,7 +37,9 @@ export function Choice({
 				size="sm"
 				aria-label={label}
 				className={
-					compact ? `data-[size=sm]:h-[30px] ${className ?? ''}` : (className ?? 'min-w-0 text-sm data-[size=sm]:h-9')
+					compact
+						? `data-[size=sm]:h-[30px] ${className ?? ''}`
+						: (className ?? 'min-w-0 text-sm data-[size=sm]:h-[var(--hu-ctl-h)]')
 				}
 			>
 				<SelectValue />

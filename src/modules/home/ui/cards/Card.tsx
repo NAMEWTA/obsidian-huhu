@@ -1,3 +1,4 @@
+import { DateField, parseDate } from '../../../../ui/components/huhu/date';
 import { observeBoardAction } from '../board/actions';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts
 import { useState } from 'react';
@@ -63,7 +64,7 @@ export function Card({
 			className={
 				immersive
 					? 'dashboard-card flex h-full min-h-0 flex-col'
-					: 'dashboard-card group/card relative flex min-w-0 flex-col overflow-clip rounded-lg border border-border bg-background p-3 shadow-xs transition-shadow hover:shadow-sm'
+					: 'dashboard-card group/card relative flex min-w-0 flex-col overflow-clip rounded-lg border border-border bg-background p-3 shadow-[var(--hu-shadow-card)] transition-shadow hover:shadow-sm'
 			}
 			style={
 				immersive
@@ -235,7 +236,7 @@ export function Card({
 										<Button
 											key={color}
 											variant="ghost"
-											size="icon-xs"
+											size="icon-sm"
 											aria-label={t(`home.dashboard.color.${color}`)}
 											style={{ backgroundColor: `var(--board-memo-${color})` }}
 											onClick={() =>
@@ -259,11 +260,10 @@ export function Card({
 							</div>
 						</Label>
 					)}
-					<Input
-						type="date"
-						aria-label={t('home.dashboard.due')}
-						value={draft.dueDate}
-						onChange={(e) => setDraft({ ...draft, dueDate: e.target.value })}
+					<DateField
+						label={t('home.dashboard.due')}
+						value={parseDate(draft.dueDate)}
+						onChange={(day) => setDraft({ ...draft, dueDate: day ?? '' })}
 					/>
 				</DashboardDialog>
 			)}
@@ -271,7 +271,7 @@ export function Card({
 				<DashboardDialog title={t('common.delete')} onClose={() => setRemove(false)}>
 					<p>{card.title}</p>
 					<Button
-						variant="destructive"
+						variant="danger"
 						onClick={() => {
 							void observeBoardAction(store.sync.deleteCard(card.id));
 						}}

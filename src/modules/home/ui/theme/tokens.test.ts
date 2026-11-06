@@ -20,13 +20,18 @@ test('the board palette derives only from HUHU tokens', () => {
 	expect(tokens).not.toMatch(/data-theme/);
 	// no fixed colors at all: masks and image text come from the global --scrim / --on-image tokens
 	expect(tokens).not.toMatch(/\b(white|black)\b|rgba?\(|oklch\(|hsl\(/);
-	expect(tokens).toContain('--board-accent: var(--primary)');
-	expect(tokens).toContain('--board-bg-card: var(--card)');
+	expect(tokens).toContain('--board-accent: var(--hu-accent)');
+	expect(tokens).toContain('--board-bg-card: var(--hu-surface)');
 });
 
 test('every board token that styles read is defined by tokens.css or set inline by its component', () => {
 	const defined = new Set([...tokens.matchAll(/(--board-[a-z0-9-]+):/g)].map((m) => m[1]));
-	const inline = new Set(['--board-pipe-accent', '--board-widget-span', '--board-sidebar-w', '--board-widget-unit-h']);
+	const inline = new Set([
+		'--board-pipe-accent',
+		'--board-widget-span',
+		'--board-sidebar-w',
+		'--board-widget-unit-h',
+	]);
 	const missing = new Set<string>();
 	for (const file of files(root)) {
 		if (file.endsWith('tokens.css')) continue;
@@ -42,25 +47,36 @@ test('every board token that styles read is defined by tokens.css or set inline 
 test('pipeline and paper surfaces are styled by role: ink never equals its surface', () => {
 	const read = (name: string) => new RegExp(`${name}: ([^;]+);`, 'g');
 	const last = (name: string) => [...tokens.matchAll(read(name))].at(-1)?.[1];
-	// roles that are plain global tokens are consumed directly (var(--card) / var(--foreground)) and have no board token left to compare
-	for (const [surface, ink] of [['82', '83'], ['86', '87'], ['91', '93'], ['92', '93'], ['75', '76'], ['74', '76'], ['70', '71']]) {
+	// roles that are plain global tokens are consumed directly (var(--hu-surface) / var(--hu-fg)) and have no board token left to compare
+	for (const [surface, ink] of [
+		['82', '83'],
+		['86', '87'],
+		['91', '93'],
+		['92', '93'],
+		['75', '76'],
+		['74', '76'],
+		['70', '71'],
+	]) {
 		const a = last(`--board-p1-color-${surface}`);
 		const b = last(`--board-p1-color-${ink}`);
 		if (a && b) expect(a, `${surface} vs ${ink}`).not.toBe(b);
 	}
 	for (const surface of ['82', '86', '91', '92', '70', '74', '75']) {
 		const value = last(`--board-p1-color-${surface}`);
-		if (value) expect(value).toMatch(/var\(--(card|muted)\)|var\(--card\)\)/);
+		if (value) expect(value).toMatch(/var\(--hu-(surface|sunken)\)/);
 	}
 });
 
 test('the style maps and widget frames hold no fixed colors either', () => {
-	const mapped = ['p1-classes.ts', 'p2-classes.ts', 'widget-classes.ts', 'immersive-classes.ts', 'dashboard.css'].map((name) => join(root, 'ui/theme', name));
+	const mapped = ['p1-classes.ts', 'p2-classes.ts', 'widget-classes.ts', 'immersive-classes.ts', 'dashboard.css'].map(
+		(name) => join(root, 'ui/theme', name),
+	);
 	const frames = [...files(join(root, 'ui/canvas')), join(root, 'ui/widgets/WidgetBackground.tsx')];
 	const found: string[] = [];
 	for (const file of [...mapped, ...frames]) {
 		const text = readFileSync(file, 'utf8');
-		for (const match of text.matchAll(/rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b(?:bg|text|border)-(?:white|black)\b/g)) found.push(`${file.slice(root.length)}: ${match[0]}`);
+		for (const match of text.matchAll(/rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b(?:bg|text|border)-(?:white|black)\b/g))
+			found.push(`${file.slice(root.length)}: ${match[0]}`);
 	}
 	expect(found).toEqual([]);
 });
@@ -68,7 +84,15 @@ test('the style maps and widget frames hold no fixed colors either', () => {
 test('the board keeps no pure aliases of global tokens: only derived, overridden or role-keyed tokens', () => {
 	const aliases = [...tokens.matchAll(/^\s*(--board-[a-z0-9-]+):\s*var\(--[a-z0-9-]+\);/gm)].map((m) => m[1]!);
 	const allowed = (name: string) =>
-		/^--board-(memo|skill-key|project-chip)-/.test(name) || ['--board-bg-card', '--board-accent', '--board-radius-md'].includes(name);
+		/^--board-(memo|skill-key|project-chip)-/.test(name) ||
+		[
+			'--board-bg-card',
+			'--board-accent',
+			'--board-radius-md',
+			'--board-radius-sm',
+			'--board-radius-lg',
+			'--board-shadow-card',
+		].includes(name);
 	expect(aliases.filter((name) => !allowed(name))).toEqual([]);
 	expect(readFileSync(new URL('./tokens.css', import.meta.url), 'utf8')).not.toContain(`--${'db'}-`);
 });

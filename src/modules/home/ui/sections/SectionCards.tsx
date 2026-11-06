@@ -35,7 +35,7 @@ export function SectionCards({
 				description={t('home.project.chooseFolderHint')}
 				action={
 					onAdd && (
-						<Button variant="outline" size="sm" onClick={onAdd}>
+						<Button variant="secondary" size="sm" onClick={onAdd}>
 							<FolderOpen />
 							{t('home.project.new')}
 						</Button>

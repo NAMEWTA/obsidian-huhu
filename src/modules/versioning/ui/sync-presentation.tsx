@@ -1,7 +1,8 @@
 // Adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.
 // Original: src/renderer/src/components/right-sidebar/source-control/commit/commit-message-composer.tsx; sync/git-history-row.tsx
 // HUHU retains its Git service/actions and uses a 32px minimum target instead of Orca’s 26px history row.
-import { moment, Notice, type App } from 'obsidian';
+import { Notice, type App } from 'obsidian';
+import { momentOf } from '../../../host/obsidian/datetime';
 import { ReactSurface } from '../../../ui/react/surface';
 import { useOwnerWindow } from '../../../ui/react/hooks';
 import { DesignScope } from '../../../ui/react/design-scope';
@@ -20,7 +21,10 @@ import type { VersioningQueries } from '../core/history';
 import { GitWorkbench, type WorkbenchMode } from './GitWorkbench';
 import { SyncToolbar } from './SyncToolbar';
 
+import type { RestoreService } from '../services/restore-service';
+
 export interface SyncPageHost {
+	restores?: () => RestoreService | undefined;
 	service: () => SyncService | undefined;
 	queries?: () => VersioningQueries | undefined;
 	createWorker?: (ownerWindow: Window) => Worker;
@@ -84,23 +88,23 @@ export class SyncPresentation extends ReactSurface {
 		return (
 			<DesignScope className="flex h-full min-h-0 flex-col">
 				{service ? (
-			<SyncPage
-				app={this.app}
-				service={service}
-				snapshot={service.snapshot}
-				openChanges={this.changesRequests}
-				requestedMode={this.mode}
-				onModeChange={(mode) => {
-					this.mode = mode;
-					this.context.changed?.();
-				}}
-				message={this.message}
-				setMessage={(value) => {
-					this.message = value;
-					this.rerender();
-				}}
-				host={this.host}
-			/>
+					<SyncPage
+						app={this.app}
+						service={service}
+						snapshot={service.snapshot}
+						openChanges={this.changesRequests}
+						requestedMode={this.mode}
+						onModeChange={(mode) => {
+							this.mode = mode;
+							this.context.changed?.();
+						}}
+						message={this.message}
+						setMessage={(value) => {
+							this.message = value;
+							this.rerender();
+						}}
+						host={this.host}
+					/>
 				) : (
 					<EmptyState icon={<GitBranch />} title={t('workbench.sync')} description={t('sync.starting')} />
 				)}
@@ -170,6 +174,7 @@ function ReadyPage({
 				{...{ app, service, snapshot, message, setMessage, requestedMode, onModeChange }}
 				requestId={openChanges}
 				queries={host.queries?.()}
+				restores={host.restores?.()}
 				createWorker={host.createWorker ? () => host.createWorker!(ownerWindow) : undefined}
 				report={host.report}
 			/>
@@ -213,11 +218,11 @@ function NoRepository({ app, service, snapshot, host }: PageProps) {
 				}
 			/>
 			<div className="flex flex-wrap items-center gap-2">
-				<Button variant="default" disabled={!!snapshot.running || !snapshot.place} onClick={() => void init()}>
+				<Button variant="primary" disabled={!!snapshot.running || !snapshot.place} onClick={() => void init()}>
 					<GitBranch />
 					{t('sync.init')}
 				</Button>
-				<Button onClick={() => host.openSettings()}>{t('sync.openSettings')}</Button>
+				<Button variant="secondary" onClick={() => host.openSettings()}>{t('sync.openSettings')}</Button>
 			</div>
 			<CloneRepository app={app} service={service} snapshot={snapshot} report={host.report} />
 		</div>
@@ -246,13 +251,13 @@ function Notices({ app, service, snapshot }: { app: App; service: SyncService; s
 		<section className="shrink-0 space-y-1 border-b border-border px-3 py-1.5 text-xs" aria-live="polite">
 			<div className={last && !last.ok && !busy ? 'text-destructive' : 'text-muted-foreground'}>
 				{busy ? t('sync.status.running', { action: t(`sync.action.${snapshot.running!}`) }) : lastRunText(last)}
-				{last && !busy && <span className="text-muted-foreground"> · {moment(last.at).fromNow()}</span>}
+				{last && !busy && <span className="text-muted-foreground"> · {momentOf(last.at).fromNow()}</span>}
 			</div>
 			{last && !last.ok && !busy && <RawOutput raw={failureRaw(last)} />}
 			{snapshot.device.paused && (
 				<div className={banner}>
 					{snapshot.device.paused === 'failures' ? t('sync.status.pausedFailures') : t('sync.paused')}
-					<Button size="xs" onClick={() => void service.setPaused(false)}>
+					<Button size="sm" onClick={() => void service.setPaused(false)}>
 						{t('sync.resume')}
 					</Button>
 				</div>
@@ -267,7 +272,7 @@ function Notices({ app, service, snapshot }: { app: App; service: SyncService; s
 			{!snapshot.remotes.length && (
 				<div className={banner}>
 					{t('sync.noRemote')}
-					<Button size="xs" onClick={() => void addRemote()}>
+					<Button size="sm" onClick={() => void addRemote()}>
 						{t('sync.addRemote')}
 					</Button>
 				</div>
@@ -275,7 +280,7 @@ function Notices({ app, service, snapshot }: { app: App; service: SyncService; s
 			{(!snapshot.identity.name || !snapshot.identity.email) && (
 				<div className={banner}>
 					{t('sync.noIdentity')}
-					<Button size="xs" onClick={() => void setIdentity()}>
+					<Button size="sm" onClick={() => void setIdentity()}>
 						{t('sync.setIdentity')}
 					</Button>
 				</div>

@@ -8,18 +8,41 @@ import { useT } from './hooks';
 
 type PromptOptions = { title: string; label?: string; placeholder?: string; value?: string; confirm?: string };
 
-function PromptBody({ options, submit, close }: { options: PromptOptions; submit: (value: string) => void; close: () => void }) {
+function PromptBody({
+	options,
+	submit,
+	close,
+}: {
+	options: PromptOptions;
+	submit: (value: string) => void;
+	close: () => void;
+}) {
 	const t = useT();
 	const id = useId();
 	const [value, setValue] = useState(options.value ?? '');
 	return (
-		<form className="space-y-4" onSubmit={(event) => { event.preventDefault(); submit(value); }}>
+		<form
+			className="space-y-4"
+			onSubmit={(event) => {
+				event.preventDefault();
+				submit(value);
+			}}
+		>
 			<div className="space-y-2">
 				{options.label && <Label htmlFor={id}>{options.label}</Label>}
-				<Input id={id} aria-label={options.label ?? options.title} placeholder={options.placeholder} value={value} autoFocus onChange={(event) => setValue(event.target.value)} />
+				<Input
+					id={id}
+					aria-label={options.label ?? options.title}
+					placeholder={options.placeholder}
+					value={value}
+					autoFocus
+					onChange={(event) => setValue(event.target.value)}
+				/>
 			</div>
 			<div className="flex justify-end gap-2">
-				<Button type="button" variant="outline" onClick={close}>{t('common.cancel')}</Button>
+				<Button type="button" variant="secondary" onClick={close}>
+					{t('common.cancel')}
+				</Button>
 				<Button type="submit">{options.confirm ?? t('common.confirm')}</Button>
 			</div>
 		</form>
@@ -32,7 +55,16 @@ export function promptText(app: App, options: PromptOptions): Promise<string | n
 		let result: string | null = null;
 		openReactDialog(dialogOwner(app), {
 			title: options.title,
-			content: (close) => <PromptBody options={options} close={close} submit={(value) => { result = value.trim() || null; close(); }} />,
+			content: (close) => (
+				<PromptBody
+					options={options}
+					close={close}
+					submit={(value) => {
+						result = value.trim() || null;
+						close();
+					}}
+				/>
+			),
 			onClose: () => resolve(result),
 		});
 	});

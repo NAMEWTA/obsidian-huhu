@@ -1,7 +1,8 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-group/TabGroupSplitNodeTree.tsx, TabGroupPanel.tsx
 import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors, pointerWithin, rectIntersection } from '@dnd-kit/core';
-import { Panel, PanelGroup, PanelResizeHandle, type ImperativePanelGroupHandle } from 'react-resizable-panels';
+import type { GroupImperativeHandle } from 'react-resizable-panels';
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '../../../../ui/components/resizable';
 import { useStore } from 'zustand';
 import { TerminalSquare } from 'lucide-react';
 import type { GroupLayoutNode } from '../../core/workspace/model';
@@ -36,16 +37,12 @@ function Tree({
 		state = useStore(workspace.store),
 		visible = useVisible(),
 		t = useT();
-	const panel = useRef<ImperativePanelGroupHandle>(null);
-	const resizing = useRef(false);
-	useLayoutEffect(() => {
-		resizing.current = false;
-	}, [narrow]);
+	const panel = useRef<GroupImperativeHandle>(null);
 	useLayoutEffect(() => {
 		if (node.kind !== 'split' || !panel.current) return;
 		const current = panel.current.getLayout();
-		if (node.sizes.some((size, index) => Math.abs(size - (current[index] ?? 0)) > 0.1))
-			panel.current.setLayout(node.sizes);
+		if (node.sizes.some((size, index) => Math.abs(size - (current[`panel-${index}`] ?? 0)) > 0.1))
+			panel.current.setLayout(Object.fromEntries(node.sizes.map((size, index) => [`panel-${index}`, size])));
 	}, [node, narrow]);
 	if (node.kind === 'group') {
 		const group = state.groups.find((g) => g.id === node.groupId);
@@ -54,7 +51,7 @@ function Tree({
 			<div
 				className={cn(
 					'flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden',
-					state.groups.length > 1 && state.activeGroupId === group.id && 'ring-1 ring-inset ring-ring/40',
+					state.groups.length > 1 && state.activeGroupId === group.id && 'ring-1 ring-inset ring-[var(--hu-accent)]/40',
 				)}
 				data-group-id={group.id}
 				onPointerDown={() => {
@@ -91,37 +88,19 @@ function Tree({
 		);
 	}
 	return (
-		<PanelGroup
-			ref={panel}
-			direction={!narrow && node.direction === 'row' ? 'horizontal' : 'vertical'}
-			onLayout={(sizes) => {
-				if (resizing.current && sizes.some((n, i) => Math.abs(n - (node.sizes[i] ?? 0)) > 0.1))
+		<ResizablePanelGroup
+			groupRef={panel}
+			orientation={!narrow && node.direction === 'row' ? 'horizontal' : 'vertical'}
+			onLayoutChanged={(layout, meta) => {
+				const sizes = node.children.map((_, index) => (meta.requestedLayout ?? layout)[`panel-${index}`] ?? 0);
+				if (meta.isUserInteraction && sizes.some((n, i) => Math.abs(n - (node.sizes[i] ?? 0)) > 0.1))
 					workspace.resize(path, sizes);
 			}}
 		>
 			{node.children.map((child, i) => (
 				<Fragment key={child.kind === 'group' ? child.groupId : `split-${i}`}>
 					{i > 0 && (
-						<PanelResizeHandle
-							className="huhu-agent-resize w-px bg-border data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full hover:bg-ring"
-							onDragging={(value) => {
-								resizing.current = value;
-							}}
-							onKeyDownCapture={(event) => {
-								if (
-									!event.nativeEvent.isComposing &&
-									['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(
-										event.key,
-									)
-								)
-									resizing.current = true;
-							}}
-							onKeyUp={() => {
-								resizing.current = false;
-							}}
-							onBlur={() => {
-								resizing.current = false;
-							}}
+						<ResizableHandle
 							onDoubleClick={() =>
 								workspace.resize(
 									path,
@@ -130,7 +109,7 @@ function Tree({
 							}
 						/>
 					)}
-					<Panel minSize={15} defaultSize={node.sizes[i]}>
+					<ResizablePanel id={`panel-${i}`} minSize="15%" defaultSize={`${node.sizes[i]}%`}>
 						<Tree
 							node={child}
 							path={[...path, i]}
@@ -138,10 +117,10 @@ function Tree({
 							retention={retention}
 							narrow={narrow}
 						/>
-					</Panel>
+					</ResizablePanel>
 				</Fragment>
 			))}
-		</PanelGroup>
+		</ResizablePanelGroup>
 	);
 }
 export function WorkspaceLayout() {

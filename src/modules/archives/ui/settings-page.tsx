@@ -1,5 +1,5 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { App } from 'obsidian';
 import { toast } from 'sonner';
 import { normalizeVaultFolder, type ContactsSettings } from '../../../shared/contacts-settings';
@@ -7,12 +7,13 @@ import type { SettingsHandle } from '../../../shared/settings/store';
 import type { WriteQueue } from '../../../shared/storage/write-queue';
 import { ContactsError } from '../core/files';
 import { ct } from './labels';
-import { openReactDialog, dialogOwner } from '../../../ui/react/dialog';
+import { dialogOwner } from '../../../ui/react/dialog';
 import { useT } from '../../../ui/react/hooks';
 import { SettingsRow } from '../../../ui/components/huhu/SettingsRow';
 import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
 import { Choice } from '../../../ui/components/huhu/Choice';
 import { VaultPathField } from '../../../ui/components/huhu/VaultPathField';
+import { useArchiveConfirm } from './generic/common';
 import { Button } from '../../../ui/components/button';
 
 function errorText(error: unknown): string {
@@ -20,33 +21,6 @@ function errorText(error: unknown): string {
 		? ct(error.code)
 		: ct('failed', { detail: error instanceof Error ? error.message : '' });
 }
-function confirm(app: App, message: string, accept = ct('delete')): Promise<boolean> {
-	return new Promise((resolve) => {
-		let accepted = false;
-		openReactDialog(dialogOwner(app), {
-			title: accept,
-			description: message,
-			content: (close) => (
-				<div className="flex justify-end gap-2">
-					<Button type="button" variant="outline" onClick={close}>
-						{ct('cancel')}
-					</Button>
-					<Button
-						type="button"
-						onClick={() => {
-							accepted = true;
-							close();
-						}}
-					>
-						{accept}
-					</Button>
-				</div>
-			),
-			onClose: () => resolve(accepted),
-		});
-	});
-}
-
 export function archivesSettingsPage(
 	app: App,
 	controller: { countFolder(root: string): Promise<number>; queue: WriteQueue; reload(): Promise<void> },
@@ -54,6 +28,17 @@ export function archivesSettingsPage(
 ) {
 	return function ArchivesSettingsPage() {
 		useT();
+		const [anchor, setAnchor] = useState<HTMLDivElement | null>(null),
+			[fallbackOwner] = useState(() => dialogOwner(app));
+		const confirm = useArchiveConfirm(anchor ?? fallbackOwner),
+			alive = useRef(true),
+			pending = useRef(false);
+		useEffect(() => {
+			alive.current = true;
+			return () => {
+				alive.current = false;
+			};
+		}, []);
 		const value = useSyncExternalStore(
 				(listener) => settings.subscribe(listener),
 				() => settings.get(),
@@ -61,6 +46,8 @@ export function archivesSettingsPage(
 			[candidate, setCandidate] = useState(value.rootFolder),
 			[busy, setBusy] = useState(false);
 		const preview = async () => {
+			if (pending.current) return;
+			pending.current = true;
 			setBusy(true);
 			try {
 				// Typed paths are always relative to the vault: no leading `/` or `./`, no `..`, no hidden folders.
@@ -70,8 +57,10 @@ export function archivesSettingsPage(
 					return;
 				}
 				const count = await controller.countFolder(root);
-				if (!(await confirm(app, ct('folderPreview', { folder: root, count }), ct('apply')))) return;
+				if (!alive.current) return;
+				if (!(await confirm(ct('folderPreview', { folder: root, count }), ct('apply')))) return;
 				await controller.queue.settled();
+				if (!alive.current) return;
 				const previous = settings.get().rootFolder;
 				try {
 					await settings.update(
@@ -83,68 +72,71 @@ export function archivesSettingsPage(
 				} catch (error) {
 					void settings
 						.update((draft) => {
-							draft.rootFolder = previous;
+							if (draft.rootFolder === root) draft.rootFolder = previous;
 						})
 						.catch(() => undefined);
 					throw error;
 				}
-				await controller.reload();
+				if (alive.current) await controller.reload();
 			} catch (error) {
-				toast.error(errorText(error));
+				if (alive.current) toast.error(errorText(error));
 			} finally {
-				setBusy(false);
+				pending.current = false;
+				if (alive.current) setBusy(false);
 			}
 		};
 		return (
-			<SettingsSection title={ct('storage')}>
-				<SettingsRow
-					label={ct('folder')}
-					description={ct('folderHint')}
-					className="flex-wrap [&>div:last-child]:w-full"
-					control={
-						<div className="flex flex-wrap gap-2">
-							<VaultPathField
-								app={app}
-								label={ct('folder')}
-								className="min-w-40 flex-1"
-								value={candidate}
-								// The folder is created when the new root is applied, after the preview is confirmed.
-								create={false}
-								onChange={setCandidate}
-							/>
-							<Button
-								disabled={busy}
-								onClick={() => {
-									void preview();
+			<div ref={setAnchor}>
+				<SettingsSection title={ct('storage')}>
+					<SettingsRow
+						label={ct('folder')}
+						description={ct('folderHint')}
+						className="flex-wrap [&>div:last-child]:w-full"
+						control={
+							<div className="flex flex-wrap gap-2">
+								<VaultPathField
+									app={app}
+									label={ct('folder')}
+									className="min-w-40 flex-1"
+									value={candidate}
+									// The folder is created when the new root is applied, after the preview is confirmed.
+									create={false}
+									onChange={setCandidate}
+								/>
+								<Button
+									disabled={busy}
+									onClick={() => {
+										void preview();
+									}}
+								>
+									{ct('preview')}
+								</Button>
+							</div>
+						}
+					/>
+					<SettingsRow
+						label={ct('columns')}
+						description={ct('columnsHint')}
+						control={
+							<Choice
+								label={ct('columns')}
+								value={String(value.maxColumns)}
+								options={[
+									['5', '5'],
+									['6', '6'],
+								]}
+								onChange={(v) => {
+									void settings
+										.update((draft) => {
+											draft.maxColumns = v === '5' ? 5 : 6;
+										})
+										.catch((error) => toast.error(errorText(error)));
 								}}
-							>
-								{ct('preview')}
-							</Button>
-						</div>
-					}
-				/>
-				<SettingsRow
-					label={ct('columns')}
-					description={ct('columnsHint')}
-					control={
-						<Choice
-							label={ct('columns')}
-							value={String(value.maxColumns)}
-							options={[
-								['5', '5'],
-								['6', '6'],
-							]}
-							onChange={(v) => {
-								void settings
-									.update((draft) => {
-										draft.maxColumns = v === '5' ? 5 : 6;
-									})
-									.catch((error) => toast.error(errorText(error)));
-							}}
-						/>
-					}
-				/>
-			</SettingsSection>
+							/>
+						}
+					/>
+				</SettingsSection>
+			</div>
 		);
 	};
 }

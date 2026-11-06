@@ -4,11 +4,11 @@
 
 ## 表面与布局
 
-工作台由图标轨、可选侧栏和页面组成，模块贡献内容；状态显示在 Obsidian 自己的状态栏。新增和编辑沿用现有 Dialog、Popover、DropdownMenu 与 SettingsRow；统计使用已有图表和分析组件。业务状态由服务拥有，组件只订阅并发出动作。
+工作台由图标轨、可选侧栏和页面组成，模块贡献内容；状态显示在 Obsidian 自己的状态栏。新增和编辑使用现有 Dialog、Popover、DropdownMenu、SettingsRow 与 DetailPane；日历日期使用 DateField、DateRangeField 和 LocalDateTimeField 日期族；统计使用已有图表和分析组件。业务状态由服务拥有，组件只订阅并发出动作。
 
 ## 令牌与隔离
 
-颜色、字重、圆角、间距、阴影与层级使用语义令牌。huhu-ui 作用域派生宿主颜色，选择主题后由全局主题桥提供一致变量；看板继承同一组令牌，不另设独立主题。字体本地内嵌并保留 OFL。
+颜色、字重、圆角、间距、阴影与层级使用 HU 语义令牌。默认 paper/ink 是独立配色，颜色来源可选择 huhu 或 obsidian，由主题桥同步；shadcn 别名与 `--nd-font-sans/mono` 只作 HU 派生适配。看板继承同一组令牌。字体本地内嵌并保留 OFL。
 
 Tailwind 产物展开层并限定到作用域；中和层跳过 Markdown、CodeMirror 和 huhu-native。弹层进入所属 Document 的 huhu-ui / huhu-portal-root 容器，不能使用全局 window 捕获另一个窗口。
 

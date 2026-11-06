@@ -36,7 +36,7 @@ export function HabitWidget({ store }: { store: BoardStore }) {
 				]
 			: [],
 	);
-	if (!service) return null;
+	if (!service) return <EmptyState size="sm" title={t('home.widget.unavailable')} />;
 	const habits = service.getHabits(),
 		done = service.getDoneOn(todayStr()).length,
 		yesterday = new Date();
@@ -78,7 +78,7 @@ export function HabitWidget({ store }: { store: BoardStore }) {
 						<ul className="m-0 flex min-h-0 flex-1 list-none flex-col gap-0.5 overflow-y-auto p-0">
 							{habits.map((habit) => (
 								<li key={habit.id} className="shrink-0">
-									<Label className="flex min-h-9 w-full cursor-pointer items-center gap-2 py-1 rounded-md px-2 text-sm font-normal hover:bg-accent/50">
+									<Label className="flex min-h-[var(--hu-row-h)] w-full cursor-pointer items-center gap-2 py-1 rounded-md px-2 text-sm font-normal hover:bg-accent/50">
 										<Checkbox
 											className="rounded-full"
 											checked={service.isDone(habit.id)}

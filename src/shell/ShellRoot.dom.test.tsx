@@ -6,7 +6,13 @@ import { TestProviders } from '../ui/react/test-providers';
 import { ShellRoot, type ShellProps } from './ShellRoot';
 import { t } from '../shared/i18n';
 const base: ShellProps = {
-	state: { target: { feature: 'contacts' }, panelOpen: true, panelWidth: 280, focus: false, lastTargets: {} },
+	state: {
+		schema: 'huhu-workbench-ui/1',
+		route: { feature: 'contacts' },
+		navigation: { open: true, width: 272, lastRoutes: {} },
+		mode: 'workbench',
+		pageViews: [],
+	},
 	rail: [
 		{ id: 'contacts', label: 'Contacts', icon: 'user', slot: 'top' },
 		{ id: 'settings', label: 'Settings', icon: 'settings', slot: 'bottom' },
@@ -20,7 +26,6 @@ const base: ShellProps = {
 	statuses: [],
 	busy: false,
 	ownerWindow: window,
-	phone: false,
 	onRail: () => 'toggled',
 	onOpen: vi.fn(),
 	onNavigate: vi.fn(),
@@ -183,11 +188,11 @@ test.each([800, 500])('rail navigates once at %i and preserves the layout overla
 			<ShellRoot
 				{...base}
 				state={state}
-				panelTitle={state.target.feature}
+				panelTitle={state.route.feature}
 				onRail={(feature) => {
 					selected(feature);
-					if (state.target.feature === feature) return 'toggled';
-					setState({ ...state, target: { feature } });
+					if (state.route.feature === feature) return 'toggled';
+					setState({ ...state, route: { feature } });
 					return 'navigated';
 				}}
 			/>
@@ -219,17 +224,41 @@ test('separator supports arrows, bounds, reset and pointer commit', async () => 
 	);
 	const separator = screen.getByRole('separator');
 	fireEvent.keyDown(separator, { key: 'ArrowRight' });
-	expect(changed).toHaveBeenLastCalledWith(288);
+	expect(changed).toHaveBeenLastCalledWith(280);
 	fireEvent.keyDown(separator, { key: 'End' });
-	expect(changed).toHaveBeenLastCalledWith(500);
+	expect(changed).toHaveBeenLastCalledWith(480);
 	fireEvent.keyDown(separator, { key: 'Home' });
 	expect(changed).toHaveBeenLastCalledWith(220);
 	fireEvent.doubleClick(separator);
-	expect(changed).toHaveBeenLastCalledWith(280);
+	expect(changed).toHaveBeenLastCalledWith(272);
 	fireEvent.pointerDown(separator, { button: 0, clientX: 332, pointerId: 1 });
 	fireEvent.pointerMove(separator, { clientX: 372, pointerId: 1 });
 	fireEvent.pointerUp(separator, { pointerId: 1 });
-	expect(changed).toHaveBeenLastCalledWith(320);
+	expect(changed).toHaveBeenLastCalledWith(312);
+});
+test('separator previews without saving, ignores other pointers and cancels without committing', () => {
+	size(1200);
+	const changed = vi.fn();
+	const { container } = render(
+		<TestProviders>
+			<ShellRoot {...base} onPanelWidth={changed} />
+		</TestProviders>,
+	);
+	const separator = screen.getByRole('separator');
+	const shell = container.querySelector<HTMLElement>('.huhu-shell')!;
+	fireEvent.pointerDown(separator, { button: 0, clientX: 332, pointerId: 1 });
+	fireEvent.pointerMove(separator, { clientX: 372, pointerId: 1 });
+	expect(shell.style.getPropertyValue('--huhu-panel-width')).toBe('312px');
+	expect(changed).not.toHaveBeenCalled();
+	fireEvent.pointerMove(separator, { clientX: 800, pointerId: 2 });
+	fireEvent.pointerUp(separator, { pointerId: 2 });
+	fireEvent.lostPointerCapture(separator, { pointerId: 2 });
+	expect(shell.style.getPropertyValue('--huhu-panel-width')).toBe('312px');
+	expect(changed).not.toHaveBeenCalled();
+	fireEvent.pointerCancel(separator, { pointerId: 1 });
+	expect(shell.style.getPropertyValue('--huhu-panel-width')).toBe('272px');
+	fireEvent.pointerUp(separator, { pointerId: 1 });
+	expect(changed).not.toHaveBeenCalled();
 });
 test('chrome none preserves the independent page slot without a shell header', () => {
 	size(1200);
@@ -329,3 +358,42 @@ test.each(['sheet', 'sheet-menu', 'rail-menu', 'panel-menu', 'panel-dropdown'] a
 		expect(document.activeElement).toBe(destination);
 	},
 );
+
+test('F6 enters the live page and skips preserved hidden page controls', () => {
+	size(1200);
+	const { container } = render(
+		<TestProviders>
+			<ShellRoot {...base} chrome="none" />
+		</TestProviders>,
+	);
+	const slot = container.querySelector('.huhu-shell-pages')!;
+	const hidden = document.createElement('div');
+	hidden.hidden = true;
+	hidden.setAttribute('inert', '');
+	const old = document.createElement('button');
+	old.textContent = 'Hidden old page';
+	hidden.append(old);
+	const live = document.createElement('button');
+	live.textContent = 'Live page action';
+	slot.append(hidden, live);
+	const panel = screen.getByRole('button', { name: 'One' });
+	panel.focus();
+	fireEvent.keyDown(panel, { key: 'F6' });
+	expect(document.activeElement).toBe(live);
+});
+
+test('a narrow leaf without a secondary panel opens only the module rail and active selection closes it', async () => {
+	size(390);
+	render(
+		<TestProviders>
+			<ShellRoot {...base} panel={undefined} />
+		</TestProviders>,
+	);
+	const user = userEvent.setup();
+	await user.click(screen.getByRole('button', { name: t('workbench.toggleNavigation') }));
+	const drawer = await screen.findByRole('dialog');
+	expect((drawer as HTMLElement).style.width).toBe('52px');
+	expect(drawer.querySelector('[data-shell-region="panel"]')).toBeNull();
+	await user.click(drawer.querySelector<HTMLButtonElement>('[data-feature="contacts"]')!);
+	await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+});

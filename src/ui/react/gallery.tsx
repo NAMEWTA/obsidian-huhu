@@ -84,11 +84,15 @@ import { ConfirmDialog } from '../components/huhu/ConfirmDialog';
 import { PathPicker } from '../components/huhu/PathPicker';
 import { IconPicker } from '../components/huhu/IconPicker';
 
-const buttonSizes = ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg'] as const;
-const buttonVariants = ['default', 'secondary', 'outline', 'ghost', 'link', 'destructive'] as const;
+const buttonSizes = ['sm', 'md', 'lg', 'icon-sm', 'icon-md', 'icon-lg'] as const;
+const buttonVariants = ['primary', 'secondary', 'ghost', 'danger', 'danger-ghost'] as const;
 
 export function ComponentGallery() {
-	return <DesignScope><GalleryContent /></DesignScope>;
+	return (
+		<DesignScope>
+			<GalleryContent />
+		</DesignScope>
+	);
 }
 
 function GalleryContent() {
@@ -217,7 +221,7 @@ function GalleryContent() {
 				<Progress value={number} aria-label={t('ui.progress')} />
 				<div className="flex flex-wrap gap-2">
 					{(['default', 'outline'] as const).flatMap((variant) =>
-						(['default', 'xs', 'sm', 'lg'] as const).map((size) => (
+						(['sm', 'md', 'lg'] as const).map((size) => (
 							<Toggle key={variant + size} variant={variant} size={size} aria-label={t('ui.bold')}>
 								<Bold />
 							</Toggle>
@@ -237,7 +241,7 @@ function GalleryContent() {
 				<div className="flex flex-wrap items-center gap-3">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline">DropdownMenu</Button>
+							<Button variant="secondary">DropdownMenu</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
 							<DropdownMenuItem>{t('ui.open')}</DropdownMenuItem>
@@ -262,7 +266,7 @@ function GalleryContent() {
 					</ContextMenu>
 					<Popover>
 						<PopoverTrigger asChild>
-							<Button variant="outline">Popover</Button>
+							<Button variant="secondary">Popover</Button>
 						</PopoverTrigger>
 						<PopoverContent className="w-72 p-4">
 							<Label htmlFor="popover-input">{t('ui.name')}</Label>
@@ -271,13 +275,13 @@ function GalleryContent() {
 					</Popover>
 					<HoverCard>
 						<HoverCardTrigger asChild>
-							<Button variant="link">HoverCard</Button>
+							<Button variant="ghost">HoverCard</Button>
 						</HoverCardTrigger>
 						<HoverCardContent>{t('ui.sampleDescription')}</HoverCardContent>
 					</HoverCard>
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button variant="outline">Dialog</Button>
+							<Button variant="secondary">Dialog</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
@@ -295,7 +299,7 @@ function GalleryContent() {
 							</Select>
 							<Popover>
 								<PopoverTrigger asChild>
-									<Button variant="outline">Popover</Button>
+									<Button variant="secondary">Popover</Button>
 								</PopoverTrigger>
 								<PopoverContent className="p-4">{t('ui.sample')}</PopoverContent>
 							</Popover>
@@ -304,7 +308,7 @@ function GalleryContent() {
 					{(['right', 'left', 'top', 'bottom'] as const).map((side) => (
 						<Sheet key={side}>
 							<SheetTrigger asChild>
-								<Button variant="outline">Sheet · {side}</Button>
+								<Button variant="secondary">Sheet · {side}</Button>
 							</SheetTrigger>
 							<SheetContent side={side}>
 								<SheetHeader>
@@ -316,7 +320,7 @@ function GalleryContent() {
 					))}
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="outline" aria-label="Tooltip · tab-preview">
+							<Button variant="secondary" aria-label="Tooltip · tab-preview">
 								Tooltip 2
 							</Button>
 						</TooltipTrigger>
@@ -326,7 +330,7 @@ function GalleryContent() {
 					</Tooltip>
 					<HoverCard>
 						<HoverCardTrigger asChild>
-							<Button variant="link" aria-label="HoverCard · workspace-details">
+							<Button variant="ghost" aria-label="HoverCard · workspace-details">
 								HoverCard 2
 							</Button>
 						</HoverCardTrigger>
@@ -334,18 +338,18 @@ function GalleryContent() {
 					</HoverCard>
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button variant="outline" aria-label="Dialog · feature-tip">
+							<Button variant="secondary" aria-label="Dialog · feature-tip">
 								Dialog 2
 							</Button>
 						</DialogTrigger>
-						<DialogContent surface="feature-tip" closeButtonVariant="minimize">
+						<DialogContent closeButtonVariant="minimize">
 							<DialogHeader className="p-6">
-								<DialogTitle size="display">{t('ui.sample')}</DialogTitle>
+								<DialogTitle>{t('ui.sample')}</DialogTitle>
 								<DialogDescription>{t('ui.sampleDescription')}</DialogDescription>
 							</DialogHeader>
 						</DialogContent>
 					</Dialog>
-					<Button variant="outline" onClick={() => setCommandOpen(true)}>
+					<Button variant="secondary" onClick={() => setCommandOpen(true)}>
 						CommandDialog
 					</Button>
 					<CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
@@ -363,7 +367,7 @@ function GalleryContent() {
 						}}
 						destructive
 					>
-						<Button variant="destructive">AlertDialog</Button>
+						<Button variant="danger">AlertDialog</Button>
 					</ConfirmDialog>
 					<Button onClick={() => toast(t('ui.toastMessage'))}>{t('ui.toast')}</Button>
 				</div>
@@ -389,7 +393,7 @@ function GalleryContent() {
 					<CommandList animateHeight>
 						<CommandEmpty>{t('ui.noResults')}</CommandEmpty>
 						{options.map((option) => (
-							<CommandItem key={option.value} selection="palette" disabled={option.disabled}>
+							<CommandItem key={option.value} disabled={option.disabled}>
 								{option.label}
 							</CommandItem>
 						))}
@@ -466,13 +470,11 @@ function GalleryContent() {
 					<ShortcutKeyCombo keys={['Mod', 'Shift', 'P']} />
 				</div>
 				<div className="flex flex-wrap gap-2">
-					{(['default', 'secondary', 'dot', 'outline', 'destructive', 'ghost', 'link'] as const).map(
-						(variant) => (
-							<Badge key={variant} variant={variant}>
-								{variant}
-							</Badge>
-						),
-					)}
+					{(['neutral', 'accent', 'success', 'warning', 'error'] as const).map((variant) => (
+						<Badge key={variant} variant={variant}>
+							{variant}
+						</Badge>
+					))}
 					{(['neutral', 'accent', 'muted'] as const).map((tone) => (
 						<SettingsBadge key={tone} tone={tone}>
 							{tone}
@@ -489,7 +491,7 @@ function GalleryContent() {
 			</SettingsSection>
 			<SettingsSection title={t('ui.layout')}>
 				{(['horizontal', 'vertical'] as const).flatMap((orientation) =>
-					(['default', 'line'] as const).map((variant) => (
+					(['line'] as const).map((variant) => (
 						<Tabs key={orientation + variant} defaultValue="first" orientation={orientation}>
 							<div className="max-w-full overflow-x-auto scrollbar-sleek">
 								<TabsList variant={variant}>
@@ -529,13 +531,13 @@ function GalleryContent() {
 				<Separator />
 				<Collapsible>
 					<CollapsibleTrigger asChild>
-						<Button variant="outline">Collapsible</Button>
+						<Button variant="secondary">Collapsible</Button>
 					</CollapsibleTrigger>
 					<CollapsibleContent>{t('ui.sample')}</CollapsibleContent>
 				</Collapsible>
 				<Collapsible>
 					<CollapsibleTrigger variant="row">{t('ui.details')}</CollapsibleTrigger>
-					<CollapsibleContent animation="height">{t('ui.sampleDescription')}</CollapsibleContent>
+					<CollapsibleContent animation="fade">{t('ui.sampleDescription')}</CollapsibleContent>
 				</Collapsible>
 				<Accordion type="single" collapsible>
 					<AccordionItem value="first">
@@ -564,12 +566,12 @@ function GalleryContent() {
 						</TableRow>
 					</TableFooter>
 				</Table>
-				<ResizablePanelGroup direction="horizontal" className="min-h-24 rounded-md border border-border">
-					<ResizablePanel defaultSize={50}>
+				<ResizablePanelGroup orientation="horizontal" className="min-h-24 rounded-md border border-border">
+					<ResizablePanel defaultSize="50%">
 						<div className="p-4">{t('ui.optionA')}</div>
 					</ResizablePanel>
 					<ResizableHandle withHandle aria-label={t('ui.resize')} />
-					<ResizablePanel defaultSize={50}>
+					<ResizablePanel defaultSize="50%">
 						<div className="p-4">{t('ui.optionB')}</div>
 					</ResizablePanel>
 				</ResizablePanelGroup>

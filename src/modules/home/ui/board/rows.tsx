@@ -39,11 +39,19 @@ export function RowButton({
 		<Button
 			type="button"
 			variant="ghost"
-			className={cn('h-9 w-full min-w-0 justify-start gap-2 px-2 font-normal', wrap && 'h-auto min-h-9 whitespace-normal py-1', className)}
+			className={cn(
+				'h-[var(--hu-ctl-h)] w-full min-w-0 justify-start gap-2 px-2 font-normal',
+				wrap && 'h-auto min-h-[var(--hu-row-h)] whitespace-normal py-1',
+				className,
+			)}
 			{...props}
 		>
 			{icon}
-			<span className={cn('min-w-0 flex-1 text-left', wrap ? 'line-clamp-2 [overflow-wrap:anywhere]' : 'truncate')}>{children}</span>
+			<span
+				className={cn('min-w-0 flex-1 text-left', wrap ? 'line-clamp-2 [overflow-wrap:anywhere]' : 'truncate')}
+			>
+				{children}
+			</span>
 			{trailing !== undefined && trailing !== null && (
 				<span className="shrink-0 text-xs text-muted-foreground tabular-nums">{trailing}</span>
 			)}

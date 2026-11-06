@@ -34,6 +34,13 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 	private readonly root: Root;
 	private readonly navigationActions = { current: null as { open: () => void; toggle: () => void } | null };
 	private portalDocument?: Document;
+	/** Ephemeral positions follow retained DOM, without retaining closed pages or their windows. */
+	private readonly scrollPositions = new WeakMap<HTMLElement, { top: number; left: number; generation: number }>();
+	/** Rendering can follow adoption before the native migration boundary. */
+	private scrollDocument: Document;
+	private scrollGeneration = 0;
+	private scrollRestorePending = false;
+
 	private readonly transition = new NavigationTransition();
 	private pages?: WorkbenchPages;
 	private opened = false;
@@ -43,7 +50,6 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 	private availabilityPending = false;
 	private error?: string;
 	private unavailable?: { feature: WorkbenchFeature; message: string };
-	private savedPages: unknown;
 	private revision = 0;
 	/** Page-owned panel content (e.g. agent sessions) lives here and moves into the panel when it is shown. */
 	private readonly navigationHost: HTMLDivElement;
@@ -55,40 +61,94 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		private readonly host: WorkbenchHost,
 		saved: Record<string, unknown>,
 	) {
+		this.scrollDocument = view.contentEl.ownerDocument;
 		this.state = normalizeWorkbenchState(saved);
 		this.navigationHost = view.contentEl.ownerDocument.createElement('div');
 		this.navigationHost.className = 'huhu-workbench-context min-h-0 empty:hidden';
 		view.contentEl.addClass('huhu-ui', 'h-full', 'p-0', 'overflow-hidden');
 		this.root = createRoot(view.contentEl);
-		this.savedPages = saved.pages;
 		this.lifetime = view.addChild(new Component());
 		this.opened = true;
 		view.contentEl.addClass('huhu-workbench-view');
 		flushSync(() => this.draw());
-		this.pages?.restore(this.savedPages);
+		this.pages?.restore(this.state.pageViews);
 		this.lifetime.register(onLanguageChanged(() => this.draw()));
 		this.lifetime.register(
 			host.subscribe(() => {
 				void this.refreshAvailability().catch(host.report);
 			}),
 		);
-		this.lifetime.register(view.contentEl.onWindowMigrated(() => this.draw()));
+		view.contentEl.addEventListener('scroll', this.rememberScroll, true);
+		this.lifetime.register(() => view.contentEl.removeEventListener('scroll', this.rememberScroll, true));
+		this.lifetime.register(
+			view.contentEl.onWindowMigrated(() => {
+				if (this.scrollDocument !== view.contentEl.ownerDocument) {
+					this.scrollDocument = view.contentEl.ownerDocument;
+					this.scrollGeneration++;
+					this.scrollRestorePending = true;
+				}
+				this.draw();
+				this.restoreScroll();
+			}),
+		);
 	}
+	private rememberScroll = (event: Event): void => {
+		const element = event.target as HTMLElement | null;
+		if (
+			!this.opened ||
+			!element ||
+			element.nodeType !== 1 ||
+			!this.view.contentEl.contains(element) ||
+			element.ownerDocument !== this.scrollDocument ||
+			!element.isConnected ||
+			element.closest('[hidden], [inert]') ||
+			!element.getClientRects().length
+		)
+			return;
+		this.scrollPositions.set(element, {
+			top: element.scrollTop,
+			left: element.scrollLeft,
+			generation: this.scrollGeneration,
+		});
+	};
+	private restoreScroll(): void {
+		if (!this.opened || !this.visible || !this.scrollRestorePending) return;
+		let pending = false;
+		for (const element of [this.view.contentEl, ...this.view.contentEl.querySelectorAll<HTMLElement>('*')]) {
+			const position = this.scrollPositions.get(element);
+			if (!position || position.generation === this.scrollGeneration) continue;
+			if (
+				!element.isConnected ||
+				element.ownerDocument !== this.scrollDocument ||
+				element.closest('[hidden], [inert]') ||
+				!element.getClientRects().length
+			) {
+				pending = true;
+				continue;
+			}
+
+			element.scrollTop = position.top;
+			element.scrollLeft = position.left;
+			position.generation = this.scrollGeneration;
+		}
+		this.scrollRestorePending = pending;
+	}
+
 	displayText(): string {
-		if (!this.state.focus) return t('workbench.title');
+		if (this.state.mode !== 'focus') return t('workbench.title');
 		return this.pageTitle() ?? t('workbench.title');
 	}
 	icon(): string {
-		return this.state.focus
-			? (this.contribution(this.state.target.feature)?.navigation.icon ?? 'panels-top-left')
+		return this.state.mode === 'focus'
+			? (this.contribution(this.state.route.feature)?.navigation.icon ?? 'panels-top-left')
 			: 'panels-top-left';
 	}
 
 	get focusMode(): boolean {
-		return this.state.focus;
+		return this.state.mode === 'focus';
 	}
 	ensureActivePage(): Promise<void> {
-		return this.navigate(this.state.target);
+		return this.navigate(this.state.route);
 	}
 	getSavedPages(feature?: WorkbenchFeature): SavedPage[] {
 		return this.pages?.list(feature) ?? [];
@@ -97,15 +157,14 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		return this.pages?.getSurfaces() ?? [];
 	}
 	getState(): Record<string, unknown> {
-		return { ...this.state, pages: this.pages?.getState() ?? this.savedPages };
+		return { ...this.state, pageViews: this.pages?.getState() ?? this.state.pageViews };
 	}
 	async setState(raw: Record<string, unknown>): Promise<void> {
 		this.state = normalizeWorkbenchState(raw);
-		this.savedPages = raw.pages;
-		this.pages?.restore(raw.pages);
+		this.pages?.restore(this.state.pageViews);
 		if (this.opened) {
 			this.transition.invalidate();
-			await this.navigate(this.state.target);
+			await this.navigate(this.state.route);
 		}
 	}
 
@@ -138,7 +197,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 					this.unavailable = unavailable ? { feature: target.feature, message: unavailable } : undefined;
 					this.view.lastActivatedAt = Date.now();
 					this.state = rememberTarget(this.state, page?.target ?? target);
-					if (this.state.focus) refreshLeafTitle(this.view.app, this.view.leaf);
+					if (this.state.mode === 'focus') refreshLeafTitle(this.view.app, this.view.leaf);
 					this.view.app.workspace.requestSaveLayout();
 				},
 				() => {
@@ -153,6 +212,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 			if (revision === this.revision) {
 				this.busy = false;
 				this.draw();
+				this.restoreScroll();
 				if (this.availabilityPending) {
 					this.availabilityPending = false;
 					void this.refreshAvailability().catch(this.host.report);
@@ -174,7 +234,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		this.busy = false;
 		this.availabilityPending = false;
 		const closed = await this.pages?.refreshAvailability(disabled);
-		if (closed) this.unavailable = { feature: this.state.target.feature, message: t('workbench.disabled') };
+		if (closed) this.unavailable = { feature: this.state.route.feature, message: t('workbench.disabled') };
 		this.draw();
 	}
 	async refreshAvailability(): Promise<void> {
@@ -188,12 +248,12 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		}
 		if (changed || this.unavailable) {
 			this.transition.invalidate();
-			await this.navigate(this.state.target);
+			await this.navigate(this.state.route);
 		} else this.draw();
 	}
 	async dispose(): Promise<void> {
 		if (!this.opened) return;
-		this.savedPages = this.pages?.getState() ?? this.savedPages;
+		this.state.pageViews = this.pages?.getState() ?? this.state.pageViews;
 		this.opened = false;
 		this.revision++;
 		this.transition.dispose();
@@ -205,6 +265,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		this.view.removeChild(this.lifetime);
 	}
 	onResize(): void {
+		this.restoreScroll();
 		this.pages?.getCurrent()?.surface.onResize();
 	}
 	setVisible(visible: boolean): void {
@@ -215,11 +276,22 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 			this.draw();
 			this.pages?.setVisible(visible);
 		});
+		if (visible) this.restoreScroll();
 	}
 	onPaneMenu(menu: Menu, source: string): void {
 		const binding = this.pages?.getCurrent();
-		const target = binding?.getTarget?.() ?? this.state.target;
+		const target = binding?.getTarget?.() ?? this.state.route;
 		const state = () => binding?.getState?.() ?? binding?.surface.getState() ?? {};
+		if (this.state.mode === 'focus')
+			menu.addItem((item) =>
+				item
+					.setTitle(t('workbench.openInWorkbench'))
+					.setIcon('panels-top-left')
+					.onClick(() => {
+						void this.returnToWorkbench().catch(this.host.report);
+					}),
+			);
+
 		menu.addItem((item) =>
 			item
 				.setTitle(t('workbench.openStandalone'))
@@ -239,6 +311,16 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		binding?.surface.onPaneMenu(menu, source);
 	}
 
+	private async returnToWorkbench(): Promise<void> {
+		const binding = this.pages?.getCurrent();
+		await this.host.openInWorkbench(
+			binding?.getTarget?.() ?? this.state.route,
+			binding?.getState?.() ?? binding?.surface.getState() ?? {},
+			this.view.contentEl.win,
+		);
+		this.view.leaf.detach();
+	}
+
 	private contribution(feature: WorkbenchFeature): WorkbenchContribution | undefined {
 		return this.host.contributions.find((item) => item.id === feature);
 	}
@@ -247,7 +329,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 		return availability.enabled && availability.supported;
 	}
 	private pageTitle(): string | undefined {
-		const target = this.state.target;
+		const target = this.state.route;
 		const contribution = this.contribution(target.feature);
 		if (!contribution) return undefined;
 		const custom = contribution.title?.(target);
@@ -275,11 +357,12 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 			}));
 	}
 	private panelModel(): PanelModel | undefined {
-		const contribution = this.contribution(this.state.target.feature);
+		const contribution = this.contribution(this.state.route.feature);
 		if (!contribution) return undefined;
 		if (contribution.panel) {
 			return contribution.panel({
-				target: this.state.target,
+				target: this.state.route,
+				ownerWindow: this.view.contentEl.win,
 				pages: (feature) => this.getSavedPages(feature),
 				navigate: (target) => this.requestNavigation(target),
 			});
@@ -325,7 +408,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 				() => {
 					this.state = rememberTarget(
 						this.state,
-						this.pages?.getCurrent()?.getTarget?.() ?? this.state.target,
+						this.pages?.getCurrent()?.getTarget?.() ?? this.state.route,
 					);
 					this.draw();
 					this.view.app.workspace.requestSaveLayout();
@@ -335,7 +418,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 				this.more,
 				() => this.navigationActions.current?.toggle(),
 			);
-			this.pages.restore(this.savedPages);
+			this.pages.restore(this.state.pageViews);
 		}
 	};
 	private customPanel = (element: HTMLDivElement | null): void => {
@@ -350,7 +433,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 			this.portalDocument = this.view.contentEl.ownerDocument;
 			acquirePortalRoot(this.portalDocument);
 		}
-		const contribution = this.contribution(this.state.target.feature);
+		const contribution = this.contribution(this.state.route.feature);
 		const unavailable = this.unavailable
 			? {
 					message: this.unavailable.message,
@@ -369,7 +452,7 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 					navigationContext={contribution?.navigationContext}
 					navigationActions={this.navigationActions}
 					rail={this.railItems()}
-					railCurrent={contribution?.railParent ?? this.state.target.feature}
+					railCurrent={contribution?.railParent ?? this.state.route.feature}
 					title={this.pageTitle() ?? t('workbench.title')}
 					panelTitle={
 						contribution
@@ -382,13 +465,12 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 					error={this.error}
 					unavailable={unavailable}
 					ownerWindow={this.view.contentEl.win}
-					phone={Platform.isPhone}
 					mobile={Platform.isMobile}
 					onRail={this.onRail}
 					onOpen={(feature, placement) => {
 						void this.host
 							.openFocus(
-								this.state.lastTargets[feature] ?? { feature },
+								this.state.navigation.lastRoutes[feature] ?? { feature },
 								{},
 								placement,
 								this.view.contentEl.win,
@@ -396,20 +478,14 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 							.catch(this.host.report);
 					}}
 					onNavigate={(target) => this.requestNavigation(target)}
-					onPanelOpen={(open) => this.change({ panelOpen: open })}
-					onPanelWidth={(width) => this.change({ panelWidth: panelWidth(width) })}
+					onPanelOpen={(open) => this.change({ navigation: { ...this.state.navigation, open } })}
+					onPanelWidth={(width) =>
+						this.change({ navigation: { ...this.state.navigation, width: panelWidth(width) } })
+					}
 					openInWorkbench={
-						this.state.focus
+						this.state.mode === 'focus'
 							? () => {
-									const binding = this.pages?.getCurrent();
-									void this.host
-										.openInWorkbench(
-											binding?.getTarget?.() ?? this.state.target,
-											binding?.getState?.() ?? binding?.surface.getState() ?? {},
-											this.view.contentEl.win,
-										)
-										.then(() => this.view.leaf.detach())
-										.catch(this.host.report);
+									void this.returnToWorkbench().catch(this.host.report);
 								}
 							: undefined
 					}

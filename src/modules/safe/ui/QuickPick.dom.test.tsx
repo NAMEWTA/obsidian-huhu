@@ -7,11 +7,21 @@ import { QuickPick } from './QuickPick';
 import { QUICK_PICK_MASTER, QUICK_PICK_SECRET, quickPickFixture } from './quick-pick.test-support';
 
 const fixtures: Awaited<ReturnType<typeof quickPickFixture>>[] = [];
-beforeEach(() => { registerMessages(messages); setLanguage('en'); });
-afterEach(() => { for (const f of fixtures.splice(0)) f.dispose(); });
+beforeEach(() => {
+	registerMessages(messages);
+	setLanguage('en');
+});
+afterEach(() => {
+	for (const f of fixtures.splice(0)) f.dispose();
+});
 async function setup(unlocked = true) {
-	const f = await quickPickFixture(window, unlocked); fixtures.push(f);
-	const view = render(<TestProviders><QuickPick service={f.service} onClose={() => {}} /></TestProviders>);
+	const f = await quickPickFixture(window, unlocked);
+	fixtures.push(f);
+	const view = render(
+		<TestProviders>
+			<QuickPick service={f.service} onClose={() => {}} />
+		</TestProviders>,
+	);
 	return { ...f, view };
 }
 
@@ -89,14 +99,22 @@ test('a no-result search generates only on request, never persists or copies aut
 
 function gate() {
 	let resolve!: () => void;
-	const promise = new Promise<void>(done => { resolve = done; });
+	const promise = new Promise<void>((done) => {
+		resolve = done;
+	});
 	return { promise, resolve };
 }
 
 test('unmount cancels a delayed clipboard write, clears the query input, and suppresses late success', async () => {
 	const f = await setup();
-	const entered = gate(), release = gate();
-	f.clipboard.beforeWrite = async value => { if (value) { entered.resolve(); await release.promise; } };
+	const entered = gate(),
+		release = gate();
+	f.clipboard.beforeWrite = async (value) => {
+		if (value) {
+			entered.resolve();
+			await release.promise;
+		}
+	};
 	const search = screen.getByRole('combobox') as HTMLInputElement;
 	fireEvent.change(search, { target: { value: 'source@example.test' } });
 	fireEvent.keyDown(search, { key: 'Enter' });
@@ -115,8 +133,14 @@ test('external lock removes the picker and its generated secret even while a cop
 	fireEvent.change(screen.getByRole('combobox'), { target: { value: 'missing' } });
 	fireEvent.click(screen.getByRole('button', { name: 'Generate new password' }));
 	const secret = screen.getByLabelText('Generated password (not saved)') as HTMLInputElement;
-	const entered = gate(), release = gate();
-	f.clipboard.beforeWrite = async value => { if (value) { entered.resolve(); await release.promise; } };
+	const entered = gate(),
+		release = gate();
+	f.clipboard.beforeWrite = async (value) => {
+		if (value) {
+			entered.resolve();
+			await release.promise;
+		}
+	};
 	fireEvent.click(screen.getByRole('button', { name: 'Copy password' }));
 	await entered.promise;
 	await act(async () => f.service.lock());
@@ -154,8 +178,14 @@ test('clipboard failure preserves results, permits retry and never exposes raw h
 
 test('closing the owner window removes all picker state and cancels pending unlock', async () => {
 	const f = await setup(false);
-	const entered = gate(), release = gate();
-	f.io.beforeRead = async name => { if (name === 'vault.enc') { entered.resolve(); await release.promise; } };
+	const entered = gate(),
+		release = gate();
+	f.io.beforeRead = async (name) => {
+		if (name === 'vault.enc') {
+			entered.resolve();
+			await release.promise;
+		}
+	};
 	const password = screen.getByLabelText('Master password') as HTMLInputElement;
 	fireEvent.change(password, { target: { value: QUICK_PICK_MASTER } });
 	fireEvent.submit(password.closest('form')!);
@@ -173,4 +203,11 @@ test('the shared WebKit IME fallback does not copy on keyCode 229', async () => 
 	const f = await setup();
 	fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter', keyCode: 229 });
 	expect(f.clipboard.writes).toEqual([]);
+});
+
+test('Shift Enter copies the selected username through the existing safe clipboard port', async () => {
+	const f = await setup();
+	fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter', shiftKey: true });
+	await waitFor(() => expect(f.clipboard.text).toBe('source@example.test'));
+	expect(f.clipboard.writes).toEqual(['source@example.test']);
 });

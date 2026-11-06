@@ -12,7 +12,31 @@ export interface RestoreSource {
 	readonly label?: string;
 }
 
+export interface ConflictRestoreAdmission {
+	readonly targetPath: string;
+	readonly repositoryId: string;
+	readonly path: string;
+	readonly worktreeId: string;
+}
+
+export interface GitHunkRestoreProof {
+	readonly repositoryId: string;
+	readonly path: string;
+	readonly targetPath: string;
+	/** Index source path, different only for a currently verified unstaged rename. */
+	readonly indexPath?: string;
+	readonly indexId: string;
+	readonly worktreeId: string;
+	/** null is a missing file; an empty string is a present empty file. */
+	readonly indexText: string | null;
+	readonly worktreeText: string | null;
+	readonly diff: import('./hunk-restore').HunkDiff;
+	readonly selected: readonly string[];
+}
+
 export interface PrepareRestore {
+	readonly gitHunks?: GitHunkRestoreProof;
+	readonly conflict?: ConflictRestoreAdmission;
 	readonly source: RestoreSource;
 	readonly targetPath: string;
 	readonly originLeafId?: string;
@@ -66,7 +90,12 @@ export interface RestoreReceipt {
 
 /** Pure coordination: no protection repair, staging, commit, checkout or automatic resume is hidden here. */
 export interface RestoreGate {
-	run<T>(operationId: string, work: () => Promise<T>): Promise<T>;
+	run<T>(
+		operationId: string,
+		work: () => Promise<T>,
+		conflict?: ConflictRestoreAdmission,
+		gitHunks?: GitHunkRestoreProof,
+	): Promise<T>;
 	/** Persist the automatic-write hold before accepting any checkpoint or note write. */
 	hold(operationId: string): Promise<void>;
 	/** Read-only validation: recovery files must be excluded AND untracked. */
@@ -95,6 +124,8 @@ export interface RestoreDependencies {
 }
 
 export interface PreparedRestoreState {
+	readonly gitHunks?: GitHunkRestoreProof;
+	readonly conflict?: ConflictRestoreAdmission;
 	readonly plan: RestorePlan;
 	readonly document: DocumentSnapshot;
 	readonly repositoryBaseline: string;

@@ -24,7 +24,9 @@ export function PinnedProperties({
 	};
 	return (
 		<div className="space-y-2">
-			<Label htmlFor={inputId} className="grid gap-2">{t('library.visibleProperties')}</Label>
+			<Label htmlFor={inputId} className="grid gap-2">
+				{t('library.visibleProperties')}
+			</Label>
 			<p className="text-xs text-muted-foreground">{t('library.visiblePropertiesHint')}</p>
 			<div className="flex flex-wrap gap-1">
 				{[...new Set(['title', 'author', 'status', 'type', 'rating', ...keys, ...picks])]
@@ -32,8 +34,8 @@ export function PinnedProperties({
 					.map((key) => (
 						<Button
 							key={key}
-							size="xs"
-							variant={picks.includes(key) ? 'secondary' : 'outline'}
+							size="sm"
+							variant={picks.includes(key) ? 'secondary' : 'secondary'}
 							aria-pressed={picks.includes(key)}
 							onClick={() => toggle(key)}
 						>
@@ -42,14 +44,9 @@ export function PinnedProperties({
 					))}
 			</div>
 			<div className="flex min-w-0 gap-2">
-				<Input
-					id={inputId}
-					className="min-w-0"
-					value={custom}
-					onChange={(e) => setCustom(e.target.value)}
-				/>
+				<Input id={inputId} className="min-w-0" value={custom} onChange={(e) => setCustom(e.target.value)} />
 				<Button
-					size="xs"
+					size="sm"
 					disabled={!custom.trim()}
 					onClick={() => {
 						if (!picks.includes(custom.trim())) toggle(custom.trim());

@@ -13,7 +13,15 @@ const items: PathPickerItem[] = [
 	{ path: 'Projects/readme.md', kind: 'file' },
 ];
 
-function Harness({ onChange, kind = 'folder' as const, start = '' }: { onChange: (path: string) => void; kind?: 'folder' | 'file'; start?: string }) {
+function Harness({
+	onChange,
+	kind = 'folder' as const,
+	start = '',
+}: {
+	onChange: (path: string) => void;
+	kind?: 'folder' | 'file';
+	start?: string;
+}) {
 	const [value, setValue] = useState(start);
 	return (
 		<TestProviders>
@@ -102,4 +110,18 @@ test('a file field only accepts files that exist', async () => {
 	expect(onChange).not.toHaveBeenCalled();
 	await user.tab();
 	expect(field().value).toBe('Projects/readme.md');
+});
+
+test('invalid path error describes the combobox and a hidden suggestion list is not reported as expanded', async () => {
+	const user = userEvent.setup();
+	render(<Harness onChange={vi.fn()} kind="file" />);
+	await user.click(field());
+	await user.type(field(), 'nothing.md');
+	expect(field().getAttribute('aria-expanded')).toBe('false');
+	expect(field().getAttribute('aria-activedescendant')).toBeNull();
+	await user.clear(field());
+	await user.type(field(), '../outside');
+	const error = await screen.findByRole('alert');
+	expect(field().getAttribute('aria-describedby')).toBe(error.id);
+	expect(error.id).not.toBe('');
 });

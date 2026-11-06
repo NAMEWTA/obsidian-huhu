@@ -13,7 +13,7 @@ import type {
 import type { ArchiveOperation } from '../../core/generic/operations';
 import { validateValues } from '../../core/schema/fields';
 import { canonical, copy } from '../../core/schema/value';
-import { at, Button, ErrorBox, Section, confirmAt } from './common';
+import { at, Button, ErrorBox, Section, useArchiveConfirm } from './common';
 import { ValueForm } from './FieldRenderer';
 import { useArchiveVersion } from './hooks';
 export function Diagnostics({
@@ -35,7 +35,7 @@ export function Diagnostics({
 						<code>{item.code}</code> · {item.detail || item.id}
 						{item.path && (
 							<Button
-								variant="link"
+								variant="ghost"
 								size="sm"
 								onClick={() => {
 									const file = app.vault.getFileByPath(item.path);
@@ -69,14 +69,14 @@ export function UpgradePanel({
 	owner: HTMLElement;
 	finished(this: void): void;
 }) {
+	const confirm = useArchiveConfirm(owner, entity.id);
 	const [values, setValues] = useState<Values>(() => copy(entity.values)),
 		[preview, setPreview] = useState(''),
 		[busy, setBusy] = useState(false),
 		[error, setError] = useState<unknown>();
 	const revision = application.runtime.index.definition(type.id);
 	const execute = async () => {
-		if (!revision || preview !== canonical(values) || !(await confirmAt(owner, at('upgradeHint'), at('upgrade'))))
-			return;
+		if (!revision || preview !== canonical(values) || !(await confirm(at('upgradeHint'), at('upgrade')))) return;
 		setBusy(true);
 		setError(undefined);
 		try {
@@ -117,7 +117,7 @@ export function UpgradePanel({
 				/>
 				<div className="flex flex-wrap gap-2">
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							try {
 								validateValues(type.fields, values, entity.lifecycle === 'active', entity.values);
@@ -138,7 +138,7 @@ export function UpgradePanel({
 					>
 						{at('upgrade')}
 					</Button>
-					<Button variant="outline" onClick={finished}>
+					<Button variant="secondary" onClick={finished}>
 						{at('clear')}
 					</Button>
 				</div>
@@ -155,6 +155,7 @@ export function RecoveryPanel({
 	app: App;
 	owner: HTMLElement;
 }) {
+	const confirm = useArchiveConfirm(owner);
 	const version = useArchiveVersion(application),
 		[operations, setOperations] = useState<ArchiveOperation[]>([]),
 		[busy, setBusy] = useState(false),
@@ -174,7 +175,7 @@ export function RecoveryPanel({
 		};
 	}, [application, version]);
 	const recover = async (operation: ArchiveOperation, rollback: boolean) => {
-		if (rollback && !(await confirmAt(owner, at('rollbackConfirm'), at('rollback')))) return;
+		if (rollback && !(await confirm(at('rollbackConfirm'), at('rollback')))) return;
 		setBusy(true);
 		setError(undefined);
 		try {
@@ -201,7 +202,7 @@ export function RecoveryPanel({
 						</p>
 						<div className="flex flex-wrap gap-2">
 							<Button
-								variant="outline"
+								variant="secondary"
 								disabled={
 									busy || ['committed', 'rolling-back', 'rolled-back'].includes(operation.state)
 								}
@@ -212,7 +213,7 @@ export function RecoveryPanel({
 								{at('resume')}
 							</Button>
 							<Button
-								variant="outline"
+								variant="secondary"
 								disabled={busy || operation.state === 'rolled-back'}
 								onClick={() => {
 									void recover(operation, true);

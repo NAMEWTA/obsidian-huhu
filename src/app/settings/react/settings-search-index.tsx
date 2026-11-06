@@ -30,14 +30,18 @@ const SKIPPED = new Set(['components', 'about']);
  */
 export type SettingsCategoryList = ReadonlyArray<{ id: string; label: string; icon?: string }>;
 
-export async function buildSettingsIndex(plugin: DashboardPlugin, categories: SettingsCategoryList): Promise<SettingsIndexEntry[]> {
+export async function buildSettingsIndex(
+	plugin: DashboardPlugin,
+	categories: SettingsCategoryList,
+): Promise<SettingsIndexEntry[]> {
 	const doc = plugin.app.workspace.containerEl.doc;
 	const win = doc.defaultView;
 	if (!win) return [];
 	const sections = categories.filter((category) => !SKIPPED.has(category.id));
 	const host = doc.createElement('div');
 	// Laid out (so components that measure work) but out of sight and out of reach.
-	host.className = 'huhu-ui huhu-settings-index pointer-events-none invisible fixed top-0 -left-[10000px] h-[700px] w-[900px] overflow-hidden';
+	host.className =
+		'huhu-ui huhu-settings-index pointer-events-none invisible fixed top-0 -left-[10000px] h-[700px] w-[900px] overflow-hidden';
 	doc.body.append(host);
 	host.setAttribute('aria-hidden', 'true');
 	host.setAttribute('inert', '');
@@ -87,42 +91,62 @@ export async function buildSettingsIndex(plugin: DashboardPlugin, categories: Se
 	}
 }
 
-let cache: { signature: string; entries: Promise<SettingsIndexEntry[]> } | undefined;
+let caches = new WeakMap<DashboardPlugin, { signature: string; entries: Promise<SettingsIndexEntry[]> }>();
 
 /** Rebuilt when the language, the visible categories or a module's state changes. */
 function signature(plugin: DashboardPlugin, categories: SettingsCategoryList): string {
 	return [
 		getLanguage(),
+		JSON.stringify(plugin.appSettings?.get()),
+		JSON.stringify(plugin.theme?.get()),
 		categories.map((c) => c.id).join(','),
-		plugin.moduleManifests().map((m) => `${m.id}:${plugin.moduleState(m.id)}`).join(','),
+		plugin
+			.moduleManifests()
+			.map((m) => `${m.id}:${plugin.moduleState(m.id)}`)
+			.join(','),
 	].join('|');
 }
 
-export function settingsIndex(plugin: DashboardPlugin, categories: SettingsCategoryList): Promise<SettingsIndexEntry[]> {
+export function settingsIndex(
+	plugin: DashboardPlugin,
+	categories: SettingsCategoryList,
+): Promise<SettingsIndexEntry[]> {
 	const current = signature(plugin, categories);
+	let cache = caches.get(plugin);
 	if (!cache || cache.signature !== current) {
 		const entries = buildSettingsIndex(plugin, categories);
 		cache = { signature: current, entries };
+		caches.set(plugin, cache);
 		entries.catch(() => {
-			if (cache?.entries === entries) cache = undefined;
+			if (caches.get(plugin)?.entries === entries) caches.delete(plugin);
 		});
 	}
 	return cache.entries;
 }
 
 /** Side panel rows for a query: each result opens its category (and tab) and highlights the setting. */
-export async function searchSettings(plugin: DashboardPlugin, categories: SettingsCategoryList, query: string): Promise<PanelItem[]> {
+export async function searchSettings(
+	plugin: DashboardPlugin,
+	categories: SettingsCategoryList,
+	query: string,
+): Promise<PanelItem[]> {
 	const entries = matchSettings(await settingsIndex(plugin, categories), query);
 	return entries.map((entry) => ({
 		id: `${entry.category}|${entry.key}`,
 		label: entry.label,
-		detail: [entry.categoryLabel, entry.tabLabel].filter(Boolean).join(' › ') + (entry.description ? ` · ${entry.description}` : ''),
-		target: { feature: 'settings', section: entry.category, resourceId: entry.tab || undefined, focusId: entry.key },
+		detail:
+			[entry.categoryLabel, entry.tabLabel].filter(Boolean).join(' › ') +
+			(entry.description ? ` · ${entry.description}` : ''),
+		target: {
+			feature: 'settings',
+			section: entry.category,
+			resourceId: entry.tab || undefined,
+			focusId: entry.key,
+		},
 	}));
 }
 
 /** Drop the cached index (tests, or after settings pages changed shape). */
 export function resetSettingsIndex(): void {
-	cache = undefined;
+	caches = new WeakMap();
 }
-

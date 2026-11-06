@@ -48,7 +48,7 @@ if (minimal) {
 } else {
 	files['.obsidian/appearance.json'] = JSON.stringify({ theme: dark ? 'obsidian' : 'moonstone' });
 }
-const modules = { home: false, agent: false, archives: false, automations: false, notifications: false, icons: true, comments: false, navigator: true, sync: false };
+const modules = { home: false, agent: false, archives: false, automations: false, notifications: false, icons: true, comments: false, navigator: true, versioning: false };
 const runtime = await launchFreshVault({
 	root,
 	files,
@@ -217,7 +217,7 @@ try {
 	await delay(500);
 	check('settings show open-in, default properties, attachments', await c.evaluate(`['点击笔记时打开于','新笔记的默认属性','附件保存在笔记同级目录','附件文件夹名称'].every((text)=>document.body.innerText.includes(text))`));
 	await shot('6-settings-behaviour');
-	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'icons'});true`);
+	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'settings',section:'iconic'});true`);
 	await until(`!!document.querySelector('[data-shell-region]')&&document.body.innerText.includes('侧边栏和标签页标题')`, 'icons page rendered');
 	await c.evaluate(`[...document.querySelectorAll('button,[role=tab],a,div')].filter(e=>e.children.length<=2&&e.textContent.trim()==='侧边栏和标签页标题').pop()?.click();true`);
 	await until(`document.body.innerText.includes('按一级文件夹着色')`, 'icons settings rendered');

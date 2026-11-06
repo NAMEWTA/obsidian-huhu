@@ -41,7 +41,7 @@ await fs.writeFile(root + '-shell/fake-shell', `#!/bin/sh\nprintf '\\0__HUHU_LOG
 process.env.SHELL = root + '-shell/fake-shell'; process.env.PATH = '/usr/bin:/bin';
 try {
 	runtime = await launchFreshVault({ root, port: 9471, files: { '.huhu/acceptance/cli.cjs': fixtureCli },
-		settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home', 'agent', 'archives', 'automations', 'notifications', 'icons', 'comments', 'sync'].map(id => [id, id === 'agent'])) } } } });
+		settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home', 'agent', 'archives', 'automations', 'notifications', 'icons', 'comments', 'versioning'].map(id => [id, id === 'agent'])) } } } });
 	c = runtime.connection;
 	check('application-env-is-isolated', (await c.evaluate(`[process.env.HOME,process.env.CODEX_HOME,process.env.CLAUDE_CONFIG_DIR]`)).join('|') === path.join(root, 'home') + '||', await c.evaluate('[process.env.HOME,process.env.CODEX_HOME]'));
 	const home = path.join(root, 'home'), vault = runtime.vault, cli = path.join(vault, '.huhu/acceptance/cli.cjs'), probeDir = path.join(vault, '.huhu/acceptance');

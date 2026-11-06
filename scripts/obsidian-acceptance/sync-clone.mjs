@@ -11,7 +11,7 @@ import { launchFreshVault } from './fresh-vault.mjs';
 const root = process.argv[2];
 assert.ok(root && path.isAbsolute(root));
 const runtime = await launchFreshVault({ root, port: 9246, files: { 'Welcome.md': 'Current vault sentinel\n' }, settings: {
-	version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home: false, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: true } } },
+	version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home: false, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, versioning: true } } },
 } });
 const { connection: c, evidence, vault } = runtime;
 // The page is React/Tailwind: the clone form is found by its summary text, the page by Obsidian's view container.
@@ -38,8 +38,8 @@ try {
 	git(seed, '-c', 'user.name=Clone Test', '-c', 'user.email=clone@example.com', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'seed');
 	git(root, 'clone', '--bare', seed, remote);
 	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench()`);
-	await until(`!!document.querySelector('[data-feature="sync"]')`);
-	await c.evaluate(`document.querySelector('[data-feature="sync"]').click()`);
+	await until(`!!document.querySelector('[data-feature="versioning"]')`);
+	await c.evaluate(`document.querySelector('[data-feature="versioning"]').click()`);
 	await until(`!!(${BOX})`);
 	await c.evaluate(`(${BOX}).querySelector('summary').click()`);
 	const fill = async (destination) => c.evaluate(`(()=>{const inputs=(${BOX}).querySelectorAll('input'); for(const [i,value] of ${JSON.stringify([remote, destination])}.entries()){Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(inputs[i],value);inputs[i].dispatchEvent(new Event('input',{bubbles:true}));}})()`);
@@ -65,7 +65,7 @@ try {
 	assert.equal((await fs.readFile(path.join(target, 'From remote.md'), 'utf8')).replaceAll('\r\n', '\n'), 'Cloned note\n');
 	rows.push({ name: 'nonempty-retry-refused', passed: true });
 	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'settings'})`);
-	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'sync',section:'changes'})`);
+	await c.evaluate(`app.plugins.plugins.huhu.openWorkbench({feature:'versioning',section:'changes'})`);
 	await until(`(${BOX}).querySelector('[role="alert"]')?.textContent.includes('contains files')`);
 	rows.push({ name: 'navigation-retains-result', passed: true });
 	for (const preset of ['system', 'claude-code', 'eye-care']) {

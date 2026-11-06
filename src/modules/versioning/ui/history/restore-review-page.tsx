@@ -25,7 +25,7 @@ export function confirmRestoreReview(app: App, receipts: readonly RestoreReceipt
 					</ul>
 					<p className="text-xs text-muted-foreground">{t('review.pendingRetention')}</p>
 					<div className="flex flex-wrap justify-end gap-2">
-						<Button variant="outline" onClick={close}>
+						<Button variant="secondary" onClick={close}>
 							{t('review.cancel')}
 						</Button>
 						<Button

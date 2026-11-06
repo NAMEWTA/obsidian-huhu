@@ -19,9 +19,9 @@ function Entry({ store, config, onEdit }: { store: BoardStore; config: Anniversa
 	const foreground = config.background?.foreground;
 	const color =
 		foreground === 'light'
-			? 'var(--card)'
+			? 'var(--on-image)'
 			: foreground === 'dark'
-				? 'var(--foreground)'
+				? 'var(--scrim)'
 				: foreground && /^#[0-9a-fA-F]{3,8}$/.test(foreground)
 					? foreground
 					: undefined;
@@ -31,7 +31,14 @@ function Entry({ store, config, onEdit }: { store: BoardStore; config: Anniversa
 			data-anniversary-entry
 			style={
 				color
-					? ({ '--foreground': color, '--muted-foreground': color, '--board-text-faint': color } as CSSProperties)
+					? ({
+							'--hu-fg': color,
+							'--hu-fg-2': color,
+							'--hu-fg-3': color,
+							'--foreground': color,
+							'--muted-foreground': color,
+							'--board-text-faint': color,
+						} as CSSProperties)
 					: undefined
 			}
 		>
@@ -102,6 +109,7 @@ export function AnniversaryWidget({ store, entryId }: { store: BoardStore; entry
 			)}
 			{draft && (
 				<AnniversaryEditor
+					app={store.host.app}
 					initial={draft}
 					onClose={() => setDraft(null)}
 					onDelete={settings.anniversaries.some((c) => c.id === draft.id) ? () => setRemove(true) : undefined}

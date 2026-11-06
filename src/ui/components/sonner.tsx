@@ -3,6 +3,7 @@
 import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 import { createPortal } from 'react-dom';
+import { useToastLayer } from '../react/modal-layer';
 import { useT } from '../react/hooks';
 import { usePortalContainer } from '../react/contexts';
 export { toast } from 'sonner';
@@ -10,6 +11,7 @@ export { toast } from 'sonner';
 const Toaster = ({ container, ...props }: ToasterProps & { container?: HTMLElement }) => {
 	const portal = usePortalContainer();
 	const t = useT();
+	const layer = useToastLayer();
 
 	return createPortal(
 		<Sonner
@@ -33,11 +35,11 @@ const Toaster = ({ container, ...props }: ToasterProps & { container?: HTMLEleme
 			}}
 			style={
 				{
-					zIndex: 'var(--layer-notice)',
+					zIndex: layer,
 					fontFamily: 'var(--nd-font-sans)',
-					'--normal-bg': 'var(--popover)',
-					'--normal-text': 'var(--popover-foreground)',
-					'--normal-border': 'var(--border)',
+					'--normal-bg': 'var(--hu-fg)',
+					'--normal-text': 'var(--hu-surface)',
+					'--normal-border': 'var(--hu-fg)',
 					'--border-radius': 'var(--radius)',
 					'--width': 'min(26rem, calc(100vw - 2rem))',
 				} as React.CSSProperties

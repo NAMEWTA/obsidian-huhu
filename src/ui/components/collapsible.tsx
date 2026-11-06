@@ -15,7 +15,7 @@ const collapsibleTriggerVariants = cva('', {
 	variants: {
 		variant: {
 			default: '',
-			row: 'group flex w-full cursor-pointer items-center justify-between gap-4 rounded-md bg-transparent py-2 text-left text-sm font-medium outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:hover:bg-accent/50',
+			row: 'group flex w-full cursor-pointer items-center justify-between gap-4 min-h-[var(--hu-row-h)] rounded-md bg-transparent py-1 text-left text-sm font-medium outline-none hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hu-accent)] dark:hover:bg-accent/50',
 		},
 	},
 	defaultVariants: { variant: 'default' },
@@ -40,8 +40,7 @@ const collapsibleContentVariants = cva('', {
 	variants: {
 		animation: {
 			none: '',
-			// Preserve Orca’s public variant, with HUHU’s opacity-only motion policy.
-			height: 'overflow-hidden data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 duration-[var(--anim-duration-fast)]',
+			fade: 'overflow-hidden data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 duration-[var(--hu-dur-fast)]',
 		},
 	},
 	defaultVariants: { animation: 'none' },

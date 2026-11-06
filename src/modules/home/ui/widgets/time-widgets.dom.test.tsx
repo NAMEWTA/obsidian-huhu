@@ -48,7 +48,12 @@ function fake(over: Record<string, unknown> = {}, settings: Record<string, unkno
 	} as unknown as BoardStore;
 	return { store, state };
 }
-const mount = (node: React.ReactNode) => render(<TestProviders><DesignScope>{node}</DesignScope></TestProviders>);
+const mount = (node: React.ReactNode) =>
+	render(
+		<TestProviders>
+			<DesignScope>{node}</DesignScope>
+		</TestProviders>,
+	);
 
 test('the clock is the whole tile: time and date, no title of its own', () => {
 	mount(<ClockWidget store={fake().store} />);
@@ -137,7 +142,7 @@ test('habits: today count, one 36px row per habit with its streak, the heat map 
 	expect(document.querySelector('[data-habit]')!.textContent).toContain('1/2');
 	const rows = document.querySelectorAll('[data-habit] li label');
 	expect(rows).toHaveLength(2);
-	for (const row of rows) expect(row.className).toContain('h-9');
+	for (const row of rows) expect(row.className).toContain('min-h-[var(--hu-row-h)]');
 	expect(document.querySelector('[data-habit-heatmap]')).not.toBeNull();
 	expect(screen.getByRole('button', { name: t('habit.statsTitle') })).toBeTruthy();
 	expect(screen.getByRole('button', { name: t('common.add') })).toBeTruthy();
@@ -198,7 +203,14 @@ test("weather: the city, the large temperature, the state and today's range; the
 	act(() =>
 		state.setState({
 			weatherByInstance: {
-				default: { locationKey: '31.23,121.47', status: 'error', errorCode: 'network', retryable: true, data: null, error: '' },
+				default: {
+					locationKey: '31.23,121.47',
+					status: 'error',
+					errorCode: 'network',
+					retryable: true,
+					data: null,
+					error: '',
+				},
 			},
 		}),
 	);

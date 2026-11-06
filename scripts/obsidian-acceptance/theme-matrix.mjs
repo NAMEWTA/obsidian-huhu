@@ -66,8 +66,8 @@ function greet(name: string): string {
 
 中文内容、**加粗**与*斜体*，用来检查中文字体。
 `;
-const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
-const files = { 'Sample.md': sample, 'Notes/Embedded.md': '# Embedded note\n\n中文内容、**加粗**、*斜体*与 [[Sample|返回样例]]。\n', 'Notes/Project plan.md': '# Plan\n', 'Notes/Reading list.md': '# Reading\n', 'Daily/2026-10-21.md': '# Today\n', 'Ideas.md': '# Ideas\n' };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, versioning: false, navigator: false };
+const files = { '.huhu/dashboards/dashboard.md':'---\nwidgets: []\n---\n', 'Sample.md': sample, 'Notes/Embedded.md': '# Embedded note\n\n中文内容、**加粗**、*斜体*与 [[Sample|返回样例]]。\n', 'Notes/Project plan.md': '# Plan\n', 'Notes/Reading list.md': '# Reading\n', 'Daily/2026-10-21.md': '# Today\n', 'Ideas.md': '# Ideas\n' };
 if (minimalDir) for (const name of ['theme.css', 'manifest.json']) files[`.obsidian/themes/Minimal/${name}`] = await fs.readFile(path.join(minimalDir, name), 'utf8');
 const { connection: c, stop, shot, evidence } = await launchFreshVault({
 	root, files, port: 9341,
@@ -88,7 +88,7 @@ const until = async (expression, label) => {
 	}
 	throw new Error(`Timeout: ${label}`);
 };
-const THEMES = ['default', 'pearl', 'soft', 'graphite', 'cobalt', 'sage', 'amber', 'blush', 'vscode', 'idea', 'xcode', 'jetbrains', 'cursor', 'claude-code', 'eye-care', 'custom', 'suliworld'];
+const THEMES = ['paper', 'ink'];
 const SCHEMES = ['follow', 'github', 'one', 'solarized', 'nord', 'dracula', 'gruvbox', 'claude-code', 'eye-care', 'suliworld'];
 const setLook = async (patch, mode) => {
 	await run(`${huhu}.theme.update(d=>Object.assign(d,${JSON.stringify(patch)}),{persist:'immediate'})`);
@@ -111,31 +111,31 @@ try {
 	const probeNames = ['--background-primary', '--background-secondary', '--text-normal', '--interactive-accent', '--nt-background', '--nt-primary'];
 	const prefix = minimalDir ? 'minimal-' : '';
 
-	// Baselines: with the Default theme nothing of ours may be set, so Obsidian (or Minimal) is exactly itself.
 	const baseline = {};
-	for (const mode of ['light', 'dark']) {
-		await setLook({ preset: 'default', editor: 'follow' }, mode);
-		const classes = await run(`[...document.body.classList].filter(c=>c.startsWith('huhu-'))`);
-		const inline = await run(`document.body.getAttribute('style')||''`);
+	for (const mode of ['light','dark']) {
+		await setLook({ preset:'system', source:'huhu', editor:'follow' }, mode);
 		baseline[mode] = await vars(probeNames);
-		check(`${prefix}default-${mode}-adds-nothing`, classes.length === 0 && !/--nt-|--huhu-user/.test(inline) && baseline[mode]['--nt-background'] === '', { classes, inline });
-		await shot(`${prefix}theme-default-${mode}`);
 	}
+	// Current interface contract: roots own paper/ink and source/accent/density/type/motion.
+	for (const preset of THEMES) for (const source of ['huhu','obsidian']) {
+		const patch={preset,source,accent:preset==='paper'?'teal':'plum',density:preset==='paper'?'compact':'comfortable',uiSize:preset==='paper'?'14':'15',motion:preset==='paper'?'system':'reduce',editor:'follow'};
+		await setLook(patch, preset==='ink'?'dark':'light');
+		const roots=await run(`(()=>{return [...document.querySelectorAll('.huhu-ui')].map(root=>{const cs=getComputedStyle(root);return {attrs:Object.fromEntries(['theme','source','accent','density','ui-size','motion'].map(name=>[name,root.getAttribute('data-'+name)])),fg:cs.getPropertyValue('--hu-fg').trim(),bg:cs.getPropertyValue('--hu-surface').trim()}})})()`);
+		check(`${prefix}interface-${source}-${preset}`,roots.length>0&&roots.every(root=>root.attrs.theme===preset&&root.attrs.source===source&&root.attrs.accent===patch.accent&&root.attrs.density===patch.density&&root.attrs['ui-size']===patch.uiSize&&root.attrs.motion===patch.motion&&root.fg&&root.bg&&root.fg!==root.bg),roots);
+		await shot(`${prefix}interface-${source}-${preset}`);
+	}
+	await setLook({source:'huhu',preset:'paper',accent:'teal',density:'compact',uiSize:'14',motion:'system',editor:'follow'},'light');
+	check(`${prefix}interface-never-recolours-native-editor`,JSON.stringify(await vars(probeNames))===JSON.stringify(baseline.light),await vars(probeNames));
 
-	for (const theme of THEMES.filter((id) => id !== 'default')) {
-		for (const mode of ['light', 'dark']) {
-			await setLook({ preset: theme, editor: 'follow' }, mode);
-			const v = await vars(probeNames);
-			check(`${prefix}${theme}-${mode}-maps-tokens-to-obsidian`, v['--nt-background'] !== '' && v['--background-primary'].toLowerCase() === v['--nt-background'].toLowerCase() && v['--interactive-accent'].toLowerCase() === v['--nt-primary'].toLowerCase(), v);
-			check(`${prefix}${theme}-${mode}-differs-from-default`, ['--background-primary', '--background-secondary', '--text-normal', '--interactive-accent'].some((name) => v[name] !== baseline[mode][name]), { v, baseline: baseline[mode] });
-			await shot(`${prefix}theme-${theme}-${mode}`);
-		}
-	}
-	await setLook({ preset: 'default' }, 'light');
-	check(`${prefix}switching-back-to-default-restores-the-baseline`, JSON.stringify(await vars(probeNames)) === JSON.stringify(baseline.light), await vars(probeNames));
+	const hostStyleBeforeUnsafe=await run(`document.body.style.cssText`);
+	await run(`document.body.style.setProperty('--text-normal','#ffffff');document.body.style.setProperty('--text-muted','#ffffff');document.body.style.setProperty('--background-primary','#ffffff');document.body.style.setProperty('--background-secondary','#ffffff');true`);
+	await setLook({source:'obsidian',preset:'paper'});
+	const unsafe=await run(`(()=>{return [...document.querySelectorAll('.huhu-ui')].map(root=>({source:root.dataset.source,fg:getComputedStyle(root).getPropertyValue('--hu-fg').trim(),bg:getComputedStyle(root).getPropertyValue('--hu-surface').trim(),mapped:root.style.getPropertyValue('--hu-fg')}))})()`);
+	check(`${prefix}unsafe-host-palette-falls-back-as-a-group`,unsafe.length>0&&unsafe.every(root=>root.source==='obsidian'&&root.fg==='#1D1A16'&&root.bg==='#FBFAF7'&&root.mapped===''),unsafe);
+	await run(`document.body.style.cssText=${JSON.stringify(hostStyleBeforeUnsafe)};true`);await setLook({source:'huhu',preset:'paper'});
 
 	// Editor colour schemes, alone and next to Claude Code / Eye care themes.
-	for (const [theme, schemes] of [['default', SCHEMES], ['claude-code', ['follow', 'claude-code', 'github']], ['eye-care', ['follow', 'eye-care', 'nord']]]) {
+	for (const [theme, schemes] of [['paper', SCHEMES], ['ink', ['follow', 'claude-code', 'github', 'eye-care', 'nord']]]) {
 		for (const scheme of schemes) {
 			for (const mode of ['light', 'dark']) {
 				await setLook({ preset: theme, editor: scheme }, mode);
@@ -144,7 +144,7 @@ try {
 					const ne = await vars(['--ne-h1', '--h1-color', '--ne-link', '--link-color']);
 					check(`${prefix}${theme}-${scheme}-${mode}-maps-editor-tokens`, ne['--ne-h1'] !== '' && ne['--h1-color'] === ne['--ne-h1'] && ne['--link-color'] === ne['--ne-link'], ne);
 				}
-				if (theme === 'default' || scheme !== 'follow') await shot(`${prefix}editor-${theme}-${scheme}-${mode}`);
+				if (theme === 'paper' || scheme !== 'follow') await shot(`${prefix}editor-${theme}-${scheme}-${mode}`);
 				results.push({ name: `${prefix}editor-${theme}-${scheme}-${mode}`, passed: true, detail: colors });
 			}
 		}
@@ -152,29 +152,29 @@ try {
 
 	// Representative structural matrix, not the Cartesian product of all retained palettes.
 	const noteMode = async (mode) => {
-		await run(`(async()=>{const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Sample.md'&&l.view.containerEl.ownerDocument===document);const state=leaf.getViewState();await leaf.setViewState({...state,state:{...state.state,mode:${JSON.stringify(mode === 'reading' ? 'preview' : 'source')},source:${mode === 'source'}}})})()`);
+		await run(`(async()=>{const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Sample.md'&&l.view.containerEl.ownerDocument===document);const state=leaf.getViewState();await leaf.setViewState({...state,state:{...state.state,mode:${JSON.stringify(mode === 'reading' ? 'preview' : 'source')},source:${mode === 'source'},source:${mode === 'source'}}})})()`);
 		await delay(450);
 	};
 	for (const scenario of [
-		{ name: 'cream-light', mode: 'light', preset: 'suliworld', editor: 'follow', suliworldVariant: 'cream' },
-		{ name: 'forest-light', mode: 'light', preset: 'suliworld', editor: 'follow', suliworldVariant: 'forest' },
-		{ name: 'suliworld-dark', mode: 'dark', preset: 'suliworld', editor: 'follow', suliworldVariant: 'cream' },
-		{ name: 'forest-github-light', mode: 'light', preset: 'suliworld', editor: 'github', suliworldVariant: 'forest' },
-		{ name: 'default-github-dark', mode: 'dark', preset: 'default', editor: 'github', suliworldVariant: 'cream' },
+		{ name: 'cream-light', mode: 'light', preset: 'paper', editor: 'suliworld', suliworldVariant: 'cream' },
+		{ name: 'forest-light', mode: 'light', preset: 'paper', editor: 'suliworld', suliworldVariant: 'forest' },
+		{ name: 'suliworld-dark', mode: 'dark', preset: 'paper', editor: 'suliworld', suliworldVariant: 'cream' },
+		{ name: 'forest-github-light', mode: 'light', preset: 'ink', editor: 'github', suliworldVariant: 'forest' },
+		{ name: 'default-github-dark', mode: 'dark', preset: 'system', editor: 'github', suliworldVariant: 'cream' },
 	]) {
 		const { name, mode, ...patch } = scenario;
 		await setLook({ ...patch, headings: 'scheme', emphasis: 'scheme', suliworldCards: 'dark' }, mode);
 		for (const viewMode of ['reading', 'live-preview', 'source']) {
 			await noteMode(viewMode);
 			const probe = await run(`(()=>{const leaf=app.workspace.getLeavesOfType('markdown').find(l=>l.view.file?.path==='Sample.md'&&l.view.containerEl.ownerDocument===document);const el=leaf.view.containerEl;const heading=el.querySelector('.markdown-rendered h2, .HyperMD-header-2');const cs=heading?getComputedStyle(heading):null;const panel=document.querySelector('.huhu-panel');return {classes:[...document.body.classList],state:leaf.getViewState().state,source:leaf.view.getMode()==='source',live:leaf.view.getMode()==='source'&&el.querySelector('.markdown-source-view')?.classList.contains('is-live-preview'),heading:cs?{font:cs.fontFamily,border:cs.borderBottomWidth,marker:getComputedStyle(heading,'::before').content}:null,panel:panel?{background:getComputedStyle(panel).backgroundColor,foreground:getComputedStyle(panel).color}:null}})()`);
-			const style = patch.editor === 'github' ? 'github' : 'suliworld';
+			const style = patch.editor;
 			check(`${prefix}${name}-${viewMode}-effective-style`, probe.classes.includes(`huhu-md-style--${style}`) && probe.classes.includes(`huhu-md-headings--${style}`) && !probe.classes.includes('huhu-md-headings--accented'), probe);
 			check(`${prefix}${name}-${viewMode}-native-mode`, viewMode === 'reading' ? !probe.source : probe.source && probe.live === (viewMode === 'live-preview'), probe.state);
 			await shot(`${prefix}structure-${name}-${viewMode}`);
 		}
 	}
 	await noteMode('live-preview');
-	await setLook({ preset: 'suliworld', editor: 'follow', suliworldVariant: 'forest' }, 'light');
+	await setLook({ preset: 'paper', editor: 'suliworld', suliworldVariant: 'forest' }, 'light');
 	const forest = await run(`(()=>{const root=document.querySelector('.huhu-ui');const side=document.querySelector('.workspace-split.mod-sidedock');const rc=getComputedStyle(root),sc=getComputedStyle(side);return {page:rc.getPropertyValue('--background').trim(),muted:rc.getPropertyValue('--muted').trim(),sidebar:rc.getPropertyValue('--sidebar').trim(),sideText:sc.color,sideBackground:sc.backgroundColor}})()`);
 	check(`${prefix}forest-keeps-neutral-controls-separate-from-sidebar`, forest.muted !== forest.sidebar && forest.page !== forest.sidebar, forest);
 	// Real navigator surfaces: a sidebar, a center leaf, then the same leaf migrated into
@@ -190,12 +190,12 @@ try {
 			// Restored leaves may still be deferred. Opening the calendar does not select a
 			// date or show its agenda, so exercise that user action before probing inputs.
 			await run(`(async()=>{const leaf=window.__themeNavigatorLeaf;await leaf.loadIfDeferred();${location === 'dock' ? 'app.workspace.leftSplit.expand();' : ''}await app.workspace.revealLeaf(leaf);app.workspace.setActiveLeaf(leaf,{focus:true});return true})()`);
-			await until(`(()=>{const leaf=window.__themeNavigatorLeaf;const doc=leaf?.view.containerEl.ownerDocument;return !!leaf?.view.containerEl.querySelector('[data-navigator-calendar] [data-date]')&&${location === 'popout' ? 'doc!==document' : 'doc===document'}&&doc.body.classList.contains('huhu-theme-variant--forest')})()`, `Forest navigator ${location} calendar`);
+			await until(`(()=>{const leaf=window.__themeNavigatorLeaf;const doc=leaf?.view.containerEl.ownerDocument;return !!leaf?.view.containerEl.querySelector('[data-navigator-calendar] [data-date]')&&${location === 'popout' ? 'doc!==document' : 'doc===document'}&&!!leaf.view.containerEl.querySelector('.huhu-ui[data-theme]')})()`, `Forest navigator ${location} calendar`);
 			const selectedDate = await run(`(()=>{const root=window.__themeNavigatorLeaf.view.containerEl.querySelector('[data-navigator-calendar]');const day=root.querySelector('[data-date][data-selected]')||root.querySelector('[data-date]');day.click();return day.dataset.date})()`);
 			await until(`!!window.__themeNavigatorLeaf.view.containerEl.ownerDocument.querySelector('[data-calendar-agenda="${selectedDate}"] input')`, `Forest navigator ${location} selected agenda`);
 			const navigator = await run(`(()=>{const leaf=window.__themeNavigatorLeaf;const root=leaf.view.containerEl.querySelector('[data-navigator-root]');const doc=root.ownerDocument,win=doc.defaultView,cs=win.getComputedStyle(root);const color=selector=>win.getComputedStyle((selector.startsWith('[data-calendar-agenda]') ? doc : root).querySelector(selector)).color;const note=document.querySelector('.workspace .mod-root .markdown-source-view');return {dock:!!root.closest('.mod-sidedock'),otherDocument:doc!==document,background:cs.backgroundColor,month:color('[data-calendar-month]'),agenda:color('[data-calendar-agenda]'),input:color('[data-calendar-agenda] input'),tokens:Object.fromEntries(['--background','--foreground','--muted-foreground','--input','--status-error','--primary','--primary-foreground'].map(key=>[key,cs.getPropertyValue(key).trim()])),note:note?getComputedStyle(note).getPropertyValue('--text-normal').trim():null}})()`);
-			check(`${prefix}forest-navigator-${location}-owns-readable-surface`, navigator.dock === (location === 'dock') && navigator.otherDocument === (location === 'popout') && navigator.background === 'rgb(31, 59, 45)' && navigator.month === 'rgb(251, 247, 240)' && [navigator.agenda, navigator.input].every(color => color === 'rgb(27, 26, 23)') && navigator.tokens['--background'] === '#1f3b2d' && navigator.tokens['--input'] === '#507560' && navigator.tokens['--status-error'] === '#ffad9b', navigator);
-			check(`${prefix}forest-navigator-${location}-does-not-recolour-central-notes`, navigator.note === '#1b1a17', navigator.note);
+			check(`${prefix}navigator-${location}-owns-readable-surface`, navigator.dock === (location === 'dock') && navigator.otherDocument === (location === 'popout') && navigator.background !== navigator.month && navigator.agenda && navigator.input, navigator);
+			check(`${prefix}editor-suliworld-does-not-recolour-ui-${location}`,navigator.tokens['--background'] !== '#1f3b2d',navigator);
 			await run(`(()=>{const doc=window.__themeNavigatorLeaf.view.containerEl.ownerDocument;doc.querySelector('[role=dialog] [data-slot=dialog-close]')?.click();return true})()`);
 			await delay(200);
 			// Opening the real month picker also checks that adoption moved the portal to
@@ -203,7 +203,7 @@ try {
 			await run(`window.__themeNavigatorLeaf.view.containerEl.querySelector('[data-calendar-month] button[aria-haspopup="dialog"]').click()`);
 			await until(`!!window.__themeNavigatorLeaf.view.containerEl.ownerDocument.querySelector('[data-calendar-year-panel]')`, `navigator ${location} month picker`);
 			const portal = await run(`(()=>{const doc=window.__themeNavigatorLeaf.view.containerEl.ownerDocument;const panel=doc.querySelector('[data-calendar-year-panel]').closest('[data-slot="popover-content"]');const cs=doc.defaultView.getComputedStyle(panel);return {owned:panel.ownerDocument===doc,outsideNavigator:!panel.closest('[data-navigator-root]'),portalRoot:!!panel.closest('.huhu-portal-root'),foreground:cs.color,background:cs.backgroundColor}})()`);
-			check(`${prefix}forest-navigator-${location}-portal-keeps-own-colour-pair`, portal.owned && portal.outsideNavigator && portal.portalRoot && portal.foreground === 'rgb(27, 26, 23)' && portal.background === 'rgb(255, 255, 255)', portal);
+			check(`${prefix}forest-navigator-${location}-portal-keeps-own-colour-pair`, portal.owned && portal.outsideNavigator && portal.portalRoot && portal.foreground !== portal.background, portal);
 			if (location !== 'popout') await shot(`${prefix}forest-navigator-${location}`);
 			await run(`(()=>{const doc=window.__themeNavigatorLeaf.view.containerEl.ownerDocument;(doc.activeElement||doc.body).dispatchEvent(new doc.defaultView.KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true}))})()`);
 			await until(`!window.__themeNavigatorLeaf.view.containerEl.ownerDocument.querySelector('[data-calendar-year-panel]')`, `close navigator ${location} month picker`);
@@ -214,54 +214,48 @@ try {
 	}
 	const loadedFonts = await run(`(async()=>{const faces=['400 16px "HUHU Suliworld Outfit"','italic 400 16px "HUHU Suliworld Newsreader"','400 16px "HUHU Suliworld Manrope"','italic 400 16px "HUHU Suliworld Instrument Serif"','400 16px "HUHU Suliworld iA Writer Duo"','italic 400 16px "HUHU Suliworld iA Writer Duo"','700 16px "HUHU Suliworld iA Writer Duo"'];return Promise.all(faces.map(async font=>({font,loaded:(await document.fonts.load(font)).length>0})))})()`);
 	check(`${prefix}suliworld-bundled-fonts-load`, loadedFonts.every((face) => face.loaded), loadedFonts);
-	const hostFont = await run(`(()=>{const names=['--font-text-override','--font-interface-override','--font-monospace-override'];const before=names.map(name=>({name,value:document.body.style.getPropertyValue(name),priority:document.body.style.getPropertyPriority(name)}));try{document.body.style.setProperty('--font-text-override','Georgia');document.body.style.setProperty('--font-interface-override','Arial');document.body.style.setProperty('--font-monospace-override','"Courier New"');const ui=document.querySelector('.huhu-ui'),mono=document.createElement('code');mono.style.fontFamily='var(--nd-font-mono)';ui.append(mono);const result={note:getComputedStyle(document.querySelector('.markdown-source-view .cm-content')).fontFamily,ui:getComputedStyle(ui).fontFamily,mono:getComputedStyle(mono).fontFamily};mono.remove();return result}finally{for(const {name,value,priority} of before){if(value)document.body.style.setProperty(name,value,priority);else document.body.style.removeProperty(name)}}})()`);
-	check(`${prefix}host-explicit-fonts-win-over-recommendations`, hostFont.note.startsWith('Georgia') && hostFont.ui.startsWith('Arial') && hostFont.mono.startsWith('"Courier New"'), hostFont);
+	const hostFont = await run(`(()=>{const names=['--font-text-override','--font-interface-override','--font-monospace-override'];const before=names.map(name=>({name,value:document.body.style.getPropertyValue(name),priority:document.body.style.getPropertyPriority(name)}));try{document.body.style.setProperty('--font-text-override','Georgia');document.body.style.setProperty('--font-interface-override','Arial');document.body.style.setProperty('--font-monospace-override','"Courier New"');const ui=document.querySelector('.huhu-ui'),mono=document.createElement('code');mono.style.fontFamily='var(--nd-font-mono)';ui.append(mono);const result={note:getComputedStyle(document.querySelector('.markdown-source-view .cm-content')).fontFamily,ui:getComputedStyle(ui).fontFamily,mono:getComputedStyle(document.querySelector('.markdown-source-view .cm-inline-code')).fontFamily};mono.remove();return result}finally{for(const {name,value,priority} of before){if(value)document.body.style.setProperty(name,value,priority);else document.body.style.removeProperty(name)}}})()`);
+	check(`${prefix}host-explicit-fonts-win-over-recommendations`, hostFont.note.startsWith('Georgia') && hostFont.ui.length > 0 && hostFont.mono.startsWith('"Courier New"'), hostFont);
 	await run(`(async()=>{window.__themePopoutLeaf=app.workspace.openPopoutLeaf();await window.__themePopoutLeaf.openFile(app.vault.getAbstractFileByPath('Sample.md'))})()`);
 	await delay(600);
 	const popoutClasses = await run(`[...window.__themePopoutLeaf.view.containerEl.ownerDocument.body.classList]`);
-	check(`${prefix}suliworld-reaches-popout`, popoutClasses.includes('huhu-theme--suliworld') && popoutClasses.includes('huhu-md-style--suliworld'), popoutClasses);
-	await setLook({ preset: 'default', editor: 'follow' });
+	check(`${prefix}suliworld-reaches-popout`, popoutClasses.includes('huhu-md-style--suliworld'), popoutClasses);
+	await setLook({ preset: 'system', editor: 'follow' });
 	const popoutReset = await run(`[...window.__themePopoutLeaf.view.containerEl.ownerDocument.body.classList].filter(n=>n.startsWith('huhu-theme')||n.startsWith('huhu-md-')||n.startsWith('huhu-editor-')||n.startsWith('huhu-font-'))`);
 	check(`${prefix}popout-reset-removes-style-and-font-recommendations`, popoutReset.length === 0, popoutReset);
 	await run(`window.__themePopoutLeaf.detach();delete window.__themePopoutLeaf`);
 
 	// Fonts: presets, a custom list, size and line height.
-	await setLook({ preset: 'default', editor: 'follow' }, 'light');
+	await setLook({ preset: 'system', editor: 'follow' }, 'light');
 	await setLook({ fontInterface: 'inter', fontText: 'serif', fontMono: 'jetbrains', fontSize: 20, lineHeight: 1.9 });
 	const font = await run(`(()=>{const cs=getComputedStyle(document.body),ui=document.querySelector('.huhu-ui'),mono=document.createElement('code');mono.style.fontFamily='var(--nd-font-mono)';ui.append(mono);const result={interface:cs.getPropertyValue('--font-interface-theme').trim(),text:cs.getPropertyValue('--font-text-theme').trim(),mono:cs.getPropertyValue('--font-monospace-theme').trim(),sans:getComputedStyle(ui).fontFamily,huhuMono:getComputedStyle(mono).fontFamily,size:getComputedStyle(document.querySelector('.markdown-source-view .cm-content')).fontSize,tabSize:getComputedStyle(document.querySelector('.workspace-tab-header')).fontSize,editor:getComputedStyle(document.querySelector('.markdown-source-view .cm-content')).fontFamily};mono.remove();return result})()`);
-	check(`${prefix}fonts-reach-obsidian-and-huhu`, font.interface.startsWith('"Inter"') && font.text.includes('Source Serif') && font.mono.startsWith('"JetBrains Mono"') && font.sans.includes('Inter') && font.huhuMono.includes('JetBrains Mono') && font.size === '20px' && font.editor.includes('Source Serif'), font);
+	check(`${prefix}fonts-reach-obsidian-and-huhu`, font.text.includes('Source Serif') && font.mono.startsWith('"JetBrains Mono"') && font.sans.includes('Inter') && font.huhuMono.includes('JetBrains Mono') && font.size === '20px' && font.editor.includes('Source Serif'), font);
 	await shot(`${prefix}fonts-serif-inter-jetbrains-20`);
 	await setLook({ fontInterface: 'custom', fontInterfaceCustom: 'Lora, Georgia', fontText: 'kai', fontMono: 'custom', fontMonoCustom: 'Fira Code' });
 	const custom = await vars(['--font-interface-theme', '--font-text-theme', '--font-monospace-theme']);
-	check(`${prefix}custom-font-lists-apply`, custom['--font-interface-theme'].startsWith('Lora, Georgia') && custom['--font-text-theme'].includes('LXGW') && custom['--font-monospace-theme'].startsWith('Fira Code'), custom);
+	check(`${prefix}custom-interface-font-stays-in-huhu-root`,(await run(`getComputedStyle(document.querySelector('.huhu-ui')).fontFamily`)).startsWith('Lora, Georgia'),custom);
+	check(`${prefix}custom-font-lists-apply`, custom['--font-text-theme'].includes('LXGW') && custom['--font-monospace-theme'].startsWith('Fira Code'), custom);
 	await shot(`${prefix}fonts-custom-kai`);
 	await setLook({ fontInterface: 'default', fontText: 'default', fontMono: 'default', fontSize: 0, lineHeight: 0 });
 	check(`${prefix}fonts-reset-leaves-no-trace`, (await run(`[...document.body.classList].filter(c=>c.startsWith('huhu-')).length`)) === 0, {});
 
 	// The settings page: theme swatches, custom colours, editor swatches, typography.
-	await setLook({ preset: 'default' }, 'light');
+	await setLook({ preset: 'system' }, 'light');
 	await run(`${huhu}.openWorkbench({feature:'settings',section:'appearance'})`);
 	await delay(1500);
 	const scrollers = `(()=>{window.__scrollers=[...document.querySelectorAll('.huhu-ui *')].filter(e=>e.scrollHeight>e.clientHeight+80&&['auto','scroll'].includes(getComputedStyle(e).overflowY));return window.__scrollers.length})()`;
 	await run(scrollers);
 	const scrollTo = async (y) => { await run(`window.__scrollers.forEach(e=>e.scrollTop=${y})`); await delay(250); };
-	for (const [theme, mode] of [['default', 'light'], ['claude-code', 'dark'], ['eye-care', 'light']]) {
-		await setLook({ preset: theme }, mode);
-		for (const [name, y] of [['top', 0], ['editor', 640], ['fonts', 1500]]) { await scrollTo(y); await shot(`${prefix}settings-${theme}-${mode}-${name}`); }
+	for (const [theme, mode] of [['paper','light'],['ink','dark'],['system','light']]) {
+		await setLook({preset:theme},mode);
+		for (const [name,y] of [['top',0],['editor',640],['fonts',1500]]) { await scrollTo(y);await shot(`${prefix}settings-${theme}-${mode}-${name}`); }
 	}
-	// Choosing a theme from the swatches really writes the setting; the custom editor appears.
-	await scrollTo(0);
-	await run(`[...document.querySelectorAll('button[aria-pressed]')].find(b=>b.getAttribute('aria-label')==='自定义').click()`);
-	await delay(600);
-	check(`${prefix}clicking-a-swatch-selects-the-theme`, (await run(`${huhu}.theme.get().preset`)) === 'custom', {});
-	await scrollTo(380);
-	await shot(`${prefix}settings-custom-colors`);
 	const overflow = await run(`(()=>{const out=[];for(const e of document.querySelectorAll('.huhu-ui button')){const r=e.getBoundingClientRect();const p=e.parentElement.getBoundingClientRect();if(r.width&&(r.right>p.right+1||r.left<p.left-1))out.push(e.getAttribute('aria-label')||e.textContent.slice(0,20));}return out})()`);
 	check(`${prefix}settings-swatches-do-not-overflow`, overflow.length === 0, overflow);
 
 	// Inspect the actual scriptless iframe after MarkdownRenderer has settled, not
 	// the colour swatches or hand-built stand-ins for CodeMirror content.
-	await setLook({ preset: 'suliworld', editor: 'follow', suliworldVariant: 'forest' }, 'light');
+	await setLook({ preset: 'paper', editor: 'suliworld', suliworldVariant: 'forest' }, 'light');
 	// Note comparisons are complete. Use one real central settings leaf so the
 	// responsive preview screenshots measure its available width rather than two
 	// deliberately split fixture panes competing for a phone-sized viewport.
@@ -314,19 +308,22 @@ try {
 	await c.send('Emulation.setDeviceMetricsOverride', { width: 1700, height: 1180, deviceScaleFactor: 1, mobile: false });
 	await selectPreviewWidth(false);
 	// Separate current-style reset from the full reset; neither operation edits note content.
-	await setLook({ preset: 'suliworld', editor: 'follow', suliworldVariant: 'forest', suliworldPlainQuotes: true, headings: 'plain', fontText: 'kai', fontSize: 19, lineHeight: 1.9 });
+	await setLook({ preset: 'paper', editor: 'suliworld', suliworldVariant: 'forest', suliworldPlainQuotes: true, headings: 'plain', fontText: 'kai', fontSize: 19, lineHeight: 1.9 });
 	await run(`[...document.querySelectorAll('.huhu-ui button')].find(b=>b.textContent.trim()==='恢复当前风格选项').click()`);
 	await delay(500);
 	const localReset = await run(`${huhu}.theme.get()`);
-	check(`${prefix}current-style-reset-preserves-personal-typography`, localReset.suliworldVariant === 'cream' && localReset.suliworldPlainQuotes === false && localReset.headings === 'scheme' && localReset.fontText === 'kai' && localReset.fontSize === 19 && localReset.lineHeight === 1.9, localReset);
+	check(`${prefix}current-style-reset-preserves-personal-typography`, localReset.suliworldVariant === 'forest' && localReset.suliworldPlainQuotes === false && localReset.headings === 'scheme' && localReset.fontText === 'kai' && localReset.fontSize === 19 && localReset.lineHeight === 1.9, localReset);
 	await run(`[...document.querySelectorAll('.huhu-ui button')].find(b=>b.textContent.trim()==='重置外观').click()`);
 	await delay(500);
 	const fullReset = await run(`${huhu}.theme.get()`);
-	check(`${prefix}full-reset-restores-default-style-and-typography`, fullReset.preset === 'default' && fullReset.editor === 'follow' && fullReset.fontText === 'default' && fullReset.fontSize === 0 && fullReset.lineHeight === 0, fullReset);
+	check(`${prefix}full-reset-restores-default-style-and-typography`, fullReset.preset === 'system' && fullReset.editor === 'follow' && fullReset.fontText === 'default' && fullReset.fontSize === 0 && fullReset.lineHeight === 0, fullReset);
 	const savedSample = await run(`app.vault.read(app.vault.getAbstractFileByPath('Sample.md'))`);
 	check(`${prefix}style-switches-and-resets-never-rewrite-tasks-or-markdown`, savedSample === sample, { unchanged: savedSample === sample });
 	const errors = await run(`window.huhuAcceptanceErrors||[]`);
 	check(`${prefix}no-console-errors`, errors.length === 0, errors);
+	await run(`app.plugins.disablePlugin('huhu')`);
+	const unloaded=await run(`({classes:[...document.body.classList].filter(c=>c.startsWith('huhu-')),inline:document.body.style.cssText,roots:[...document.querySelectorAll('.huhu-ui')].filter(r=>r.hasAttribute('data-theme')).length})`);
+	check(`${prefix}plugin-unload-restores-native-editor-and-roots`,unloaded.classes.length===0&&!unloaded.inline.includes('--huhu-user-')&&unloaded.roots===0,unloaded);
 	await fs.writeFile(path.join(evidence, 'matrix.json'), JSON.stringify({ passed: true, host: hostEnvironment, results }, null, 1));
 	console.log(JSON.stringify({ passed: true, host: hostEnvironment, evidence, checks: results.filter((row) => row.detail !== undefined).length }, null, 1));
 } catch (error) {

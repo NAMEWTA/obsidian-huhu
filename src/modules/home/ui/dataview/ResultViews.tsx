@@ -1,3 +1,4 @@
+import { ProductCalendar } from '../../../../ui/components/huhu/calendar/ProductCalendar';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/dataview-section.ts
 import { p1Classes } from '../theme/p1-classes';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
@@ -15,15 +16,7 @@ import { Checkbox } from '../../../../ui/components/checkbox';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { ObsidianIcon as Icon } from '../../../../ui/components/huhu/ObsidianIcon';
 import type { DataviewContext } from './context';
-import {
-	buildDataviewWeekColumns,
-	dayKey,
-	fillYearHeatmapData,
-	monthLabel,
-	monthStart,
-	rowDateTs,
-	shiftMonth,
-} from './date-layout';
+import { buildDataviewWeekColumns, dayKey, fillYearHeatmapData, monthStart, rowDateTs } from './date-layout';
 import { displayColumns, nextSortState, sourceInfoOf, tableLayout, type ViewState } from './table-model';
 import { chooseDataviewCellSize, computeDataviewMonthLabels, ymdKey } from './value-model';
 import { InlineValue, Value, rowOpen } from './Values';
@@ -163,7 +156,7 @@ export function ResultTable({
 									<Button
 										type="button"
 										variant="ghost"
-										size="xs"
+										size="sm"
 										className="h-auto gap-0 px-0 font-[inherit] text-[inherit] hover:bg-transparent"
 										aria-label={`${label}: ${t(
 											active
@@ -203,7 +196,9 @@ export function ResultTable({
 							{...rowOpen(context, row)}
 						>
 							{config?.rowNumbers && (
-								<td className="w-8 min-w-8 cursor-default pr-2 pl-1 text-right text-muted-foreground tabular-nums">{offset + i + 1}</td>
+								<td className="w-8 min-w-8 cursor-default pr-2 pl-1 text-right text-muted-foreground tabular-nums">
+									{offset + i + 1}
+								</td>
 							)}
 							{result.grouped ? (
 								<>
@@ -350,9 +345,7 @@ export function ResultList({ result, rows, context, config, reload }: Props) {
 											{(result.queryType === 'TABLE' || start > 0) &&
 												row.values.slice(start + 1).map((value, j) => (
 													<Fragment key={j}>
-														<span className="mx-0.5 text-muted-foreground">
-															·
-														</span>
+														<span className="mx-0.5 text-muted-foreground">·</span>
 														<Value value={value} context={context} />
 													</Fragment>
 												))}
@@ -443,96 +436,32 @@ export function ResultCalendar({ result, rows, context }: Props) {
 	if (!dated.length) return <EmptyResult message="dataview.calendarNoDates" />;
 	const byDay = new Map<string, ResultRow[]>();
 	for (const d of dated) byDay.set(dayKey(d.ts), [...(byDay.get(dayKey(d.ts)) ?? []), d.row]);
-	const start = new Date(cursor),
-		days = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
-	const openDay = (items: ResultRow[]) => {
-		const path = items[0]?.page?.file.path;
+	const openDay = (iso: string) => {
+		const path = byDay.get(iso)?.[0]?.page?.file.path;
 		const file = path ? contentFiles(context.app).getFileByPath(path) : null;
 		if (file) context.opener?.(file);
 	};
 	return (
-		<div className={p1Classes('dashboard-dataview-calendar')}>
-			<div className={p1Classes('dashboard-dataview-calendar-grid')}>
-				<div className={p1Classes('dashboard-dataview-calendar-header')}>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-xs"
-						className={p1Classes('dashboard-dataview-calendar-nav')}
-						aria-label={t('home.p2.prev')}
-						onClick={() => setCursor(shiftMonth(cursor, -1))}
-					>
-						<Icon name="chevron-left" />
-					</Button>
-					<div className={p1Classes('dashboard-dataview-calendar-title')}>{monthLabel(cursor)}</div>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-xs"
-						className={p1Classes('dashboard-dataview-calendar-nav')}
-						aria-label={t('home.p2.next')}
-						onClick={() => setCursor(shiftMonth(cursor, 1))}
-					>
-						<Icon name="chevron-right" />
-					</Button>
-				</div>
-				<div className={p1Classes('dashboard-dataview-calendar-weekdays')}>
-					{['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-						<div key={i} className={p1Classes('dashboard-dataview-calendar-wd')}>
-							{day}
-						</div>
-					))}
-				</div>
-				<div className={p1Classes('dashboard-dataview-calendar-cells')}>
-					{Array.from({ length: start.getDay() }, (_, i) => (
-						<div key={`blank${i}`} className={p1Classes('dashboard-dataview-calendar-cell is-blank')} />
-					))}
-					{Array.from({ length: days }, (_, i) => {
-						const day = i + 1,
-							items =
-								byDay.get(dayKey(new Date(start.getFullYear(), start.getMonth(), day).getTime())) ?? [];
-						return (
-							<div
-								key={day}
-								className={p1Classes(
-									`dashboard-dataview-calendar-cell${items.length ? ' has-dots' : ''}`,
-								)}
-								{...(items.length
-									? {
-											role: 'button',
-											tabIndex: 0,
-											'aria-label': t('dataview.calendarDay', { day, count: items.length }),
-											onKeyDown: (event: import('react').KeyboardEvent) => {
-												if (event.key === 'Enter' || event.key === ' ') {
-													event.preventDefault();
-													openDay(items);
-												}
-											},
-										}
-									: {})}
-								onClick={() => openDay(items)}
-							>
-								<div className={p1Classes('dashboard-dataview-calendar-day')}>{day}</div>
-								{items.length > 0 && (
-									<div className={p1Classes('dashboard-dataview-calendar-dots')}>
-										{items.slice(0, 3).map((_, j) => (
-											<div key={j} className={p1Classes('dashboard-dataview-calendar-dot')} />
-										))}
-										{items.length > 3 && (
-											<div className={p1Classes('dashboard-dataview-calendar-more')}>
-												+{items.length - 3}
-											</div>
-										)}
-									</div>
-								)}
-							</div>
-						);
-					})}
-				</div>
-			</div>
+		<div className="min-w-0 overflow-x-auto">
+			<ProductCalendar
+				month={new Date(cursor)}
+				onMonthChange={(date) => setCursor(date.getTime())}
+				weekStart={0}
+				onSelectDate={openDay}
+				dayLabel={(iso) =>
+					t('dataview.calendarDay', { day: Number(iso.slice(-2)), count: byDay.get(iso)?.length ?? 0 })
+				}
+				renderDayContent={(iso) => {
+					const count = byDay.get(iso)?.length ?? 0;
+					return count ? (
+						<span className="text-xs tabular-nums text-[var(--hu-accent-text)]">{count}</span>
+					) : null;
+				}}
+			/>
 		</div>
 	);
 }
+
 export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 	const t = useT();
 	const totals = new Map<string, number>();
@@ -613,7 +542,7 @@ export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 										value == null
 											? undefined
 											: {
-													backgroundColor: 'var(--board-accent, var(--interactive-accent))',
+													backgroundColor: 'var(--board-accent, var(--hu-accent))',
 													opacity: 0.35 + intensity * 0.65,
 													filter: `brightness(${1 + intensity * 0.5}) saturate(1.4)`,
 												}

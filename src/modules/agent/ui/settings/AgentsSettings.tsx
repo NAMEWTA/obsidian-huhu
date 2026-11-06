@@ -55,7 +55,7 @@ export function AgentsSettings({ controller }: { controller: AgentController }) 
 			{state.refreshing && (
 				<div
 					role="status"
-					className="flex items-center justify-center rounded-md border border-dashed border-border/50 py-6 text-sm text-muted-foreground"
+					className="flex items-center justify-center rounded-md border border-dashed border-[var(--hu-line)]/50 py-6 text-sm text-[var(--hu-fg-2)]"
 				>
 					{t('agent.manage.detecting')}
 				</div>
@@ -63,7 +63,7 @@ export function AgentsSettings({ controller }: { controller: AgentController }) 
 			{state.failed && (
 				<div
 					role="alert"
-					className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive"
+					className="rounded-md border border-[var(--hu-danger)]/40 bg-[var(--hu-danger-soft)]/5 px-3 py-2 text-xs text-[var(--hu-danger)]"
 				>
 					{t('agent.manage.detectFailed')} {state.error}
 				</div>
@@ -95,7 +95,7 @@ export function AgentsSettings({ controller }: { controller: AgentController }) 
 				description={t('agent.manage.removeSystemHooksHint')}
 				control={
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() => {
 							void controller.removeSystemStatusHooks().catch((e) => controller.workspace.report(e));
 						}}
@@ -126,7 +126,7 @@ export function AgentsSettings({ controller }: { controller: AgentController }) 
 				label={t('agent.manage.navigation')}
 				control={
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() =>
 							save((d) => {
 								d.hiddenNavigation = [];

@@ -18,7 +18,7 @@ import type { MenuEntry } from './menu-entry';
 /** The icon of an entry: a lucide component of the navigator's own, or an Obsidian icon id of a host entry. */
 function EntryGlyph({ entry }: { entry: MenuEntry }) {
 	if (entry.icon) return <entry.icon aria-hidden />;
-	if (entry.iconName) return <ObsidianIcon name={entry.iconName} className="size-3.5 text-muted-foreground" />;
+	if (entry.iconName) return <ObsidianIcon name={entry.iconName} className="size-3.5 text-[var(--hu-fg-3)]" />;
 	return null;
 }
 

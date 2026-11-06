@@ -37,11 +37,11 @@ function Remove({
 			)}
 			{error && <p role="alert">{error}</p>}
 			<div className="flex justify-end gap-2">
-				<Button variant="outline" disabled={busy} onClick={close}>
+				<Button variant="secondary" disabled={busy} onClick={close}>
 					{t('common.cancel')}
 				</Button>
 				<Button
-					variant="destructive"
+					variant="danger"
 					disabled={busy}
 					onClick={() => {
 						setBusy(true);

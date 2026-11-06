@@ -36,7 +36,7 @@ export function restoreHunks(source: string, target: string, diff: HunkDiff): re
 		&& (to >= text.length || to === 0 || text[to - 1] === '\n');
 	const hunks = diff.chunks.map(chunk => {
 		if (!chunk.precise || !boundary(a.text, chunk.fromA, chunk.toA) || !boundary(b.text, chunk.fromB, chunk.toB)) throw unavailable();
-		// CM Chunk.toA/toB may be one past EOF (installed @codemirror/merge Chunk contract).
+		// Chunk endpoints may include a virtual final newline; clamp only at EOF.
 		const fromA = chunk.fromA, toA = Math.min(chunk.toA, a.text.length), fromB = chunk.fromB, toB = Math.min(chunk.toB, b.text.length);
 		if (fromA < previousA || fromB < previousB || a.text.slice(previousA, fromA) !== b.text.slice(previousB, fromB)
 			|| a.text.slice(fromA, toA) === b.text.slice(fromB, toB)) throw unavailable();

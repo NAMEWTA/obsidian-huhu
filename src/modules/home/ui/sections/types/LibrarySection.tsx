@@ -30,14 +30,7 @@ import { Label } from '../../../../../ui/components/label';
 import { Checkbox } from '../../../../../ui/components/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../../../ui/components/popover';
 import { EmptyState } from '../../../../../ui/components/huhu/EmptyState';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '../../../../../ui/components/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../../../ui/components/table';
 import { cn } from '../../../../../ui/lib/utils';
 import { useT } from '../../../../../ui/react/hooks';
 import { Choice, IconButton } from '../../board/controls';
@@ -93,7 +86,7 @@ function FileCard({
 					config.propertyLimit ?? 3,
 				);
 	return (
-		<div className="group/file relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-background shadow-xs transition-shadow hover:shadow-sm">
+		<div className="group/file relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-background shadow-[var(--hu-shadow-card)] transition-shadow hover:shadow-sm">
 			<Button
 				variant="ghost"
 				className="h-auto w-full flex-col items-stretch justify-start gap-1.5 rounded-none p-3 text-left font-normal whitespace-normal"
@@ -120,7 +113,7 @@ function FileCard({
 				{keys.length > 0 && (
 					<span className="flex w-full flex-wrap gap-1">
 						{keys.map((key) => (
-							<Badge key={key} variant="secondary" className="max-w-full rounded-md font-normal">
+							<Badge key={key} variant="neutral" className="max-w-full rounded-md font-normal">
 								<span className="truncate">
 									<span className="text-primary">{key}:</span> {display(row.frontmatter[key])}
 								</span>
@@ -180,7 +173,7 @@ function LibraryGroup({
 			{name && (
 				<Button
 					variant="ghost"
-					className="mb-1 h-9 w-full justify-start px-2"
+					className="mb-1 h-[var(--hu-ctl-h)] w-full justify-start px-2"
 					aria-expanded={!collapsed}
 					onClick={toggle}
 				>
@@ -196,7 +189,10 @@ function LibraryGroup({
 							<TableHeader>
 								<TableRow>
 									{columns.map((key) => (
-										<TableHead key={key} className="h-9 px-2 text-xs text-muted-foreground">
+										<TableHead
+											key={key}
+											className="h-[var(--hu-ctl-h)] px-2 text-xs text-muted-foreground"
+										>
 											{key === 'file.name'
 												? t('home.dashboard.name')
 												: key === 'file.modified'
@@ -213,7 +209,7 @@ function LibraryGroup({
 											<TableCell key={key} className="max-w-60 truncate px-2 py-1.5">
 												{key === 'file.name' ? (
 													<Button
-														variant="link"
+														variant="ghost"
 														className="h-auto max-w-full justify-start p-0 text-sm"
 														onClick={() => {
 															void store.openFile(row.file.path);
@@ -369,7 +365,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				/>
 				<Choice
 					label={t('home.dashboard.sort')}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={config.sortBy}
 					onChange={(sortBy) => patch({ sortBy })}
 					options={['modified', 'created', 'name'].map((value) => ({
@@ -378,8 +374,8 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 					}))}
 				/>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="secondary"
+					size="icon-md"
 					aria-label={t('home.dashboard.sort')}
 					aria-pressed={!!config.sortDesc}
 					onClick={() => patch({ sortDesc: !config.sortDesc })}
@@ -388,7 +384,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				</Button>
 				<Choice
 					label={t('home.dashboard.view')}
-					className="w-32 data-[size=sm]:h-9"
+					className="w-32 data-[size=sm]:h-[var(--hu-ctl-h)]"
 					value={config.viewMode}
 					onChange={(viewMode) => patch({ viewMode: viewMode as LibraryConfig['viewMode'] })}
 					options={['grid', 'gallery', 'list', 'table', 'kanban'].map((value) => ({
@@ -399,8 +395,8 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button
-							variant="outline"
-							size="icon"
+							variant="secondary"
+							size="icon-md"
 							aria-label={t('library.displayOptions')}
 							className={dated ? 'text-primary' : undefined}
 						>
@@ -412,7 +408,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							<span className="text-xs text-muted-foreground">{t('home.dashboard.size')}</span>
 							<Choice
 								label={t('home.dashboard.size')}
-								className="w-full data-[size=sm]:h-9"
+								className="w-full data-[size=sm]:h-[var(--hu-ctl-h)]"
 								value={config.cardSize ?? 'medium'}
 								onChange={(cardSize) => patch({ cardSize: cardSize as LibraryConfig['cardSize'] })}
 								options={[
@@ -424,12 +420,15 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							<span className="text-xs text-muted-foreground">{t('home.dashboard.group')}</span>
 							<Choice
 								label={t('home.dashboard.group')}
-								className="w-full data-[size=sm]:h-9"
+								className="w-full data-[size=sm]:h-[var(--hu-ctl-h)]"
 								value={groupMode}
 								onChange={(mode) =>
 									patch(
 										config.viewMode === 'kanban'
-											? { groupMode: mode === 'none' ? 'property' : (mode as 'folder' | 'property') }
+											? {
+													groupMode:
+														mode === 'none' ? 'property' : (mode as 'folder' | 'property'),
+												}
 											: { viewGroupMode: mode as LibraryConfig['viewGroupMode'] },
 									)
 								}
@@ -441,7 +440,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							<span className="text-xs text-muted-foreground">{t('home.dashboard.pageSize')}</span>
 							<Choice
 								label={t('home.dashboard.pageSize')}
-								className="w-full data-[size=sm]:h-9"
+								className="w-full data-[size=sm]:h-[var(--hu-ctl-h)]"
 								value={String(config.pageSize ?? 20)}
 								onChange={(value) => patch({ pageSize: +value })}
 								options={[10, 20, 50, 100].map((value) => ({
@@ -452,7 +451,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 						</div>
 						<div className="flex flex-wrap gap-2">
 							<Button
-								variant="outline"
+								variant="secondary"
 								className={dated ? 'text-primary' : undefined}
 								onClick={() => {
 									setDraft(structuredClone(config));
@@ -463,14 +462,14 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 								{t('home.dashboard.dateFilter')}
 							</Button>
 							{config.viewMode === 'table' && (
-								<Button variant="outline" onClick={() => setDialog('columns')}>
+								<Button variant="secondary" onClick={() => setDialog('columns')}>
 									<Eye />
 									{t('home.dashboard.columns')}
 								</Button>
 							)}
 							{groupMode !== 'none' && (
 								<Button
-									variant="outline"
+									variant="secondary"
 									onClick={() => setCollapsed(collapsed.length ? [] : [...groups.keys()])}
 								>
 									{t(collapsed.length ? 'home.dashboard.expandAll' : 'home.dashboard.collapseAll')}
@@ -484,12 +483,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				</span>
 			</div>
 			{all.length === 0 ? (
-				<EmptyState
-					size="sm"
-					className="min-h-0 flex-1"
-					icon={<Database />}
-					title={t('library.empty')}
-				/>
+				<EmptyState size="sm" className="min-h-0 flex-1" icon={<Database />} title={t('library.empty')} />
 			) : (
 				<div
 					className={cn(
@@ -502,7 +496,13 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				>
 					{[...groups].map(([key, rows]) => (
 						<LibraryGroup
-							key={key + config.viewMode + config.pageSize + search + JSON.stringify(config.quickDateFilter)}
+							key={
+								key +
+								config.viewMode +
+								config.pageSize +
+								search +
+								JSON.stringify(config.quickDateFilter)
+							}
 							name={key}
 							rows={rows}
 							config={config}
@@ -535,27 +535,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							})
 						}
 					/>
-					{(['start', 'end'] as const).map((key) => (
-						<Label key={key}>
-							{t(`home.dashboard.${key}`)}
-							<Input
-								type="date"
-								value={draft.quickDateFilter?.[key] ?? ''}
-								onChange={(e) =>
-									setDraft({
-										...draft,
-										quickDateFilter: {
-											property: 'modified',
-											start: '',
-											end: '',
-											...draft.quickDateFilter,
-											[key]: e.target.value,
-										},
-									})
-								}
-							/>
-						</Label>
-					))}
+
 					<Button variant="ghost" onClick={() => setDraft({ ...draft, quickDateFilter: undefined })}>
 						{t('home.dashboard.clear')}
 					</Button>
@@ -649,38 +629,23 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 						</div>
 					))}
 					<Button
-						variant="outline"
+						variant="secondary"
 						onClick={() =>
 							setDraft({ ...draft, filters: [...draft.filters, { property: 'tags', values: [] }] })
 						}
 					>
 						{t('home.dashboard.addFilter')}
 					</Button>
-					<Label className="grid gap-2">
-						{t('home.dashboard.dateFilter')}
-						<div className="flex gap-2">
-							{(['start', 'end'] as const).map((key) => (
-								<Input
-									key={key}
-									type="date"
-									aria-label={t(`home.dashboard.${key}`)}
-									value={draft.quickDateFilter?.[key] ?? ''}
-									onChange={(e) =>
-										setDraft({
-											...draft,
-											quickDateFilter: {
-												property: 'modified',
-												start: '',
-												end: '',
-												...draft.quickDateFilter,
-												[key]: e.target.value,
-											},
-										})
-									}
-								/>
-							))}
-						</div>
-					</Label>
+					<DateRangeCalendar
+						start={draft.quickDateFilter?.start ?? ''}
+						end={draft.quickDateFilter?.end ?? ''}
+						onChange={(start, end) =>
+							setDraft({
+								...draft,
+								quickDateFilter: { property: 'modified', ...draft.quickDateFilter, start, end },
+							})
+						}
+					/>
 					<Label className="grid gap-2">
 						{t('home.dashboard.template')}
 						<FolderListField
@@ -688,9 +653,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							kind="file"
 							label={t('home.dashboard.template')}
 							folders={draft.templatePaths ?? []}
-							onChange={(templatePaths) =>
-								setDraft({ ...draft, templatePaths })
-							}
+							onChange={(templatePaths) => setDraft({ ...draft, templatePaths })}
 						/>
 					</Label>
 				</DashboardDialog>
@@ -712,7 +675,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 							/>
 							{key}
 							<Button
-								size="xs"
+								size="sm"
 								variant="ghost"
 								disabled={!i}
 								onClick={() => {
@@ -770,7 +733,7 @@ export function LibrarySection({ store, column }: { store: BoardStore; column: D
 				<DashboardDialog title={t('common.delete')} onClose={() => setRemove(null)}>
 					<p>{remove.basename}</p>
 					<Button
-						variant="destructive"
+						variant="danger"
 						onClick={() => {
 							void store.trash(remove.file).then(() => setRemove(null));
 						}}

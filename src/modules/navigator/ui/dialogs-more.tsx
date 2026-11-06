@@ -49,7 +49,7 @@ function ConfirmBody({ options, onConfirm, onCancel }: { options: ConfirmOptions
 	return (
 		<div className="space-y-4">
 			{options.lines?.length ? (
-				<ul className="max-h-40 list-none space-y-1 overflow-y-auto rounded-md border border-border p-2 text-sm">
+				<ul className="max-h-40 list-none space-y-1 overflow-y-auto rounded-md border border-[var(--hu-line)] p-2 text-sm">
 					{options.lines.map((line, index) => <li key={`${line}-${index}`} className="truncate">{line}</li>)}
 				</ul>
 			) : null}
@@ -60,8 +60,8 @@ function ConfirmBody({ options, onConfirm, onCancel }: { options: ConfirmOptions
 				</div>
 			) : null}
 			<div className="flex justify-end gap-2">
-				<Button type="button" variant="outline" onClick={onCancel}>{t('navigator.cancel')}</Button>
-				<Button type="button" variant={options.danger ? 'destructive' : 'default'} autoFocus onClick={() => onConfirm(checked)}>{options.confirmLabel}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant="secondary" onClick={onCancel}>{t('navigator.cancel')}</Button>
+				<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" variant={options.danger ? 'danger' : 'primary'} autoFocus onClick={() => onConfirm(checked)}>{options.confirmLabel}</Button>
 			</div>
 		</div>
 	);
@@ -95,20 +95,20 @@ function ChoiceList({ options, onPick }: { options: ChooseOptions; onPick: (valu
 	const typed = query.trim();
 	const canCreate = !!options.create && !!typed && options.create.valid(typed) && !options.items.some((item) => item.value.toLowerCase() === typed.toLowerCase());
 	return (
-		<Command className="h-72 rounded-md border border-border">
+		<Command className="h-72 rounded-md border border-[var(--hu-line)]">
 			<CommandInput autoFocus placeholder={options.placeholder} aria-label={options.placeholder} value={query} onValueChange={setQuery} />
 			<CommandList>
 				{/* Not inside a group: cmdk hides a group whose items are all forced rows. */}
 				{canCreate && options.create ? (
 					<CommandItem value={`__create__${typed}`} forceMount onSelect={() => onPick(typed)}>
-						<Plus aria-hidden className="size-4 text-muted-foreground" />
+						<Plus aria-hidden className="size-4 text-[var(--hu-fg-3)]" />
 						<span className="truncate">{options.create.label(typed)}</span>
 					</CommandItem>
 				) : <CommandEmpty>{options.empty}</CommandEmpty>}
 				{options.items.map((item) => (
 					<CommandItem key={item.value} value={`${item.label} ${item.value}`} onSelect={() => onPick(item.value)}>
 						<span className="min-w-0 flex-1 truncate">{item.label}</span>
-						{item.hint ? <span className="shrink-0 text-xs text-muted-foreground">{item.hint}</span> : null}
+						{item.hint ? <span className="shrink-0 text-xs text-[var(--hu-fg-3)]">{item.hint}</span> : null}
 					</CommandItem>
 				))}
 			</CommandList>

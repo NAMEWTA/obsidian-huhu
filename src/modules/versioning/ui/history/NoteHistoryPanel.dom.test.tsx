@@ -158,7 +158,7 @@ async function fixture(more = false, released = false) {
 			<NoteHistoryPanel host={host} />
 		</HuhuProviders>,
 	);
-	await screen.findByRole('button', { name: /Git version/ });
+	await screen.findByRole('button', { name: /^Git version ·/ });
 	return {
 		view,
 		fileHistory,
@@ -186,11 +186,11 @@ test.each(['resolve', 'reject'] as const)(
 			first = deferred<string>(),
 			second = deferred<string>();
 		await selectSource('Restore checkpoints');
-		await screen.findByRole('button', { name: /Checkpoint A/ });
+		await screen.findByRole('button', { name: /^Before restore · Checkpoint A ·/ });
 		expect(f.readSnapshot).not.toHaveBeenCalled();
 		f.readSnapshot.mockImplementationOnce(() => first.promise).mockImplementationOnce(() => second.promise);
-		fireEvent.click(screen.getByRole('button', { name: /Checkpoint A/ }));
-		fireEvent.click(screen.getByRole('button', { name: /Checkpoint B/ }));
+		fireEvent.click(screen.getByRole('button', { name: /^Before restore · Checkpoint A ·/ }));
+		fireEvent.click(screen.getByRole('button', { name: /^Before restore · Checkpoint B ·/ }));
 		await act(async () => {
 			second.resolve('Latest selected B');
 			await second.promise;
@@ -221,7 +221,7 @@ test.each(['history source', 'document', 'unmount'] as const)(
 			pending = deferred<string>();
 		await selectSource('Restore checkpoints');
 		f.readSnapshot.mockImplementationOnce(() => pending.promise);
-		fireEvent.click(await screen.findByRole('button', { name: /Checkpoint A/ }));
+		fireEvent.click(await screen.findByRole('button', { name: /^Before restore · Checkpoint A ·/ }));
 		expect(f.readSnapshot).toHaveBeenCalledExactlyOnceWith('before-A');
 		if (change === 'history source') await selectSource('Git commits');
 		else if (change === 'document') act(() => f.changeDocument());
@@ -261,7 +261,7 @@ test('keeps a current snapshot-read failure visible without opening an empty com
 	const f = await fixture();
 	await selectSource('Restore checkpoints');
 	f.readSnapshot.mockRejectedValueOnce(new Error('checkpoint cannot be read'));
-	fireEvent.click(await screen.findByRole('button', { name: /Checkpoint A/ }));
+	fireEvent.click(await screen.findByRole('button', { name: /^Before restore · Checkpoint A ·/ }));
 	await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('checkpoint cannot be read'));
 	expect(f.openVersion).not.toHaveBeenCalled();
 	f.view.unmount();
@@ -270,8 +270,8 @@ test('keeps a current snapshot-read failure visible without opening an empty com
 test('a retained receipt whose body was released is not offered as a readable checkpoint', async () => {
 	const f = await fixture(false, true);
 	await selectSource('Restore checkpoints');
-	await screen.findByRole('button', { name: /Checkpoint B/ });
-	expect(screen.queryByRole('button', { name: /Checkpoint A/ })).toBeNull();
+	await screen.findByRole('button', { name: /^Before restore · Checkpoint B ·/ });
+	expect(screen.queryByRole('button', { name: /^Before restore · Checkpoint A ·/ })).toBeNull();
 	expect(f.readSnapshot).not.toHaveBeenCalled();
 	f.view.unmount();
 });

@@ -1,3 +1,5 @@
+import { validateDate } from '../../../../ui/components/huhu/date';
+import { Checkbox } from '../../../../ui/components/checkbox';
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/pipeline-section.ts
 import { p1Classes } from '../theme/p1-classes';
 import { useEffect, useRef, useState } from 'react';
@@ -55,6 +57,7 @@ export function PipelineCard({
 		[pending, setPending] = useState(false);
 	const [editingDue, setEditingDue] = useState(false),
 		[date, setDate] = useState(''),
+		[dateRaw, setDateRaw] = useState(''),
 		[time, setTime] = useState(''),
 		[remind, setRemind] = useState(false);
 	useEffect(() => {
@@ -95,7 +98,8 @@ export function PipelineCard({
 			className={p1Classes('huhu-pipeline-card dashboard-pipeline-card group/pipeline relative')}
 			data-pipeline-path={note.path}
 		>
-			<button
+			<Button
+				variant="ghost"
 				data-hit-control
 				type="button"
 				className={p1Classes('dashboard-pipeline-card-title block w-full text-left')}
@@ -110,17 +114,18 @@ export function PipelineCard({
 				}}
 			>
 				{note.title}
-			</button>
+			</Button>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<button
+					<Button
+						variant="ghost"
 						data-hit-control
 						type="button"
 						aria-label={t('home.pipeline.move')}
 						className="absolute top-1 right-1 p-1 opacity-0 group-hover/pipeline:opacity-100 focus-visible:opacity-100"
 					>
 						<MoreHorizontal className="size-3" />
-					</button>
+					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					{config.stages.map((stage) => (
@@ -131,13 +136,15 @@ export function PipelineCard({
 				</DropdownMenuContent>
 			</DropdownMenu>
 			<div className={p1Classes('dashboard-pipeline-card-foot')}>
-				<button
+				<Button
+					variant="ghost"
 					data-hit-control
 					type="button"
 					className={p1Classes(`dashboard-pipeline-foot-btn${due ? ' is-set' : ''}`)}
 					disabled={busy || pending}
 					onClick={() => {
 						setDate(due?.date ?? '');
+						setDateRaw(due?.date ?? '');
 						setTime(due?.time ?? '');
 						setRemind(note.frontmatter.remind === true);
 						setEditingDue(true);
@@ -145,8 +152,9 @@ export function PipelineCard({
 				>
 					<CalendarClock className="size-3" />
 					<span>{due ? `${due.date} ${due.time ?? ''}` : t('pipeline.dueSet')}</span>
-				</button>
-				<button
+				</Button>
+				<Button
+					variant="ghost"
 					data-hit-control
 					type="button"
 					className={p1Classes('dashboard-pipeline-foot-btn dashboard-pipeline-todo-toggle')}
@@ -159,10 +167,11 @@ export function PipelineCard({
 							? `${tasks.filter((task) => task.checked).length}/${tasks.length}`
 							: t('pipeline.todoEmptyLabel')}
 					</span>
-				</button>
+				</Button>
 				<div className={p1Classes('dashboard-pipeline-foot-spacer')} />
 				{config.archiveFolder && (
-					<button
+					<Button
+						variant="ghost"
 						data-hit-control
 						type="button"
 						className={p1Classes('dashboard-pipeline-skill-btn')}
@@ -171,10 +180,11 @@ export function PipelineCard({
 						onClick={() => move('archive')}
 					>
 						<Archive className="size-3" />
-					</button>
+					</Button>
 				)}
 				{skills.map((skill) => (
-					<button
+					<Button
+						variant="ghost"
 						data-hit-control
 						type="button"
 						key={skill.id}
@@ -197,19 +207,18 @@ export function PipelineCard({
 						}
 					>
 						<Sparkles className="size-3" />
-					</button>
+					</Button>
 				))}
 			</div>
 			{expanded && (
 				<div className={p1Classes('dashboard-pipeline-tasks')}>
 					{tasks.map((task) => (
 						<label className="flex items-center gap-1" key={`${task.line}:${task.originalLine}`}>
-							<input
-								type="checkbox"
+							<Checkbox
 								disabled={busy || pending}
 								checked={task.checked}
-								onChange={(event) => {
-									const checked = event.currentTarget.checked;
+								onCheckedChange={(value) => {
+									const checked = value === true;
 									void mutate(() => port.toggleTask(config, note.path, task, checked, signal));
 								}}
 							/>
@@ -222,14 +231,20 @@ export function PipelineCard({
 			{editingDue && (
 				<DashboardDialog title={t('home.pipeline.due')} onClose={() => setEditingDue(false)}>
 					<div className="grid gap-2">
-						<TextField type="date" label={t('home.pipeline.due')} value={date} onInput={setDate} />
+						<TextField
+							type="date"
+							label={t('home.pipeline.due')}
+							value={date}
+							draftValue={dateRaw}
+							onDraftChange={setDateRaw}
+							onInput={(value) => {
+								setDate(value);
+								setDateRaw(value);
+							}}
+						/>
 						<TextField type="time" label={t('home.pipeline.time')} value={time} onInput={setTime} />
 						<label className={p1Classes('flex items-center gap-1')}>
-							<input
-								type="checkbox"
-								checked={remind}
-								onChange={(event) => setRemind(event.currentTarget.checked)}
-							/>
+							<Checkbox checked={remind} onCheckedChange={(checked) => setRemind(checked === true)} />
 							{t('home.pipeline.remind')}
 						</label>
 						<div className={p1Classes('dashboard-pipeline-card-foot flex gap-2')}>
@@ -237,10 +252,17 @@ export function PipelineCard({
 								{t('common.cancel')}
 							</Button>
 							<Button
-								disabled={pending || !date}
+								disabled={pending || !!validateDate(dateRaw, { required: true })}
 								onClick={() => {
+									if (validateDate(dateRaw, { required: true })) return;
 									void mutate(() =>
-										port.setDue(config, note.path, date + (time ? ` ${time}` : ''), remind, signal),
+										port.setDue(
+											config,
+											note.path,
+											dateRaw + (time ? ` ${time}` : ''),
+											remind,
+											signal,
+										),
 									);
 								}}
 							>

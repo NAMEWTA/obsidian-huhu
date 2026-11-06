@@ -23,14 +23,14 @@ import { TabLeadingIcon } from './TabLeadingIcon';
 import { tabTitle } from './tab-title';
 import { useWorkspaceUI } from '../workspace/workspace-context';
 const colors: Record<TabColor, string> = {
-	red: 'bg-status-error',
-	orange: 'bg-agent-question',
-	yellow: 'bg-status-warning',
-	green: 'bg-status-success',
-	blue: 'bg-chart-1',
-	purple: 'bg-chart-2',
-	pink: 'bg-chart-3',
-	gray: 'bg-muted-foreground',
+	red: 'bg-[var(--hu-danger)]',
+	orange: 'bg-[var(--hu-warning)]',
+	yellow: 'bg-[var(--hu-warning)]',
+	green: 'bg-[var(--hu-success)]',
+	blue: 'bg-[var(--hu-chart-1)]',
+	purple: 'bg-[var(--hu-chart-2)]',
+	pink: 'bg-[var(--hu-chart-3)]',
+	gray: 'bg-[var(--hu-fg-3)]',
 };
 export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: string; active: boolean }) {
 	const { controller, close } = useWorkspaceUI(),
@@ -83,10 +83,10 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 					data-pinned={tab.pinned || undefined}
 					title={editing ? undefined : tabTitle(tab, t)}
 					className={cn(
-						'group relative flex h-full w-[180px] min-w-[72px] cursor-pointer select-none items-center gap-1.5 border-t border-r border-border px-1.5 text-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 xl:w-[220px]',
+						'group relative flex h-full w-[180px] min-w-[72px] cursor-pointer select-none items-center gap-1.5 border-t border-r border-[var(--hu-line)] px-1.5 text-xs outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--hu-accent)]/50 xl:w-[220px]',
 						active
-							? 'bg-[color-mix(in_srgb,var(--foreground)_6%,var(--card))] text-foreground'
-							: 'bg-card text-muted-foreground hover:text-foreground',
+							? 'bg-[var(--hu-canvas)] shadow-[inset_0_-2px_var(--hu-accent)] text-[var(--hu-fg)]'
+							: 'bg-[var(--hu-raised)] text-[var(--hu-fg-2)] hover:text-[var(--hu-fg)]',
 						isOver && dragged?.id !== tab.id && 'border-l-2 border-l-ring',
 					)}
 					onClick={() => {
@@ -159,7 +159,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 							<TooltipTrigger asChild>
 								<Button
 									variant="ghost"
-									size="icon-xs"
+									size="icon-sm"
 									className={cn('huhu-workspace-tab-close size-8 rounded-sm')}
 									aria-label={t('agent.workspace.closeTab')}
 									onPointerDown={(e) => e.stopPropagation()}
@@ -174,7 +174,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 							<TooltipContent>{t('agent.workspace.closeTab')}</TooltipContent>
 						</Tooltip>
 					)}
-					{active && <span className="absolute inset-x-0 bottom-0 h-[2px] bg-foreground" />}
+					{active && <span className="absolute inset-x-0 bottom-0 h-[2px] bg-[var(--hu-accent)]" />}
 				</div>
 			</ContextMenuTrigger>
 			<ContextMenuContent>

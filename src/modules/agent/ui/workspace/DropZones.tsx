@@ -21,7 +21,7 @@ function Zone({ groupId, edge }: { groupId: string; edge: keyof typeof positions
 			data-drop-zone={edge}
 			aria-hidden="true"
 			className={cn(
-				'absolute border border-dashed border-ring/30',
+				'absolute border border-dashed border-[var(--hu-accent)]/30',
 				positions[edge],
 				isOver ? 'bg-ring/20' : 'bg-ring/5',
 			)}
@@ -34,7 +34,7 @@ function Zone({ groupId, edge }: { groupId: string; edge: keyof typeof positions
 }
 export function DropZones({ groupId }: { groupId: string }) {
 	return (
-		<div className="absolute inset-0 z-[var(--layer-popover)]">
+		<div className="absolute inset-0 z-[var(--hu-z-panel)]">
 			{(Object.keys(positions) as (keyof typeof positions)[]).map((edge) => (
 				<Zone key={edge} groupId={groupId} edge={edge} />
 			))}

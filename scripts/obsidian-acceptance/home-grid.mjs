@@ -17,7 +17,7 @@ const DEFAULT = '.huhu/dashboards/Default';
 const MANY = '.huhu/dashboards/Many';
 /** Thirty standalone cards: thirty tiles to drag through. */
 const many = `---\nwidgets: []\ngrid: {"v":2,"lg":[]}\ncolumns: [{name: Sticky, type: sticky}]\n---\n\n## Sticky\n\n${Array.from({ length: 30 }, (_, i) => `### Card ${i + 1}\nid: many-${i + 1}\ntype: generic\nBody ${i + 1}\n`).join('\n')}`;
-const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, versioning: false, navigator: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_GRID_PORT || 9281),

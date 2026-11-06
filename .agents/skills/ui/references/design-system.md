@@ -1,66 +1,91 @@
-# 设计系统
+# 设计系统与组合
 
-[03 设计系统](../../../../docs/design-system.md)提供当前结构与复用入口，本文维护实施约定。精确令牌取值由 `src/ui/styles/tokens.css` 负责，Tailwind 映射见 `src/ui/tailwind/index.css`，组件变体和尺寸见 `src/ui/components/` 与 `src/ui/styles/base.css`；上游来源见[参考映射与许可](../../../../docs/references.md)。React 19 + shadcn/ui（new-york-v4）组件放在 `src/ui/components/`，HUHU 组合组件放在 `components/huhu/`；组件约定见 [ui 技能](../SKILL.md)。
+批准依据和读取路由见 [ui 入口](../SKILL.md)。本文件维护组件、值与样式边界；令牌完整数值只查 `src/ui/styles/tokens.css`，Tailwind 映射查 `src/ui/tailwind/index.css`，组件 props 查 `src/ui/components/`。不要在多个参考复制数值表。来源、版权与许可保留在改编文件及 [来源映射](../../../../docs/references.md)，许可操作由 [dev](../../dev/references/licensing.md) 负责。
 
-## 令牌速查
+## 令牌和组件
 
-令牌定义在 `src/ui/styles/tokens.css` 的 `.huhu-ui` 上，默认派生自 Obsidian 变量，经 `src/ui/tailwind/index.css` 的 `@theme inline` 映射。组件优先写语义工具类（如 `bg-card text-muted-foreground`），不直接写颜色值。
+HUHU UI 使用独立 paper/ink 语义色；颜色来源/字体设置见 [theme](theme.md)。布局只用语义令牌，不在模块写色值或靠旧主题变量恢复旧 UI。`--background/--card/--primary/--accent` 等 shadcn 别名、`--nd-font-sans/mono` 是从 HU 令牌派生的适配，不是独立色板；不要因名称旧而删除仍有效的桥接。
 
-| 用途 | 令牌或工具类 |
+| 决定 | 真实生产来源 |
 |---|---|
-| 页面、卡片、弹层 | `--background` / `--foreground`、`--card` / `--card-foreground`、`--popover` / `--popover-foreground` |
-| 主操作、次要操作、弱化内容、悬停 | `--primary`、`--secondary`、`--muted`、`--accent` 及各自 `-foreground` |
-| 危险、边线、输入、焦点 | `--destructive` / `--destructive-foreground`、`--border`、`--input`、`--ring` |
-| 侧栏 | `--sidebar`、`--sidebar-foreground`、`--sidebar-accent`、`--sidebar-accent-foreground`、`--sidebar-border` |
-| 状态、智能体等待、图表 | `--status-success`、`--status-warning`、`--status-error`、`--status-info`、`--status-working`、`--agent-question`、`--chart-1`～`--chart-5` |
-| 字体 | `--nd-font-sans`（Geist + 中文系统回退）、`--nd-font-mono`（Geist Mono）；终端字体独立设置 |
-| 圆角 | `--radius: 0.625rem`；`rounded-sm/md/lg/xl` = 6/8/10/14px，药丸用 `rounded-full` |
-| 间距、字号 | 4px 基准；`text-3xs/2xs/xs/sm` = 10/11/12/14px；密集行 `text-[13px]`，数字 `tabular-nums` |
-| 阴影 | 细线 → `shadow-xs` + 细线 → 弹层 `shadow-floating`，不另造层级 |
-| 层级 | 粘性内容用规范指定的 `z-10`；拖拽、菜单、模态框、提示、通知分别用 `--layer-dragged-item`、`--layer-menu`、`--layer-modal`、`--layer-tooltip`、`--layer-notice`（如 `z-[var(--layer-menu)]`） |
-| 动效 | `--anim-duration-fast`、`--anim-duration-moderate`；细则见 [动效与无障碍](motion-a11y.md) |
+| 背景、文字、边线、强调、语义状态 | `--hu-canvas/surface/raised/sunken`、`--hu-fg`、`--hu-fg-2`、`--hu-fg-3`、`--hu-line/control-line`、`--hu-accent/-soft/-text/-fg`、success/warning/danger/info；不猜不存在的令牌 |
+| 字体与类型 | `--hu-font-ui/read/mono`：Geist、阅读衬线、Geist Mono 及 CJK 回退；`--hu-text-*`/行高/字重，数字 tabular-nums。中文和必要 metadata 不小于批准的最小字号，不能继续旧 10/11px 密集文字 |
+| 间距、形状、密度 | `--hu-space-*`、`--hu-radius-*`、`--hu-ctl-h/row-h/list-row-h/card-pad`；密度与命中尺寸分开，虚拟器按实际行高重测；`--hu-shadow-card`、`--hu-shadow-pop` 按角色使用 |
+| 图标 | lucide-react；保留组件规定的尺寸、描边和视觉/命中区别。用户配置 Obsidian 图标名才用 ObsidianIcon/setIcon，不新引图标引擎 |
+| 特殊表面 | 图表 `--hu-chart-*`、终端 `--hu-term-*`、差异 `--hu-diff-*` 桥接；终端、编辑器和 shadow DOM 由其适配器消费，不靠外层选择器穿透 |
 
-默认跟随 Obsidian；选择界面主题（设置 → 外观）后，`body.huhu-themed` 同时设置 Obsidian 变量和 `--nt-*` 令牌，`.huhu-ui` 令牌读取它们（`--card`、`--popover`、`--secondary`、`--accent`、`--chart-*` 等优先取 `--nt-*`，没有时回退到 Obsidian 变量），嵌套或直接挂在 body 下的 `.huhu-ui` 都命中同一套令牌，新增表面不要自己写主题分支。HUHU 没有单独的配色或 `data-palette` 属性。看板没有独立主题：`.huhu-dashboard-root` 把 `--db-*` 全部从这组全局令牌派生（`src/modules/home/ui/theme/tokens.css`），不要在看板里写十六进制颜色或新增主题。看板弹窗加 `huhu-dashboard-root` 以获得 `--db-*`，圆角、模糊等装饰覆盖由 `useDashboardAppearance` 镜像。字体由外观设置选择（`--huhu-font-*-user`），默认界面字体是 Geist。
-
-## 组件清单
-
-| 用途 | `src/ui/components/` |
+| 需求 | 从 `src/ui/components/` 复用 |
 |---|---|
-| 操作与表单 | `Button`、`Input`、`Textarea`、`Label`、`Select`、`Switch`、`Checkbox`、`Slider`、`Progress` |
-| 切换与容器 | `Toggle`、`ToggleGroup`、`Tabs`、`ScrollArea`、`Separator`、`Collapsible`、`Accordion`、`Resizable` |
-| 菜单与选择 | `DropdownMenu`、`ContextMenu`、`Command`（cmdk） |
-| 弹层 | `Tooltip`、`Popover`、`HoverCard`、`Dialog`、`Sheet`、`AlertDialog` |
-| 展示与反馈 | `Badge`、`Card`、`Skeleton`、`Table`、`Toaster` / `toast`（sonner） |
-| HUHU 组合 | `EmptyState`、`SettingsSection`、`SettingsRow`、`SettingsSwitchRow`、`SegmentedControl`、`SettingsBadge`、`StatusDot`、`AgentIcon`、`ObsidianIcon`、`ShortcutKeyCombo`、`RelativeTime`、`InlineRename`、`ConfirmDialog`、`PathPicker`（库内路径输入：模糊匹配建议、规范化为库根相对路径、拒绝 `..` 和隐藏目录；`VaultPathField` 绑定 `app.vault` 并在接受时创建缺失的文件夹）、`IconPicker`、`ColorField`、`NumberField` |
+| 操作/输入 | Button、Input、Textarea、Label、Select、Switch、Checkbox、Slider；Button variants 为 primary/secondary/ghost/danger/danger-ghost，sizes 为 sm/md/lg/icon-sm/icon-md/icon-lg；取消用 secondary/ghost，不标危险 |
+| 表单/设置 | huhu/FormField、SettingsSection、SettingsRow、SettingsSwitchRow、SegmentedControl、PathPicker/VaultPathField、NumberField/ColorField；先核实对应专用控件值域和必需 props |
+| 日期 | huhu/date 的 Calendar、DateField、MonthField、DateRangeField、DateTimeField；值与领域映射见下节 |
+| 展示/反馈 | Badge（neutral/accent/success/warning/error）、Table、Card、Skeleton、huhu/Notice（info/success/warning/error）、EmptyState、TaskContent |
+| 导航/容器 | Tabs、ScrollArea、Separator、Accordion、Collapsible、Tree；分屏用 ResizablePanelGroup/ResizablePanel/ResizableHandle（panels v4），尺寸数字为 px，百分比为字符串 |
+| 弹层/菜单 | Popover、Dialog、Sheet、AlertDialog、Tooltip、HoverCard、DropdownMenu、ContextMenu、Command；编辑表单不用 Tooltip/HoverCard |
 
-Button 变体为 `default/secondary/outline/ghost/link/destructive`；取消不是危险操作。图标用 `lucide-react`，只有用户配置的 Obsidian 图标名通过 `ObsidianIcon` 包装 `setIcon`。设置页用 React 设置行；自动化在独立看板的页内编辑器中编辑，其他模块通过统一服务弹出新建对话框，入口见[自动化设计](../../../../docs/automation.md)。外观工作室和统计沿用各自现有大对话框。可编辑批注浮窗用受控 `Popover`，不能用 `Tooltip` 或 `HoverCard` 装表单。
+Button 的 busy 使用真实 Promise 阶段，锁住重复提交且宽度稳定；slotted 原生/自定义按钮也要保留 type/disabled 语义，不能依赖样式“禁用”。非控件包装不冒充 labelable element。`FormField` 只接一个可关联的 React 控件；money/table/多选等组合用 fieldset/legend 或正确的 ARIA 组。保留 false/0/missing/null、隐藏字段原值及领域只读约束。
 
-溢出规则：任何按钮、标签和工具栏都不得超出自己的容器，文字不得越过按钮边框。`Button` 把裸文字包进省略号标签（`min-w-0 overflow-hidden text-ellipsis`，换行与否继承按钮的 `white-space`），文字按钮带 `min-w-0 max-w-full`，只有图标或元素内容的按钮保持原有盒子；文字按钮只保留最小高度，最小宽度只给图标尺寸。文字按钮在行内保持自然宽度（不收缩，否则 `w-full` 输入框旁的按钮会被截断），所以一行放不下时由工具栏负责：用 `flex-wrap`，或把次要操作收进 `DropdownMenu`，或用容器查询（`@container`、`@max-[…]:`，不用视口断点）收成图标按钮并保留 `aria-label` 与 `Tooltip`。被省略号截断的文字必须有 `title` 或可访问名称。标签条（`ResourceTabs`、智能体标签条）的标签在最小与最大宽度之间收缩，超过最小宽度再横向滚动，滚动箭头只在真正溢出时出现。验收用 `scripts/obsidian-acceptance/overflow-audit.mjs`（逐页遍历按钮与标签，窄宽度、中英文、亮暗与 Minimal 下违规必须为 0）和 `pnpm test:ui-styles` 的溢出样例。
+Table 的表头36，正文随密度为44/52；Tree行高与粗指针目标分别由共享组件和虚拟器度量，不在页面统一改所有行高度。
 
-保留上游 Tailwind 类名与 `data-slot`；类名由 `cn()` 合并，调用方 `className` 最后传入。`tailwind-merge` 登记自定义字号 `2xs/3xs`，防止与文字颜色类冲突。表单关联 Label 和说明；IME 组合期间不响应 Enter 提交。可访问名称、焦点和触控尺寸见动效与无障碍参考。
+TaskContent 只让 title/description 随 completed 划线并变次级色，日期/关联放 metadata，不划线；用于任务列表、看板、月历和首页，避免各处自写完成态。Tree 的 branch 展开与选中分离，Headless Tree 管键盘/typeahead，TanStack Virtual 管呈现；搜索保留祖先、清空恢复。分页、总数和已加载量是领域/模型责任，虚拟化阈值或展开上限不能静默截断记录。
 
-## CSS 与 Portal
+## 日期与精度
 
-隔离算法见 [02 架构文档 §5](../../../../docs/architecture.md)：
+从 `src/ui/components/huhu/date/index.ts` 使用当前类型：
 
-- 所有 React 根带 `.huhu-ui`；Tailwind 输出展开 `@layer`，顶层选择器追加 `:is(.huhu-ui, .huhu-ui *):not(#\#)`，把 `:root/:host` 变量限定到 `.huhu-ui`。保留上游类名，不添加类名前缀。
-- 中和层只清除 HUHU 作用域内的宿主表单样式，跳过 `.markdown-rendered`、`.huhu-native`、`.cm-editor`。Obsidian `MarkdownRenderer` 的外层加 `huhu-native`。
-- 每个 Document 共用按引用计数管理的 `div.huhu-ui.huhu-portal-root`（`display: contents`）。Radix 的所有 Portal 和 sonner 均使用所属窗口的容器；最后一个使用者释放时移除。
-- 能用 Tailwind 就不手写 CSS。xterm、CodeMirror、动画关键帧等作者 CSS 放在所属模块的 `styles/`，以 `.huhu-ui` 或模块根类限定。主题令牌和看板主题放在各自专用文件。
-- 字面量颜色只在 `src/theme/`、令牌层和获准的看板主题文件中出现；模块布局只用语义令牌。不用 `!important`，不自造裸数字 z-index；粘性元素的 `z-10` 是规范指定例外。
-- `pnpm run lint:css` 检查作者 CSS，手写规则不使用 `:has`；上游 Tailwind 的 `has-*` 变体随生成产物保留。`build/tailwind.scoped.css` 和 `src/ui/styles/fonts.generated.css` 不参与作者样式检查。构建顺序见 [构建参考](../../dev/references/build-and-release.md)。
+- DateField：CalendarDate（严格 `YYYY-MM-DD`）或 null；DateRangeField：`{from: CalendarDate|null,to: CalendarDate|null}`，清空两端，不另造顶层 null。纯日历日保留分量，不能经 UTC 时间戳往返；手输无效草稿、IME、required/readOnly/disabled 和外部受控 reset 均保持语义。
+- DateTimeField：`{date,time: HH:mm,timeZone: IANAZone}|null`；必需 initialTimeZone 和真实领域 `validateValue(value): {code,message}|null`。错误 code 稳定，message 由调用方 t()。控件不输出 epoch、不实现第二时区引擎；任务/自动化适配由各自既有解析器严格拒绝 gap/fold，并用真实 NY 缺失/重复时间与 UTC/Shanghai 正常值联合验证表单和服务。不能用 `()=>null` 或 TZDate 自动纠正充当领域证据。
+- DateFieldCommon 的 label/id/description/error/ARIA、bounds、weekStartsOn/today、collisionBoundary 直接复用。弹层边界顺序是显式 boundary、触发器最近 `[data-huhu-leaf]`、所属 Document viewport；Dialog portal 不再有原叶 DOM 祖先，调用方应传逻辑叶元素。标准 picker 280、coarse312/七日各44，不压进默认272侧栏；完整任务月历不是 picker API 已有的能力。
+- 月精度使用 date/index.ts 导出的 MonthField 与 CalendarMonth 类型、parseMonth/validateMonth，值为严格 `YYYY-MM` 或 null，不是 CalendarDate。档案 month/mixed 由 `archives/ui/generic/PrecisionDateControl.tsx` 真实消费，不补成1日；保留同一领域 codec 与精度标签。产品月历同名组件位于 calendar/CalendarMonth.tsx，与这里的月份值类型不同。
+- 档案已有 `Z/±HH:mm` ISO datetime 含秒/小数和偏移，不是 IANA/分钟值。用 DateField 日期部分与共享纯时间/偏移控件组合原档案 codec，保留精度/offset，不推断 IANA、不截秒、不重写 epoch。缺组合能力回生产者；没有 IANA 解析端口就不能套 DateTimeField 假装成功。原 save/dirty/error/recovery 归属保持。
+- DateField 的 `value/onChange` 表达已提交的语义日期；`draftValue/onDraftChange` 配对表达父表单持有的 raw 文本，包含非法/未完成输入。父 raw 可跨卸载保留；只更新 value 或改变 draftResetKey 都不会覆盖受控 draftValue，父表单 reset 必须同时重置自己持有的 raw。未传 draftValue 时，value 或 draftResetKey 变化才同步控件的本地文本，不用重挂输入模拟 reset。真实受控调用见 `navigator/ui/diary/SearchWritePanel.tsx` 的 writeRaw/writeDate。
+- DateTimeField 的 `onDraftChange` 通知 `{date,time,timeZone}` 原始分量，包含尚不能触发有效 onChange 的输入；控件按完整 value/initialTimeZone 同步本地草稿，内部 draftResetKey 让同日期但 time/zone 改变的 reset 也清除旧日期 raw，保留输入节点与焦点。这不改变 DateField 受控 raw 仍由父表单重置的规则。
+- 父表单用 raw 状态承接 IME、clear、无效/未完成输入与 required 规则，阻止其它字段的手动/自动保存带走旧有效值；不能等 onChange 才判断是否允许保存。clear 按各字段可空/必填规则处理，不将合法清空一概判错；组合确认不提交。失焦/Enter 的严格校验与领域提交前校验都需承接。已有 `src/ui/components/huhu/date/date-draft.dom.test.tsx` 覆盖父 raw 跨卸载、语义变化及 clear，`DateTimeField.dom.test.tsx` 覆盖 unrelated save、IME/clear 和同日期 time/zone reset；这些回归不替代具体领域解析或宿主验收。
 
-## 允许的库
+完整月历的复用合同是薄通用 DayPicker 基座加产品包装：日期按钮保留库焦点/键盘/ARIA，任务动作是其兄弟节点，不嵌套 button；受控月份、locale、周期笔记菜单、周号和1–5周窗口由生产者验证。固定六周/月份数量不等于任意周条边界 API；不能裁行后让末日方向键失效，也不另造键盘引擎。现有实现位于 `src/ui/components/huhu/calendar/CalendarBackend.tsx`（DayPicker 公共 API 薄基座）、`ProductCalendar.tsx`（产品布局）与 `CalendarMonth.tsx`（周期笔记/月历及周窗口包装），由 `navigator/ui/Calendar.tsx` 和 `diary/DiaryReader.tsx` 消费。picker 的 date/Calendar 不承接完整产品月历；新增能力仍回所属生产者核对实际 API。周号/周记标签保留现有 periodic helpers 的领域规则，周时间轴是产品数据投影。
 
-| 用途 | 允许 |
-|---|---|
-| 运行时与组件 | `react`、`react-dom`（19 系列）、`radix-ui`、shadcn/ui 源码 |
-| 样式与变体 | `tailwindcss` / `@tailwindcss/cli`（v4）、`tw-animate-css`、`class-variance-authority`、`clsx`、`tailwind-merge` |
-| 图标、搜索、提示 | `lucide-react`、`cmdk`、`sonner` |
-| 状态 | `zustand`；服务层只用 `zustand/vanilla`，分区规则见 dev 架构参考 |
-| 拖拽、虚拟列表、分屏 | `@dnd-kit/core`、`@dnd-kit/sortable`、`@dnd-kit/utilities`、`@tanstack/react-virtual`、`react-resizable-panels`、`react-grid-layout`（看板小组件网格） |
-| 树 | `@headless-tree/core`、`@headless-tree/react`（经 `src/ui/components/tree.tsx` 使用） |
-| 专用渲染 | chart.js（按需加载图表）、`react-activity-calendar`（日历热力图）、xterm.js / `@xterm/*`（终端） |
-| 宿主集成 | Obsidian `MarkdownRenderer`、`FuzzySuggestModal`、工作台外 `Notice`、原生设置入口与菜单适配 |
+## 最小组合例
 
-不引入第二套界面库（MUI、Chakra、Ant Design、Bootstrap 等）或 CSS-in-JS。组件来源、版权注释、字体许可和分发声明见 [许可参考](../../dev/references/licensing.md)。
+以下示例放在模块 `ui/` 时使用真实相对 import；文案 props 来自调用方的 t()，业务保存和错误不藏进示例。输入表单：
+
+```tsx
+import { FormField } from '../../../ui/components/huhu/FormField';
+import { Input } from '../../../ui/components/input';
+
+export function TitleField({ label, value, error, onChange }: {
+  label: string; value: string; error?: string; onChange(value: string): void;
+}) {
+  return <FormField label={label} error={error}>
+    <Input value={value} onChange={event => onChange(event.currentTarget.value)} />
+  </FormField>;
+}
+```
+
+设置和错误反馈共享真实状态；SettingsSwitchRow 的 onChange 是无参数回调，busy 由外部真实异步操作驱动，不传猜测的 checked 参数：
+
+```tsx
+import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
+import { SettingsSwitchRow } from '../../../ui/components/huhu/SettingsSwitchRow';
+import { Notice } from '../../../ui/components/huhu/Notice';
+import { Button } from '../../../ui/components/button';
+
+export function EnabledSetting(p: {
+  title: string; label: string; checked: boolean; busy: boolean; error?: string;
+  retryLabel: string; onChange(): void; retry(): void;
+}) {
+  return <SettingsSection title={p.title}>
+    <SettingsSwitchRow label={p.label} checked={p.checked} busy={p.busy} onChange={p.onChange} />
+    {p.error && <Notice tone="error" title={p.error}
+      action={<Button variant="secondary" onClick={p.retry}>{p.retryLabel}</Button>} />}
+  </SettingsSection>;
+}
+```
+
+## CSS 与复用边界
+
+- 所有 React 根带 `.huhu-ui`，Tailwind 经作用域流水线限制到该根，保留上游类名/data-slot及改编处的原始来源、revision、MIT等版权声明；`cn()` 合并，调用方 className 最后传。语义工具类是 HU 令牌适配，不复活旧主题别名或旧 Button variant。
+- 中和层排除 `.markdown-rendered`、`.huhu-native`、`.cm-editor`；MarkdownRenderer 外层加 huhu-native。作者 CSS 留所属模块并限定根；能用共享组件/Tailwind 就不新增 CSS，不用 !important。手写规则与生成工具变体的允许范围以实际 lint/style 配置为准。
+- Portal 每 Document 一份引用计数的 `.huhu-ui.huhu-portal-root`（display:contents），Radix/sonner 使用该容器，最后使用者释放。它没有有效几何框，不能当 collision boundary。层级与物理 owner 见 motion-a11y，不私设永远最高 z-index。
+- 文字按钮、标签、工具栏不越界；min-w-0、换行/收次要操作、容器查询或局部原生滚动按内容选择。截断有完整可访问名称/必要 title；图标化保留名称/Tooltip。代码、终端、宽表/时间轴的有界滚动不能演变成页面横溢，也不能通过 overflow-hidden 丢掉操作或焦点。
+- 复用库：React/ReactDOM、shadcn/Radix、Tailwind/CVA/clsx/tailwind-merge、Lucide/cmdk/sonner、Headless Tree/TanStack Virtual、panels、dnd-kit/react-grid-layout、既有 chart.js/activity-calendar/xterm。领域状态按 dev，服务可用 zustand/vanilla；不要求所有服务强行采用一种 store。版本查 package/lock，不把选型表当已安装事实。
+- Git 差异采用 @pierre/diffs，真实入口为 `src/modules/versioning/ui/DiffSurface.tsx`、`ui/diff/MultiDiffView.tsx`、`ConflictDiffView.tsx` 与 `CompareEndpoints.tsx`（后三者均在 versioning/ui/diff）。不存在可通用导入的 DiffView；从所属模块真实端口组合。保留领域写入、端点/回执与只读浏览边界；parser/worker/虚拟化复用库，shadow DOM 仅通过 `--diffs-*`/批准 unsafeCSS token 桥接，不复制引擎或外部后代选择器穿透。现有 DiffSurface/MultiDiffView 通过 useDensityRowHeight 与内联 `--diffs-line-height` 将密度传入 Shadow，行/头/块分隔的虚拟度量同步；具体键盘与命中合同见 motion-a11y。

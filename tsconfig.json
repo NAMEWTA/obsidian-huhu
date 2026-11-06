@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
-		"baseUrl": "src",
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"module": "ESNext",
+		"types": ["node"],
 		"target": "ES2021",
 		"strict": true,
 		"allowJs": true,

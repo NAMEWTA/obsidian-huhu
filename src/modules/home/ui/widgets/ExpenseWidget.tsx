@@ -1,3 +1,4 @@
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 // Adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), src/expense-widget.ts; card layout after the shadcn/ui dashboard blocks (MIT).
 import { lazy, Suspense, useId, useState } from 'react';
 import { useStore } from 'zustand';
@@ -21,7 +22,8 @@ const Categories = lazy(() =>
 );
 const Stats = lazy(() => import('../expense/ExpenseStatsPanel').then((m) => ({ default: m.ExpenseStatsPanel })));
 type Kind = 'expense' | 'income';
-const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = (value: number) =>
+	value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 /**
  * Spending at a glance. The small tile shows this month's spending and today's net; from 20rem wide a quick-entry form
  * joins it, and a tall tile lists the month's biggest categories.
@@ -39,7 +41,7 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 		[categories, setCategories] = useState({ expense: '', income: '' }),
 		[note, setNote] = useState(''),
 		[invalid, setInvalid] = useState(false);
-	if (!service) return null;
+	if (!service) return <EmptyState size="sm" title={t('home.widget.unavailable')} />;
 	const today = todayStr(),
 		month = windowFor('month', today, today),
 		monthly = service.getRangeTotals(month.curStart, month.curEnd),
@@ -127,17 +129,25 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 				<div className="flex min-w-0 flex-wrap items-center gap-2">
 					<ToggleGroup
 						type="single"
-						variant="outline"
+						variant="segmented"
 						value={type}
 						aria-label={t('home.dashboard.category')}
 						onValueChange={(value) => {
 							if (value === 'expense' || value === 'income') setType(value);
 						}}
 					>
-						<ToggleGroupItem value="expense" className="[@media(pointer:coarse)]:min-w-11" aria-label={t('home.dashboard.expense')}>
+						<ToggleGroupItem
+							value="expense"
+							className="[@media(pointer:coarse)]:min-w-11"
+							aria-label={t('home.dashboard.expense')}
+						>
 							<ArrowDownRight className="text-destructive" />
 						</ToggleGroupItem>
-						<ToggleGroupItem value="income" className="[@media(pointer:coarse)]:min-w-11" aria-label={t('home.dashboard.income')}>
+						<ToggleGroupItem
+							value="income"
+							className="[@media(pointer:coarse)]:min-w-11"
+							aria-label={t('home.dashboard.income')}
+						>
 							<ArrowUpRight className="text-primary" />
 						</ToggleGroupItem>
 					</ToggleGroup>
@@ -160,7 +170,7 @@ export function ExpenseWidget({ store }: { store: BoardStore }) {
 						/>
 					</div>
 					<Choice
-						className="w-32 min-w-0 shrink-0 data-[size=sm]:h-9"
+						className="w-32 min-w-0 shrink-0 data-[size=sm]:h-[var(--hu-ctl-h)]"
 						label={t('home.dashboard.category')}
 						value={category}
 						onChange={(value) => {

@@ -19,18 +19,22 @@ export function CommentPopover({ env, channel }: { env: CommentsEnv; channel: Ov
 	const { request, revision } = useStore(channel.state);
 	useStore(env.service.state, state => state.revision);
 	const t = useT();
-	const paletteKey = useRef({});
+	const paletteKey = useMemo(() => ({ request }), [request]);
 	const [saving, setSaving] = useState(false);
 	const [saveError, setSaveError] = useState(false);
 	const drafts = useRef(new Set<string>());
+	const [previousRequest, setPreviousRequest] = useState(request);
+	if (previousRequest !== request) {
+		setPreviousRequest(request); setSaving(false); setSaveError(false); drafts.current.clear();
+	}
 	const content = useRef<HTMLDivElement>(null);
 	const onDraft = useCallback((key: string, active: boolean) => {
 		if (active) drafts.current.add(key); else drafts.current.delete(key);
-		channel.setDraft(drafts.current.size > 0);
-	}, [channel]);
+		if (channel.state.getState().request === request) channel.setDraft(drafts.current.size > 0);
+	}, [channel, request]);
 	const virtualRef = useMemo(() => ({ current: { getBoundingClientRect: () => request?.rect() ?? new DOMRect() } }), [request]);
 	if (!request) return null;
-	const close = () => channel.close();
+	const close = () => { if (channel.state.getState().request === request) channel.close(); };
 	const escape = (event: KeyboardEvent) => {
 		if (request.mode !== 'threads' || !channel.state.getState().draft) return;
 		event.preventDefault();
@@ -40,22 +44,23 @@ export function CommentPopover({ env, channel }: { env: CommentsEnv; channel: Ov
 		if (!request.anchor || request.anchor.kind !== 'range') return;
 		setSaving(true); setSaveError(false);
 		try {
-			const id = await env.service.highlight(paletteKey.current, request.path, { anchor: request.anchor, color, colorHex });
+			const id = await env.service.highlight(paletteKey, request.path, { anchor: request.anchor, color, colorHex });
+			if (channel.state.getState().request !== request) return;
 			if (editNote) {
 				channel.open({ ...request, mode: 'threads', threadIds: [id], pinned: true, autoEditNote: true });
 			} else channel.close(false);
-		} catch { setSaveError(true); new Notice(t('editor.comments.storageFailed')); }
-		finally { setSaving(false); }
+		} catch { if (channel.state.getState().request !== request) return; setSaveError(true); new Notice(t('editor.comments.storageFailed')); }
+		finally { if (channel.state.getState().request === request) setSaving(false); }
 	};
 	const body = request.mode === 'selection' ? <div className="flex max-w-[min(90vw,420px)] flex-wrap items-center gap-2 p-2">
 		<HighlightPalette settings={env.service.settings()} disabled={saving} onSelect={(color, hex) => { void createHighlight(color, hex); }} />
-		<Button type="button" size="sm" variant="secondary" disabled={saving} onMouseDown={event => event.preventDefault()}
+		<Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" type="button" size="sm" variant="secondary" disabled={saving} onMouseDown={event => event.preventDefault()}
 			onClick={() => { void createHighlight('yellow', undefined, true); }}>{t('editor.highlights.addNote')}</Button>
-		{saveError && <span role="alert" className="text-xs text-destructive">{t('editor.comments.saveFailed')}</span>}
+		{saveError && <span role="alert" className="text-xs text-[var(--hu-danger)]">{t('editor.comments.saveFailed')}</span>}
 	</div> : request.mode === 'compose' && request.anchor ? <Composer app={env.app} key={`${request.path}:${request.anchor.start}:${request.anchor.end}`} onCancel={close} onSubmit={async (text, key) => {
 		await env.service.add(key, request.path, { anchor: request.anchor!, text }); close();
-	}}><div className="text-2xs text-muted-foreground">{t('editor.comments.author')}: {env.service.settings().author || <Button size="xs" variant="link" onClick={() => env.openSettings()}>{t('editor.comments.setAuthor')}</Button>}</div></Composer> : <>
-		<div className="mb-2 flex items-center justify-between text-xs text-muted-foreground"><span>{t('editor.comments.title')} ({request.threadIds?.length ?? 0})</span><div className="flex gap-2"><Action label={t(request.pinned ? 'editor.comments.pinned' : 'editor.comments.pin')} onClick={() => channel.pin()}><Pin /></Action><Action label={t('editor.comments.close')} onClick={close}><X /></Action></div></div>
+	}}><div className="text-xs text-[var(--hu-fg-3)]">{t('editor.comments.author')}: {env.service.settings().author || <Button className="min-h-[var(--hu-hit)] min-w-[var(--hu-hit)]" size="sm" variant="ghost" onClick={() => env.openSettings()}>{t('editor.comments.setAuthor')}</Button>}</div></Composer> : <>
+		<div className="mb-2 flex items-center justify-between text-xs text-[var(--hu-fg-3)]"><span>{t('editor.comments.title')} ({request.threadIds?.length ?? 0})</span><div className="flex gap-2"><Action label={t(request.pinned ? 'editor.comments.pinned' : 'editor.comments.pin')} onClick={() => channel.pin()}><Pin /></Action><Action label={t('editor.comments.close')} onClick={close}><X /></Action></div></div>
 		<div className="space-y-2">{env.service.store.threadsFor(request.path).filter(thread => request.threadIds?.includes(thread.id)).map(thread => <ThreadCard key={thread.id} path={request.path} thread={thread} env={env} onDraft={onDraft} autoEditNote={request.autoEditNote && request.threadIds?.[0] === thread.id} />)}</div>
 	</>;
 	if (request.mode === 'resolve-all') return <AlertDialog open onOpenChange={open => { if (!open) close(); }}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>{t('editor.comments.resolveAll')}</AlertDialogTitle><AlertDialogDescription>{t('editor.comments.resolveAllConfirm')}</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>{t('editor.comments.cancel')}</AlertDialogCancel><AlertDialogAction onClick={event => { event.preventDefault(); void env.service.resolveAll(request.path).then(close, () => undefined); }}>{t('editor.comments.resolve')}</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>;

@@ -36,7 +36,7 @@ test('the preview uses the owning document CSS and resolver without changing tha
 		task.type = 'checkbox';
 		element.append(link, task);
 	});
-	const settings = themeSettings.normalize({ preset: 'suliworld', editor: 'github', suliworldVariant: 'forest' });
+	const settings = themeSettings.normalize({ preset: 'ink', editor: 'github', suliworldVariant: 'forest' });
 	const cleanup = mountStylePreview({
 		app: {} as App,
 		source,
@@ -57,7 +57,7 @@ test('the preview uses the owning document CSS and resolver without changing tha
 	expect(target.querySelector('style')?.textContent).toBe(css.textContent);
 	expect(target.body.classList.contains('community-choice')).toBe(true);
 	expect(target.body.classList.contains('theme-light')).toBe(true);
-	expect(target.body.classList.contains('huhu-theme-variant--forest')).toBe(true);
+	expect(target.body.classList.contains('huhu-editor--github')).toBe(true);
 	expect(target.body.classList.contains('huhu-md-style--github')).toBe(true);
 	expect(target.body.classList.contains('huhu-md-style--suliworld')).toBe(false);
 	expect(target.body.classList.contains('huhu-theme-cards')).toBe(false);
