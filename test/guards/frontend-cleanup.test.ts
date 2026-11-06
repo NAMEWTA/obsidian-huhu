@@ -110,7 +110,7 @@ function reviewedForwarder(item: string, hit: string, source: string): boolean {
  }
 }
 function files(dir: string): string[] {
- return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => { const item = path.join(dir, entry.name); return entry.isDirectory() ? files(item) : [item]; });
+ return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => { const item = path.join(dir, entry.name).replaceAll(String.fromCharCode(92), '/'); return entry.isDirectory() ? files(item) : [item]; });
 }
 test('AST guard follows native inputs and real Input import aliases', () => {
  assert.equal(calendarInputs(`import { Input as Field } from '../ui/components/input'; const x = <><input type="date"/><Field type={'datetime-local'}/></>;`, 'src/modules/control.tsx').length, 2);
