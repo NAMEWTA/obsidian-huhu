@@ -1,5 +1,12 @@
 English | [简体中文](README.ZH.md)
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/huhu-logo-dark.svg">
+    <img src="assets/brand/huhu-logo-light.svg" width="360" height="126" alt="HUHU cartoon logo: Huhu the orange tabby reclining and raising a white paw">
+  </picture>
+</p>
+
 # HUHU · obsidian-huhu
 
 [![Release](https://img.shields.io/github/v/release/NAMEWTA/obsidian-huhu?include_prereleases&label=release)](https://github.com/NAMEWTA/obsidian-huhu/releases)
@@ -8,6 +15,8 @@ English | [简体中文](README.ZH.md)
 [![Issues](https://img.shields.io/github/issues/NAMEWTA/obsidian-huhu)](https://github.com/NAMEWTA/obsidian-huhu/issues)
 
 A personal workbench inside Obsidian: notes, composable dashboards, tasks, coding agents, archives, automations, notifications and Git versioning in one interface, with your content kept in your own vault.
+
+[Brand assets and usage guide](docs/brand.md)
 
 ![HUHU workbench: dashboard, tasks and automation board](docs/images/readme/gif/hero.gif)
 

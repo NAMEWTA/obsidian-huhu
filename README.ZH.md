@@ -1,5 +1,12 @@
 [English](README.md) | 简体中文
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/huhu-logo-dark.svg">
+    <img src="assets/brand/huhu-logo-light.svg" width="360" height="126" alt="HUHU 虎虎卡通品牌标识：侧身蜷躺、抬起白爪打招呼的橘色虎斑猫">
+  </picture>
+</p>
+
 # HUHU · obsidian-huhu
 
 [![Release](https://img.shields.io/github/v/release/NAMEWTA/obsidian-huhu?include_prereleases&label=release)](https://github.com/NAMEWTA/obsidian-huhu/releases)
@@ -8,6 +15,8 @@
 [![Issues](https://img.shields.io/github/issues/NAMEWTA/obsidian-huhu)](https://github.com/NAMEWTA/obsidian-huhu/issues)
 
 Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智能体、档案、自动化、通知和 Git 版本管理集中在同一界面，内容保存在你自己的库中。
+
+[品牌图标与使用规范](docs/brand.md)
 
 ![HUHU 工作台：看板、任务与自动化看板](docs/images/readme/gif/hero.gif)
 
