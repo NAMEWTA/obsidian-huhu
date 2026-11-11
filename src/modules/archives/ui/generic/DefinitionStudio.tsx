@@ -35,6 +35,7 @@ import { FieldDesigner, newField } from './FieldDesigner';
 import { ConditionBuilder, QueryBuilder } from './QueryBuilder';
 import { ValueForm } from './FieldRenderer';
 import { useArchiveVersion } from './hooks';
+import { displayFields } from './display-fields';
 
 function makeDefinition(kind: Definition['kind'], typeId: string): Definition {
 	const id = `${kind}-${crypto.randomUUID()}`,
@@ -659,8 +660,20 @@ export function DefinitionStudio({
 							<FieldDesigner
 								fields={draft.fields}
 								locked={base?.kind === 'type' ? base.fields : []}
-								onChange={(fields) => update({ ...draft, fields })}
+								onChange={(fields) => update({ ...draft, fields, displayFields: draft.displayFields?.filter((id) => fields.some((field) => field.fieldId === id)) })}
 							/>
+							<Section title={at('displayFields')}>
+								<p className="text-xs text-muted-foreground">{at('displayFieldsHint')}</p>
+								<div className="flex flex-wrap gap-3">
+									{draft.fields.filter((field) => !field.archived && field.fieldId !== draft.nameFieldId).map((field) => (
+										<Check key={field.fieldId} label={displayLabel(field)}
+											checked={displayFields(draft).includes(field.fieldId)}
+											onChange={(checked) => update({ ...draft, displayFields: checked
+												? [...displayFields(draft), field.fieldId]
+												: displayFields(draft).filter((id) => id !== field.fieldId) })} />
+									))}
+								</div>
+							</Section>
 						</>
 					)}
 					{draft.kind === 'form' && <FormDesigner form={draft} fields={type?.fields ?? []} change={update} />}

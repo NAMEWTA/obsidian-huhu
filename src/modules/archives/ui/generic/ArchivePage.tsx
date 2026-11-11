@@ -46,6 +46,12 @@ import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { Notice } from '../../../../ui/components/huhu/Notice';
 import { Skeleton } from '../../../../ui/components/skeleton';
 import { RevisionPanel } from './RevisionPanel';
+import { displayFields } from './display-fields';
+
+function recordTime(value: number | undefined): string {
+	return value !== undefined && value > 0 && Number.isFinite(new Date(value).getTime())
+		? new Date(value).toLocaleString() : at('unknownTime');
+}
 
 const PersonReadingPage = lazy(() => import('../person/PersonReadingPage'));
 
@@ -761,7 +767,7 @@ export function ArchivePage({
 							<TabsContent value="fields">
 								{selectedType ? (
 									<Section title={at('fields')}>
-										<RecordValues type={selectedType} values={selected.values} />
+										<RecordValues type={selectedType} values={selected.values} app={app} path={selected.path} />
 									</Section>
 								) : (
 									<p role="alert">{at('unknownDefinition')}</p>
@@ -834,14 +840,8 @@ export function ArchivePage({
 			state.layout ??
 			viewDefinition?.layout ??
 			(host.settings.get().layouts[typeId ?? ''] === 'card' ? 'card' : 'table'),
-		columns = (
-			viewDefinition?.columns ??
-			type?.fields
-				.filter((field) => !field.archived)
-				.slice(0, 5)
-				.map((field) => field.fieldId) ??
-			[]
-		).filter((id) => id !== type?.nameFieldId);
+		columns = (viewDefinition?.columns ?? (type ? displayFields(type) : []))
+			.filter((id) => id !== type?.nameFieldId);
 	return (
 		<div data-archive-list aria-busy={queryLoading} className="space-y-5">
 			<div className="flex flex-wrap items-center justify-between gap-3">
@@ -1057,6 +1057,8 @@ export function ArchivePage({
 											)}
 										</TableHead>
 									))}
+									<TableHead>{at('createdAt')}</TableHead>
+									<TableHead>{at('updatedAt')}</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
@@ -1076,6 +1078,8 @@ export function ArchivePage({
 												{displayValue(item.values[id])}
 											</TableCell>
 										))}
+										<TableCell>{recordTime(item.createdAt)}</TableCell>
+										<TableCell>{recordTime(item.modified)}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
@@ -1108,6 +1112,10 @@ export function ArchivePage({
 											</div>
 										</div>
 									))}
+									<dl className="space-y-1 text-xs text-muted-foreground">
+										<div><dt>{at('createdAt')}</dt><dd>{recordTime(item.createdAt)}</dd></div>
+										<div><dt>{at('updatedAt')}</dt><dd>{recordTime(item.modified)}</dd></div>
+									</dl>
 								</article>
 							))}
 						</ArchiveCardGrid>

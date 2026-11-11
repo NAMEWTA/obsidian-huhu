@@ -42,7 +42,7 @@ const iconicStubTests = ['src/app/settings/setting-definitions.test.ts', 'src/mo
 // hook-spool's 32-scope case starts 96 real publisher processes (32 at once). In the parallel unit
 // project they starved CPU-bound neighbours on 4-core Windows runners (agent-backup took 5 s instead
 // of ~0.4 s) and were starved in turn; its bounds are unchanged, only the placement is serial.
-const nativeIntegrationTests = ['test/release/documentation-checker.test.ts', 'src/modules/agent/platform/desktop/hooks/hook-spool.test.ts', 'test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-hunks.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
+const nativeIntegrationTests = ['src/modules/automations/platform/desktop/precheck.test.ts', 'test/release/documentation-checker.test.ts', 'src/modules/agent/platform/desktop/hooks/hook-spool.test.ts', 'test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-hunks.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
 
 export default defineConfig({
 	test: {

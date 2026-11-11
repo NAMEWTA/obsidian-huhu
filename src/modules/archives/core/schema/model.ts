@@ -64,6 +64,7 @@ export interface ArchiveTypeDefinition {
 	enabled: boolean;
 	nameFieldId: string;
 	fields: FieldDefinition[];
+	displayFields?: string[];
 	defaultFormId?: string;
 	defaultTemplateId?: string;
 }
@@ -155,6 +156,7 @@ export interface PrecisionDate {
 	precision: 'month' | 'day';
 }
 export interface EntityRecord {
+	createdAt?: number;
 	id: string;
 	typeId: string;
 	schemaRevisionId: string;

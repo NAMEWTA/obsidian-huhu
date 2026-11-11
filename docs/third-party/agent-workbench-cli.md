@@ -34,4 +34,4 @@ GPL/AGPL 终端项目的源码未被阅读、复制或改写。
 
 ## 相似度检查
 
-`node scripts/check-similarity.mjs --ours src,native/pty-server/src,scripts,test/release --theirs <Herdr 固定提交 2ecf19a 的检出目录>` 比较 1985 个本方文件与 461 个参考文件：原始相似份额不低于 0.15 或原始连续匹配超过 40 个词元的文件为 0；有 57 个文件的归一化份额不低于 0.05，均为词典、样式类结构性高分（小文件、字符串表），其中本票文件只有 `src/shared/i18n/lazy/native.ts`（归一化 0.333，原始 0）。该报告只证明本次工作树与该固定提交无复制；Wave、tmux 为仅读公开文档，无对应源码树可比。发版前仍按[许可规则](../../.agents/skills/dev/references/licensing.md)重新运行。
+`node scripts/check-similarity.mjs --ours src,native/pty-server/src,scripts,test/release --theirs <Herdr 固定提交 2ecf19a 的检出目录>` 比较 1985 个本方文件与 461 个参考文件：原始相似份额不低于 0.15 或原始连续匹配超过 40 个词元的文件为 0；有 57 个文件的归一化份额不低于 0.05，均为词典、样式类结构性高分（小文件、字符串表），其中本票文件只有 `src/shared/i18n/lazy/native.ts`（归一化 0.333，原始 0）。该报告只证明本次工作树与该固定提交无复制；Wave、tmux 为仅读公开文档，无对应源码树可比。发版前仍按[许可规则](../development.md#许可与来源)重新运行。

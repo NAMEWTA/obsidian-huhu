@@ -152,6 +152,7 @@ export function patchValues(
 }
 export function entityMetadata(record: EntityRecord): Values {
 	return {
+		...(record.createdAt !== undefined ? { 'huhu-created-at': record.createdAt } : {}),
 		'huhu-format-version': FORMAT_VERSION,
 		'huhu-type': ENTITY_TAG,
 		'huhu-id': record.id,
@@ -200,6 +201,9 @@ export function decodeEntity(
 		path,
 		contentHash: hash,
 		modified,
+		...(typeof data['huhu-created-at'] === 'number' && Number.isSafeInteger(data['huhu-created-at']) &&
+			data['huhu-created-at'] > 0 && data['huhu-created-at'] <= 8640000000000000
+			? { createdAt: data['huhu-created-at'] } : {}),
 	};
 }
 export function relationMetadata(record: RelationRecord): Values {

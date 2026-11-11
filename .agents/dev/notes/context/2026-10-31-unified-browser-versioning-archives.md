@@ -4,7 +4,7 @@
 
 适用范围：2026-10-26-unified-browser-versioning-archives 的已采纳领域合同；目标与实际实现分别判断。
 
-来源：[CONTEXT.md](../../changes/2026-10-26-unified-browser-versioning-archives/CONTEXT.md)，SHA-256 `6ba88e49da0322ece7f3089cae2d5095dba48c603592f4088e8a9c54c364ec84`；关联[决策](../decisions/2026-10-31-unified-browser-versioning-archives.md)。提升日期：2026-10-31；网关 owner：specdev/archive-and-consolidate，codex:/root。
+来源：[CONTEXT.md](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/CONTEXT.md)，SHA-256 `6ba88e49da0322ece7f3089cae2d5095dba48c603592f4088e8a9c54c364ec84`；关联[决策](../decisions/2026-10-31-unified-browser-versioning-archives.md)。提升日期：2026-10-31；网关 owner：specdev/archive-and-consolidate，codex:/root。
 
 **ArchiveTypeDefinition（档案类型定义）**：规定一类实体的字段与约束，个人、企业是预设类型，项目等用户类型使用同一内核。
 _Avoid_: 把类型等同于固定业务页面。
@@ -42,17 +42,17 @@ _Avoid_: 文件存在就视为已激活关系。
 **迁移不完整**：v2 owner 的预期关系未全部到达或无法核验；查询必须表达不完整，不能把缺件解释为零关系。
 _Avoid_: 缺件等同空结果。
 
-**受管档案恢复**：涉及档案内容、关系、定义或迁移事实的历史覆盖，必须通过 archives owner 预检；不安全或未支持时拒绝覆盖，仍可只读比较。依据 [ADR-002](../../changes/2026-10-26-unified-browser-versioning-archives/ADR.md#adr-002-受管档案历史覆盖由档案-owner-预检)。
+**受管档案恢复**：涉及档案内容、关系、定义或迁移事实的历史覆盖，必须通过 archives owner 预检；不安全或未支持时拒绝覆盖，仍可只读比较。依据 [ADR-002](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ADR.md#adr-002-受管档案历史覆盖由档案-owner-预检)。
 _Avoid_: 任意单文件 Markdown 覆盖即完整档案回退。
 
-**原生草稿冲突**：受影响原生编辑叶与磁盘内容不一致，或多个编辑叶之间存在分歧；它阻止档案结构化写入，且不能通过自动保存或丢弃正文消除。依据 [ADR-005](../../changes/2026-10-26-unified-browser-versioning-archives/ADR.md#adr-005-档案结构化写入不代替用户提交原生草稿)。
+**原生草稿冲突**：受影响原生编辑叶与磁盘内容不一致，或多个编辑叶之间存在分歧；它阻止档案结构化写入，且不能通过自动保存或丢弃正文消除。依据 [ADR-005](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ADR.md#adr-005-档案结构化写入不代替用户提交原生草稿)。
 _Avoid_: 字段合并成功即可以覆盖任意原生 buffer。
 
 
-**档案类型树与总览**：类型为树父节点、实例为子节点；单击类型打开该类型的实例列表或卡片，单击实例进入详情。新增类型沿用相同交互。来源 [SRC-007](../../changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md)，行为验收 AC-035。
+**档案类型树与总览**：类型为树父节点、实例为子节点；单击类型打开该类型的实例列表或卡片，单击实例进入详情。新增类型沿用相同交互。来源 [SRC-007](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md)，行为验收 AC-035。
 _Avoid_: 类型点击直接进入某个实例，或把所有实例与类型混成同级导航。
 
-**类型显示字段**：从该类型字段中勾选列表/卡片显示项，引用同一字段值；所有类型默认显示创建时间、更新时间。显示字段、表单可见字段和筛选记录条件分别承担职责。来源 [SRC-007](../../changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md)，AC-036。
+**类型显示字段**：从该类型字段中勾选列表/卡片显示项，引用同一字段值；所有类型默认显示创建时间、更新时间。显示字段、表单可见字段和筛选记录条件分别承担职责。来源 [SRC-007](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md)，AC-036。
 _Avoid_: 未勾选显示意味着删除字段值，或显示配置意味着过滤掉记录。
 
 

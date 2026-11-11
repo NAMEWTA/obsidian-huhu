@@ -30,7 +30,7 @@ Status: completed
 
 037通知并实际核对的唯一schema SHA256 `63d16a0a891b14d6c685514d57913ccccbaac59c184f9b76b45d8a6779db9e4e`，仍63 methods/126 params-result shapes，226共享方法样本。原文start/end整数上限1048576与正文maxBytes<=65536分离；本票未写共享文件，未扩正文预算。
 
-原035 `/tmp/huhu-chat-review` 探针及bundle只读复制到本票 [logs/probes](logs/probes)，原脚本副本保留。baseline使用原035冻结bundle；断言只从“观察缺陷”改成“应拒绝替换/应读取合法选区”，正文、stat与边界输入不变，得到实际红灯。当前生产另行bundle后以相同探针输入转绿；baseline/current各文件摘要见 13-probe-manifest.json（历史日志已清理：`logs/13-probe-manifest.json`）。038初始源文件和037已冻结schema摘要另见 00-input.json（历史日志已清理：`logs/00-input.json`）。没有覆写035原探针/日志；没有把原观察性exit0当产品验收。
+原035 `/tmp/huhu-chat-review` 探针及bundle只读复制到本票 `logs/probes`（历史探针已清理），原脚本副本保留。baseline使用原035冻结bundle；断言只从“观察缺陷”改成“应拒绝替换/应读取合法选区”，正文、stat与边界输入不变，得到实际红灯。当前生产另行bundle后以相同探针输入转绿；baseline/current各文件摘要见 13-probe-manifest.json（历史日志已清理：`logs/13-probe-manifest.json`）。038初始源文件和037已冻结schema摘要另见 00-input.json（历史日志已清理：`logs/00-input.json`）。没有覆写035原探针/日志；没有把原观察性exit0当产品验收。
 
 命令和实际退出码见 14-command-results.json（历史日志已清理：`logs/14-command-results.json`），全部由本agent实际执行；红灯工具返回126，输出是对应产品断言失败，不是审批阻断。
 

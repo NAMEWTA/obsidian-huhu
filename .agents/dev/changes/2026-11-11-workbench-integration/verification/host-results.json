@@ -1,0 +1,1569 @@
+{
+  "history": {
+    "artifacts": {
+      "main.js": {
+        "expected": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11",
+        "installed": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11"
+      },
+      "styles.css": {
+        "expected": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9",
+        "installed": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9"
+      },
+      "manifest.json": {
+        "expected": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d",
+        "installed": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d"
+      }
+    },
+    "result": {
+      "realObsidian": "1.13.7",
+      "environment": {
+        "obsidian": "1.13.7",
+        "platform": "linux",
+        "versions": {
+          "node": "24.18.1",
+          "acorn": "8.16.0",
+          "ada": "3.4.4",
+          "amaro": "1.1.9",
+          "ares": "1.34.6",
+          "brotli": "1.2.0",
+          "cldr": "48.0",
+          "icu": "78.2",
+          "llhttp": "9.4.3",
+          "merve": "1.2.2",
+          "modules": "148",
+          "napi": "10",
+          "nbytes": "0.1.4",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.69.0",
+          "nghttp3": "",
+          "ngtcp2": "",
+          "openssl": "0.0.0",
+          "simdjson": "4.6.4",
+          "simdutf": "7.7.0",
+          "sqlite": "3.53.1",
+          "tz": "2025c",
+          "undici": "7.29.0",
+          "unicode": "17.0",
+          "uv": "1.52.1",
+          "uvwasi": "0.0.23",
+          "v8": "15.0.245.23-electron.0",
+          "zlib": "1.3.2.1-motley",
+          "zstd": "1.6.0",
+          "electron": "43.3.0",
+          "chrome": "150.0.7871.212"
+        }
+      },
+      "passed": true,
+      "rows": [
+        {
+          "name": "native-comment-created",
+          "passed": true
+        },
+        {
+          "name": "preview-keeps-native-source-and-disk",
+          "passed": true
+        },
+        {
+          "name": "preview-never-replaces-source-markdown-view",
+          "passed": true
+        },
+        {
+          "name": "preview-does-not-change-git",
+          "passed": true
+        },
+        {
+          "name": "readonly-diff-has-no-comment-extension",
+          "passed": true
+        },
+        {
+          "name": "real-host-two-approved-comparison-layouts",
+          "passed": true,
+          "details": {
+            "layouts": [
+              "side-by-side",
+              "stacked"
+            ],
+            "replaced": "Unified"
+          }
+        },
+        {
+          "name": "native-restore-dialog-cancel-is-readonly",
+          "passed": true
+        },
+        {
+          "name": "native-dialog-confirm-and-undo-complete",
+          "passed": true
+        },
+        {
+          "name": "restore-preserves-draft-and-current-disk-checkpoint",
+          "passed": true,
+          "details": {
+            "dirty": true,
+            "draft": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+            "before": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+            "beforeDisk": "# Note\n\ncurrent top\nTARGET\ncurrent bottom\n",
+            "body": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "stage": "verified",
+            "hold": "b73251e1-c7ab-4109-8c6f-51e3181e8f7b",
+            "autosaveCompleted": false
+          }
+        },
+        {
+          "name": "restore-verifies-native-save",
+          "passed": true,
+          "details": {
+            "dirty": true,
+            "draft": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+            "before": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+            "beforeDisk": "# Note\n\ncurrent top\nTARGET\ncurrent bottom\n",
+            "body": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "stage": "verified",
+            "hold": "b73251e1-c7ab-4109-8c6f-51e3181e8f7b"
+          }
+        },
+        {
+          "name": "restore-preserves-comment-text-and-anchor",
+          "passed": true,
+          "details": {
+            "id": "c-mwbu4hg6-onwb8pjr",
+            "status": "open",
+            "kind": "range",
+            "anchor": {
+              "text": "TARGET",
+              "textHash": "e2f64cf4fcac09bf",
+              "kind": "range",
+              "documentHash": "9128cd79ae064f52",
+              "before": "# Note\n\nhistorical top\n",
+              "after": "\nhistorical bottom\n",
+              "lineHint": 4,
+              "start": 23,
+              "end": 29
+            },
+            "messages": [
+              {
+                "id": "m-mwbu4hg6-48o7txgy",
+                "createdAt": "2026-11-11T08:06:10.518Z",
+                "author": "",
+                "text": "Preserve this comment"
+              }
+            ],
+            "createdAt": "2026-11-11T08:06:10.518Z",
+            "updatedAt": "2026-11-11T08:06:14.062Z"
+          }
+        },
+        {
+          "name": "undo-restores-previous-unsaved-content",
+          "passed": true,
+          "details": {
+            "stage": "verified",
+            "body": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+            "disk": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n"
+          }
+        },
+        {
+          "name": "restore-verifies-multiple-native-leaves",
+          "passed": true,
+          "details": {
+            "stage": "verified",
+            "first": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "second": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n"
+          }
+        },
+        {
+          "name": "other-native-leaf-change-after-plan-blocks-restore",
+          "passed": true,
+          "details": {
+            "blocked": true,
+            "message": "versioning.restore.changed",
+            "first": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n",
+            "second": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n"
+          }
+        },
+        {
+          "name": "restores-preserve-head-and-staged-index",
+          "passed": true
+        },
+        {
+          "name": "copy-and-undo-use-native-vault-apis",
+          "passed": true,
+          "details": {
+            "copied": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+            "stage": "verified",
+            "removed": true,
+            "source": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n"
+          }
+        },
+        {
+          "name": "durable-private-checkpoints-written",
+          "passed": true,
+          "details": [
+            "43cb2421-7b49-43ae-a575-b8369402ab65"
+          ]
+        },
+        {
+          "name": "large-diff-runs-real-worker",
+          "passed": true,
+          "details": {
+            "characters": 238890,
+            "workers": 3
+          }
+        },
+        {
+          "name": "restart-preserves-sync-hold-and-private-receipts",
+          "passed": true,
+          "details": {
+            "before": {
+              "hold": "911f055e-a6b6-49b5-88ff-e1358fadbe50",
+              "receipts": 7,
+              "panelTab": "history",
+              "reviewId": "06d4da42-7890-4221-a32a-e4a19f07ec33"
+            },
+            "after": {
+              "hold": "911f055e-a6b6-49b5-88ff-e1358fadbe50",
+              "receipts": 7,
+              "panelTab": "history",
+              "expired": true,
+              "hasOldBody": false
+            }
+          }
+        },
+        {
+          "name": "restart-persists-selected-history-panel",
+          "passed": true,
+          "details": {
+            "before": "history",
+            "after": "history"
+          }
+        },
+        {
+          "name": "restart-expires-temporary-comparison-without-old-body",
+          "passed": true,
+          "details": {
+            "hold": "911f055e-a6b6-49b5-88ff-e1358fadbe50",
+            "receipts": 7,
+            "panelTab": "history",
+            "expired": true,
+            "hasOldBody": false
+          }
+        },
+        {
+          "name": "popout-history-panel-keeps-window-source",
+          "passed": true,
+          "details": {
+            "popout": true,
+            "source": "Other.md",
+            "main": "Long.md",
+            "panelTab": "history"
+          }
+        },
+        {
+          "name": "popout-history-comparison-keeps-window-source",
+          "passed": true
+        },
+        {
+          "name": "explicit-review-releases-sync-hold-without-note-or-git-write",
+          "passed": true
+        },
+        {
+          "name": "no-unhandled-host-errors",
+          "passed": true,
+          "details": [
+            {
+              "session": "before-restart",
+              "errors": []
+            },
+            {
+              "session": "after-restart",
+              "errors": []
+            },
+            {
+              "session": "popout",
+              "errors": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "archives": {
+    "artifacts": {
+      "main.js": {
+        "expected": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11",
+        "installed": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11"
+      },
+      "styles.css": {
+        "expected": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9",
+        "installed": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9"
+      },
+      "manifest.json": {
+        "expected": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d",
+        "installed": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d"
+      }
+    },
+    "result": {
+      "rows": [
+        {
+          "name": "default-table-shows-metadata",
+          "passed": true
+        },
+        {
+          "name": "type-projection-hides-only-display",
+          "passed": true
+        },
+        {
+          "name": "cards-share-projection-and-times",
+          "passed": true
+        },
+        {
+          "name": "markdown-uses-native-renderer",
+          "passed": true
+        },
+        {
+          "name": "hidden-value-remains-in-detail",
+          "passed": true
+        },
+        {
+          "name": "internal-link-opens-target",
+          "passed": true
+        },
+        {
+          "name": "narrow-paper",
+          "passed": true
+        },
+        {
+          "name": "narrow-ink",
+          "passed": true
+        },
+        {
+          "name": "projection-and-layout-survive-restart",
+          "passed": true
+        },
+        {
+          "name": "no-unhandled-host-errors",
+          "passed": true
+        }
+      ],
+      "errors": []
+    }
+  },
+  "shell": {
+    "artifacts": {
+      "main.js": {
+        "expected": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11",
+        "installed": "fa8fdf22a2fcc8b567d0fe46f1764830df6bba2a67f35dccac7597d76be24f11"
+      },
+      "styles.css": {
+        "expected": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9",
+        "installed": "ae8a0e9196a784336a4a9dc2ee218b5dc6544fe20b818472e4f16ddc7696dca9"
+      },
+      "manifest.json": {
+        "expected": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d",
+        "installed": "6002379a86e414dcd8e8eba2a4310844bc8032df95444c412a1e6ff16d429a6d"
+      }
+    },
+    "result": {
+      "rows": [
+        {
+          "name": "wide-layout-has-rail-and-page",
+          "passed": true
+        },
+        {
+          "name": "home-is-the-initial-page",
+          "passed": true,
+          "detail": [
+            {
+              "id": "dashboard",
+              "active": true,
+              "expanded": null
+            },
+            {
+              "id": "task",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "terminal",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "automations",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "contacts",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "health",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "navigator",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "safe",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "versioning",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "notifications",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "settings",
+              "active": false,
+              "expanded": null
+            }
+          ]
+        },
+        {
+          "name": "actual-pointer-fine",
+          "passed": true,
+          "detail": {
+            "fine": true,
+            "coarse": false,
+            "hover": true,
+            "none": false
+          }
+        },
+        {
+          "name": "real-hit-32",
+          "passed": true,
+          "detail": [
+            {
+              "id": "dashboard",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "task",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "terminal",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "automations",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "contacts",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "health",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "navigator",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "safe",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "versioning",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "notifications",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "settings",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 36,
+              "hitHeight": 36,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            }
+          ]
+        },
+        {
+          "name": "visible-keyboard-focus-32",
+          "passed": true,
+          "detail": {
+            "tag": "BUTTON",
+            "label": "Tasks",
+            "rail": true,
+            "visible": true,
+            "outline": "solid",
+            "width": "2px",
+            "shadow": "none"
+          }
+        },
+        {
+          "name": "actual-pointer-coarse",
+          "passed": true,
+          "detail": {
+            "fine": false,
+            "coarse": true,
+            "hover": false,
+            "none": false
+          }
+        },
+        {
+          "name": "real-hit-44",
+          "passed": true,
+          "detail": [
+            {
+              "id": "dashboard",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "task",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "terminal",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "automations",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "contacts",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "health",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "navigator",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "safe",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "versioning",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "notifications",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            {
+              "id": "settings",
+              "width": 36,
+              "height": 36,
+              "hitWidth": 44,
+              "hitHeight": 44,
+              "hit": true,
+              "edges": [
+                true,
+                true,
+                true,
+                true
+              ]
+            }
+          ]
+        },
+        {
+          "name": "visible-keyboard-focus-44",
+          "passed": true,
+          "detail": {
+            "tag": "BUTTON",
+            "label": "Tasks",
+            "rail": true,
+            "visible": true,
+            "outline": "solid",
+            "width": "2px",
+            "shadow": "none"
+          }
+        },
+        {
+          "name": "production-paper-1440-dashboard",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-task",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 187,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-terminal",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 893,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-automations",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 435,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-contacts",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 195,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-health",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-navigator",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 373,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-safe",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 611,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-versioning",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 280,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-notifications",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 92,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-settings",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1956,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-1440-notes",
+          "passed": true
+        },
+        {
+          "name": "production-paper-390-dashboard",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-task",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 187,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-terminal",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 104,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-automations",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 435,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-contacts",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 195,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-health",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-navigator",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 346,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-safe",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 611,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-versioning",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 280,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-notifications",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 92,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-settings",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1956,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-paper-390-notes",
+          "passed": true
+        },
+        {
+          "name": "production-ink-1440-dashboard",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-task",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 187,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-terminal",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 119,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-automations",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 435,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-contacts",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 195,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-health",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-navigator",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 346,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-safe",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 611,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-versioning",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 280,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-notifications",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 92,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-settings",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1956,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-1440-notes",
+          "passed": true
+        },
+        {
+          "name": "production-ink-390-dashboard",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-task",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 187,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-terminal",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 104,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-automations",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 435,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-contacts",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 195,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-health",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 241,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-navigator",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 346,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-safe",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 611,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-versioning",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 280,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-notifications",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 92,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-settings",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1956,
+            "alerts": []
+          }
+        },
+        {
+          "name": "production-ink-390-notes",
+          "passed": true
+        },
+        {
+          "name": "configuration-and-content-have-no-primary-rail",
+          "passed": true,
+          "detail": [
+            {
+              "id": "dashboard",
+              "active": true,
+              "expanded": null
+            },
+            {
+              "id": "task",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "terminal",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "automations",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "contacts",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "health",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "navigator",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "safe",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "versioning",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "notifications",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "settings",
+              "active": false,
+              "expanded": null
+            }
+          ]
+        },
+        {
+          "name": "icon-settings-resource-opens-settings",
+          "passed": true,
+          "detail": [
+            {
+              "id": "dashboard",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "task",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "terminal",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "automations",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "contacts",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "health",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "navigator",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "safe",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "versioning",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "notifications",
+              "active": false,
+              "expanded": null
+            },
+            {
+              "id": "settings",
+              "active": true,
+              "expanded": "true"
+            }
+          ]
+        },
+        {
+          "name": "content-entry-retains-search-and-new-note",
+          "passed": true
+        },
+        {
+          "name": "content-original-path-retained",
+          "passed": true
+        },
+        {
+          "name": "active-rail-icon-toggles-the-panel",
+          "passed": true,
+          "detail": {
+            "opened": {
+              "expanded": "true",
+              "panel": true
+            },
+            "folded": {
+              "expanded": "false",
+              "panel": false
+            },
+            "reopened": {
+              "expanded": "true",
+              "panel": true
+            }
+          }
+        },
+        {
+          "name": "layout-1440-dashboard",
+          "passed": true,
+          "detail": {
+            "layout": "wide",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-1440-contacts",
+          "passed": true,
+          "detail": {
+            "layout": "wide",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-1440-navigator",
+          "passed": true,
+          "detail": {
+            "layout": "wide",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-900-dashboard",
+          "passed": true,
+          "detail": {
+            "layout": "medium",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-900-contacts",
+          "passed": true,
+          "detail": {
+            "layout": "medium",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-900-navigator",
+          "passed": true,
+          "detail": {
+            "layout": "medium",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-390-dashboard",
+          "passed": true,
+          "detail": {
+            "layout": "narrow",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-390-contacts",
+          "passed": true,
+          "detail": {
+            "layout": "narrow",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "layout-390-navigator",
+          "passed": true,
+          "detail": {
+            "layout": "narrow",
+            "over": 0,
+            "body": 0
+          }
+        },
+        {
+          "name": "settings-general",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1956,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-appearance",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 3412,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-dashboard",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 443,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-editor",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 470,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-navigator",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 6904,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-terminal",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1297,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-iconic",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 300,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-contacts",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 298,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-automation",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 873,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-versioning",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 3795,
+            "alerts": []
+          }
+        },
+        {
+          "name": "settings-about",
+          "passed": true,
+          "detail": {
+            "over": 0,
+            "text": 1772,
+            "alerts": []
+          }
+        },
+        {
+          "name": "module-switch-archives",
+          "passed": true
+        },
+        {
+          "name": "module-switch-versioning",
+          "passed": true
+        },
+        {
+          "name": "module-switch-notifications",
+          "passed": true
+        },
+        {
+          "name": "no-native-errors-before-restart",
+          "passed": true,
+          "detail": []
+        },
+        {
+          "name": "restart-restores-the-page",
+          "passed": true
+        },
+        {
+          "name": "no-native-errors-after-restart",
+          "passed": true,
+          "detail": []
+        }
+      ]
+    }
+  }
+}

@@ -80,12 +80,12 @@ HUHU 是 [Obsidian 里的个人工作台](../README.ZH.md)：笔记、任务、�
 
 `currentColor` 的继承适用于内联 SVG。通过 `<img src="…huhu-mark-mono.svg">` 加载时，SVG 是独立文档，不能依赖页面文字颜色；深色背景上的外部图片应选择反白版本。
 
-本组资产已用于 README 和品牌文档。它们的存在不代表 Obsidian 插件内部入口已切换为新图标。后续运行时接入遵循现有 [界面规则](../.agents/skills/ui/SKILL.md)：
+本组资产已用于 README 和品牌文档。它们的存在不代表 Obsidian 插件内部入口已切换为新图标。后续运行时接入遵循现有 [界面规则](../.agents/skills/dev-ui-design/SKILL.md)：
 
 1. 品牌入口使用虎虎标识；任务、自动化、档案等功能按钮保留各自的语义图标。
 2. 可点击入口由按钮的 `aria-label` 和已有本地化文案提供名称；内部装饰 SVG 使用 `aria-hidden="true"`，避免重复朗读。
 3. 自定义图标按宿主坐标和目标槽位缩放，并保留既有 Ribbon 的稳定身份映射。
-4. 涉及运行时代码的变更按 [测试选择表](../.agents/skills/dev/references/testing.md) 验证并同步构建产物。图像预览不能替代真实 Obsidian 宿主验收。
+4. 涉及运行时代码的变更按 [开发验证](development.md) 验证并同步构建产物。图像预览不能替代真实 Obsidian 宿主验收。
 
 ## 来源、编辑与许可
 

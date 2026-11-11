@@ -1,6 +1,6 @@
 # HUHU 架构
 
-HUHU 是 Obsidian 插件，界面入口为 `src/app/main.ts`，esbuild 生成 CommonJS `main.js`；样式由有序清单生成单个 `styles.css`。原生终端 helper 在 `native/pty-server`，使用自己的受限协议。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev/SKILL.md)进入。
+HUHU 是 Obsidian 插件，界面入口为 `src/app/main.ts`，esbuild 生成 CommonJS `main.js`；样式由有序清单生成单个 `styles.css`。原生终端 helper 在 `native/pty-server`，使用自己的受限协议。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev-build/SKILL.md)进入。
 
 ## 分区与模块
 
@@ -62,7 +62,7 @@ health 是默认开启的模块，提供惰性的 HEALTH_SCANNER/HEALTH_REPAIRS�
 
 ## 验证与产物
 
-类型、架构、国际化、DOM、黄金样本、安全回归和真实宿主分层验证。正式代码及资源变更后重建产物并验证可复现，平台验收不相互冒充。命令和发布门禁见[开发发布](development.md)，选择表见[测试参考](../.agents/skills/dev/references/testing.md)。
+类型、架构、国际化、DOM、黄金样本、安全回归和真实宿主分层验证。正式代码及资源变更后重建产物并验证可复现，平台验收不相互冒充。命令和发布门禁见[开发发布](development.md)，真实行为证据见[验证方法](../.agents/skills/dev-verify/SKILL.md)。
 
 ## 决策与领域术语
 

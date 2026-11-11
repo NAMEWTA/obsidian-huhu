@@ -99,6 +99,7 @@ export class EntityCommands {
 					values,
 					path,
 					contentHash: '',
+					createdAt: Date.now(),
 					modified: Date.now(),
 				};
 				let raw = encodeEntity(record, type, body);

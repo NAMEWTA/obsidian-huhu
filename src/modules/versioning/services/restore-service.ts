@@ -79,6 +79,8 @@ export class RestoreService {
 		this.assertOpen();
 		await this.initialize();
 		this.bounded(request.source.text);
+		const { assertOrdinaryRestore } = await import('../core/restore-policy');
+		assertOrdinaryRestore(null, request.source.text);
 		if (
 			request.conflict &&
 			(request.mode !== 'replace-current' || request.hunks || request.targetPath !== request.conflict.targetPath)
@@ -144,6 +146,7 @@ export class RestoreService {
 			throw new RestoreError('changed');
 		this.bounded(document.text);
 		this.bounded(document.diskText);
+		assertOrdinaryRestore(document.text, document.diskText);
 		const repositoryBaseline = await this.deps.gate.capture();
 		this.assertOpen();
 		const plan: RestorePlan = {
@@ -231,6 +234,9 @@ export class RestoreService {
 						this.assertOpen();
 						if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
 						let document = await this.revalidate(prepared.document);
+						const { assertOrdinaryRestore } = await import('../core/restore-policy');
+						assertOrdinaryRestore(document.text, prepared.plan.afterText);
+						assertOrdinaryRestore(document.diskText, null);
 						await this.repositoryUnchanged(prepared.repositoryBaseline);
 						await this.deps.gate.hold(planId);
 						await this.deps.gate.assertCheckpointProtection();

@@ -1,5 +1,10 @@
 # 档案通用化：实施方案与验收边界
 
+## 当前接续
+
+2026-11-11 当前整改与证据统一进入 [工作台整合 change](../.agents/dev/changes/2026-11-11-workbench-integration/README.md)，下文 2026-10-28 的分支、数字及未完成清单是历史快照，不代表当前状态。类型定义已支持 `displayFields`，列表和卡片共享投影，隐藏不删值。新实体将创建时间保存在可见 Markdown；旧实体没有可信创建时间时显示未知，更新时间使用文件 mtime。详情的 Markdown 字段与高亮共用 Obsidian renderer 和所属容器生命周期。
+
+
 对应 [Issue #3](https://github.com/NAMEWTA/obsidian-huhu/issues/3)。基线为 `main@33c21e098ef3188cbab5a09f3e0a01fadb787715`，工作分支为 `feat/archives-definition-domain-3`。
 
 ## 一、已有工作核查
@@ -49,7 +54,7 @@
 
 P5 的 CSV 导入、Lookup/Rollup、局部关系图和深入 Home 项目执行整合不纳入这次 P0–P4 范围。Archives 只拥有主资料与关系，不接管 Home 的任务、里程碑、日志与进度。
 
-Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导入、Lookup／Rollup、局部图谱和项目集成」。分阶段路线写明：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和恢复能力之前。」因此本次合入不实现 P5。依据保存在 `.agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md`。
+Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导入、Lookup／Rollup、局部图谱和项目集成」。分阶段路线写明：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和恢复能力之前。」因此本次合入不实现 P5。依据保存在 [Issue #3 来源](../.agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md)。
 
 ### 黄金样本
 
@@ -102,7 +107,7 @@ Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导�
 - 真实 Obsidian：未保存多叶、原生编辑器保存交错、弹出窗口、移动端、中文输入法、同步乱序以及卸载重开；单元适配测试不替代这些检查。
 - 实体物理删除和复制向导：当前只提供归档/恢复；关系定义的 `onDelete` 还没有对应通用删除事务。不得将归档当成实体删除验收通过。
 - 定义设计器的重启草稿恢复；当前只有实体/关系编辑会话持久草稿，定义使用内存草稿和离开确认。
-- 通用详情暂以原文显示 Markdown 字段；旧专属详情布局和全部命中定位体验未完全移植。侧栏使用有界条目，更多内容通过分页列表。
+- 当时通用详情以原文显示 Markdown；2026-11-11 已接入共享 Markdown renderer。全部命中定位体验仍未全量验收。侧栏使用有界条目，更多内容通过分页列表。
 - 大库真实首屏与视觉/无障碍矩阵仍需宿主实测。P5 不在这次范围内。
 
 因此本 PR 是完整可审阅的实施分支和明确的剩余工作清单，**不是 Issue #3 全量验收完成的声明**。不自动关闭该 Issue，不自动合并或发布；在这些边界解决前保留草稿/待验收状态。

@@ -4,6 +4,7 @@ import { PrecisionDateControl } from './PrecisionDateControl';
 import { DateField } from '../../../../ui/components/huhu/date';
 import { Notice } from '../../../../ui/components/huhu/Notice';
 import { FormField } from '../../../../ui/components/huhu/FormField';
+import { MarkdownContent } from '../../../../ui/components/huhu/MarkdownContent';
 import { useLeafMetrics } from '../../../../ui/react/use-leaf-metrics';
 import { FuzzySuggestModal, type App, type TFile } from 'obsidian';
 import type {
@@ -507,7 +508,7 @@ export function ValueForm({
 		</div>
 	);
 }
-export function RecordValues({ type, values }: { type: ArchiveTypeDefinition; values: Values }) {
+export function RecordValues({ type, values, app, path }: { type: ArchiveTypeDefinition; values: Values; app: App; path: string }) {
 	return (
 		<dl className="grid gap-3 @min-[560px]:grid-cols-2">
 			{type.fields
@@ -516,7 +517,9 @@ export function RecordValues({ type, values }: { type: ArchiveTypeDefinition; va
 					<div key={field.fieldId} className="min-w-0">
 						<dt className="text-xs text-muted-foreground">{displayLabel(field)}</dt>
 						<dd className="mt-1 whitespace-pre-wrap break-words text-sm">
-							{displayValue(values[field.fieldId])}
+							{field.kind === 'markdown' && typeof values[field.fieldId] === 'string'
+								? <MarkdownContent app={app} path={path} text={values[field.fieldId] as string} className="whitespace-normal" />
+								: displayValue(values[field.fieldId])}
 						</dd>
 					</div>
 				))}

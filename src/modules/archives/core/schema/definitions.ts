@@ -153,6 +153,7 @@ export function validateDefinition(
 				'enabled',
 				'nameFieldId',
 				'fields',
+				'displayFields',
 				'defaultFormId',
 				'defaultTemplateId',
 			]);
@@ -177,6 +178,13 @@ export function validateDefinition(
 				)
 			)
 				throw new ArchiveError('invalid-name-field');
+			if (value.displayFields !== undefined) {
+				list(value.displayFields, 'displayFields');
+				const fields = value.fields;
+				if (new Set(value.displayFields).size !== value.displayFields.length ||
+					!value.displayFields.every((id) => fields.some((field) => field.fieldId === id)))
+					throw new ArchiveError('invalid-definition', 'displayFields');
+			}
 			if (value.defaultFormId !== undefined) requiredId(value.defaultFormId);
 			if (value.defaultTemplateId !== undefined) requiredId(value.defaultTemplateId);
 			break;

@@ -2,7 +2,12 @@ import { AutomationError } from '../../../../shared/automation/errors';
 import { precheckError } from './precheck-error';
 import { execFile } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
+import { readFile as readFileCallback } from 'node:fs';
+import { promisify } from 'node:util';
+
+// The callback implementation avoids FileHandle promise overhead for hundreds of tiny /proc reads.
+const readFile = promisify(readFileCallback);
 
 interface ProcessIdentity {
 	pid: number;
@@ -24,7 +29,8 @@ async function census(marker: string): Promise<ProcessIdentity[]> {
 					try {
 						const stat = await readFile(`/proc/${name}/stat`, 'utf8');
 						const fields = stat.slice(stat.lastIndexOf(')') + 2).split(' ');
-						if (fields[0] === 'Z') return undefined;
+						// PF_KTHREAD tasks cannot be userspace precheck descendants and have no inherited environment.
+						if (fields[0] === 'Z' || (Number(fields[6]) & 0x00200000)) return undefined;
 						let owned = false;
 						try {
 							owned = (await readFile(`/proc/${name}/environ`, 'utf8')).split('\0').includes(marker);
@@ -67,6 +73,7 @@ export function ownedProcesses(pid: number, marker: string) {
 	const known = new Map<number, string>();
 	const discover = async () => {
 		const rows = await census(marker);
+		const births = new Map(rows.map(row => [row.pid, row.birth]));
 		for (const row of rows) if (row.owned || (row.pid === pid && !known.has(pid))) known.set(row.pid, row.birth);
 		let changed: boolean;
 		do {
@@ -74,7 +81,7 @@ export function ownedProcesses(pid: number, marker: string) {
 			for (const row of rows) {
 				if (
 					!known.has(row.pid) &&
-					rows.some((parent) => parent.pid === row.parent && known.get(parent.pid) === parent.birth)
+					known.has(row.parent) && known.get(row.parent) === births.get(row.parent)
 				) {
 					known.set(row.pid, row.birth);
 					changed = true;
@@ -109,7 +116,7 @@ export function ownedProcesses(pid: number, marker: string) {
 					if (emptySince === 0) emptySince = Date.now();
 					emptyScans++;
 					if (emptyScans >= 4 && Date.now() - emptySince >= 200) return;
-					await pause();
+					// Census already yields through asynchronous IO; retain the full quiet interval without an extra delay per scan.
 					continue;
 				}
 				emptySince = 0;

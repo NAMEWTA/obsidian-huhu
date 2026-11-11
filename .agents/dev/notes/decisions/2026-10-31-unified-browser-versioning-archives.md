@@ -6,7 +6,7 @@
 
 内容 owner：来源 change 的已接受 ADR；提升网关：specdev/archive-and-consolidate，codex:/root。
 
-来源：[2026-10-26-unified-browser-versioning-archives / ADR.md](../../changes/2026-10-26-unified-browser-versioning-archives/ADR.md)，原始字节 SHA-256 `d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3`。授权与归档范围见[原请求](../../changes/2026-10-26-unified-browser-versioning-archives/archive-approval.md)。
+来源：[2026-10-26-unified-browser-versioning-archives / ADR.md](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ADR.md)，原始字节 SHA-256 `d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3`。授权与归档范围见[原请求](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-approval.md)。
 
 本条保留长期取舍、边界与恢复义务；归档不证明下述目标已全部实现。原始理由、被拒方案、研究引用及验证合同随来源保留；本次未重新联网核验历史外部资料。
 
@@ -53,7 +53,7 @@ Spec AC-026。必须有从真实 versioning 恢复入口触发、在无 owner/�
 ## ADR-003: 自动本地历史显式启用并保护恢复依据
 
 **Status:** accepted
-**Source:** LOG-006；[Issue #2 第十四章](../../changes/2026-10-26-unified-browser-versioning-archives/sources/issue-2-body.md)；用户确认“1、采用”“全部按推荐”
+**Source:** LOG-006；[Issue #2 第十四章](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-2-body.md)；用户确认“1、采用”“全部按推荐”
 **Supersedes:** none
 
 ### Decision
@@ -74,7 +74,7 @@ Spec AC-017、AC-034。固定时钟和内容变化验证周期/事件采样、�
 ## ADR-004: 浏览器以四组桌面平台作为完整交付门
 
 **Status:** superseded（2026-11-04；Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-001：浏览器已整体删除，其交付门不再适用）
-**Source:** LOG-007；[Issue #1 NFR-05、8.3、21.2](../../changes/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“按你说的这四组”
+**Source:** LOG-007；[Issue #1 NFR-05、8.3、21.2](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“按你说的这四组”
 **Supersedes:** none
 
 ### Decision
@@ -93,7 +93,7 @@ Spec AC-012。四组各自产生固定资产/构建对应的 G-01～G-06、适�
 ## ADR-005: 档案结构化写入不代替用户提交原生草稿
 
 **Status:** accepted
-**Source:** LOG-008；[Issue #3 保存、单文件写入与宿主合同](../../changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md)；用户确认“拒绝，避免覆盖”
+**Source:** LOG-008；[Issue #3 保存、单文件写入与宿主合同](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md)；用户确认“拒绝，避免覆盖”
 **Supersedes:** none
 
 ### Decision
@@ -112,7 +112,7 @@ Spec AC-020、024–026、AC-033。从真实表单/删除/迁移/历史恢复入
 ## ADR-006: Cookie 与 Identity 为必需，origin storage 保留条件扩展
 
 **Status:** superseded（2026-11-04；Superseded by [adr/2026-11-04-dev-stabilization-overhaul.md](2026-11-04-dev-stabilization-overhaul.md) ADR-001：浏览器及其 Cookie/Identity、origin storage 已整体删除）
-**Source:** LOG-009；[Issue #1 FR-17 与 12.5](../../changes/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“保持扩展，Cookie/Identity 为必需”
+**Source:** LOG-009；[Issue #1 FR-17 与 12.5](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md)；用户确认“保持扩展，Cookie/Identity 为必需”
 **Supersedes:** none
 
 ### Decision

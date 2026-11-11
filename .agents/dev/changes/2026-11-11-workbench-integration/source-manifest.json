@@ -1,0 +1,720 @@
+{
+  "sourceCommit": "9fe1c9f",
+  "transformation": "move with relative link rebasing only; original IDs, decisions and source metadata retained",
+  "files": [
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/ADR.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/ADR.md",
+      "originalSha256": "acc271ff228fde8fb2c3eb0df2c738a4f2b5596c8cac5790866f1dff7f49ce50",
+      "bytes": 1387,
+      "sha256": "acc271ff228fde8fb2c3eb0df2c738a4f2b5596c8cac5790866f1dff7f49ce50"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/CONTEXT.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/CONTEXT.md",
+      "originalSha256": "c086496cb1cbfad736c6244a217fb61f2d2e5ddc6f4119f32dc54381dff227df",
+      "bytes": 659,
+      "sha256": "c086496cb1cbfad736c6244a217fb61f2d2e5ddc6f4119f32dc54381dff227df"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/LOG.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/LOG.md",
+      "originalSha256": "55e40478879a29cbdfadde1d3299de70bcaa439bc82c18a2369ecaa11c62938b",
+      "bytes": 10070,
+      "sha256": "55e40478879a29cbdfadde1d3299de70bcaa439bc82c18a2369ecaa11c62938b"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/MODEL-DESIGN.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/MODEL-DESIGN.md",
+      "originalSha256": "e539f4d1ed3b092796687cec6ba49704e629126681ba1dc2279c4a0d7d2aad69",
+      "bytes": 6581,
+      "sha256": "e539f4d1ed3b092796687cec6ba49704e629126681ba1dc2279c4a0d7d2aad69"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/README.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/README.md",
+      "originalSha256": "a7ce0c6bafcf6ff1f2fea57edd024b2dbd03744a2eee12cecd33149721057892",
+      "bytes": 1517,
+      "sha256": "db88dac5dc0c01f90f04162a9fb8a1911054b5ba07177d4e385e1f8b60437da9"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/archive-approval.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-approval.md",
+      "originalSha256": "5870216f6120a1212f14f3ae339b2abf578baeedcd881f60c765c03ef0ac42c4",
+      "bytes": 1557,
+      "sha256": "5870216f6120a1212f14f3ae339b2abf578baeedcd881f60c765c03ef0ac42c4"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/archive-integrity.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-integrity.json",
+      "originalSha256": "b1dc5d8f83021e80b728dddce19593bccfebe3f49f323902c46dd44fbba07726",
+      "bytes": 1874,
+      "sha256": "b1dc5d8f83021e80b728dddce19593bccfebe3f49f323902c46dd44fbba07726"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/archive-preflight.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-preflight.json",
+      "originalSha256": "a7ef28209d4047fe16299bf1ec6e350b4000f408e3eb501fbb300f9635651c65",
+      "bytes": 971,
+      "sha256": "a7ef28209d4047fe16299bf1ec6e350b4000f408e3eb501fbb300f9635651c65"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/archive-receipt.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-receipt.md",
+      "originalSha256": "9e4bd178cbef4ca441b7ffeacc628fe31026a1d21c6f89d25579e60941b5b03c",
+      "bytes": 4960,
+      "sha256": "9e4bd178cbef4ca441b7ffeacc628fe31026a1d21c6f89d25579e60941b5b03c"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/archive-reference-map.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-reference-map.json",
+      "originalSha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6",
+      "bytes": 285,
+      "sha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/design-tree.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/design-tree.json",
+      "originalSha256": "93980daf3f007b4c4921cc93352d251f4383dcdf72f7818eaeb9a4e8c1d8aaaf",
+      "bytes": 3061,
+      "sha256": "93980daf3f007b4c4921cc93352d251f4383dcdf72f7818eaeb9a4e8c1d8aaaf"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/source.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/source.md",
+      "originalSha256": "0e48a49584410ff4c1b98dc272f6f93e45f94e41953344917c5d10690db52bce",
+      "bytes": 24489,
+      "sha256": "0e48a49584410ff4c1b98dc272f6f93e45f94e41953344917c5d10690db52bce"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-highlight-first/triage.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/triage.md",
+      "originalSha256": "93fb11acd163fe7d849d508781e746c5955c0e38e4b3834d287dcd80a9d94b9b",
+      "bytes": 4213,
+      "sha256": "93fb11acd163fe7d849d508781e746c5955c0e38e4b3834d287dcd80a9d94b9b"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ADR.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ADR.md",
+      "originalSha256": "d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3",
+      "bytes": 7615,
+      "sha256": "d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/CONTEXT-MAP.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/CONTEXT-MAP.md",
+      "originalSha256": "7b325f813c2959e0f7ebb654d03af6b4434b3bc7baa72c9d5831dd2881eaf909",
+      "bytes": 742,
+      "sha256": "7b325f813c2959e0f7ebb654d03af6b4434b3bc7baa72c9d5831dd2881eaf909"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/CONTEXT.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/CONTEXT.md",
+      "originalSha256": "6ba88e49da0322ece7f3089cae2d5095dba48c603592f4088e8a9c54c364ec84",
+      "bytes": 4175,
+      "sha256": "6ba88e49da0322ece7f3089cae2d5095dba48c603592f4088e8a9c54c364ec84"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/DESIGN.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/DESIGN.md",
+      "originalSha256": "6a1fc2b0c07f6a217e25f0974bb6a1c6266508bb1db820254502b854e4e85d82",
+      "bytes": 15979,
+      "sha256": "6a1fc2b0c07f6a217e25f0974bb6a1c6266508bb1db820254502b854e4e85d82"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/LOG.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/LOG.md",
+      "originalSha256": "923b008929957d4f5598c34ea6c33424e985fdeea9301f100a2d52b3840a1a20",
+      "bytes": 30367,
+      "sha256": "923b008929957d4f5598c34ea6c33424e985fdeea9301f100a2d52b3840a1a20"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/README.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/README.md",
+      "originalSha256": "7336648223f9489ae019fc0719723710fd3cccb4bf97b2b7eaab90de1cc9e5d3",
+      "bytes": 5313,
+      "sha256": "ac4257ac34cdcefba1cfbecd277d585dba770d98cf6d06d39daeacfe5c116d0e"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/archive-approval.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-approval.md",
+      "originalSha256": "4064ce49d2bf25bca6812ea27fcc557f617f21fc291a29cb07aa8f66f811599f",
+      "bytes": 1549,
+      "sha256": "4064ce49d2bf25bca6812ea27fcc557f617f21fc291a29cb07aa8f66f811599f"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/archive-integrity.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-integrity.json",
+      "originalSha256": "1f258dceae4dcb5c24ad7be2a276de3026d30197097677fab19168a77a447be1",
+      "bytes": 53135,
+      "sha256": "1f258dceae4dcb5c24ad7be2a276de3026d30197097677fab19168a77a447be1"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/archive-preflight.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-preflight.json",
+      "originalSha256": "3144da8fe3a624840be00b57b1b17b81115183bb40194a9e1252aac8e140902a",
+      "bytes": 13746,
+      "sha256": "3144da8fe3a624840be00b57b1b17b81115183bb40194a9e1252aac8e140902a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/archive-receipt.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-receipt.md",
+      "originalSha256": "98ed01fe0b22aa78dfcf1e9ca5f7d99aed9ea8a2f3410b14b707b445d25cdc4b",
+      "bytes": 5149,
+      "sha256": "98ed01fe0b22aa78dfcf1e9ca5f7d99aed9ea8a2f3410b14b707b445d25cdc4b"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/archive-reference-map.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/archive-reference-map.json",
+      "originalSha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6",
+      "bytes": 285,
+      "sha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/contexts/browser.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/contexts/browser.md",
+      "originalSha256": "c00b97aba373efdeae89d40957bc97d6d5e402d7c8b052167dd00062fca2b883",
+      "bytes": 2157,
+      "sha256": "c00b97aba373efdeae89d40957bc97d6d5e402d7c8b052167dd00062fca2b883"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/contexts/versioning.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/contexts/versioning.md",
+      "originalSha256": "e212b93e316c488efa9e769b032c30a1dc19166fbc7e86baa4108881a91cb523",
+      "bytes": 2284,
+      "sha256": "e212b93e316c488efa9e769b032c30a1dc19166fbc7e86baa4108881a91cb523"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/design-tree.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/design-tree.json",
+      "originalSha256": "341c0d6e49a849a387db658ae314ab6445e91984206a1d3a3844d1ae4e5f2a77",
+      "bytes": 4999,
+      "sha256": "341c0d6e49a849a387db658ae314ab6445e91984206a1d3a3844d1ae4e5f2a77"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/goal-plan.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/goal-plan.md",
+      "originalSha256": "a55531fb6704878faac438a8ad140be571b14ee63618424896f25bc533a556d7",
+      "bytes": 50964,
+      "sha256": "a55531fb6704878faac438a8ad140be571b14ee63618424896f25bc533a556d7"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval-sealed.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval-sealed.md",
+      "originalSha256": "54b933fb590bf845f02a446407246d6752d44a0d80442cace3140fc819c1c68d",
+      "bytes": 2668,
+      "sha256": "54b933fb590bf845f02a446407246d6752d44a0d80442cace3140fc819c1c68d"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval.md",
+      "originalSha256": "0496fac4c0966f7a288860dbf2f94f267e93d47cea7f68b4ed700f709adf97b9",
+      "bytes": 1633,
+      "sha256": "0496fac4c0966f7a288860dbf2f94f267e93d47cea7f68b4ed700f709adf97b9"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/index.html",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/index.html",
+      "originalSha256": "1ab3b2f807fb212638646fe774a32c5fadcd78964aeef01f5f52d6212deae92f",
+      "bytes": 2668,
+      "sha256": "1ab3b2f807fb212638646fe774a32c5fadcd78964aeef01f5f52d6212deae92f"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-a.html",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-a.html",
+      "originalSha256": "c2d33f2c19bd1ce55cf0a23db9fafde6572817a01e45c50f6534a122e7022f51",
+      "bytes": 5332,
+      "sha256": "c2d33f2c19bd1ce55cf0a23db9fafde6572817a01e45c50f6534a122e7022f51"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-b.html",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-b.html",
+      "originalSha256": "f11fb2f36f2ba7db0fcd45f89c67a52254b51b11977384c755e528e5e246de7a",
+      "bytes": 6036,
+      "sha256": "f11fb2f36f2ba7db0fcd45f89c67a52254b51b11977384c755e528e5e246de7a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-c.html",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-c.html",
+      "originalSha256": "1067956809de1afe1d74ba876ac03be5b783d680b39040b2e0056b73db739bca",
+      "bytes": 5349,
+      "sha256": "1067956809de1afe1d74ba876ac03be5b783d680b39040b2e0056b73db739bca"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/design-system.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/design-system.md",
+      "originalSha256": "866997d40c843998b83bb58f8e7c109d976e68994c933860f4be51812502a597",
+      "bytes": 82528,
+      "sha256": "866997d40c843998b83bb58f8e7c109d976e68994c933860f4be51812502a597"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/app.js",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/app.js",
+      "originalSha256": "1950858ee6e15df37e8782c125dd640d0ba82081daaea6021bca55ff910e1202",
+      "bytes": 50119,
+      "sha256": "1950858ee6e15df37e8782c125dd640d0ba82081daaea6021bca55ff910e1202"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/index.html",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/index.html",
+      "originalSha256": "0cd97261fe438a6c755494a45b131365149a32a65a4dc5a470f54f53b7487ccf",
+      "bytes": 4517,
+      "sha256": "0cd97261fe438a6c755494a45b131365149a32a65a4dc5a470f54f53b7487ccf"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/styles.css",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/styles.css",
+      "originalSha256": "7eab95fa5215a419a26265bc4ca09963823c7750d6c6852ea32e6a215947f833",
+      "bytes": 15965,
+      "sha256": "7eab95fa5215a419a26265bc4ca09963823c7750d6c6852ea32e6a215947f833"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/source.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/source.md",
+      "originalSha256": "23b1bd347dedc12f9770e798f5a028e81df1858274eab87a4efee054a7610d20",
+      "bytes": 1043,
+      "sha256": "23b1bd347dedc12f9770e798f5a028e81df1858274eab87a4efee054a7610d20"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-001.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-001.md",
+      "originalSha256": "52720fa9516383099c5999fee415b5a91e1af6095127c15ea5575f3fc99e7e0e",
+      "bytes": 118091,
+      "sha256": "52720fa9516383099c5999fee415b5a91e1af6095127c15ea5575f3fc99e7e0e"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-002.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-002.md",
+      "originalSha256": "9a43c28cd125c5204b6a19e573cc9c130fe0384b73c8d1a7f658555eddbd4c05",
+      "bytes": 50122,
+      "sha256": "9a43c28cd125c5204b6a19e573cc9c130fe0384b73c8d1a7f658555eddbd4c05"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-003.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-003.md",
+      "originalSha256": "057de2a55817addc9ef9b99b3b72f3608bb84891007b295ec131ff220dff8a3a",
+      "bytes": 66399,
+      "sha256": "057de2a55817addc9ef9b99b3b72f3608bb84891007b295ec131ff220dff8a3a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-004.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-004.md",
+      "originalSha256": "063bbeecb3723c9cadf523d39de56949e785bce5736277722ce75615ec34fa96",
+      "bytes": 19235,
+      "sha256": "063bbeecb3723c9cadf523d39de56949e785bce5736277722ce75615ec34fa96"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-005.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-005.md",
+      "originalSha256": "0264508fed618db661a262b74435445879ff6bc30f42375ba5162db059d2b669",
+      "bytes": 26756,
+      "sha256": "0264508fed618db661a262b74435445879ff6bc30f42375ba5162db059d2b669"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-006.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-006.md",
+      "originalSha256": "ffb59b3ab2b6a00df40f52f3410f14ed4496f8950d1a232063aa890f675d7fdc",
+      "bytes": 1579,
+      "sha256": "ffb59b3ab2b6a00df40f52f3410f14ed4496f8950d1a232063aa890f675d7fdc"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md",
+      "originalSha256": "8e19ddd3b157ad1fa4834033d3282fbd77ecbb74157b4bcaa8c36d3f23853276",
+      "bytes": 738,
+      "sha256": "8e19ddd3b157ad1fa4834033d3282fbd77ecbb74157b4bcaa8c36d3f23853276"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-008.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-008.md",
+      "originalSha256": "7a7fbc7fc72b21ae4e7f4ed871453faab338b0d61cef35ccd335795ab16f1b80",
+      "bytes": 570,
+      "sha256": "7a7fbc7fc72b21ae4e7f4ed871453faab338b0d61cef35ccd335795ab16f1b80"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-009.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-009.md",
+      "originalSha256": "afd7187deffb360f96b16a977ccd8b86a1ff1594d82c6f5cb35d5b5b8198caba",
+      "bytes": 743,
+      "sha256": "afd7187deffb360f96b16a977ccd8b86a1ff1594d82c6f5cb35d5b5b8198caba"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-010.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/SRC-010.md",
+      "originalSha256": "67548f49a0548d2d881b2edee2b34bfbfe299aee2c2b286e5d689df649a1f4fb",
+      "bytes": 1245,
+      "sha256": "67548f49a0548d2d881b2edee2b34bfbfe299aee2c2b286e5d689df649a1f4fb"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-home-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-home-preflight.md",
+      "originalSha256": "ac6a4bb5f21d7bd30608128bc212f8bd4f85f8bfc03042176c1d0e7e0ab53163",
+      "bytes": 2656,
+      "sha256": "ac6a4bb5f21d7bd30608128bc212f8bd4f85f8bfc03042176c1d0e7e0ab53163"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-migration-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-migration-preflight.md",
+      "originalSha256": "05c59c0d4822396d97711e4738f2ee70b80ff9b4e43495f36684bff581e0e81a",
+      "bytes": 3342,
+      "sha256": "05c59c0d4822396d97711e4738f2ee70b80ff9b4e43495f36684bff581e0e81a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-portability-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-portability-preflight.md",
+      "originalSha256": "7d0202c66120b3c19005897017eb600a107cc0394cbe70096a8907bd80e1b2c7",
+      "bytes": 2831,
+      "sha256": "7d0202c66120b3c19005897017eb600a107cc0394cbe70096a8907bd80e1b2c7"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-restore-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-restore-preflight.md",
+      "originalSha256": "628327e1a8ce49a0c10bcf98599a8b4762c548602c29be7cfe4e3cc833e102af",
+      "bytes": 3149,
+      "sha256": "628327e1a8ce49a0c10bcf98599a8b4762c548602c29be7cfe4e3cc833e102af"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-sync-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-sync-preflight.md",
+      "originalSha256": "fd534fc3fa9932c02d5ec00f93c5ca31ce12af5f40135219452ae2a27771b0d7",
+      "bytes": 2933,
+      "sha256": "fd534fc3fa9932c02d5ec00f93c5ca31ce12af5f40135219452ae2a27771b0d7"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-tree-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/archive-tree-preflight.md",
+      "originalSha256": "0aee9b97e3746b7667975d54e39d16a0bff37f8773000f64e378fab5d104a407",
+      "bytes": 2896,
+      "sha256": "0aee9b97e3746b7667975d54e39d16a0bff37f8773000f64e378fab5d104a407"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/browser-files-input-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/browser-files-input-preflight.md",
+      "originalSha256": "061694d955a1ed757a8a497ed8c1b666781176ab7914e706dc8f1a8316259035",
+      "bytes": 2130,
+      "sha256": "061694d955a1ed757a8a497ed8c1b666781176ab7914e706dc8f1a8316259035"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/browser-lifecycle-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/browser-lifecycle-preflight.md",
+      "originalSha256": "072aa431e974cd6b8146e61400a7fd2045ad8535a2d22b05205b62a43b8cf14a",
+      "bytes": 2431,
+      "sha256": "072aa431e974cd6b8146e61400a7fd2045ad8535a2d22b05205b62a43b8cf14a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/browser-material-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/browser-material-preflight.md",
+      "originalSha256": "4b21500b24cf4fb256a4ccd58fad9dcf1ab370169c0b3ae30d0067453ca5a4f7",
+      "bytes": 2974,
+      "sha256": "4b21500b24cf4fb256a4ccd58fad9dcf1ab370169c0b3ae30d0067453ca5a4f7"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/browser-storage-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/browser-storage-preflight.md",
+      "originalSha256": "c6cce3e7ec32cddb5add287a5eb502fffb787404025a4043bdb0b8ee38ce3256",
+      "bytes": 2847,
+      "sha256": "c6cce3e7ec32cddb5add287a5eb502fffb787404025a4043bdb0b8ee38ce3256"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/cft-assets-preflight-index.json",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/cft-assets-preflight-index.json",
+      "originalSha256": "d4eedc4356d62b88316f3deb2a4da702903a633265a5767b9b02a4ed53185a9c",
+      "bytes": 5834,
+      "sha256": "d4eedc4356d62b88316f3deb2a4da702903a633265a5767b9b02a4ed53185a9c"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md",
+      "originalSha256": "0ff048d42bfa99e5098781a27adcaac6a2e54b1b6a3e8a10d1a7e983a3681e98",
+      "bytes": 114676,
+      "sha256": "0ff048d42bfa99e5098781a27adcaac6a2e54b1b6a3e8a10d1a7e983a3681e98"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-2-body.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-2-body.md",
+      "originalSha256": "43ba8eaf7585045995b05bef80b85cfeeaa8e9d9bc714f075266eca9ec0315db",
+      "bytes": 47519,
+      "sha256": "43ba8eaf7585045995b05bef80b85cfeeaa8e9d9bc714f075266eca9ec0315db"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md",
+      "originalSha256": "d3db125f2e97d8ed3af1d26bde5cc17e700dc28b90bac6cecbc2b679bddfbf93",
+      "bytes": 63648,
+      "sha256": "d3db125f2e97d8ed3af1d26bde5cc17e700dc28b90bac6cecbc2b679bddfbf93"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/joint-build-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/joint-build-preflight.md",
+      "originalSha256": "a87549215be7f58a70be4776438673d9a40966fa24c2e8a57a5fb8796efc9812",
+      "bytes": 1982,
+      "sha256": "a87549215be7f58a70be4776438673d9a40966fa24c2e8a57a5fb8796efc9812"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/native-assets-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/native-assets-preflight.md",
+      "originalSha256": "c2826184d4781f98e8bcd2d63b506c4be0c119265ffa0543eb3ff9493e242ed4",
+      "bytes": 5967,
+      "sha256": "c2826184d4781f98e8bcd2d63b506c4be0c119265ffa0543eb3ff9493e242ed4"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/native-platform-reuse.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/native-platform-reuse.md",
+      "originalSha256": "485945e1aff8e6c45809f24fc61e5f4548c44abfbfaca3ae59f0a58761509da0",
+      "bytes": 8648,
+      "sha256": "485945e1aff8e6c45809f24fc61e5f4548c44abfbfaca3ae59f0a58761509da0"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/sources/windows-api-compile-preflight.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/sources/windows-api-compile-preflight.md",
+      "originalSha256": "2d5e676bbec95c3cd100d5a6d2e432808d1a51d61406c05a4109ebf5bd035e53",
+      "bytes": 5632,
+      "sha256": "2d5e676bbec95c3cd100d5a6d2e432808d1a51d61406c05a4109ebf5bd035e53"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/spec.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/spec.md",
+      "originalSha256": "90ab69a112529f4d78745def24f9d6f258a5cd644bb08d876d25e8719f8fb67f",
+      "bytes": 25021,
+      "sha256": "90ab69a112529f4d78745def24f9d6f258a5cd644bb08d876d25e8719f8fb67f"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/01-joint-boundaries.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/01-joint-boundaries.md",
+      "originalSha256": "dd4e05d9203f685c07fe016ee3c619676d2774410990cc38df700089f6300f09",
+      "bytes": 8211,
+      "sha256": "dd4e05d9203f685c07fe016ee3c619676d2774410990cc38df700089f6300f09"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/02-browser-observation.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/02-browser-observation.md",
+      "originalSha256": "85e55441d6403d0206d075986a9275d96dc9b8f70d32dba4d3d2611db69410cf",
+      "bytes": 8540,
+      "sha256": "85e55441d6403d0206d075986a9275d96dc9b8f70d32dba4d3d2611db69410cf"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/03-browser-ledger.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/03-browser-ledger.md",
+      "originalSha256": "2f5208d5322fa8670d0ae5178b6b7c339f952750462417dfdeb041513eec4379",
+      "bytes": 8581,
+      "sha256": "2f5208d5322fa8670d0ae5178b6b7c339f952750462417dfdeb041513eec4379"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/04-browser-events.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/04-browser-events.md",
+      "originalSha256": "f2efccad58f5122d7fd6da6346dbd24916d3f38abf8b09ceacc0cae9c5033e11",
+      "bytes": 8538,
+      "sha256": "f2efccad58f5122d7fd6da6346dbd24916d3f38abf8b09ceacc0cae9c5033e11"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/05-browser-identity.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/05-browser-identity.md",
+      "originalSha256": "9f3a20464c780b4105bdfbbdfd81456d3def7fcc431b6809cfdcffe62ad38215",
+      "bytes": 9853,
+      "sha256": "9f3a20464c780b4105bdfbbdfd81456d3def7fcc431b6809cfdcffe62ad38215"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/06-browser-lifecycle.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/06-browser-lifecycle.md",
+      "originalSha256": "e5deeb4e097a4eb54c0c8008e0fbc9ace366cfb847d64b0f339b341eb011ca54",
+      "bytes": 10146,
+      "sha256": "e5deeb4e097a4eb54c0c8008e0fbc9ace366cfb847d64b0f339b341eb011ca54"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/07-browser-files-input.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/07-browser-files-input.md",
+      "originalSha256": "c7107a632c8be034da29a06c4a6f4512134210175eae6935a227634471957a29",
+      "bytes": 9745,
+      "sha256": "c7107a632c8be034da29a06c4a6f4512134210175eae6935a227634471957a29"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/08-browser-material-handoff.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/08-browser-material-handoff.md",
+      "originalSha256": "b68f82121d25d5019aa5c3749a8f4b81f911d734bdf5bebc66079109f3641ad6",
+      "bytes": 10968,
+      "sha256": "b68f82121d25d5019aa5c3749a8f4b81f911d734bdf5bebc66079109f3641ad6"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/09-browser-windows.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/09-browser-windows.md",
+      "originalSha256": "4689a3115943a5942e476d7be90e3a69e3ae1be61caf4ccc8ffcd6d15b72f110",
+      "bytes": 9069,
+      "sha256": "4689a3115943a5942e476d7be90e3a69e3ae1be61caf4ccc8ffcd6d15b72f110"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/10-browser-macos-arm.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/10-browser-macos-arm.md",
+      "originalSha256": "0ed51ce2891f4cb1d4610406e9ce8b4e0ad4f3a86de717e377d72b313cde40a8",
+      "bytes": 9013,
+      "sha256": "0ed51ce2891f4cb1d4610406e9ce8b4e0ad4f3a86de717e377d72b313cde40a8"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/11-browser-macos-x64.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/11-browser-macos-x64.md",
+      "originalSha256": "8d6e6c600f714e178af4774ba3459fd548f6f36b2c68546ce64bf3eb98146619",
+      "bytes": 8884,
+      "sha256": "8d6e6c600f714e178af4774ba3459fd548f6f36b2c68546ce64bf3eb98146619"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/12-browser-linux-stress.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/12-browser-linux-stress.md",
+      "originalSha256": "05a523acf88c7374e8ab8855f27905ee16792bb52f6edbdb28b6cab98aef30d9",
+      "bytes": 8627,
+      "sha256": "05a523acf88c7374e8ab8855f27905ee16792bb52f6edbdb28b6cab98aef30d9"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/13-automatic-history.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/13-automatic-history.md",
+      "originalSha256": "cf49cf60881e60cd0699fc38b025d3f6a8ea608de3d68cb005e0ac6a6e3faa2a",
+      "bytes": 9617,
+      "sha256": "cf49cf60881e60cd0699fc38b025d3f6a8ea608de3d68cb005e0ac6a6e3faa2a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/14-history-retention.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/14-history-retention.md",
+      "originalSha256": "a6ea36f38a00e80dcd7fc20b710d0e4f073aceca3d66434a1a4387ef5bf4ebb1",
+      "bytes": 9478,
+      "sha256": "a6ea36f38a00e80dcd7fc20b710d0e4f073aceca3d66434a1a4387ef5bf4ebb1"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/15-history-core-regression.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/15-history-core-regression.md",
+      "originalSha256": "e20c35c95e921d2ee6e683ec44dcb7bf7a354e73de58c0cc73c3f4296cad71c3",
+      "bytes": 10093,
+      "sha256": "e20c35c95e921d2ee6e683ec44dcb7bf7a354e73de58c0cc73c3f4296cad71c3"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/16-history-advanced.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/16-history-advanced.md",
+      "originalSha256": "968ccb1bda0e8e487029ccae9037563f8f009062d535e2d50bc84311419a754f",
+      "bytes": 9870,
+      "sha256": "968ccb1bda0e8e487029ccae9037563f8f009062d535e2d50bc84311419a754f"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/17-archives-v2-contract.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/17-archives-v2-contract.md",
+      "originalSha256": "189c51eca98b8135ff374d58cdd06bcd65dad5fd4dd83dd57fc05ee78f43ebc5",
+      "bytes": 9444,
+      "sha256": "189c51eca98b8135ff374d58cdd06bcd65dad5fd4dd83dd57fc05ee78f43ebc5"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/18-archives-safe-writes.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/18-archives-safe-writes.md",
+      "originalSha256": "60679f899a11ab8ffdcc2c076a94927e0b62593503b9224639e9b12234cd6d6c",
+      "bytes": 8790,
+      "sha256": "60679f899a11ab8ffdcc2c076a94927e0b62593503b9224639e9b12234cd6d6c"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/19-archives-forms.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/19-archives-forms.md",
+      "originalSha256": "f99399aa361825304c660550203b38d55304f767242a88baea71c63fc9eadd18",
+      "bytes": 9922,
+      "sha256": "f99399aa361825304c660550203b38d55304f767242a88baea71c63fc9eadd18"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/20-archives-relations.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/20-archives-relations.md",
+      "originalSha256": "034722d1e690f61e24588877a6afe606a399893bfcf690c6ce5eef7394146251",
+      "bytes": 9656,
+      "sha256": "034722d1e690f61e24588877a6afe606a399893bfcf690c6ce5eef7394146251"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/21-archives-migrate.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/21-archives-migrate.md",
+      "originalSha256": "3b2186ec182f62791a077b2dc741a3e1c9b7b0dc09767584bc4910840de3a0ef",
+      "bytes": 10030,
+      "sha256": "3b2186ec182f62791a077b2dc741a3e1c9b7b0dc09767584bc4910840de3a0ef"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/22-archives-sync-forks.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/22-archives-sync-forks.md",
+      "originalSha256": "3a2420f744ca8e9e965a92843f6fbdd62b4c829124590983e991df71b73d541b",
+      "bytes": 9851,
+      "sha256": "3a2420f744ca8e9e965a92843f6fbdd62b4c829124590983e991df71b73d541b"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/23-archives-tree-views.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/23-archives-tree-views.md",
+      "originalSha256": "4a8156040726e21fa64bd940de56e5943d4d5c4a89248c37575b4328c87cd5ef",
+      "bytes": 10705,
+      "sha256": "4a8156040726e21fa64bd940de56e5943d4d5c4a89248c37575b4328c87cd5ef"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/24-archives-home-refs.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/24-archives-home-refs.md",
+      "originalSha256": "3c3d8211c248fa961c81fc1bcdebb64ba13c380c5e973b026ebc3d19e647e2b5",
+      "bytes": 12709,
+      "sha256": "3c3d8211c248fa961c81fc1bcdebb64ba13c380c5e973b026ebc3d19e647e2b5"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/25-archives-portability.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/25-archives-portability.md",
+      "originalSha256": "24fa97c55b5964b2c61983f0cf2704cc3477d11c3a6608a927843a2854336673",
+      "bytes": 8486,
+      "sha256": "24fa97c55b5964b2c61983f0cf2704cc3477d11c3a6608a927843a2854336673"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/26-archives-scale.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/26-archives-scale.md",
+      "originalSha256": "acdf895407b37f5c64670669d0c5c1672f152dc9b0269df034f5fe917dd5b323",
+      "bytes": 8414,
+      "sha256": "acdf895407b37f5c64670669d0c5c1672f152dc9b0269df034f5fe917dd5b323"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/27-archive-restore-owner.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/27-archive-restore-owner.md",
+      "originalSha256": "604defaff06cf4af356bfb280e2b9473fe8cc68b2950e59c90c4da429a30e763",
+      "bytes": 11161,
+      "sha256": "604defaff06cf4af356bfb280e2b9473fe8cc68b2950e59c90c4da429a30e763"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/28-archives-fork-editor.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/28-archives-fork-editor.md",
+      "originalSha256": "829875d447647b4369d5e64fe67a29c20d9fdf7ba82ce25906462f29099c6c2d",
+      "bytes": 9423,
+      "sha256": "829875d447647b4369d5e64fe67a29c20d9fdf7ba82ce25906462f29099c6c2d"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/29-archives-import.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/29-archives-import.md",
+      "originalSha256": "2854658ce9aa67a8cee666af7ff6a17838b3f45e5ed72003f3ac924551598c8a",
+      "bytes": 9244,
+      "sha256": "2854658ce9aa67a8cee666af7ff6a17838b3f45e5ed72003f3ac924551598c8a"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/30-archives-derived-graph.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/30-archives-derived-graph.md",
+      "originalSha256": "25d59265d3829bcb8f8b002de3f98595401a25844d99d7f190b5b32d542dc3c2",
+      "bytes": 9165,
+      "sha256": "25d59265d3829bcb8f8b002de3f98595401a25844d99d7f190b5b32d542dc3c2"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/31-browser-storage-extension.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/31-browser-storage-extension.md",
+      "originalSha256": "a7406e2c3708b8b1ffd3e91cb806f5289f297954b0d09e0b47f50bca1e0da6f4",
+      "bytes": 8643,
+      "sha256": "a7406e2c3708b8b1ffd3e91cb806f5289f297954b0d09e0b47f50bca1e0da6f4"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/ticket/32-joint-acceptance.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/ticket/32-joint-acceptance.md",
+      "originalSha256": "de1879f1d38e1ccd41821d3931ac433a99494fbd73ef89eab901c599a96453b7",
+      "bytes": 12278,
+      "sha256": "de1879f1d38e1ccd41821d3931ac433a99494fbd73ef89eab901c599a96453b7"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/tickets-map.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/tickets-map.md",
+      "originalSha256": "f0bea5259ff7acf8ee817fc3da4567127b970a2e76c68d58e33993a29cabfcc3",
+      "bytes": 21642,
+      "sha256": "f0bea5259ff7acf8ee817fc3da4567127b970a2e76c68d58e33993a29cabfcc3"
+    },
+    {
+      "oldPath": ".agents/dev/changes/2026-10-26-unified-browser-versioning-archives/triage.md",
+      "path": ".agents/dev/changes/2026-11-11-workbench-integration/sources/2026-10-26-unified-browser-versioning-archives/triage.md",
+      "originalSha256": "88b19250fc15eeefb7ee8aa32e6e912abcce377c9f0e2a8545862261ff915dc9",
+      "bytes": 5554,
+      "sha256": "88b19250fc15eeefb7ee8aa32e6e912abcce377c9f0e2a8545862261ff915dc9"
+    }
+  ]
+}

@@ -13,14 +13,14 @@ HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React
 - 检查：`pnpm run lint`（零警告）
 - 测试：`pnpm test`
 
-以上是命令目录，不是每次任务的必跑清单。按改动和风险选择验证，唯一选择表在[测试参考](.agents/skills/dev/references/testing.md)。只读审查和纯文档修改不要求构建插件。
+以上是命令目录，不是每次任务的必跑清单。按改动和风险选择验证，命令与选择依据见[开发验证](docs/development.md)。只读审查和纯文档修改不要求构建插件。
 
 ## 按任务读取
 
 只打开当前任务需要的入口和参考；涉及两类职责时组合使用，不递归通读所有链接。已读且未变化的规则可复用：
 
-- 改插件代码、设置、测试、构建或发版：[开发规则](.agents/skills/dev/SKILL.md)
-- 改工作台页面、面板、对话框或样式：[界面规则](.agents/skills/ui/SKILL.md)
+- 改插件代码、设置、测试、构建或发版：[实施技能](.agents/skills/dev-build/SKILL.md)和[工程约定](docs/architecture.md)
+- 改工作台页面、面板、对话框或样式：[界面技能](.agents/skills/dev-ui-design/SKILL.md)和[设计系统](docs/design-system.md)
 - 查领域术语、架构决定或当前基线：[开发文档索引](docs/architecture.md)
 
 ## 结构

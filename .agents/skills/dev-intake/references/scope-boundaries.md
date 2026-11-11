@@ -4,8 +4,8 @@
 
 - [目录结构](#目录结构)
 - [文件格式](#文件格式)
-- [何时检查 `.agents/dev/notes/context/scope-decisions/`](#何时检查-agentsnotescontextscope-decisions)
-- [何时写入 `.agents/dev/notes/context/scope-decisions/`](#何时写入-agentsnotescontextscope-decisions)
+- [何时检查 `.agents/dev/notes/context/scope-decisions/`](#何时检查-agentsdevnotescontextscope-decisions)
+- [何时写入 `.agents/dev/notes/context/scope-decisions/`](#何时写入-agentsdevnotescontextscope-decisions)
 - [更新或移除范围之外文件](#更新或移除范围之外文件)
 
 仓库的 `.agents/dev/notes/context/scope-decisions/` 目录持久记录被拒绝的功能请求。它有两个用途：

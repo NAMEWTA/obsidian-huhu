@@ -124,6 +124,30 @@ test('panel menu exposes sorting, settings and the resolve-all confirmation requ
 	view.unmount(); await f.dispose();
 });
 
+test('vault export loads collapsed files and refuses a partial export after a read failure', async () => {
+	const f = fixture();
+	await f.store.highlight('a.md', { anchor: createAnchor('alpha', 0, 5), color: 'yellow' });
+	await f.store.highlight('b.md', { anchor: createAnchor('beta', 0, 4), color: 'blue' });
+	await f.store.flush(); await f.service.refresh();
+	const exported = vi.fn(async (_rows: Parameters<CommentsEnv['exportHighlights']>[0]) => 'export.md'); f.env.exportHighlights = exported;
+	const load = vi.spyOn(f.service, 'load');
+	const view = render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env} /></HuhuProviders>);
+	fireEvent.click(screen.getByRole('radio', { name: 'Vault' }));
+	const exportMenu = async () => {
+		fireEvent.pointerDown(screen.getByRole('button', { name: 'More comment actions' }), { button: 0, ctrlKey: false, pointerType: 'mouse' });
+		fireEvent.click(await screen.findByRole('menuitem', { name: /Export/ }));
+	};
+	await exportMenu();
+	await waitFor(() => expect(exported).toHaveBeenCalledOnce());
+	expect(load.mock.calls.map(call => call[0])).toEqual(['a.md', 'b.md']);
+	expect(exported.mock.calls[0]?.[0]).toHaveLength(2);
+	exported.mockClear(); load.mockRejectedValueOnce(new Error('read failed'));
+	await exportMenu();
+	await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/export/i));
+	expect(exported).not.toHaveBeenCalled();
+	view.unmount(); await f.dispose();
+});
+
 test('editor hover waits 350ms, carries overlapping ids, and destroy removes listeners/timers', async () => {
 	const { HoverTracker } = await import('./editor/hover');
 	const { EditorState } = await import('@codemirror/state');

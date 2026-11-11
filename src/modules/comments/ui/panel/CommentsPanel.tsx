@@ -59,6 +59,7 @@ export function CommentsPanel(props: PanelProps) {
 function PanelBody({ env, documents, container }: PanelProps) {
 	const notice = useDesignNotice(), panelVisible = useVisible();
 	const [exportError, setExportError] = useState(false);
+	const [exporting, setExporting] = useState(false);
 	const state = useStore(env.service.state);
 	const path = useSyncExternalStore(listener => documents?.subscribe(listener) ?? (() => undefined), () => documents && container?.ownerDocument.defaultView ? documents.current(container.ownerDocument.defaultView)?.path ?? null : state.path);
 	const [scope, setScope] = useState('current');
@@ -118,6 +119,25 @@ function PanelBody({ env, documents, container }: PanelProps) {
 		}
 		setSelected(old => new Set([...old].filter(id => !done.has(id)))); setBusy(false);
 	};
+	const exportRows = async () => {
+		if (exporting) return;
+		setExporting(true);
+		setExportError(false);
+		try {
+			const paths = scope === 'current' ? (path ? [path] : []) : state.notes.map(note => note.path);
+			for (let offset = 0; offset < paths.length; offset += 16)
+				await Promise.all(paths.slice(offset, offset + 16).map(path => env.service.load(path)));
+			const loaded = paths.flatMap(path => store.threadsFor(path).map(thread => ({ path, thread })));
+			const matching = sortHighlightRows(filterHighlightRows(loaded, { search, color, status: filter, showArchived }), sort);
+			const chosen = selectMode ? matching.filter(row => selected.has(row.thread.id)) : [];
+			const output = await env.exportHighlights(chosen.length ? chosen : matching);
+			notice(t('editor.highlights.exported', { path: output }));
+		} catch {
+			setExportError(true);
+		} finally {
+			setExporting(false);
+		}
+	};
 	const bulkButtons = <div className="space-y-2 border-b border-[var(--hu-line)] p-2 text-xs" aria-busy={busy}>
 		<div className="flex flex-wrap items-center gap-2">
 			<span>{t('editor.highlights.selectedCount', { count: selectedRows.length })}</span>
@@ -152,7 +172,7 @@ function PanelBody({ env, documents, container }: PanelProps) {
 							<DropdownMenuRadioGroup value={sort} onValueChange={v => setSort(v as SortOrder)}>{(['position', 'created', 'activity'] as const).map(value =>
 								<DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onSelect={() => { void env.exportHighlights(selectedRows.length ? selectedRows : visible).then(path => { setExportError(false); notice(t('editor.highlights.exported', { path })); }, () => setExportError(true)); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
+							<DropdownMenuItem disabled={exporting || loading || loadError || state.error} onSelect={() => { void exportRows(); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
 							{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
 							<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem>
 						</DropdownMenuContent></DropdownMenu>

@@ -145,6 +145,8 @@ export default function PersonReadingPage({
 							<RecordValues
 								type={{ ...type, fields: type.fields.filter((field) => field.fieldId !== 'journal') }}
 								values={entity.values}
+								app={app}
+								path={entity.path}
 							/>
 							<details className="min-w-0">
 								<summary className="cursor-pointer py-3 text-sm font-medium">

@@ -1,6 +1,8 @@
 # HUHU 高亮摘录：参考研究、实施计划与验收
 
-> 对应需求 [Issue #6](https://github.com/NAMEWTA/obsidian-huhu/issues/6)；实施分支 `NAMEWTA/6`。本文描述实现取舍与测试目标；真实 Obsidian 桌面/移动端验收及最终 CI 结果以 PR 检查为准。
+> 对应需求 [Issue #6](https://github.com/NAMEWTA/obsidian-huhu/issues/6)。当前接续与验证见 [工作台整合 change](../.agents/dev/changes/2026-11-11-workbench-integration/README.md)。下文原分支交付步骤属于历史，不限制用户最新授权。
+
+2026-11-11：全库 Markdown 导出先按需加载全部目标 sidecar，再按当前筛选与排序导出，不再遗漏尚未展开的文件；读取失败拒绝部分导出。高亮笔记与档案详情共用 `src/ui/components/huhu/MarkdownContent.tsx`，继续使用 Obsidian renderer，不引入另一套 Markdown 解析。
 
 ## 1. 研究对象与定位
 

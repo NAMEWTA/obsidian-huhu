@@ -2,7 +2,7 @@
 
 Outcome: active
 
-> 2026-11-11 资料整理：旧 archive 只是例外封存，未证明需求完成；现按当前规则留在 changes，访谈与规格仍待闭合。本次不继续实施。路径与依据见[迁移记录](../../project/specdev-migration.md)。
+> 2026-11-11 资料整理：旧 archive 只是例外封存，未证明需求完成；现按当前规则留在 changes，访谈与规格仍待闭合。本次不继续实施。路径与依据见[迁移记录](../../../../project/specdev-migration.md)。
 
 将 HUHU 现有批注模块升级为先高亮、后记笔记的 Markdown 阅读摘录系统。来源为 [#6](https://github.com/NAMEWTA/obsidian-huhu/issues/6)，本次交付分诊、决策访谈、完整 Spec 与一个最佳 UI 原型；未授权生产实现。
 

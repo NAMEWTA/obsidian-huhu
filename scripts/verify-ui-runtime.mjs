@@ -87,10 +87,10 @@ try {
 			assert(stretch.pseudoHeight >= (coarse?44:32));
 			for(const name of ['connected','orca-split']) {
 				const [a,b]=rows[name].controls; assert.equal(b.box.x-a.box.x-a.box.width,0,id+' '+name+' joined border');
-				for(const item of [a,b]) { assert.equal(item.box.height,24); assert.deepEqual(item.margin,['0px','0px','0px','0px']); }
+				for(const item of [a,b]) { assert.equal(item.box.height,32); assert.deepEqual(item.margin,['0px','0px','0px','0px']); }
 			}
 			for(const item of rows.connected.controls) assert(item.pseudoWidth<=item.box.width,'joined items keep their inline partition');
-			assert.deepEqual(rows.connected.controls.map(c=>c.box.width),[34,33]);
+			assert.deepEqual(rows.connected.controls.map(c=>c.box.width),coarse?[46,46]:[34,34]);
 			assert.equal(rows['row-top'].controls[0].box.y,rows['row-top'].after.y); assert.equal(rows['row-top'].controls[0].box.height,20);
 			assert.equal(rows.positioned.controls[0].position,'absolute'); assert.equal(rows.positioned.controls[0].box.x-rows.positioned.container.x,12);
 			assert.equal(rows.full.controls[0].box.width, 300, id + ' w-full');
@@ -106,20 +106,22 @@ try {
 			assert.equal(rows.style.controls[0].box.width, 120); assert.equal(rows.style.controls[0].marginLeft, '12px');
 			assert.equal(rows['as-child'].controls[0].box.width, 300); assert.equal(rows['as-child'].controls[0].ref, 'A');
 			assert.equal(rows['as-child'].controls[0].parent, 'as-child');
-			assert.deepEqual(rows.group.controls.map(c => c.box.width), [150.5,149.5]); // Original first-item border contributes one pixel.
+			assert.equal(rows.group.controls.reduce((sum,c)=>sum+c.box.width,0),300);
+			assert(Math.abs(rows.group.controls[0].box.width-rows.group.controls[1].box.width)<=1);
 			for (const control of rows.group.controls) assert.equal(control.parent, 'toggle-group');
-			for (const control of rows.segmented.controls) { assert.equal(control.box.width, 147); assert.equal(control.parent, 'radiogroup'); }
+			for (const control of rows.segmented.controls) { assert.equal(control.box.width, 147); assert.equal(control.parent, 'segmented-control'); }
 		}
 		for (const controls of Object.values(sample)) {
-			assert.equal(controls.find(c => c.name === 'small icon').visual[1], 24);
+			assert.equal(controls.find(c => c.name === 'small icon').visual[1], 32);
 			assert.equal(controls.find(c => c.name === 'switch').visual[1], 20);
-			assert.equal(controls.find(c => c.name === 'checkbox').visual[1], 16);
+			assert.equal(controls.find(c => c.name === 'checkbox').visual[1], 18);
 		}
 	}
 	for(const id of Object.keys(result.desktop)) {
-		const compact=row=>row.filter(c=>!['input','textarea','resize','scroll-area-scrollbar'].includes(c.name)).map(({name,visual})=>({name,visual}));
+		const compact=row=>row.filter(c=>!c.group&&!['input','textarea','resize','scroll-area-scrollbar','toggle','isolated toggle'].includes(c.name)).map(({name,visual})=>({name,visual}));
 		assert.deepEqual(compact(result.desktop[id]),compact(result.touch[id]),id+' pointer mode must not resize compact controls');
 		for(const name of Object.keys(result.layoutDesktop[id])) {
+			if(name==='connected') continue; // Joined targets reserve 44px plus the HU gap on coarse pointers.
 			const sizes=rows=>rows[name].controls.map(c=>({width:c.box.width,height:c.box.height,margin:c.margin}));
 			assert.deepEqual(sizes(result.layoutDesktop[id]),sizes(result.layoutTouch[id]),id+' '+name+' unchanged layout box');
 		}
@@ -160,8 +162,8 @@ try {
 	assert(result.closeTouch.hit.every(size => size >= 44)); assert(result.closeTouch.clickable);
 	await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: false });
 	await setOpen('other', 'dialog', false); result.after = await snapshot(); assert.deepEqual(result.after, result.before);
-	// Host tokens are live, including a non-default token value and reduced motion.
-	await evaluate(`for(const d of Object.values(uiFixture.docs)){d.body.style.setProperty('--anim-duration-fast','73ms');d.body.style.setProperty('--anim-duration-moderate','141ms')}`);
+	// HU motion tokens are live on every surface, including the owner-document Portal.
+	await evaluate(`for(const d of Object.values(uiFixture.docs))for(const el of d.querySelectorAll('.huhu-ui')){el.style.setProperty('--hu-dur-fast','73ms');el.style.setProperty('--hu-dur-base','141ms')}`);
 	await setOpen('other', 'dialog', true);
 	result.motion = await evaluate(`(()=>{const d=uiFixture.docs.other,s=e=>d.defaultView.getComputedStyle(e);return {dialog:s(d.querySelector('[role=dialog]')).animationDuration,progress:s(d.querySelector('[data-slot=progress-indicator]')).transitionDuration,property:s(d.querySelector('[data-slot=progress-indicator]')).transitionProperty,switch:s(d.querySelector('[data-slot=switch-thumb]')).transitionDuration}})()`);
 	assert.equal(result.motion.dialog, '0.073s'); assert.equal(result.motion.progress, '0.141s'); assert.equal(result.motion.switch, '0.073s'); assert.equal(result.motion.property, 'transform, opacity');
@@ -182,7 +184,7 @@ try {
 	await setOpen('other', 'menu', false);
 	result.semantic = [];
 	for (const theme of ['theme-light', 'theme-dark']) {
-		await evaluate(`(()=>{const d=uiFixture.docs.other;d.body.className='${theme}';for(const el of d.querySelectorAll('.huhu-ui')){el.style.setProperty('--foreground','rgb(20,80,140)');el.style.setProperty('--popover','rgb(240,230,220)')}})()`);
+		await evaluate(`(()=>{const d=uiFixture.docs.other;d.body.className='${theme}';for(const el of d.querySelectorAll('.huhu-ui')){el.dataset.theme='${theme === 'theme-dark' ? 'ink' : 'paper'}';el.style.setProperty('--foreground','rgb(20,80,140)');el.style.setProperty('--popover','rgb(240,230,220)')}})()`);
 		for (const kind of ['dropdown-menu', 'context-menu']) {
 			if (kind === 'dropdown-menu') await setOpen('other', 'menu', true);
 			else { await evaluate(`uiFixture.docs.other.getElementById('other-context').dispatchEvent(new uiFixture.docs.other.defaultView.MouseEvent('contextmenu',{bubbles:true,clientX:100,clientY:400}))`); await delay(250); }

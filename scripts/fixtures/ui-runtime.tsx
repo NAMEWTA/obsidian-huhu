@@ -108,12 +108,12 @@ function LayoutSamples({ id }: { id: string }) {
 	return (
 		<div data-layout style={{ width: 300 }}>
 			<div data-case="stretch" style={{ display: 'flex', height: 36 }}>
-				<Button size="xs" style={{ height: 'auto' }}>
+				<Button size="sm" style={{ height: 'auto' }}>
 					Stretch
 				</Button>
 			</div>
 			<div data-case="connected">
-				<ToggleGroup type="single" size="xs" variant="outline">
+				<ToggleGroup type="single" size="sm" variant="outline">
 					<ToggleGroupItem value="a" aria-label="joined first">
 						<svg aria-hidden />
 					</ToggleGroupItem>
@@ -124,12 +124,12 @@ function LayoutSamples({ id }: { id: string }) {
 			</div>
 			<div data-case="orca-split">
 				<div className="inline-flex shrink-0 overflow-hidden rounded-md border border-border bg-background shadow-xs">
-					<Button variant="ghost" size="xs" className="rounded-none border-0 shadow-none">
+					<Button variant="ghost" size="sm" className="rounded-none border-0 shadow-none">
 						Edit File in Orca
 					</Button>
 					<Button
 						variant="ghost"
-						size="icon-xs"
+						size="icon-sm"
 						className="rounded-none border-l border-border"
 						aria-label="file menu"
 					>
@@ -142,31 +142,31 @@ function LayoutSamples({ id }: { id: string }) {
 				<Switch aria-label="top switch" />
 			</div>
 			<div data-case="positioned" style={{ position: 'relative', height: 24 }}>
-				<Button size="icon-xs" className="absolute" style={{ left: 12, top: 0 }} aria-label="absolute icon">
+				<Button size="icon-sm" className="absolute" style={{ left: 12, top: 0 }} aria-label="absolute icon">
 					X
 				</Button>
 			</div>
 			<div data-case="full">
-				<Button size="xs" className="w-full">
+				<Button size="sm" className="w-full">
 					Full
 				</Button>
 			</div>
 			<div data-case="flex" style={{ display: 'flex', gap: 8 }}>
-				<Button size="xs" className="flex-1">
+				<Button size="sm" className="flex-1">
 					Left
 				</Button>
-				<Button size="xs" className="flex-1">
+				<Button size="sm" className="flex-1">
 					Right
 				</Button>
 			</div>
 			<div data-case="hidden" style={{ display: 'flex' }}>
-				<Button size="xs" className="hidden">
+				<Button size="sm" className="hidden">
 					Hidden
 				</Button>
 				<span>After</span>
 			</div>
 			<div data-case="hidden-attribute" style={{ display: 'flex' }}>
-				<Button size="icon-xs" hidden>
+				<Button size="icon-sm" hidden>
 					H
 				</Button>
 				<span>After</span>
@@ -176,19 +176,19 @@ function LayoutSamples({ id }: { id: string }) {
 				<Label htmlFor={id + '-disabled'}>Disabled label</Label>
 			</div>
 			<div data-case="grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-				<Button size="xs" style={{ gridColumn: 'span 2', width: '100%' }}>
+				<Button size="sm" style={{ gridColumn: 'span 2', width: '100%' }}>
 					Grid span
 				</Button>
-				<Button size="xs">Left</Button>
-				<Button size="xs">Right</Button>
+				<Button size="sm">Left</Button>
+				<Button size="sm">Right</Button>
 			</div>
 			<div data-case="style">
-				<Button size="xs" style={{ width: 120, marginLeft: 12 }}>
+				<Button size="sm" style={{ width: 120, marginLeft: 12 }}>
 					Style
 				</Button>
 			</div>
 			<div data-case="as-child">
-				<Button size="xs" asChild className="w-full">
+				<Button size="sm" asChild className="w-full">
 					<a
 						href="#layout"
 						data-ref="pending"
@@ -201,15 +201,15 @@ function LayoutSamples({ id }: { id: string }) {
 				</Button>
 			</div>
 			<div data-case="compact-flex" style={{ display: 'flex', gap: 8 }}>
-				<Toggle size="xs" className="flex-1">
+				<Toggle size="sm" className="flex-1">
 					One
 				</Toggle>
-				<Toggle size="xs" className="flex-1">
+				<Toggle size="sm" className="flex-1">
 					Two
 				</Toggle>
 			</div>
 			<div data-case="group">
-				<ToggleGroup type="single" size="xs" variant="outline" className="w-full">
+				<ToggleGroup type="single" size="sm" variant="outline" className="w-full">
 					<ToggleGroupItem value="a" className="flex-1">
 						One
 					</ToggleGroupItem>
@@ -232,10 +232,10 @@ function LayoutSamples({ id }: { id: string }) {
 			<div data-case="compact-hidden" style={{ display: 'flex' }}>
 				<Checkbox className="hidden" />
 				<Switch className="hidden" />
-				<Toggle size="xs" className="hidden">
+				<Toggle size="sm" className="hidden">
 					Hidden
 				</Toggle>
-				<ToggleGroup type="single" size="xs">
+				<ToggleGroup type="single" size="sm">
 					<ToggleGroupItem value="h" className="hidden">
 						Hidden
 					</ToggleGroupItem>
@@ -251,16 +251,16 @@ function Samples({ id }: { id: string }) {
 	return (
 		<>
 			<div className="fixture-controls">
-				<Button size="icon-xs" aria-label="small icon">
+				<Button size="icon-sm" aria-label="small icon">
 					X
 				</Button>
-				<Button size="xs">Small</Button>
+				<Button size="sm">Small</Button>
 				<Switch aria-label="switch" />
 				<Checkbox aria-label="checkbox" />
-				<Toggle size="xs" aria-label="toggle">
+				<Toggle size="sm" aria-label="toggle">
 					T
 				</Toggle>
-				<ToggleGroup type="single" size="xs">
+				<ToggleGroup type="single" size="sm">
 					<ToggleGroupItem value="x" aria-label="group toggle">
 						G
 					</ToggleGroupItem>
@@ -275,20 +275,20 @@ function Samples({ id }: { id: string }) {
 				/>
 			</div>
 			<div className="fixture-adjacent">
-				<Button size="icon-xs" aria-label="first icon">
+				<Button size="icon-sm" aria-label="first icon">
 					X
 				</Button>
-				<Button size="icon-xs" aria-label="second icon">
+				<Button size="icon-sm" aria-label="second icon">
 					Y
 				</Button>
 			</div>
 			<div className="fixture-isolated">
-				<Button size="icon-xs" aria-label="isolated icon">
+				<Button size="icon-sm" aria-label="isolated icon">
 					X
 				</Button>
 				<Switch aria-label="isolated switch" />
 				<Checkbox aria-label="isolated checkbox" />
-				<Toggle size="xs" aria-label="isolated toggle">
+				<Toggle size="sm" aria-label="isolated toggle">
 					T
 				</Toggle>
 			</div>

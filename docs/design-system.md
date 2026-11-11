@@ -1,6 +1,6 @@
 # HUHU 设计系统
 
-界面使用 React 19、Tailwind CSS 4、shadcn/ui 与 Radix。共用组件位于 src/ui/components，HUHU 组合位于 components/huhu；不引入第二套组件库或 CSS-in-JS。精确实施约定见[界面技能](../.agents/skills/ui/SKILL.md)及[设计系统参考](../.agents/skills/ui/references/design-system.md)。
+界面使用 React 19、Tailwind CSS 4、shadcn/ui 与 Radix。共用组件位于 src/ui/components，HUHU 组合位于 components/huhu；不引入第二套组件库或 CSS-in-JS。精确实施约定见[界面技能](../.agents/skills/dev-ui-design/SKILL.md)及[设计系统参考](../.agents/skills/dev-ui-design/references/design-system.md)。
 
 ## 表面与布局
 

@@ -30,11 +30,12 @@ const zh = '创建一个非常长的中文标签按钮名称用来测试溢出';
 const icon = h('svg', { viewBox: '0 0 16 16', width: 16, height: 16 }, h('circle', { cx: 8, cy: 8, r: 6 }));
 export const html = renderToStaticMarkup(h('div', { className: 'huhu-ui' },
 	h('div', { id: 'fx-box-200', style: { width: 200, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 } },
-		h(Button, { id: 'fx-long-zh', variant: 'outline' }, zh),
-		h(Button, { id: 'fx-long-zh-icon', variant: 'default' }, icon, zh),
+		h(Button, { id: 'fx-long-zh', variant: 'secondary' }, zh),
+		h(Button, { id: 'fx-long-zh-icon', variant: 'primary' }, icon, zh),
 		h(Button, { id: 'fx-long-en', variant: 'ghost', size: 'sm' }, 'Create a very long automation with a long name'),
-		h(Button, { id: 'fx-wrapping', variant: 'outline', className: 'h-auto whitespace-normal py-1 text-left' }, 'A button that is allowed to wrap onto several lines when it is long'),
-		h(Button, { id: 'fx-short', variant: 'outline' }, 'OK'))));
+		h(Button, { id: 'fx-wrapping', variant: 'secondary', className: 'h-auto whitespace-normal py-1 text-left' }, 'A button that is allowed to wrap onto several lines when it is long'),
+		h(Button, { id: 'fx-short', variant: 'secondary' }, 'OK'),
+		h(Button, { id: 'fx-danger', variant: 'danger' }, 'Delete'))));
 `,
 		},
 		bundle: true, platform: 'node', format: 'cjs', write: false, jsx: 'automatic', logLevel: 'error', alias: { obsidian: './scripts/obsidian-stub.ts' },
@@ -115,9 +116,8 @@ for (const theme of ['theme-light', 'theme-dark']) {
 	const { root } = await send('DOM.getDocument', { depth: -1 });
 	for (const exp of expectations) {
 		if (exp.themes && !exp.themes.includes(theme)) continue;
-		// The interface theme lives on <body> as classes (huhu-themed, huhu-theme--<id>); an expectation can set them (and they reset for the next one).
-		const classes = exp.bodyClasses ?? [];
-		await send('Runtime.evaluate', { expression: `for (const name of [...document.body.classList]) if (name.startsWith('huhu-')) document.body.classList.remove(name);document.body.classList.add(...${JSON.stringify(classes)});true` });
+		const surfaceTheme = exp.surfaceTheme ?? (theme === 'theme-dark' ? 'ink' : 'paper');
+		await send('Runtime.evaluate', { expression: `for (const el of document.querySelectorAll('.huhu-ui')) el.dataset.theme=${JSON.stringify(surfaceTheme)};true` });
 		const { nodeId } = await send('DOM.querySelector', { nodeId: root.nodeId, selector: exp.selector });
 		if (!nodeId) { failed++; console.error(`✗ ${theme} ${exp.name}: 样例里没有 ${exp.selector}`); continue; }
 		await send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: exp.state ?? [] });

@@ -6,7 +6,7 @@
 
 内容 owner：来源 change 的已接受 ADR；提升网关：specdev/archive-and-consolidate，codex:/root。
 
-来源：[2026-10-26-highlight-first / ADR.md](../../changes/2026-10-26-highlight-first/ADR.md)，原始字节 SHA-256 `acc271ff228fde8fb2c3eb0df2c738a4f2b5596c8cac5790866f1dff7f49ce50`。授权与归档范围见[原请求](../../changes/2026-10-26-highlight-first/archive-approval.md)。
+来源：[2026-10-26-highlight-first / ADR.md](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/ADR.md)，原始字节 SHA-256 `acc271ff228fde8fb2c3eb0df2c738a4f2b5596c8cac5790866f1dff7f49ce50`。授权与归档范围见[原请求](../../changes/2026-11-11-workbench-integration/sources/2026-10-26-highlight-first/archive-approval.md)。
 
 本条保留长期取舍、边界与恢复义务；归档不证明下述目标已全部实现。原始理由、被拒方案、研究引用及验证合同随来源保留；本次未重新联网核验历史外部资料。
 

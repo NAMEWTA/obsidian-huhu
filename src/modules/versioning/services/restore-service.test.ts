@@ -216,6 +216,18 @@ test('partial preparation validates the original B identity and generations befo
 	}
 });
 
+test.each(['archive-record', 'archive-relation', 'archive-definition', 'task'])('managed %s restoration and copies cannot bypass their owner', async (tag) => {
+	const raw = `---\nhuhu-type: ${tag}\nhuhu-id: stable-id\n---\nManaged content`;
+	const ordinary = fixture();
+	for (const mode of ['replace-current', 'create-copy'] as const)
+		await expect(ordinary.service.prepare({ ...request(raw), mode })).rejects.toThrow('versioning.restore.managed-record');
+	const managed = fixture(raw);
+	await expect(managed.service.prepare(request('unstructured replacement'))).rejects.toThrow('versioning.restore.managed-record');
+	expect(ordinary.writes() + managed.writes()).toBe(0);
+	expect(ordinary.files.size + managed.files.size).toBe(0);
+	expect([...ordinary.holds, ...managed.holds]).toEqual([]);
+});
+
 test('preparing and cancelling is read-only; recovery hold begins only on apply', async () => {
 	const f = fixture('disk', 'unsaved');
 	const plan = await f.service.prepare(request());
