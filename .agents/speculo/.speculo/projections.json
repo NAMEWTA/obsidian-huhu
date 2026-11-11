@@ -1,9 +1,0 @@
-{
-  "schema_version": 3,
-  "package_version": "2.1.16",
-  "targets": [
-    "agents"
-  ],
-  "asset_ids": [],
-  "files": []
-}

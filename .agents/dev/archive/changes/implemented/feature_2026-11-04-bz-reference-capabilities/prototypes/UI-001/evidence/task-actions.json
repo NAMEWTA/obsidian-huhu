@@ -1,0 +1,19 @@
+{
+  "actions": [
+    "quick: unlock, search, arrows, IME guard, copy simulation, no-result explicit generation, lock invalidates late callback",
+    "vault: relation stable identity, invalid target diagnosis, narrow list/detail and back",
+    "belongings: card detail, editable exit-date dialog, transition, undo and stale conflict state",
+    "report: historical year selection and separate currency columns",
+    "diary: next page, month index, empty date and no-animation fallback",
+    "writing: in-book draft, discard confirmation, keep draft, save receipt simulation and conflict editor",
+    "person: journal edit/save simulation, same-name stable ID and generic company form",
+    "health: manual progress, cancellation incomplete, finish and notification return",
+    "repair: plan, confirmation, owner-validation simulation, recheck, partial recovery and unsupported item"
+  ],
+  "errors": [],
+  "boundaries": [
+    "No native clipboard, vault writes, notification transport, Obsidian host or real touch gestures",
+    "200% layout equivalent uses half CSS width and deviceScaleFactor 2",
+    "Fictional states observed through actual scenario controls, then representative task buttons exercised"
+  ]
+}

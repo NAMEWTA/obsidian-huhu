@@ -66,4 +66,4 @@ health 是默认开启的模块，提供惰性的 HEALTH_SCANNER/HEALTH_REPAIRS�
 
 ## 决策与领域术语
 
-长期取舍从 [ADR 索引](../.agents/speculo/.speculo/specdev/adr/INDEX.md)进入，项目术语从 [context 索引](../.agents/speculo/.speculo/specdev/context/INDEX.md)进入。已采纳合同与当前实现分别判断，历史来源和未验收项保留在各条目链接的归档 change 中。
+长期取舍从[决策索引](../.agents/dev/notes/decisions/INDEX.md)进入，项目术语与背景从[知识导航](../.agents/dev/notes/index.md)进入。已采纳合同与当前实现分别判断，历史来源保存在 `.agents/dev/archive/`，尚未闭合的需求保留在 `.agents/dev/changes/`；迁移范围与例外见[整理记录](../.agents/dev/project/specdev-migration.md)。

@@ -1,0 +1,1251 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "cdec8620804428ffb3556ba0bd562dc33900e2d1295523e5f330fc42af1cb6be",
+  "generated_at": "2026-11-05T05:59:55.993Z",
+  "provider": "Google Chrome 153.0.8010.47 · headless CDP · file:// · Linux",
+  "inspected_files": [
+    "comparison/index.html",
+    "comparison/variants/huhu-paper.html",
+    "final/index.html"
+  ],
+  "cases": [
+    {
+      "id": "final-home-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-home-1440.png",
+      "states": [
+        "home:default",
+        "home:editing",
+        "home:empty",
+        "home:loading"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-tasks-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-tasks-1440.png",
+      "states": [
+        "tasks:default",
+        "tasks:board",
+        "tasks:calendar",
+        "tasks:detail",
+        "tasks:completed",
+        "tasks:pending",
+        "tasks:failed",
+        "tasks:empty",
+        "tasks:no-results",
+        "tasks:loading",
+        "tasks:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-diary-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-diary-1440.png",
+      "states": [
+        "diary:default",
+        "diary:writing",
+        "diary:empty-date"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-archives-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-archives-1440.png",
+      "states": [
+        "archives:default",
+        "archives:record",
+        "archives:belongings",
+        "archives:person",
+        "archives:studio",
+        "archives:search",
+        "archives:no-results",
+        "archives:dirty",
+        "archives:loading",
+        "archives:error",
+        "archives:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-automations-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-automations-1440.png",
+      "states": [
+        "automations:default",
+        "automations:detail",
+        "automations:detail-runs",
+        "automations:run-detail",
+        "automations:editing",
+        "automations:toggle-pending",
+        "automations:toggle-failed",
+        "automations:all-runs",
+        "automations:new",
+        "automations:empty",
+        "automations:missing",
+        "automations:loading",
+        "automations:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-agent-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-agent-1440.png",
+      "states": [
+        "agent:default",
+        "agent:split",
+        "agent:blocked",
+        "agent:info",
+        "agent:history",
+        "agent:usage",
+        "agent:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-notifications-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-notifications-1440.png",
+      "states": [
+        "notifications:default",
+        "notifications:detail",
+        "notifications:empty",
+        "notifications:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-safe-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-safe-1440.png",
+      "states": [
+        "safe:locked",
+        "safe:error",
+        "safe:default",
+        "safe:detail",
+        "safe:revealed",
+        "safe:quick-pick",
+        "safe:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-versioning-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-versioning-1440.png",
+      "states": [
+        "versioning:default",
+        "versioning:diff",
+        "versioning:restore-confirm",
+        "versioning:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-health-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-health-1440.png",
+      "states": [
+        "health:idle",
+        "health:scanning",
+        "health:results",
+        "health:repair-plan",
+        "health:partial",
+        "health:cancelled"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-notes-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-notes-1440.png",
+      "states": [
+        "notes:default",
+        "notes:comment-editing",
+        "notes:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-settings-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/final-settings-1440.png",
+      "states": [
+        "settings:appearance",
+        "settings:appearance-dark",
+        "settings:follow-obsidian",
+        "settings:general",
+        "settings:icons",
+        "settings:content",
+        "settings:search"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-home-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-home-390.png",
+      "states": [
+        "home:default",
+        "home:editing",
+        "home:empty",
+        "home:loading"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-tasks-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-tasks-390.png",
+      "states": [
+        "tasks:default",
+        "tasks:board",
+        "tasks:calendar",
+        "tasks:detail",
+        "tasks:completed",
+        "tasks:pending",
+        "tasks:failed",
+        "tasks:empty",
+        "tasks:no-results",
+        "tasks:loading",
+        "tasks:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-diary-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-diary-390.png",
+      "states": [
+        "diary:default",
+        "diary:writing",
+        "diary:empty-date"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-archives-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-archives-390.png",
+      "states": [
+        "archives:default",
+        "archives:record",
+        "archives:belongings",
+        "archives:person",
+        "archives:studio",
+        "archives:search",
+        "archives:no-results",
+        "archives:dirty",
+        "archives:loading",
+        "archives:error",
+        "archives:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-automations-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-automations-390.png",
+      "states": [
+        "automations:default",
+        "automations:detail",
+        "automations:detail-runs",
+        "automations:run-detail",
+        "automations:editing",
+        "automations:toggle-pending",
+        "automations:toggle-failed",
+        "automations:all-runs",
+        "automations:new",
+        "automations:empty",
+        "automations:missing",
+        "automations:loading",
+        "automations:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-agent-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-agent-390.png",
+      "states": [
+        "agent:default",
+        "agent:split",
+        "agent:blocked",
+        "agent:info",
+        "agent:history",
+        "agent:usage",
+        "agent:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-notifications-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-notifications-390.png",
+      "states": [
+        "notifications:default",
+        "notifications:detail",
+        "notifications:empty",
+        "notifications:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-safe-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-safe-390.png",
+      "states": [
+        "safe:locked",
+        "safe:error",
+        "safe:default",
+        "safe:detail",
+        "safe:revealed",
+        "safe:quick-pick",
+        "safe:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-versioning-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-versioning-390.png",
+      "states": [
+        "versioning:default",
+        "versioning:diff",
+        "versioning:restore-confirm",
+        "versioning:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-health-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-health-390.png",
+      "states": [
+        "health:idle",
+        "health:scanning",
+        "health:results",
+        "health:repair-plan",
+        "health:partial",
+        "health:cancelled"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-notes-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-notes-390.png",
+      "states": [
+        "notes:default",
+        "notes:comment-editing",
+        "notes:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-settings-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/final-settings-390.png",
+      "states": [
+        "settings:appearance",
+        "settings:appearance-dark",
+        "settings:follow-obsidian",
+        "settings:general",
+        "settings:icons",
+        "settings:content",
+        "settings:search"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-home-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-home-1440.png",
+      "states": [
+        "home:default",
+        "home:editing",
+        "home:empty",
+        "home:loading"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-tasks-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-tasks-1440.png",
+      "states": [
+        "tasks:default",
+        "tasks:board",
+        "tasks:calendar",
+        "tasks:detail",
+        "tasks:completed",
+        "tasks:pending",
+        "tasks:failed",
+        "tasks:empty",
+        "tasks:no-results",
+        "tasks:loading",
+        "tasks:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-diary-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-diary-1440.png",
+      "states": [
+        "diary:default",
+        "diary:writing",
+        "diary:empty-date"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-archives-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-archives-1440.png",
+      "states": [
+        "archives:default",
+        "archives:record",
+        "archives:belongings",
+        "archives:person",
+        "archives:studio",
+        "archives:search",
+        "archives:no-results",
+        "archives:dirty",
+        "archives:loading",
+        "archives:error",
+        "archives:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-automations-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-automations-1440.png",
+      "states": [
+        "automations:default",
+        "automations:detail",
+        "automations:detail-runs",
+        "automations:run-detail",
+        "automations:editing",
+        "automations:toggle-pending",
+        "automations:toggle-failed",
+        "automations:all-runs",
+        "automations:new",
+        "automations:empty",
+        "automations:missing",
+        "automations:loading",
+        "automations:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-agent-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-agent-1440.png",
+      "states": [
+        "agent:default",
+        "agent:split",
+        "agent:blocked",
+        "agent:info",
+        "agent:history",
+        "agent:usage",
+        "agent:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-notifications-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-notifications-1440.png",
+      "states": [
+        "notifications:default",
+        "notifications:detail",
+        "notifications:empty",
+        "notifications:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-safe-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-safe-1440.png",
+      "states": [
+        "safe:locked",
+        "safe:error",
+        "safe:default",
+        "safe:detail",
+        "safe:revealed",
+        "safe:quick-pick",
+        "safe:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-versioning-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-versioning-1440.png",
+      "states": [
+        "versioning:default",
+        "versioning:diff",
+        "versioning:restore-confirm",
+        "versioning:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-health-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-health-1440.png",
+      "states": [
+        "health:idle",
+        "health:scanning",
+        "health:results",
+        "health:repair-plan",
+        "health:partial",
+        "health:cancelled"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-notes-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-notes-1440.png",
+      "states": [
+        "notes:default",
+        "notes:comment-editing",
+        "notes:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-settings-1440",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/candidate-settings-1440.png",
+      "states": [
+        "settings:appearance",
+        "settings:appearance-dark",
+        "settings:follow-obsidian",
+        "settings:general",
+        "settings:icons",
+        "settings:content",
+        "settings:search"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-home-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-home-390.png",
+      "states": [
+        "home:default",
+        "home:editing",
+        "home:empty",
+        "home:loading"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-tasks-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-tasks-390.png",
+      "states": [
+        "tasks:default",
+        "tasks:board",
+        "tasks:calendar",
+        "tasks:detail",
+        "tasks:completed",
+        "tasks:pending",
+        "tasks:failed",
+        "tasks:empty",
+        "tasks:no-results",
+        "tasks:loading",
+        "tasks:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-diary-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-diary-390.png",
+      "states": [
+        "diary:default",
+        "diary:writing",
+        "diary:empty-date"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-archives-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-archives-390.png",
+      "states": [
+        "archives:default",
+        "archives:record",
+        "archives:belongings",
+        "archives:person",
+        "archives:studio",
+        "archives:search",
+        "archives:no-results",
+        "archives:dirty",
+        "archives:loading",
+        "archives:error",
+        "archives:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-automations-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-automations-390.png",
+      "states": [
+        "automations:default",
+        "automations:detail",
+        "automations:detail-runs",
+        "automations:run-detail",
+        "automations:editing",
+        "automations:toggle-pending",
+        "automations:toggle-failed",
+        "automations:all-runs",
+        "automations:new",
+        "automations:empty",
+        "automations:missing",
+        "automations:loading",
+        "automations:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-agent-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-agent-390.png",
+      "states": [
+        "agent:default",
+        "agent:split",
+        "agent:blocked",
+        "agent:info",
+        "agent:history",
+        "agent:usage",
+        "agent:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-notifications-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-notifications-390.png",
+      "states": [
+        "notifications:default",
+        "notifications:detail",
+        "notifications:empty",
+        "notifications:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-safe-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-safe-390.png",
+      "states": [
+        "safe:locked",
+        "safe:error",
+        "safe:default",
+        "safe:detail",
+        "safe:revealed",
+        "safe:quick-pick",
+        "safe:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-versioning-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-versioning-390.png",
+      "states": [
+        "versioning:default",
+        "versioning:diff",
+        "versioning:restore-confirm",
+        "versioning:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-health-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-health-390.png",
+      "states": [
+        "health:idle",
+        "health:scanning",
+        "health:results",
+        "health:repair-plan",
+        "health:partial",
+        "health:cancelled"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-notes-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-notes-390.png",
+      "states": [
+        "notes:default",
+        "notes:comment-editing",
+        "notes:empty"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-settings-390",
+      "entry": "comparison/variants/huhu-paper.html",
+      "width": 390,
+      "height": 900,
+      "screenshot": "evidence/candidate-settings-390.png",
+      "states": [
+        "settings:appearance",
+        "settings:appearance-dark",
+        "settings:follow-obsidian",
+        "settings:general",
+        "settings:icons",
+        "settings:content",
+        "settings:search"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/report-design-review.md",
+  "technical_review": "evidence/report-technical-review.md",
+  "rechecked": true
+}

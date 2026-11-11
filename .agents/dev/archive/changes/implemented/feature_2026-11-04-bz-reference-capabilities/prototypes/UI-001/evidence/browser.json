@@ -1,0 +1,1055 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "1d4c1476e4d94d08498ca429d8b348f80810ee455c79863dc9595731d33c662e",
+  "generated_at": "2026-11-04T12:45:10.895Z",
+  "provider": "Google Chrome 153.0.8010.47 · headless CDP · file:// · Linux",
+  "inspected_files": [
+    "comparison/index.html",
+    "comparison/variants/bz-huhu.html",
+    "final/index.html"
+  ],
+  "cases": [
+    {
+      "id": "candidate-SAFE-QUICK-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-safe-quick-1440.png",
+      "states": [
+        "SAFE-QUICK:default",
+        "SAFE-QUICK:locked",
+        "SAFE-QUICK:loading",
+        "SAFE-QUICK:no-results",
+        "SAFE-QUICK:generated",
+        "SAFE-QUICK:copied",
+        "SAFE-QUICK:closed",
+        "SAFE-QUICK:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-SAFE-WORKSPACE-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-safe-workspace-1440.png",
+      "states": [
+        "SAFE-WORKSPACE:default",
+        "SAFE-WORKSPACE:empty",
+        "SAFE-WORKSPACE:loading",
+        "SAFE-WORKSPACE:error",
+        "SAFE-WORKSPACE:detail",
+        "SAFE-WORKSPACE:relations",
+        "SAFE-WORKSPACE:invalid-relation",
+        "SAFE-WORKSPACE:locked"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-BELONGINGS-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-belongings-1440.png",
+      "states": [
+        "BELONGINGS:default",
+        "BELONGINGS:empty",
+        "BELONGINGS:no-results",
+        "BELONGINGS:loading",
+        "BELONGINGS:error",
+        "BELONGINGS:detail",
+        "BELONGINGS:transition",
+        "BELONGINGS:resold",
+        "BELONGINGS:discarded",
+        "BELONGINGS:returned",
+        "BELONGINGS:undo",
+        "BELONGINGS:conflict",
+        "BELONGINGS:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-BELONGINGS-REPORT-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-belongings-report-1440.png",
+      "states": [
+        "BELONGINGS-REPORT:default",
+        "BELONGINGS-REPORT:empty",
+        "BELONGINGS-REPORT:loading",
+        "BELONGINGS-REPORT:error",
+        "BELONGINGS-REPORT:historical",
+        "BELONGINGS-REPORT:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-DIARY-READER-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-diary-reader-1440.png",
+      "states": [
+        "DIARY-READER:default",
+        "DIARY-READER:loading",
+        "DIARY-READER:empty-date",
+        "DIARY-READER:error",
+        "DIARY-READER:next-page",
+        "DIARY-READER:calendar",
+        "DIARY-READER:month-index",
+        "DIARY-READER:fallback",
+        "DIARY-READER:hidden"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-DIARY-SEARCH-WRITE-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-diary-search-write-1440.png",
+      "states": [
+        "DIARY-SEARCH-WRITE:default",
+        "DIARY-SEARCH-WRITE:indexing",
+        "DIARY-SEARCH-WRITE:partial-range",
+        "DIARY-SEARCH-WRITE:no-results",
+        "DIARY-SEARCH-WRITE:editing",
+        "DIARY-SEARCH-WRITE:saving",
+        "DIARY-SEARCH-WRITE:saved",
+        "DIARY-SEARCH-WRITE:discard-confirm",
+        "DIARY-SEARCH-WRITE:template-cancelled",
+        "DIARY-SEARCH-WRITE:template-unavailable",
+        "DIARY-SEARCH-WRITE:conflict",
+        "DIARY-SEARCH-WRITE:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-PERSON-READING-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-person-reading-1440.png",
+      "states": [
+        "PERSON-READING:default",
+        "PERSON-READING:loading",
+        "PERSON-READING:empty",
+        "PERSON-READING:error",
+        "PERSON-READING:profile",
+        "PERSON-READING:relations",
+        "PERSON-READING:journal",
+        "PERSON-READING:journal-edit",
+        "PERSON-READING:journal-delete",
+        "PERSON-READING:conflict",
+        "PERSON-READING:same-name",
+        "PERSON-READING:generic"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-HEALTH-SCAN-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-health-scan-1440.png",
+      "states": [
+        "HEALTH-SCAN:default",
+        "HEALTH-SCAN:running",
+        "HEALTH-SCAN:complete",
+        "HEALTH-SCAN:cancelled",
+        "HEALTH-SCAN:incomplete",
+        "HEALTH-SCAN:provider-error",
+        "HEALTH-SCAN:unavailable",
+        "HEALTH-SCAN:locked",
+        "HEALTH-SCAN:stale",
+        "HEALTH-SCAN:notification"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-HEALTH-REPAIR-1440",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-health-repair-1440.png",
+      "states": [
+        "HEALTH-REPAIR:default",
+        "HEALTH-REPAIR:preview",
+        "HEALTH-REPAIR:confirm",
+        "HEALTH-REPAIR:revalidating",
+        "HEALTH-REPAIR:complete",
+        "HEALTH-REPAIR:stale",
+        "HEALTH-REPAIR:partial",
+        "HEALTH-REPAIR:restore",
+        "HEALTH-REPAIR:cancelled",
+        "HEALTH-REPAIR:unsupported"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-SAFE-QUICK-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-safe-quick-390.png",
+      "states": [
+        "SAFE-QUICK:default",
+        "SAFE-QUICK:locked",
+        "SAFE-QUICK:loading",
+        "SAFE-QUICK:no-results",
+        "SAFE-QUICK:generated",
+        "SAFE-QUICK:copied",
+        "SAFE-QUICK:closed",
+        "SAFE-QUICK:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-SAFE-WORKSPACE-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-safe-workspace-390.png",
+      "states": [
+        "SAFE-WORKSPACE:default",
+        "SAFE-WORKSPACE:empty",
+        "SAFE-WORKSPACE:loading",
+        "SAFE-WORKSPACE:error",
+        "SAFE-WORKSPACE:detail",
+        "SAFE-WORKSPACE:relations",
+        "SAFE-WORKSPACE:invalid-relation",
+        "SAFE-WORKSPACE:locked"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-BELONGINGS-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-belongings-390.png",
+      "states": [
+        "BELONGINGS:default",
+        "BELONGINGS:empty",
+        "BELONGINGS:no-results",
+        "BELONGINGS:loading",
+        "BELONGINGS:error",
+        "BELONGINGS:detail",
+        "BELONGINGS:transition",
+        "BELONGINGS:resold",
+        "BELONGINGS:discarded",
+        "BELONGINGS:returned",
+        "BELONGINGS:undo",
+        "BELONGINGS:conflict",
+        "BELONGINGS:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-BELONGINGS-REPORT-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-belongings-report-390.png",
+      "states": [
+        "BELONGINGS-REPORT:default",
+        "BELONGINGS-REPORT:empty",
+        "BELONGINGS-REPORT:loading",
+        "BELONGINGS-REPORT:error",
+        "BELONGINGS-REPORT:historical",
+        "BELONGINGS-REPORT:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-DIARY-READER-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-diary-reader-390.png",
+      "states": [
+        "DIARY-READER:default",
+        "DIARY-READER:loading",
+        "DIARY-READER:empty-date",
+        "DIARY-READER:error",
+        "DIARY-READER:next-page",
+        "DIARY-READER:calendar",
+        "DIARY-READER:month-index",
+        "DIARY-READER:fallback",
+        "DIARY-READER:hidden"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-DIARY-SEARCH-WRITE-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-diary-search-write-390.png",
+      "states": [
+        "DIARY-SEARCH-WRITE:default",
+        "DIARY-SEARCH-WRITE:indexing",
+        "DIARY-SEARCH-WRITE:partial-range",
+        "DIARY-SEARCH-WRITE:no-results",
+        "DIARY-SEARCH-WRITE:editing",
+        "DIARY-SEARCH-WRITE:saving",
+        "DIARY-SEARCH-WRITE:saved",
+        "DIARY-SEARCH-WRITE:discard-confirm",
+        "DIARY-SEARCH-WRITE:template-cancelled",
+        "DIARY-SEARCH-WRITE:template-unavailable",
+        "DIARY-SEARCH-WRITE:conflict",
+        "DIARY-SEARCH-WRITE:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-PERSON-READING-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-person-reading-390.png",
+      "states": [
+        "PERSON-READING:default",
+        "PERSON-READING:loading",
+        "PERSON-READING:empty",
+        "PERSON-READING:error",
+        "PERSON-READING:profile",
+        "PERSON-READING:relations",
+        "PERSON-READING:journal",
+        "PERSON-READING:journal-edit",
+        "PERSON-READING:journal-delete",
+        "PERSON-READING:conflict",
+        "PERSON-READING:same-name",
+        "PERSON-READING:generic"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-HEALTH-SCAN-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-health-scan-390.png",
+      "states": [
+        "HEALTH-SCAN:default",
+        "HEALTH-SCAN:running",
+        "HEALTH-SCAN:complete",
+        "HEALTH-SCAN:cancelled",
+        "HEALTH-SCAN:incomplete",
+        "HEALTH-SCAN:provider-error",
+        "HEALTH-SCAN:unavailable",
+        "HEALTH-SCAN:locked",
+        "HEALTH-SCAN:stale",
+        "HEALTH-SCAN:notification"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "candidate-HEALTH-REPAIR-390",
+      "entry": "comparison/variants/bz-huhu.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-health-repair-390.png",
+      "states": [
+        "HEALTH-REPAIR:default",
+        "HEALTH-REPAIR:preview",
+        "HEALTH-REPAIR:confirm",
+        "HEALTH-REPAIR:revalidating",
+        "HEALTH-REPAIR:complete",
+        "HEALTH-REPAIR:stale",
+        "HEALTH-REPAIR:partial",
+        "HEALTH-REPAIR:restore",
+        "HEALTH-REPAIR:cancelled",
+        "HEALTH-REPAIR:unsupported"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-SAFE-QUICK-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-safe-quick-1440.png",
+      "states": [
+        "SAFE-QUICK:default",
+        "SAFE-QUICK:locked",
+        "SAFE-QUICK:loading",
+        "SAFE-QUICK:no-results",
+        "SAFE-QUICK:generated",
+        "SAFE-QUICK:copied",
+        "SAFE-QUICK:closed",
+        "SAFE-QUICK:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-SAFE-WORKSPACE-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-safe-workspace-1440.png",
+      "states": [
+        "SAFE-WORKSPACE:default",
+        "SAFE-WORKSPACE:empty",
+        "SAFE-WORKSPACE:loading",
+        "SAFE-WORKSPACE:error",
+        "SAFE-WORKSPACE:detail",
+        "SAFE-WORKSPACE:relations",
+        "SAFE-WORKSPACE:invalid-relation",
+        "SAFE-WORKSPACE:locked"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-BELONGINGS-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-belongings-1440.png",
+      "states": [
+        "BELONGINGS:default",
+        "BELONGINGS:empty",
+        "BELONGINGS:no-results",
+        "BELONGINGS:loading",
+        "BELONGINGS:error",
+        "BELONGINGS:detail",
+        "BELONGINGS:transition",
+        "BELONGINGS:resold",
+        "BELONGINGS:discarded",
+        "BELONGINGS:returned",
+        "BELONGINGS:undo",
+        "BELONGINGS:conflict",
+        "BELONGINGS:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-BELONGINGS-REPORT-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-belongings-report-1440.png",
+      "states": [
+        "BELONGINGS-REPORT:default",
+        "BELONGINGS-REPORT:empty",
+        "BELONGINGS-REPORT:loading",
+        "BELONGINGS-REPORT:error",
+        "BELONGINGS-REPORT:historical",
+        "BELONGINGS-REPORT:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-DIARY-READER-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-diary-reader-1440.png",
+      "states": [
+        "DIARY-READER:default",
+        "DIARY-READER:loading",
+        "DIARY-READER:empty-date",
+        "DIARY-READER:error",
+        "DIARY-READER:next-page",
+        "DIARY-READER:calendar",
+        "DIARY-READER:month-index",
+        "DIARY-READER:fallback",
+        "DIARY-READER:hidden"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-DIARY-SEARCH-WRITE-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-diary-search-write-1440.png",
+      "states": [
+        "DIARY-SEARCH-WRITE:default",
+        "DIARY-SEARCH-WRITE:indexing",
+        "DIARY-SEARCH-WRITE:partial-range",
+        "DIARY-SEARCH-WRITE:no-results",
+        "DIARY-SEARCH-WRITE:editing",
+        "DIARY-SEARCH-WRITE:saving",
+        "DIARY-SEARCH-WRITE:saved",
+        "DIARY-SEARCH-WRITE:discard-confirm",
+        "DIARY-SEARCH-WRITE:template-cancelled",
+        "DIARY-SEARCH-WRITE:template-unavailable",
+        "DIARY-SEARCH-WRITE:conflict",
+        "DIARY-SEARCH-WRITE:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-PERSON-READING-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-person-reading-1440.png",
+      "states": [
+        "PERSON-READING:default",
+        "PERSON-READING:loading",
+        "PERSON-READING:empty",
+        "PERSON-READING:error",
+        "PERSON-READING:profile",
+        "PERSON-READING:relations",
+        "PERSON-READING:journal",
+        "PERSON-READING:journal-edit",
+        "PERSON-READING:journal-delete",
+        "PERSON-READING:conflict",
+        "PERSON-READING:same-name",
+        "PERSON-READING:generic"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-HEALTH-SCAN-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-health-scan-1440.png",
+      "states": [
+        "HEALTH-SCAN:default",
+        "HEALTH-SCAN:running",
+        "HEALTH-SCAN:complete",
+        "HEALTH-SCAN:cancelled",
+        "HEALTH-SCAN:incomplete",
+        "HEALTH-SCAN:provider-error",
+        "HEALTH-SCAN:unavailable",
+        "HEALTH-SCAN:locked",
+        "HEALTH-SCAN:stale",
+        "HEALTH-SCAN:notification"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-HEALTH-REPAIR-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-health-repair-1440.png",
+      "states": [
+        "HEALTH-REPAIR:default",
+        "HEALTH-REPAIR:preview",
+        "HEALTH-REPAIR:confirm",
+        "HEALTH-REPAIR:revalidating",
+        "HEALTH-REPAIR:complete",
+        "HEALTH-REPAIR:stale",
+        "HEALTH-REPAIR:partial",
+        "HEALTH-REPAIR:restore",
+        "HEALTH-REPAIR:cancelled",
+        "HEALTH-REPAIR:unsupported"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-SAFE-QUICK-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-safe-quick-390.png",
+      "states": [
+        "SAFE-QUICK:default",
+        "SAFE-QUICK:locked",
+        "SAFE-QUICK:loading",
+        "SAFE-QUICK:no-results",
+        "SAFE-QUICK:generated",
+        "SAFE-QUICK:copied",
+        "SAFE-QUICK:closed",
+        "SAFE-QUICK:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-SAFE-WORKSPACE-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-safe-workspace-390.png",
+      "states": [
+        "SAFE-WORKSPACE:default",
+        "SAFE-WORKSPACE:empty",
+        "SAFE-WORKSPACE:loading",
+        "SAFE-WORKSPACE:error",
+        "SAFE-WORKSPACE:detail",
+        "SAFE-WORKSPACE:relations",
+        "SAFE-WORKSPACE:invalid-relation",
+        "SAFE-WORKSPACE:locked"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-BELONGINGS-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-belongings-390.png",
+      "states": [
+        "BELONGINGS:default",
+        "BELONGINGS:empty",
+        "BELONGINGS:no-results",
+        "BELONGINGS:loading",
+        "BELONGINGS:error",
+        "BELONGINGS:detail",
+        "BELONGINGS:transition",
+        "BELONGINGS:resold",
+        "BELONGINGS:discarded",
+        "BELONGINGS:returned",
+        "BELONGINGS:undo",
+        "BELONGINGS:conflict",
+        "BELONGINGS:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-BELONGINGS-REPORT-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-belongings-report-390.png",
+      "states": [
+        "BELONGINGS-REPORT:default",
+        "BELONGINGS-REPORT:empty",
+        "BELONGINGS-REPORT:loading",
+        "BELONGINGS-REPORT:error",
+        "BELONGINGS-REPORT:historical",
+        "BELONGINGS-REPORT:money-edge"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-DIARY-READER-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-diary-reader-390.png",
+      "states": [
+        "DIARY-READER:default",
+        "DIARY-READER:loading",
+        "DIARY-READER:empty-date",
+        "DIARY-READER:error",
+        "DIARY-READER:next-page",
+        "DIARY-READER:calendar",
+        "DIARY-READER:month-index",
+        "DIARY-READER:fallback",
+        "DIARY-READER:hidden"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-DIARY-SEARCH-WRITE-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-diary-search-write-390.png",
+      "states": [
+        "DIARY-SEARCH-WRITE:default",
+        "DIARY-SEARCH-WRITE:indexing",
+        "DIARY-SEARCH-WRITE:partial-range",
+        "DIARY-SEARCH-WRITE:no-results",
+        "DIARY-SEARCH-WRITE:editing",
+        "DIARY-SEARCH-WRITE:saving",
+        "DIARY-SEARCH-WRITE:saved",
+        "DIARY-SEARCH-WRITE:discard-confirm",
+        "DIARY-SEARCH-WRITE:template-cancelled",
+        "DIARY-SEARCH-WRITE:template-unavailable",
+        "DIARY-SEARCH-WRITE:conflict",
+        "DIARY-SEARCH-WRITE:error"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-PERSON-READING-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-person-reading-390.png",
+      "states": [
+        "PERSON-READING:default",
+        "PERSON-READING:loading",
+        "PERSON-READING:empty",
+        "PERSON-READING:error",
+        "PERSON-READING:profile",
+        "PERSON-READING:relations",
+        "PERSON-READING:journal",
+        "PERSON-READING:journal-edit",
+        "PERSON-READING:journal-delete",
+        "PERSON-READING:conflict",
+        "PERSON-READING:same-name",
+        "PERSON-READING:generic"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-HEALTH-SCAN-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-health-scan-390.png",
+      "states": [
+        "HEALTH-SCAN:default",
+        "HEALTH-SCAN:running",
+        "HEALTH-SCAN:complete",
+        "HEALTH-SCAN:cancelled",
+        "HEALTH-SCAN:incomplete",
+        "HEALTH-SCAN:provider-error",
+        "HEALTH-SCAN:unavailable",
+        "HEALTH-SCAN:locked",
+        "HEALTH-SCAN:stale",
+        "HEALTH-SCAN:notification"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    },
+    {
+      "id": "final-HEALTH-REPAIR-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-health-repair-390.png",
+      "states": [
+        "HEALTH-REPAIR:default",
+        "HEALTH-REPAIR:preview",
+        "HEALTH-REPAIR:confirm",
+        "HEALTH-REPAIR:revalidating",
+        "HEALTH-REPAIR:complete",
+        "HEALTH-REPAIR:stale",
+        "HEALTH-REPAIR:partial",
+        "HEALTH-REPAIR:restore",
+        "HEALTH-REPAIR:cancelled",
+        "HEALTH-REPAIR:unsupported"
+      ],
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      }
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/report-design-review.md",
+  "technical_review": "evidence/report-technical-review.md",
+  "rechecked": true
+}
