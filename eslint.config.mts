@@ -67,7 +67,7 @@ export default tseslint.config(
 		"**/*.test.ts",
 		"**/*.test.tsx",
 		"test/**",
-		"speculo/**",
-		".agents/speculo/**",
+		// Installed skills and change prototypes are not part of the plugin TypeScript project.
+		".agents/**",
 	]),
 );

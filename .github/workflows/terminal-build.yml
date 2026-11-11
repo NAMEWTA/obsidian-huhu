@@ -3,16 +3,15 @@ name: Build terminal helper
 on:
   workflow_call:
   workflow_dispatch:
-  # Push to dev has no path filter. This pull request changes more than 3000 files,
-  # and GitHub only matches a path filter against the first 3000, so the filtered
-  # pull_request event never starts. A dev push still has to build every target.
-  push:
-    branches: [dev]
   pull_request:
     paths: ['native/pty-server/**', 'scripts/verify-pty-helper.mjs', 'scripts/verify-release-artifacts.mjs', 'src/shared/native/control-schema.json', '.github/workflows/terminal-build.yml']
 
 permissions:
   contents: read
+
+concurrency:
+  group: terminal-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -26,10 +25,12 @@ jobs:
           - { os: macos-15, target: aarch64-apple-darwin, asset: darwin-arm64, ext: '' }
           - { os: windows-latest, target: x86_64-pc-windows-msvc, asset: win32-x64, ext: '.exe' }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.sha }}
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}

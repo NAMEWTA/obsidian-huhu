@@ -11,11 +11,12 @@ interface Step {
 }
 interface Job {
 	uses?: string;
+	'runs-on'?: string;
 	needs?: string[];
 	if?: string;
 	'continue-on-error'?: boolean;
 	env?: Record<string, string>;
-	strategy?: { 'fail-fast'?: boolean; matrix: { include: { os: string; 'node-version': string }[] } };
+	strategy?: unknown;
 	steps?: Step[];
 }
 const workflow = (name: string) =>
@@ -45,20 +46,15 @@ test('tag releases require successful checks and all helpers from the calling co
 		}
 });
 
-test('the reusable quality matrix runs the full checks on Linux 22/24 and Windows 24', () => {
+test('daily CI runs once and keeps the checks needed to publish matching source and assets', () => {
 	const checks = workflow('lint'),
 		build = checks.jobs.build!;
+	expect(checks.on.push).toEqual({ branches: ['main'] });
+	expect(checks.on).toHaveProperty('pull_request');
+	expect(checks.on).toHaveProperty('workflow_dispatch');
+	expect(build['runs-on']).toBe('ubuntu-latest');
+	expect(build.strategy).toBeUndefined();
 	expect(build.if).toBeUndefined();
-	for (const value of Object.values(build.env ?? {})) {
-		for (const expression of value.matchAll(/\$\{\{([\s\S]*?)\}\}/g))
-			expect(expression[1]).not.toMatch(/\b(?:runner|job|steps|env)\./);
-	}
-	expect(build.strategy?.matrix.include).toEqual([
-		{ os: 'ubuntu-latest', 'node-version': '22.x' },
-		{ os: 'ubuntu-latest', 'node-version': '24.x' },
-		{ os: 'windows-latest', 'node-version': '24.x' },
-	]);
-	expect(build.strategy?.['fail-fast']).toBe(false);
 	const commands = (build.steps ?? []).flatMap((step) => (step.run ? [step.run] : []));
 	for (const required of [
 		'pnpm install --frozen-lockfile',
@@ -71,7 +67,8 @@ test('the reusable quality matrix runs the full checks on Linux 22/24 and Window
 		'pnpm run check:notices',
 		'pnpm run check:native',
 	]) {
-		expect(commands).toContain(required);
+		expect(commands.filter((command) => command === required)).toHaveLength(1);
 		expect(build.steps?.find((step) => step.run === required)?.if).toBeUndefined();
 	}
+	expect(workflow('terminal-build').on).not.toHaveProperty('push');
 });

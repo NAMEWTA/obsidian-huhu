@@ -4,7 +4,8 @@ import { spawnSync } from 'node:child_process';
 const { scripts } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const runner = process.env.npm_execpath;
 if (!runner) throw new Error('Run through pnpm run test:all');
-const tests = Object.keys(scripts).filter(name => name.startsWith('test:') && name !== 'test:all');
+// test:unit runs all Vitest files; test:task is only a convenient focused subset.
+const tests = Object.keys(scripts).filter(name => name.startsWith('test:') && !['test:all', 'test:task'].includes(name));
 const failed = [];
 for (const name of tests) {
 	const result = spawnSync(process.execPath, [runner, 'run', name], { stdio: 'inherit', env: process.env });
